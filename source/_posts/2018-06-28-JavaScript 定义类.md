@@ -1,5 +1,5 @@
 ---
-title: JavaScript 自定义解析字符串为 Date 对象
+title: JavaScript 定义类
 date: 2018-06-28 01:39:21
 tags: JavaScript
 ---
