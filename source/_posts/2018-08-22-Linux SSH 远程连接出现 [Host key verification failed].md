@@ -1,7 +1,7 @@
 ---
-title: Linux SSH 远程连接出现 [Host key verification failed]
+title: 'Linux SSH 远程连接出现 [Host key verification failed]'
 date: 2018-08-22 09:33:40
-tags:
+tags: Linux
 ---
 # Linux SSH 远程连接出现 [Host key verification failed]
 
