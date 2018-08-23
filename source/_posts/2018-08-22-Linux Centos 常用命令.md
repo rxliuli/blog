@@ -1,7 +1,7 @@
 ---
 title: Linux Centos 常用命令
 date: 2018-08-22 22:24:37
-updated: 2018-08-22 22:24:37
+updated: 2018-08-23 09:00:04
 tags: Linux
 ---
 # Linux Centos 常用命令
@@ -12,6 +12,9 @@ tags: Linux
       - [`nohup`：后台运行命令](#nohup后台运行命令)
       - [`setsid`：同样是后台运行命令](#setsid同样是后台运行命令)
       - [`pkill`：根据名字杀死进程](#pkill根据名字杀死进程)
+      - [`whereis`：根据名字查看软件的安装位置](#whereis根据名字查看软件的安装位置)
+      - [`systemctl`：系统服务管理](#systemctl系统服务管理)
+      - [`service`：系统服务管理](#service系统服务管理)
     - [远程连接](#远程连接)
       - [`ssh`：远程连接到 `Linux` 服务器](#ssh远程连接到-linux-服务器)
       - [`scp`：`Linux` 下的文件传输工具](#scplinux-下的文件传输工具)
@@ -31,6 +34,50 @@ tags: Linux
 #### `pkill`：根据名字杀死进程
 
 不需要在先使用 `ps ef|grep name` 查看进程的 `pid` 再使用 `kill -9 pid` 去杀死进程了，直接使用 `pkill name` 就可以杀死进程了呢
+
+#### `whereis`：根据名字查看软件的安装位置
+
+安装软件后不知道默认安装位置，使用 `whereis` 就可以知道啦
+
+```bash
+# 使用 whereis java 查看 java 的安装位置
+whereis java
+# 结果
+# java: /usr/bin/java /usr/lib/java /etc/java /usr/share/java /opt/java/jdk1.8.0_171/bin/java /opt/java/jdk1.8.0_171/jre/bin/java /usr/share/man/man1/java.1.gz
+```
+
+#### `systemctl`：系统服务管理
+
+命令格式
+
+```bash
+systemctl option serverName.service
+```
+
+option 有以下常用可选项
+
+- start：启动一个服务
+- stop: 关闭一个服务
+- restart：重启服务
+- status：查看服务的状态
+
+例如下面的命令就是用于启动 `mongod` 服务
+
+```bash
+systemctl start mongod.service
+```
+
+#### `service`：系统服务管理
+
+和上面的 [`systemctl`：系统服务管理](#systemctl系统服务管理) 几乎完全一样的效果，但命令更为简洁/直观
+
+还是以启动 `mongod` 服务为例
+
+```bash
+service mongod start
+# 系统会直接提示重定向到 systemctl 命令
+# Starting mongod (via systemctl):
+```
 
 ### 远程连接
 
