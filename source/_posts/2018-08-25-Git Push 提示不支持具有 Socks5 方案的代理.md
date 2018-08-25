@@ -1,7 +1,7 @@
 ---
 title: Git Push 提示不支持具有 Socks5 方案的代理
 date: 2018-08-25 00:25:30
-tags: Tool Git
+tags: [Tool, Git]
 ---
 # Git Push 提示不支持具有 Socks5 方案的代理
 
