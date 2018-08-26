@@ -4,9 +4,17 @@
   - [场景 & 需求](#场景--需求)
   - [前置知识](#前置知识)
   - [引入依赖](#引入依赖)
-  - [配置 `SpringBoot` `WebSocket` 支持](#配置-springboot-websocket-支持)
-  - [客户端发送请求后，服务端进行处理后可以对所有的客户端进行 **广播**](#客户端发送请求后服务端进行处理后可以对所有的客户端进行-广播)
-  - [简单的客户端](#简单的客户端)
+  - [配置 `SpringBoot WebSocket` 支持](#配置-springboot-websocket-支持)
+  - [双向广播服务端](#双向广播服务端)
+  - [双向广播客户端](#双向广播客户端)
+  - [单向广播服务端](#单向广播服务端)
+  - [单向广播客户端](#单向广播客户端)
+  - [点对点推送服务端](#点对点推送服务端)
+  - [点对点推送客户端](#点对点推送客户端)
+  - [单向点对点推送服务端](#单向点对点推送服务端)
+  - [单向点对点推送客户端](#单向点对点推送客户端)
+  - [接受复杂类型的消息](#接受复杂类型的消息)
+  - [返回复杂类型的消息](#返回复杂类型的消息)
 
 ## 场景 & 需求
 
@@ -22,6 +30,7 @@
 - [X] Java
 - [X] Maven
 - [X] SpringBoot
+- [ ] IDEA
 
 ## 引入依赖
 
@@ -35,7 +44,7 @@
 </dependency>
 ```
 
-## 配置 `SpringBoot` `WebSocket` 支持
+## 配置 `SpringBoot WebSocket` 支持
 
 ```java
 /**
@@ -73,7 +82,9 @@ public class SpringWebSocketConfig extends AbstractWebSocketMessageBrokerConfigu
 }
 ```
 
-## 客户端发送请求后，服务端进行处理后可以对所有的客户端进行 **广播**
+## 双向广播服务端
+
+客户端发送请求后，服务端进行处理后可以对所有的客户端进行 **广播**
 
 ```java
 /**
@@ -101,7 +112,9 @@ public class BilateralBroadcastingSocket {
 }
 ```
 
-## 简单的客户端
+## 双向广播客户端
+
+向服务端发送消息，并监听服务端的广播。客户端发送消息与监听是分离的，也可以只向服务端发送消息而不监听广播，或者只接收广播不发送消息。
 
 ```html
 <!DOCTYPE html>
@@ -168,3 +181,105 @@ public class BilateralBroadcastingSocket {
 
 </html>
 ```
+
+## 单向广播服务端
+
+从服务端推送消息到所有客户端，是单向推送到客户端的，不接受从客户端的输入。
+
+```java
+/**
+ * 单向广播控制器
+ *
+ * @author rxliuli
+ */
+@Controller
+public class UnidirectionalBroadcastingSocket {
+    /**
+     * 从服务端推送消息到所有客户端
+     * 这是单向推送到客户端的，不接受从客户端的输入
+     */
+    @SendTo("/topic/broadcasting/unidirectional/allClient")
+    public Object broadcasting() {
+        return null;
+    }
+}
+
+/**
+ * 使用 Scheduled 不停的推送信息
+ *
+ * @author rxliuli
+ */
+@Component
+public class ScheduledRefreshJob {
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    /**
+     * 不停地推送消息到客户端
+     */
+    @Scheduled(fixedDelay = 10 * 1000)
+    public void scheduledBroadcasting() {
+        simpMessagingTemplate.convertAndSend("/topic/broadcasting/unidirectional/allClient", new Person(1L, "rx", false));
+    }
+}
+```
+
+## 单向广播客户端
+
+客户端只需要添加一个监听器就好了，不需要也不能向服务端发送消息。
+
+```js
+// 订阅广播消息（服务端单向推送）
+const subscription_broadcast = stompClient.subscribe('/topic/broadcasting/unidirectional/allClient',
+    (response) => {
+        console.log(`[广播（服务端单向推送）]: ${response.body}`)
+    });
+```
+
+## 点对点推送服务端
+
+服务端使用 `@SendToUser(path)` 向单个客户端推送消息，这里的 `@Header("simpSessionId")` 指的是从客户端的请求头中的 `simpSessionId` 参数赋值给 `sessionId`（`WebSocket` 会话 `ID`，和用户 `Session` 不同，是每一个 `WebSocket` 唯一的 #即和用户不是一一对应）
+
+```java
+/**
+ * 双向点对点推送控制器
+ *
+ * @author rxliuli
+ */
+@Controller
+public class BilateralPushSocket {
+    /**
+     * 点对点推送（双向通信）
+     *
+     * @param text      消息
+     * @param sessionId 会话 id
+     * @return 推送到当前会话的消息
+     */
+    @MessageMapping("/speak")
+    @SendToUser("/push/bilateral/thisClient")
+    public String speak(@Payload String text, @Header("simpSessionId") String sessionId) throws InterruptedException {
+        //模拟处理其他事情
+        Thread.sleep(1000L);
+        return "[ " + sessionId + "] send: [" + text + "]";
+    }
+}
+```
+
+## 点对点推送客户端
+
+客户端请求的路径需要注意一下，是以 `/user/${sessionId}` 开头，后面才是 `@SendToUser(path)` 中设置的 `path`。
+
+```js
+// 订阅私人消息（双向通信）
+stompClient.subscribe(`/user/${sessionId}/push/bilateral/thisClient`, res => {
+    console.log(`[点对点推送（双向通信）]: ${res.body}`)
+})
+```
+
+## 单向点对点推送服务端
+
+## 单向点对点推送客户端
+
+## 接受复杂类型的消息
+
+## 返回复杂类型的消息
