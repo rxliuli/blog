@@ -481,7 +481,28 @@ stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res =
 
 3. 客户端在打开和关闭连接的时候需要发送 user 给服务端
 
-   这里使用 `headers` 存放用户认证信息（唯一标识），所以在连接和关闭时要带上请求头
+  这里使用 `headers` 存放用户认证信息（唯一标识），所以在连接和关闭时要带上请求头
+  
+  ```java
+  stompClient.connect(getHeaders(), function(){
+      console.log('打开 Socket 连接')
+  })
+  // TODO 这里还有一些问题，无法带上 headers 到后端
+  stompClient.disconnect(function () {
+      console.log('断开连接');
+  }, getHeaders());
+
+  /**
+     * 获取一个认证的 headers 信息
+     * @return {{"X-Requested-With": string, Authorization: any}} 含有认证信息的 headers 对象
+     */
+    function getHeaders() {
+        return {
+            'X-Requested-With': 'X-Requested-With',
+            'Authorization': localStorage.token
+        }
+    }
+  ```
 
 4. 使用记录的 `user -> session id` 发送消息给指定的用户
 
