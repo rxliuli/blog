@@ -1,20 +1,21 @@
 # SpringBoot 集成 WebSocket
 
 - [SpringBoot 集成 WebSocket](#springboot-集成-websocket)
-  - [场景 & 需求](#场景--需求)
-  - [前置知识](#前置知识)
-  - [引入依赖](#引入依赖)
-  - [配置 `SpringBoot WebSocket` 支持](#配置-springboot-websocket-支持)
-  - [双向广播服务端](#双向广播服务端)
-  - [双向广播客户端](#双向广播客户端)
-  - [单向广播服务端](#单向广播服务端)
-  - [单向广播客户端](#单向广播客户端)
-  - [点对点推送服务端](#点对点推送服务端)
-  - [点对点推送客户端](#点对点推送客户端)
-  - [单向点对点推送服务端](#单向点对点推送服务端)
-  - [单向点对点推送客户端](#单向点对点推送客户端)
-  - [接受复杂类型的消息](#接受复杂类型的消息)
-  - [返回复杂类型的消息](#返回复杂类型的消息)
+    - [场景 & 需求](#场景--需求)
+    - [前置知识](#前置知识)
+    - [引入依赖](#引入依赖)
+    - [配置 `SpringBoot WebSocket` 支持](#配置-springboot-websocket-支持)
+    - [双向广播服务端](#双向广播服务端)
+    - [双向广播客户端](#双向广播客户端)
+    - [单向广播服务端](#单向广播服务端)
+    - [单向广播客户端](#单向广播客户端)
+    - [点对点推送服务端](#点对点推送服务端)
+    - [点对点推送客户端](#点对点推送客户端)
+    - [单向点对点推送服务端](#单向点对点推送服务端)
+    - [单向点对点推送客户端](#单向点对点推送客户端)
+    - [记录用户 -> Socket 会话对应的映射表](#记录用户---socket-会话对应的映射表)
+    - [接受复杂类型的消息](#接受复杂类型的消息)
+    - [返回复杂类型的消息](#返回复杂类型的消息)
 
 ## 场景 & 需求
 
@@ -278,7 +279,61 @@ stompClient.subscribe(`/user/${sessionId}/push/bilateral/thisClient`, res => {
 
 ## 单向点对点推送服务端
 
+其实和上面双向的点对点推送没什么太大的差别，就是只用 `@SendToUser(path)` 而不用 `@MessageMapping(path)` 了而已
+
+```java
+/**
+ * 单向点对点推送服务端
+ *
+ * @author rxliuli
+ */
+@Controller
+public class UnidirectionalPushSocket {
+    /**
+     * 从服务端推送消息到所有客户端
+     * 这是单向推送到客户端的，不接受从客户端的输入
+     */
+    @SendToUser("/push/unidirectional/thisClient")
+    public Object push() {
+        return null;
+    }
+}
+
+/**
+ * 使用 Scheduled 不停的推送信息
+ *
+ * @author rxliuli
+ */
+@Component
+public class ScheduledRefreshJob {
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    /**
+     * 不停推送消息到某个指定的客户端
+     */
+    @Scheduled(fixedDelay = 10 * 1000)
+    public void scheduledPush() {
+        simpMessagingTemplate.convertAndSendToUser("r2qspi4s", "/push/unidirectional/thisClient", new Person(2L, "琉璃", false));
+    }
+}
+```
+
 ## 单向点对点推送客户端
+
+客户端和上面的双向点对点推送基本一致（完全一样好么？！）
+
+```js
+// 订阅私人消息（单向通信）
+stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res => {
+    console.log(`[点对点推送（单向通信）]：${res.body}`);
+});
+```
+
+## 记录用户 -> Socket 会话对应的映射表
+
+上面的点对点推送客户端几乎是没什么用处的（尤其而且是 [单向点对点推送](#单向点对点推送服务端)），因为每次创建的 `Socket` 连接都会变化，而没有与用户建立对应关系的话怎无法知道哪个用户对应的哪个人，也就不能发送消息给指定的用户（非 `Socket Session Id`）了
+。
 
 ## 接受复杂类型的消息
 
