@@ -335,6 +335,164 @@ stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res =
 上面的点对点推送客户端几乎是没什么用处的（尤其而且是 [单向点对点推送](#单向点对点推送服务端)），因为每次创建的 `Socket` 连接都会变化，而没有与用户建立对应关系的话怎无法知道哪个用户对应的哪个人，也就不能发送消息给指定的用户（非 `Socket Session Id`）了
 。
 
+1. 首先需要一个记录用户 `Socket Session Id` 的类，并注册为 SpringBoot 的组件。
+
+  ```java
+  /**
+  * 用户 session 记录类
+  *
+  * @author rxliuli
+  */
+  @Component
+  public class SocketSessionRegistry {
+      /**
+      * 未登录的用户默认存储的 user id
+      */
+      public static final String DIRECT_TOURIST = "DIRECT_TOURIST";
+      /**
+      * 这个集合存储 用户 id -> session 列表
+      * 单个用户可能打开多个页面，就会出现多个 Socket 会话
+      */
+      private final ConcurrentMap<String, Set<String>> userSessionIds = new ConcurrentHashMap<>();
+      private final Object lock = new Object();
+
+      /**
+      * 根据 user id 获取 sessionId
+      *
+      * @param user 用户 id
+      * @return 用户关联的 sessionId
+      */
+      public Set<String> getSessionIds(String user) {
+          Set<String> set = this.userSessionIds.get(user);
+          return set != null ? set : Collections.emptySet();
+      }
+
+      /**
+      * 获取所有 session
+      *
+      * @return 所有的 用户 id -> session 列表
+      */
+      public ConcurrentMap<String, Set<String>> getAllSessionIds() {
+          return this.userSessionIds;
+      }
+
+      /**
+      * 根据用户 id 注册一个 session
+      *
+      * @param user      用户 id
+      * @param sessionId Socket 会话 id
+      */
+      public void registerSessionId(String user, String sessionId) {
+          Assert.notNull(user, "User must not be null");
+          Assert.notNull(sessionId, "Session ID must not be null");
+          synchronized (this.lock) {
+              Set<String> set = this.userSessionIds.get(user);
+              if (set == null) {
+                  this.userSessionIds.put(user, new CopyOnWriteArraySet<>());
+              }
+              set.add(sessionId);
+          }
+      }
+
+      /**
+      * 根据用户 id 删除一个 session
+      *
+      * @param user      用户 id
+      * @param sessionId Socket 会话 id
+      */
+      public void unregisterSessionId(String user, String sessionId) {
+          Assert.notNull(user, "User Name must not be null");
+          Assert.notNull(sessionId, "Session ID must not be null");
+          synchronized (this.lock) {
+              Set set = this.userSessionIds.get(user);
+              if (set != null && set.remove(sessionId) && set.isEmpty()) {
+                  this.userSessionIds.remove(user);
+              }
+          }
+      }
+  }
+  ```
+
+2. 监听 `WebSocket` 连接建立和关闭事件
+
+  ```java
+  /**
+  * 会话事件监听基类
+  *
+  * @author rxliuli
+  */
+  public abstract class BaseSessionEventListener<Event extends AbstractSubProtocolEvent> implements ApplicationListener<Event> {
+      protected final Logger log = LoggerFactory.getLogger(getClass());
+      @Autowired
+      protected SocketSessionRegistry webAgentSessionRegistry;
+
+      /**
+      * 计算出 user id 和 session id 并传入到自定义的函数中
+      *
+      * @param event      事件
+      * @param biConsumer 自定义的操作
+      */
+      protected void using(Event event, BiConsumer<String, String> biConsumer) {
+          StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+          //login get from browser
+          List<String> shaNativeHeader = sha.getNativeHeader("Authorization");
+          String user;
+          if (shaNativeHeader == null || shaNativeHeader.isEmpty()) {
+              user = null;
+          } else {
+              user = shaNativeHeader.get(0);
+          }
+          //如果当前用户没有登录（没有认证信息），就添加到游客里面
+          if (user == null || "".equals(user) || "undefined".equals(user) || "null".equals(user)) {
+              user = SocketSessionRegistry.DIRECT_TOURIST;
+          }
+          String sessionId = sha.getSessionId();
+          biConsumer.accept(user, sessionId);
+      }
+  }
+
+  /**
+  * Socket 连接建立监听
+  * 用于 session 注册 以及 key 值获取
+  *
+  * @author rxliuli
+  */
+  @Component
+  public class SessionConnectEventListener extends BaseSessionEventListener<SessionConnectEvent> {
+      @Override
+      public void onApplicationEvent(SessionConnectEvent event) {
+          using(event, (user, sessionId) -> webAgentSessionRegistry.registerSessionId(user, sessionId));
+      }
+  }
+
+  /**
+  * Socket 会话断开监听
+  *
+  * @author rxliuli
+  */
+  @Component
+  public class SessionDisconnectEventListener extends BaseSessionEventListener<SessionDisconnectEvent> {
+      @Override
+      public void onApplicationEvent(SessionDisconnectEvent event) {
+          using(event, (user, sessionId) -> webAgentSessionRegistry.unregisterSessionId(user, sessionId));
+      }
+  }
+  ```
+
+3. 客户端在打开和关闭连接的时候需要发送 user 给服务端
+
+   这里使用 `headers` 存放用户认证信息（唯一标识），所以在连接和关闭时要带上请求头
+
+4. 使用记录的 `user -> session id` 发送消息给指定的用户
+
+  下面是获取到所有已经登录的用户的 `WebSocket` 连接并发送一条消息
+
+  ```java
+  socketSessionRegistry.getAllSessionIds().entrySet().stream()
+          .filter(kv -> !SocketSessionRegistry.DIRECT_TOURIST.equals(kv.getKey()))
+          .forEach(kv -> kv.getValue().forEach(sessionId -> simpMessagingTemplate.convertAndSendToUser(sessionId, "/push/unidirectional/thisClient", new Person(2L, "琉璃", false))));
+  ```
+
 ## 接受复杂类型的消息
 
 ## 返回复杂类型的消息
