@@ -34,10 +34,9 @@ tags: [Java, JavaScript]
 
 ## 前置知识
 
-- [X] Java
-- [X] Maven
-- [X] SpringBoot
-- [ ] IDEA
+- [x] Java
+- [x] Maven
+- [x] SpringBoot
 
 ## 引入依赖
 
