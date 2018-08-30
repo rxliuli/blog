@@ -11,10 +11,10 @@ Java8 面世以来已经 6 年了，许多人也开始使用起了 `lambda`,`Str
 
 ## 常用的类
 
-- [LocalDate](#LocalDate)：代表日期的不可变类
-- [LocalTime](#LocalTime)：代表时间的不可变类
-- [LocalDateTime](#LocalDateTime)：代表日期时间的不可变类
-- [OffsetDateTime](#OffsetDateTime)：代表距离 1970 年的偏移时间，精确到纳秒
+- [LocalDate](#LocalDate)：日期的不可变类
+- [LocalTime](#LocalTime)：时间的不可变类
+- [LocalDateTime](#LocalDateTime)：日期时间的不可变类
+- [OffsetDateTime](#OffsetDateTime)：距离 1970 年的偏移时间，精确到纳秒
 - [Period](#Period)：计算两个日期的差值
 - [Duration](#Duration)：计算两个日期时间的差值
 - [TemporalField/ChronoField](#TemporalField/ChronoField)：时间的单位
@@ -56,4 +56,13 @@ System.out.println(between);
 
 上面有些地方看不太懂不碍事，先过一遍，下面对其中的部分代码会有解释
 
-## LocalDateTime
+## LocalTime
+
+一个不可变的（线程安全）的时间对象，用于表示 *时：分：秒* 的时间，默认 `toString()` 格式是 `hh:mm:ss`。
+
+基本操作
+
+```java
+final LocalTime now = LocalTime.now();
+
+```
