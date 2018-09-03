@@ -18,7 +18,7 @@ tags: [Java, JavaScript]
   - [点对点推送客户端](#点对点推送客户端)
   - [单向点对点推送服务端](#单向点对点推送服务端)
   - [单向点对点推送客户端](#单向点对点推送客户端)
-  - [记录用户 -> Socket 会话对应的映射表](#记录用户---socket-会话对应的映射表)
+  - [记录 user -> Socket 会话对应的映射表](#记录-user---socket-会话对应的映射表)
   - [接受/返回复杂类型的消息（服务端）](#接受返回复杂类型的消息服务端)
   - [发送/订阅复杂类型的消息（客户端）](#发送订阅复杂类型的消息客户端)
   - [WebSocket 客户端封装](#websocket-客户端封装)
@@ -335,7 +335,7 @@ stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res =
 });
 ```
 
-## 记录用户 -> Socket 会话对应的映射表
+## 记录 user -> Socket 会话对应的映射表
 
 上面的点对点推送客户端几乎是没什么用处的（尤其而且是 [单向点对点推送](#单向点对点推送服务端)），因为每次创建的 `Socket` 连接都会变化，而没有与用户建立对应关系的话怎无法知道哪个用户对应的哪个人，也就不能发送消息给指定的用户（非 `Socket Session Id`）了
 。
@@ -479,7 +479,15 @@ stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res =
   public class SessionDisconnectEventListener extends BaseSessionEventListener<SessionDisconnectEvent> {
       @Override
       public void onApplicationEvent(SessionDisconnectEvent event) {
-          using(event, (user, sessionId) -> webAgentSessionRegistry.unregisterSessionId(user, sessionId));
+          //这里先根据 session id 查询出 user，然后删除对应的会话 id
+          //前端无法传递 token 到这里却是只能出此下策了
+          using(event, (user, sessionId) -> webAgentSessionRegistry.getAllSessionIds().entrySet().stream()
+                  .filter(sse -> sse.getValue().contains(sessionId))
+                  .findFirst()
+                  .ifPresent(sse -> {
+                      webAgentSessionRegistry.unregisterSessionId(sse.getKey(), sessionId);
+                      log.info("Socket 连接断开，用户：{}，会话：{}", sse.getKey(), sessionId);
+                  }));
       }
   }
   ```
