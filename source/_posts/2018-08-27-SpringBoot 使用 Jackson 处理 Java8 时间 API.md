@@ -1,6 +1,6 @@
 ---
 title: SpringBoot 使用 Jackson 处理 Java8 时间 API
-date: 2018-08-27
+date: 2018-09-03
 tags: [Java]
 ---
 # SpringBoot 使用 Jackson 处理 Java8 时间 API
@@ -57,9 +57,29 @@ spring:
 然而，如果我们想要在程序中手动的序列化日期怎么办呢？实际上也很简单，使用代码 *打印日期为时间戳的功能* 并添加 `jackson-datatype-jsr310` 中的 `JavaTimeModule` 模块。
 
 ```java
-ObjectMapper om = new ObjectMapper()
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .registerModule(new JavaTimeModule());
+/**
+  * 提供一个全局可用的序列化 Bean
+  */
+ObjectMapper OM = new ObjectMapper()
+        //Date 对象的格式
+        .setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"))
+        //默认忽略值为 null 的属性
+        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        //禁止序列化时间为时间戳
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        //启用序列化 BigDecimal 为非科学计算法格数
+        .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
+        .registerModules(
+                //注册 Jsr310（Java8 的时间兼容模块）
+                new JavaTimeModule(),
+                //序列化 Long 为 String
+                new SimpleModule()
+                        //大数字直接序列化为 String
+                        .addSerializer(Long.class, ToStringSerializer.instance)
+                        .addSerializer(Long.TYPE, ToStringSerializer.instance)
+                        .addSerializer(long.class, ToStringSerializer.instance)
+                        .addSerializer(BigInteger.class, ToStringSerializer.instance)
+        );
 ```
 
 那么，以上就是 SpringBoot 序列化 Java8 时间 API 的问题和解决方案啦 ヾ(@^▽^@)ノ
