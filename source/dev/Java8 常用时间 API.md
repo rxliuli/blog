@@ -152,3 +152,22 @@ ZonedDateTime zonedDateTime = now.atZoneSameInstant(ZoneId.of("+00:00"));
 System.out.println(zonedDateTime);
 //其他基本操作和上面的差不多，就不啰嗦啦
 ```
+
+## Period
+
+代表两个日期的差值，默认 `toString()` 格式是 `P[天数][单位]`
+
+基本操作
+
+```java
+final LocalDate now = LocalDate.now();
+final LocalDate localTimePlusMonthOne = now.plusDays(1);
+//计算相差的时间
+final Period betweenForDay = Period.between(now, localTimePlusMonthOne);
+//获取相差的天数
+System.out.println("相差的天数：" + betweenForDay.getDays());
+//使用 get() 方法获取通用的相差的天数
+System.out.println("相差的天数(使用 get() 获取)：" + betweenForDay.get(ChronoUnit.DAYS));
+//对相差的日期减去一天并判断是否为 0
+System.out.println("相差的日期减去 1 天是不是就相同了呢？" + betweenForDay.minusDays(1).isZero());
+```
