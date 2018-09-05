@@ -1,6 +1,7 @@
 ---
 title: SpringBoot 进行测试
 date: 2018-09-05
+updated: 2018-09-05
 tags: [Java]
 ---
 # SpringBoot 进行测试
@@ -189,6 +190,17 @@ insert into user (id, name, sex, age)
 values
   (1, '琉璃', false, 17),
   (2, '月姬', false, 1000);
+```
+
+为 SpringBoot 配置一下数据源及初始化脚本
+
+```yaml
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    platform: h2
+    schema: classpath:db/db_schema.sql
+    data: classpath:db/db_data.sql
 ```
 
 然后是实体类与 Dao
