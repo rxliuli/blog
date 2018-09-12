@@ -1,28 +1,31 @@
+---
+title: Java 微信公众号开发
+date: 2018-09-12
+tags: [Java]
+---
 # Java 微信公众号开发
 
 - [Java 微信公众号开发](#java-微信公众号开发)
   - [场景](#场景)
-  - [步骤](#步骤)
-    - [注册微信公众号](#注册微信公众号)
-    - [基本配置](#基本配置)
-    - [使用测试账号](#使用测试账号)
-    - [服务端编码](#服务端编码)
-      - [初始化项目](#初始化项目)
-      - [内网穿透](#内网穿透)
-      - [微信服务器认证](#微信服务器认证)
-      - [消息处理](#消息处理)
+  - [注册微信公众号](#注册微信公众号)
+  - [基本配置](#基本配置)
+  - [使用测试账号](#使用测试账号)
+  - [服务端编码](#服务端编码)
+    - [初始化项目](#初始化项目)
+    - [内网穿透](#内网穿透)
+    - [微信服务器认证](#微信服务器认证)
+    - [消息处理](#消息处理)
+    - [创建菜单](#创建菜单)
 
 ## 场景
 
 公司需要做一个微信的公众号，以前没有玩过结果踩了一堆坑，也是无奈了，便在这里记录一下
 
-## 步骤
-
-### 注册微信公众号
+## 注册微信公众号
 
 首先在 [微信公众平台](https://mp.weixin.qq.com/) 注册一个账号，这里选择了 *订阅号*，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码操作（反人类操作）。
 
-### 基本配置
+## 基本配置
 
 在【开发 > 基本配置】中设定好相关的信息，主要有
 
@@ -36,7 +39,7 @@
 
 > 配置服务器地址时会报错，先不管了就行，后面会再回来配置的。
 
-### 使用测试账号
+## 使用测试账号
 
 有了自己的微信公众号当然很好，但不可能每次都直接修改真正的公众号吧，修改挂了怎么办？所以就有了测试公众号，而且测试公众号的权限是要高于普通的未认证订阅号的。
 
@@ -44,13 +47,13 @@
 
 > 安全域名设置：如果你有的自己的域名和服务器的话就配置，否则就先不管。
 
-### 服务端编码
+## 服务端编码
 
-#### 初始化项目
+### 初始化项目
 
 为了简化配置这里使用 SpringBoot Web 项目作为例子（注意勾上 web 模块依赖）
 
-#### 内网穿透
+### 内网穿透
 
 使用内网穿透工具 serveo 实现将本地内网服务映射到外网的 80 端口上
 
@@ -64,7 +67,7 @@ ssh -o ServerAliveInterval=60 -R rx:80:localhost:8080 serveo.net
 
 现在，访问 <https://rx.serveo.net/>，是不是已经可以啦（出现的 `Whitelabel Error Page` 不用管，因为我们本来也没有处理 `/` 路径的访问）
 
-#### 微信服务器认证
+### 微信服务器认证
 
 引入额外的依赖（SpringBoot Web 项目默认引入 `spring-boot-starter`，`spring-boot-starter-web` 和 `spring-boot-starter-test` 模块）
 
@@ -205,7 +208,7 @@ public class WxMpPortalApi {
 
 重启项目，将 <https://rx.serveo.net/wx/portal> 填到服务器配置中的 url 里面，点击 **提交**，应该可以看到 [修改成功] 的提示了。
 
-#### 消息处理
+### 消息处理
 
 很显然，如果我们只让微信认证我们的服务器的话是做不了什么的，所以我们需要监听并处理用户在微信公众号中的操作并返回结果。
 
@@ -407,3 +410,47 @@ public class WxMpMainConfig {
     }
 }
 ```
+
+现在向公众号发送消息，就可以得到回复了（简单的）。还有日志，菜单，关注，取消关注等处理器这里就不赘述了，可以去吾辈的 [GitHub](https://github.com/rxliuli/wx-mp-example) 看源码就好啦
+
+### 创建菜单
+
+创建一个简单的公众号菜单 Api 对象
+
+```java
+/**
+ * 微信公众号菜单
+ *
+ * @author rxliuli
+ */
+@RestController
+@RequestMapping("/wx/menu/")
+public class WxMpMenuApi extends WxMpBaseApi {
+    /**
+     * 创建一个默认的菜单
+     *
+     * @return 菜单 id
+     */
+    @GetMapping("create")
+    public String createDefault() throws WxErrorException {
+        final WxMenu wxMenu = new WxMenu();
+        final WxMenuButton buttonLeft = new WxMenuButton();
+        buttonLeft.setType(WxConsts.MenuButtonType.CLICK);
+        buttonLeft.setName("点击");
+        buttonLeft.setKey(IdWorker.getIdStr());
+
+        final WxMenuButton buttonRight = new WxMenuButton();
+        buttonRight.setType(WxConsts.MenuButtonType.VIEW);
+        buttonRight.setName("链接");
+        buttonRight.setUrl("https://blog.rxliuli.com");
+        buttonRight.setKey(IdWorker.getIdStr());
+        wxMenu.getButtons().add(buttonLeft);
+        wxMenu.getButtons().add(buttonRight);
+        return wxMpService.getMenuService().menuCreate(wxMenu);
+    }
+}
+```
+
+访问 <https://rx.serveo.net/wx/menu/create> 就可以为微信公众号创建一个简单的菜单了。点击左边的“点击"按钮会回复文字说点击了什么，右边的链接则会跳转到一个网页。
+
+> 其他的功能就放到后面再实现吧，更多公众号开发相关的内容可以参考 [微信官方文档](https://mp.weixin.qq.com/wiki) 和 [微信开发工具包](https://github.com/Wechat-Group/weixin-java-tools)
