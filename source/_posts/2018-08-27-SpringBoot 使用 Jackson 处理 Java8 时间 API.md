@@ -60,15 +60,13 @@ spring:
 /**
   * 提供一个全局可用的序列化 Bean
   */
-ObjectMapper OM = new ObjectMapper()
+public static final ObjectMapper OM = new ObjectMapper()
         //Date 对象的格式
         .setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"))
-        //默认忽略值为 null 的属性
+        //禁止序列化值为 null 的属性
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
         //禁止序列化时间为时间戳
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        //启用序列化 BigDecimal 为非科学计算法格数
-        .enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
         .registerModules(
                 //注册 Jsr310（Java8 的时间兼容模块）
                 new JavaTimeModule(),
@@ -79,7 +77,16 @@ ObjectMapper OM = new ObjectMapper()
                         .addSerializer(Long.TYPE, ToStringSerializer.instance)
                         .addSerializer(long.class, ToStringSerializer.instance)
                         .addSerializer(BigInteger.class, ToStringSerializer.instance)
-        );
+                        //大浮点数直接序列化为 String
+                        .addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>() {
+                            @Override
+                            public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                                gen.writeString(value.setScale(10, BigDecimal.ROUND_HALF_UP).toPlainString());
+                            }
+                        })
+        )
+        //JSON 序列化移除 transient 修饰的 Page 无关紧要的返回属性(Mybatis Plus)
+        .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 ```
 
 那么，以上就是 SpringBoot 序列化 Java8 时间 API 的问题和解决方案啦 ヾ(@^▽^@)ノ
