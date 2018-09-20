@@ -1,6 +1,7 @@
 ---
 title: SpringBoot 使用 Jackson 处理 Java8 时间 API
 date: 2018-09-03
+updated: 2018-09-20
 tags: [Java]
 ---
 # SpringBoot 使用 Jackson 处理 Java8 时间 API
@@ -54,7 +55,9 @@ spring:
 
 如此，在返回数据到前端的时候 SpringBoot 就会自动将日期格式化为 `yyyy-MM-ddThh:mm:ss`
 
-然而，如果我们想要在程序中手动的序列化日期怎么办呢？实际上也很简单，使用代码 *打印日期为时间戳的功能* 并添加 `jackson-datatype-jsr310` 中的 `JavaTimeModule` 模块。
+然而，如果我们想要在程序中手动的序列化日期怎么办呢？实际上也很简单，使用代码 `.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)` 来禁止序列化时间为时间戳并注册 `jackson-datatype-jsr310` 中的 `JavaTimeModule` 模块。
+
+下面是吾辈在项目里使用的一个全局 `ObjectMapper` 对象
 
 ```java
 /**
