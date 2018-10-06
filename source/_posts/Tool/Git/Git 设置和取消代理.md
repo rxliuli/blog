@@ -1,6 +1,7 @@
 ---
 title: Git 设置和取消代理
-date: 2018-07-23 01:39:21
+date: 2018-07-23
+updated: 2018-10-06
 tags: Git
 ---
 # Git 设置和取消代理
@@ -35,5 +36,9 @@ git config --global --unset https.proxy
 [http]
         proxy = socks5://127.0.0.1:1080
 ```
+
+## 遇到的坑
+
+设置了代理之后很容易碰到一个问题：[Git Push 提示不支持具有 Socks5 方案的代理](https://blog.rxliuli.com/2018/08/25/Tool/Git/Git%20Push%20%E6%8F%90%E7%A4%BA%E4%B8%8D%E6%94%AF%E6%8C%81%E5%85%B7%E6%9C%89%20Socks5%20%E6%96%B9%E6%A1%88%E7%9A%84%E4%BB%A3%E7%90%86/)
 
 > 具体 Git 相关的内容建议参考 [Pro Git](https://git-scm.com/book/zh/v2)
