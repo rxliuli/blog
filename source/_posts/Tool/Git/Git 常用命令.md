@@ -1,7 +1,7 @@
 ---
 title: Git 常用命令
 date: 2018-09-29
-updated: 2018-10-07
+updated: 2018-10-08
 tags: [工具]
 ---
 # Git 常用命令
@@ -10,19 +10,24 @@ tags: [工具]
 
 > 详细的 git 相关知识强烈推荐 [Pro Git](https://git-scm.com/book/zh/v2)
 
-| 关键词   | 命令格式                              | 命令解释                                                                       | 命令示例                                                     | 命令解释                                                             |
-| -------- | ------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------------- |
-| add      | `git add [要追踪的文件/路径]`         | 添加到 git 跟踪                                                                | `git add -A`                                                 | 追踪仓库目录下的所有文件                                             |
-| commit   | `git commit [路径] [选项] [提交说明]` | 提交当前的修改内容                                                             | `git commit -a -m "提交全部的修改"`                          | 提交了全部的修改内容（仍在本机）                                     |
-| push     | `git push [远程别名] [远程分支]`      | 推送本地修改到远程                                                             | `git push origin master`                                     | 推送本地修改到远程 origin 的 master 分支上                           |
-| pull     | `git pull [远程别名] [远程分支]`      | 拉取远程修改到本地                                                             | `git pull origin master`                                     | 拉去远程 origin 上 master 分支的修改到本地                           |
+| 关键词   | 命令格式                              | 命令解释                                                                       | 命令示例                                                             | 命令解释                                                             |
+| -------- | ------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| init     | `git init`                            | 为当前目录初始化 git 本地仓库                                                  |
+| add      | `git add [要追踪的文件/路径]`         | 添加到 git 跟踪                                                                | `git add -A`                                                         | 追踪仓库目录下的所有文件                                             |
+| commit   | `git commit [路径] [选项] [提交说明]` | 提交当前的修改内容                                                             | `git commit -a -m "提交全部的修改"`                                  | 提交了全部的修改内容（仍在本机）                                     |
+| push     | `git push [远程别名] [远程分支]`      | 推送本地修改到远程                                                             | `git push origin master`                                             | 推送本地修改到远程 origin 的 master 分支上                           |
+| pull     | `git pull [远程别名] [远程分支]`      | 拉取远程修改到本地                                                             | `git pull origin master`                                             | 拉去远程 origin 上 master 分支的修改到本地                           |
 | status   | `git status`                          | 查看本地仓库的情况，以此得知添加和修改的文件                                   |
-| clone    | `git clone [远程仓库地址]`            | 克隆一个远程仓库到本地，这里和 pull 不同点在于本地不存在要克隆的仓库           | `git clone https://github.com/rxliuli/rxliuli.github.io.git` | 克隆吾辈的博客 github 仓库到本地                                     |
-| log      | `git log [选项]`                      | 查看 git 日志                                                                  | `git log`                                                    | 简单的查看 git commit 历史纪录                                       |
-| revert   | `git revert [提交记录 hash]`          | 撤销掉指定提交                                                                 | `git revert ab1c2d2`                                         | 撤销一次提交内容，然后将撤销的内容作为修改提交一次，保留了所有的记录 |
-| reset    | `git reset [提交记录 hash]`           | 重置到某次提交上，和上面不一样的是不会添加新的提交记录，而是删除已有的提交记录 | `git reset ab1c2d2`                                          | 回退提交到指定版本，不会在 log 中留下痕迹                            |
-| branch   | `git branch [分支]`                   | git 分支(强大而又复杂的功能)                                                   | `git branch dev`                                             | 创建 dev 分支                                                        |
-|          |                                       |                                                                                | `git branch`                                                 | 列出所有分支                                                         |
-|          |                                       |                                                                                | `git branch dev -D`                                          | 删除名为 dev 的分支                                                  |
-| checkout | `git checkout [分支名]`               | 切换当前分支(分支之间不共享修改)                                               | `git checkout master`                                        | 切换当前分支到 master 分支                                           |
-| merge    | `git merge [选项]`                    | 合并其他分支的修改到当前分支上                                                 | `git merge dev`                                              | 合并 dev 分支的修改到当前分支(一般是 master 分支)                    |
+| clone    | `git clone [远程仓库地址]`            | 克隆一个远程仓库到本地，这里和 pull 不同点在于本地不存在要克隆的仓库           | `git clone https://github.com/rxliuli/rxliuli.github.io.git`         | 克隆吾辈的博客 github 仓库到本地                                     |
+| log      | `git log [选项]`                      | 查看 git 日志                                                                  | `git log`                                                            | 简单的查看 git commit 历史纪录                                       |
+| revert   | `git revert [提交记录 hash]`          | 撤销掉指定提交                                                                 | `git revert ab1c2d2`                                                 | 撤销一次提交内容，然后将撤销的内容作为修改提交一次，保留了所有的记录 |
+| reset    | `git reset [提交记录 hash]`           | 重置到某次提交上，和上面不一样的是不会添加新的提交记录，而是删除已有的提交记录 | `git reset ab1c2d2`                                                  | 回退提交到指定版本，不会在 log 中留下痕迹                            |
+| branch   | `git branch [分支]`                   | git 分支(强大而又复杂的功能)                                                   | `git branch dev`                                                     | 创建 dev 分支                                                        |
+|          |                                       |                                                                                | `git branch`                                                         | 列出所有分支                                                         |
+|          |                                       |                                                                                | `git branch dev -D`                                                  | 删除名为 dev 的分支                                                  |
+| checkout | `git checkout [分支名]`               | 切换当前分支(分支之间不共享修改)                                               | `git checkout master`                                                | 切换当前分支到 master 分支                                           |
+| merge    | `git merge [选项]`                    | 合并其他分支的修改到当前分支上                                                 | `git merge dev`                                                      | 合并 dev 分支的修改到当前分支(一般是 master 分支)                    |
+| remote   | `git remote [选项] [远程仓库名]`      | 操作 git 远程仓库                                                              | `git remote`                                                         | 显示所有远程仓库的别名                                               |
+|          |                                       |                                                                                | `git remote add origin git@github.com:rxliuli/rxliuli.github.io.git` | 为本地仓库关联一个远程仓库                                           |
+|          |                                       |                                                                                | `git remote show origin`                                             | 显示 origin 远程仓库的详细信息                                       |
+|          |                                       |                                                                                | `git remote remove origin`                                           | 删除 origin 远程仓库                                                 |
