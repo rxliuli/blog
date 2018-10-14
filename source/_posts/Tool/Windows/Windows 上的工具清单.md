@@ -1,7 +1,7 @@
 ---
 title: Windows 上的工具清单
-date: 2018-08-21 01:39:21
-updated: 2018-09-10
+date: 2018-08-21
+updated: 2018-10-14
 tags: [Tool, Windows]
 ---
 # Windows 上的工具清单
@@ -126,9 +126,7 @@ tags: [Tool, Windows]
 
 常用的 Plugin：
 
-- 扩展管理器（Extension Manager）：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
 - AutoPagerize：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
-- Bookmark Manager：美化书签管理功能
 - Checker Plus for Gmail™：对于日常使用 Gmail 的吾辈而言非常有用
 - Checker Plus for Google Calendar™：日常使用 Google Calendar 方便进行提醒
 - crxMouse Chrome™ 手势：鼠标手势插件，可以使用手势更简单地完成一些事情
@@ -137,12 +135,16 @@ tags: [Tool, Windows]
 - Fatkun图片批量下载：批量下载网页上的图片，偶尔用一下吧
 - GitHub Hovercard：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
 - GitHub Plus：GitHub 增强插件，显示仓库大小并可以下载单个文件
+- Google文档、表格及幻灯片的Office编辑扩展程序：使用 Chrome 浏览本地 Word，Excel，PPT 文档
 - Insight.io for Github：GitHub 增强插件，仓库文件树状导航列表
 - Isometric Contributions：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
-- Google文档、表格及幻灯片的Office编辑扩展程序：使用 Chrome 浏览本地 Word，Excel，PPT 文档
+- IDM Integration Module：IDM Chrome 集成插件
+- Image Search Options：使用右键以图搜图
 - JetBrains IDE Support：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与上面的 IDEA 插件配合使用
 - LastPass: Free Password Manager：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
+- Mailto: for Gmail™：对于 mailto 链接以 Gmail 网页版打开
 - Markdown Here：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
+- Momentum：新标签页插件，这个纯粹看个人喜好
 - Neat URL：移除网址中的无用段，例如返利链接后面的参数
 - OwO：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
 - Proxy SwitchyOmega：科学上网必需
@@ -151,14 +153,14 @@ tags: [Tool, Windows]
 - Tampermonkey：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
 - The Great Suspender：自动休眠标签页，避免 Chrome 使用的内存太过庞大
 - uBlock Origin：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
-- Video Downloader professional：下载网页上的视频/音频
-- Web Timer：统计使用浏览器浏览网站的记录
-- WebRTC Leak Prevent：防止 WebRTC 泄露，和科学上网有点关系
+- 扩展管理器（Extension Manager）：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
 - WEB前端助手(FeHelper)：貌似是百度的前端插件，但目前还没有什么流氓行为
+- 隐私獾：拦截追踪器，并且防止 WebRTC 泄露，和 uBlock Origin 算是互补关系吧
 - 快翻译：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
-- 简 Tab - New Tab：新标签页插件，这个纯粹看个人喜好
 
 Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开始变得越来越封闭了。首先是 Chrome 应用被删除，现在又禁止安装非官方商店中的第三方插件（目前仍可以通过开发者模式安装），真心越来越麻烦了。
+
+> 附：这里提供一个快捷安装第三方插件的工具 [Chrome 插件伴侣](http://www.webappbus.com/)，方便解决 Chrome67 之后安装非商店插件的麻烦
 
 ### MS VSCode：文本编辑器，类 IDE
 
