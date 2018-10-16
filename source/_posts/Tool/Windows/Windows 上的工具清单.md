@@ -27,6 +27,7 @@ tags: [Tool, Windows]
     - [MacType：字体美化](#mactype字体美化)
     - [Everything：文件快速搜索](#everything文件快速搜索)
     - [Snipaste：截图/贴图](#snipaste截图贴图)
+    - [PicGo：图床上传](#picgo图床上传)
     - [ScreenToGif：录制 GIF 动态图](#screentogif录制-gif-动态图)
     - [QuickLook：文件管理器预览增强](#quicklook文件管理器预览增强)
     - [Bandizip：压缩/解压缩](#bandizip压缩解压缩)
@@ -316,6 +317,16 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 [便携版], [免费]
 > [官网](https://zh.snipaste.com/), [GitHub](https://github.com/Snipaste), [GitBook 中文教程](https://docs.snipaste.com/zh-cn/)
 很漂亮，很漂亮，很漂亮！重要的话说三遍，Snipaste 相比于其他的截图软件（FSCapture）在使用时感觉漂亮了很多，而且在使用时会方便很多（截图完成后直接就进行编辑，而不是跳转到编辑器中编辑截图），保存时自动保存并且复制到剪切板也很方便。总而言之就是细节做的相当棒！
+
+### PicGo：图床上传
+
+[开源], [跨平台], [免费]
+> [官网](https://molunerfinn.com/PicGo/), [GitHub](https://github.com/rxliuli/PicGo)
+使用 Markdown 写作必备的图床工具，解决了吾辈关于 GitHub 图床的几个痛点。
+
+- 上传之前重命名
+- 上传一键就好
+- 上传后图片管理
 
 ### ScreenToGif：录制 GIF 动态图
 
