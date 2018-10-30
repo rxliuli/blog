@@ -1,7 +1,7 @@
 ---
 title: VSCode 集成 ESLint 和 Prettier
 date: 2018-10-18 03:11:42
-tags: JavaScript VSCode
+tags: [JavaScript, VSCode]
 ---
 
 # VSCode 集成 ESLint 和 Prettier
