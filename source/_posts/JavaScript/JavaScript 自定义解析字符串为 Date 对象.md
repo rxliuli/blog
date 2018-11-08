@@ -16,7 +16,7 @@ tags: JavaScript
 2. 先解析 `fmt`，获取其中的代表 `year, method, day, hour, minute, second, milliSecond` 的部分得到一个数组（并且记录不同部分的 `index`）`dateUnits`，对 `fmt` 的代表日期的不同部分进行替换.
 3. 使用替换过的 `fmt` 创建正则验证 `dateStr` 是否合法，非法直接返回 `null`。
 4. 对 `dateUnits` 根据 `index` 进行排序，得到一个按照原本的 `fmt` 的不同日期部分的顺序的数组。
-5. 遍历 `dateUnits` 获取到不同的部分，然后拼接成一个标准的('yyyy-MM-dd hh:mm:ss:SSS')日期字符串 `date`。
+5. 遍历 `dateUnits` 获取到不同的部分，然后拼接成一个标准的(`yyyy-MM-ddThh:mm:ss.SSS`)日期字符串 `date`。
 6. 使用 new Date(date) 并且返回。
 
 全部代码如下：
