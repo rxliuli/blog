@@ -4,6 +4,7 @@ date: 2018-08-21
 updated: 2018-10-14
 tags: [Tool, Windows]
 ---
+
 # Windows 上的工具清单
 
 - [Windows 上的工具清单](#windows-上的工具清单)
@@ -65,9 +66,10 @@ tags: [Tool, Windows]
 ### IDEA：最好的 Java IDE
 
 [便携版], [部分开源], [跨平台]
+
 > [官网](https://www.jetbrains.com/idea/), [GitHub 社区版](https://github.com/JetBrains/intellij-community)
 
-虽然说起最好的 IDE 什么的肯定是各种争论，但吾辈还是想说，在 Java 语言开发方面，IDEA 是目前最好的 IDE 了。  
+虽然说起最好的 IDE 什么的肯定是各种争论，但吾辈还是想说，在 Java 语言开发方面，IDEA 是目前最好的 IDE 了。
 
 优点：
 
@@ -121,6 +123,7 @@ tags: [Tool, Windows]
 ### Google Chrome：最好的浏览器
 
 [部分开源], [跨平台], [免费]
+
 > [官网](https://www.google.com/chrome/), [Google Chromium 各版本下载](https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html)
 
 非常有名的浏览器，来源于 Google，在 PC 上不管是用于开发还是日常使用都能够满足需求。相比于国内的流氓而言非常干净简洁（至少，看起来而言），相比于 FireFox 来说更快，插件体系也已经足够庞大完整，基本上想要的都有了。
@@ -133,10 +136,10 @@ tags: [Tool, Windows]
 - crxMouse Chrome™ 手势：鼠标手势插件，可以使用手势更简单地完成一些事情
 - Dark Reader：为所有网站加上黑色主题，大部分情况下都还不错
 - Enhancer for YouTube™：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
-- Fatkun图片批量下载：批量下载网页上的图片，偶尔用一下吧
+- Fatkun 图片批量下载：批量下载网页上的图片，偶尔用一下吧
 - GitHub Hovercard：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
 - GitHub Plus：GitHub 增强插件，显示仓库大小并可以下载单个文件
-- Google文档、表格及幻灯片的Office编辑扩展程序：使用 Chrome 浏览本地 Word，Excel，PPT 文档
+- Google 文档、表格及幻灯片的 Office 编辑扩展程序：使用 Chrome 浏览本地 Word，Excel，PPT 文档
 - Insight.io for Github：GitHub 增强插件，仓库文件树状导航列表
 - Isometric Contributions：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
 - IDM Integration Module：IDM Chrome 集成插件
@@ -155,7 +158,7 @@ tags: [Tool, Windows]
 - The Great Suspender：自动休眠标签页，避免 Chrome 使用的内存太过庞大
 - uBlock Origin：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
 - 扩展管理器（Extension Manager）：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
-- WEB前端助手(FeHelper)：貌似是百度的前端插件，但目前还没有什么流氓行为
+- WEB 前端助手(FeHelper)：貌似是百度的前端插件，但目前还没有什么流氓行为
 - 隐私獾：拦截追踪器，并且防止 WebRTC 泄露，和 uBlock Origin 算是互补关系吧
 - 快翻译：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
 
@@ -166,6 +169,7 @@ Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开
 ### MS VSCode：文本编辑器，类 IDE
 
 [便携版], [开源], [跨平台], [免费]
+
 > 具体可以参考：[官网](https://code.visualstudio.com/), [GitHub](https://github.com/Microsoft/vscode), [GitBook 中文介绍](https://jeasonstudio.gitbooks.io/vscode-cn-doc/content/)
 
 MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源文本编辑器。虽然吾辈刚接触了不到一个月，但已然觉得离不开它了。
@@ -180,23 +184,34 @@ MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源�
 
 很明显，MS 的东西最后会不会变成全家桶/流氓谁也不清楚，虽然去年貌似 MS 在 GitHub 上的贡献量超过了 Google，但想想 MS 的开源黑历史。。。
 
-常用的 Plugin：
+常用的 Plugin
 
-- Chinese (Simplified) Language Pack for Visual Studio Code：简体中文语言包
-- IntelliJ IDEA Keybindings：IDEA 的快捷键设置
-- Markdown All in One：Markdown 编辑主要插件
-- markdownlint：Markdown 语法检查
-- Material Icon Theme：Material 风格的文件图标
-- Settings Sync：通过 GitHub Gist 同步设置和插件列表
-- WakaTime：统计使用的编程语言，IDE 的记录
-- vscode-pandoc：将 Markdown 转换为 HTML/DOC
-- XML Tools：XML 增强工具
+- ESLint: JavaScript 代码规范检查
+- Excel Viewer: 以表格的形式显示 CVS 文件
+- Git History: Git 历史显示
+- Markdown PDF: 将 Markdown 导出 PDF 文档
+- Material Theme: Material 风格的 VSCode
+- Prettier: 其实是配合 ESLint 做代码格式自动修复的
+- Settings Sync: 通过 Gist 同步 VSCode 设置
+- Vetur: VueJS 框架支持
+- Vue 2 Snippets: 添加了 VueJS2 的一些代码片段
+- vuetify-vscode: 前端 Vuetify CSS 框架的 VSCode 代码提示
+- WakaTime: 记录与统计代码的时间
+- IntelliJ IDEA Keybindings: IDEA 的快捷键设置
+- Markdown All in One: Markdown 编辑主要插件
+- markdownlint: Markdown 语法检查
+- Material Icon Theme: Material 风格的文件图标
+- Settings Sync: 通过 GitHub Gist 同步设置和插件列表
+- WakaTime: 统计使用的编程语言，IDE 的记录
+- vscode-pandoc: 将 Markdown 转换为 HTML/DOC
+- XML Tools: XML 增强工具
 
 > [VSCode Settings](https://gist.github.com/rxliuli/529c425712b4b6fba23bd774a70e42b9)
 
 ### Cmder：Windows 上模拟 Linux 终端
 
 [便携版], [开源], [免费]
+
 > [官网](http://cmder.net/), [GitHub](https://github.com/cmderdev/cmder)
 
 曾经有段时间吾辈也很迷信 Linux，觉得 Linux 适合开发者使用（事实上确实如此），但后来还是因为电脑的硬件原因（驱动问题，莫名其妙的卡死在登陆页面）而回到了 Windows。而最让人念念不忘的就是 Linux Bash 终端了，相比于 Windows 自带的 Cmd/PowerShell 来说漂亮/强大了许多。当然，Windows 相比于 Linux 的最大优点就是稳定（不怕折腾，很难损坏系统本身）以及可视化（大部分的设计都有可视化界面进行配置）。然而有时候还是不得不使用命令行，而这时便显示出 Windows 的不足了，直到后来吾辈在偶然的机会碰到了 Cmder，发现了 Windows 上果然已经有了解决方案。
@@ -208,6 +223,7 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 ### HeidiSQL：SQL 客户端
 
 [便携版], [开源], [免费]
+
 > [官网](https://www.heidisql.com/), [GitHub](https://github.com/HeidiSQL/HeidiSQL)
 
 一个支持 MSSQL,MySQL 和 PostgreSQL 的开源数据库轻量级客户端。吾辈使用这个 SQL 客户端最重要的原因就是满足了吾辈对于数据库文件的导入/导出需求，谁让 IDEA 自带的 DataGrip 没有导出功能呢
@@ -217,14 +233,17 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 ### JDK：Java Developer Kit
 
 [开源], [跨平台], [免费]
+
 > [官网](http://www.oracle.com/technetwork/java/)
 
 Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占用非常高的内存。
+
 > 注：Minecraft 就是使用 Java 开发的游戏，所以运行起来非常占用资源而且很卡。
 
 ### Git：Git 版本控制系统
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://git-scm.com/), [GitHub](https://github.com/git/git)
 
 最初由 Linus 开发的一个分布式的版本控制系统，现在已经是最流行的版本控制系统之一了。说到 Git 不得不提 GitHub，GitHub 为 Git 实现了一个在线代码（或者其他）托管平台，相当好用而且托管开源项目是免费的。其实对于吾辈而言 Git 只是一个用于在本地操作 GitHub 的客户端罢了（很少有添加到 Git 而没有提交到 GitHub 的代码）。正是因为 GitHub 对 Git 的支持之好，所以吾辈才喜欢使用 Git 的。。。（#因果颠倒）
@@ -232,6 +251,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### Apache SubVersion：公司使用的版本控制系统
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://tortoisesvn.net/index.zh.html), [GitHub](https://github.com/apache/subversion)
 
 简称 **SVN** 或者小乌龟（图标），公司里面使用的版本控制工具。用于集中控制项目的进度，不能在本地进行提交进行本地版本控制，每次提交都必须要连接到中央服务器。
@@ -239,6 +259,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### Apache Maven：Java 最流行的依赖管理工具
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://maven.apache.org/), [GitHub](https://github.com/apache/maven)
 
 又是 Apache 家的工具，吾辈主要用作项目的依赖管理、项目打包构建方面。所有的依赖都通过 `pom.xml` 进行定义，能够简单的对依赖的 jar 进行统一管理，而不必每个项目都复制一份。
@@ -248,13 +269,15 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### Apache Tomcat：Java Web 流行的开源服务器
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](http://tomcat.apache.org/), [GitHub](https://github.com/apache/tomcat)
 
-**Apache * 3**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
+**Apache \* 3**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
 
 ### Gradle：比较新的依赖管理工具，Andriod 默认的依赖管理工具
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://gradle.org), [GitHub](https://github.com/gradle/gradle)
 
 号称是比 Maven 更好的依赖管理工具，在配置文件方面放弃了 Maven 的 XML 配置，采用了 `Groovy DSL` 作为配置文件语言，相比于 Maven 确实精简了不少。功能上可以直接将 Maven 的 `pom.xml` 转换为 `build.gradle`, 插件功能也比 Maven 更加强大。
@@ -264,6 +287,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### MobaXterm：非常强大的远程连接工具
 
 [便携版]
+
 > [官网](https://mobaxterm.mobatek.net/)
 
 虽然是一个收费的远程连接工具，但免费家庭版本的功能已然够用了。同时支持 SSH/SFTP 这两点真心不错（集中化管理）。当然，页面上就比较复古一点（Win7 时代的风格），这个却是不用在意啦
@@ -273,6 +297,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### NodeJS：前端一把梭的基础
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://nodejs.org/), [官网中文界面](https://nodejs.org/zh-cn/), [GitHub](https://github.com/nodejs/node)
 
 现代前端开发的基础，各种前端工具所必须的环境。像 NPM/Yarn/Bower 之类依赖管理，Gulp 这种自动化构建工具，还有各种前端库（JQuery/Twitter Bootstrap/React/Babel）都提供了使用 NPM 的依赖管理的引入方式，有些甚至不提供传统的手动引入方式！
@@ -292,6 +317,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### SSR：正常上网必须
 
 [便携版], [开源], [跨平台], [免费]
+
 > [GitHub](https://github.com/shadowsocksr-backup)
 
 为了正常浏览网络折腾与支付一些代价都是微不足道的，貌似比 `Shadowscoks` 要稳定一点，不过据传闻作者最初并未打算将其开源。
@@ -299,6 +325,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 ### MacType：字体美化
 
 [开源], [免费]
+
 > [官网](http://www.mactype.net/), [GitHub](https://github.com/snowie2000/mactype)
 
 Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），不过 MacType 可以缓解这一现象。它可以美化 Windows 对字体的渲染（绝大部分程序都不会出现问题），让吾辈在使用 Windows 的时候看着代码更舒服一点。
@@ -308,6 +335,7 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 ### Everything：文件快速搜索
 
 [便携版], [免费]
+
 > [官网](https://www.voidtools.com/)
 
 用过 Windows Explorer（文件管理器）搜索文件的人都知道速度是有多慢，有了 Everything 之后这一切都是往事了。Everything 建立了全盘索引，可以对文件/文件夹进行实时搜索，速度之快简直和默认的文件管理器有天壤之别。当然，也能够根据正则表达式/类型进行高级查询。
@@ -315,14 +343,16 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 ### Snipaste：截图/贴图
 
 [便携版], [免费]
+
 > [官网](https://zh.snipaste.com/), [GitHub](https://github.com/Snipaste), [GitBook 中文教程](https://docs.snipaste.com/zh-cn/)
-很漂亮，很漂亮，很漂亮！重要的话说三遍，Snipaste 相比于其他的截图软件（FSCapture）在使用时感觉漂亮了很多，而且在使用时会方便很多（截图完成后直接就进行编辑，而不是跳转到编辑器中编辑截图），保存时自动保存并且复制到剪切板也很方便。总而言之就是细节做的相当棒！
+> 很漂亮，很漂亮，很漂亮！重要的话说三遍，Snipaste 相比于其他的截图软件（FSCapture）在使用时感觉漂亮了很多，而且在使用时会方便很多（截图完成后直接就进行编辑，而不是跳转到编辑器中编辑截图），保存时自动保存并且复制到剪切板也很方便。总而言之就是细节做的相当棒！
 
 ### PicGo：图床上传
 
 [开源], [跨平台], [免费]
+
 > [官网](https://molunerfinn.com/PicGo/), [GitHub](https://github.com/rxliuli/PicGo)
-使用 Markdown 写作必备的图床工具，解决了吾辈关于 GitHub 图床的几个痛点。
+> 使用 Markdown 写作必备的图床工具，解决了吾辈关于 GitHub 图床的几个痛点。
 
 - 上传之前重命名
 - 上传一键就好
@@ -331,6 +361,7 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 ### ScreenToGif：录制 GIF 动态图
 
 [便携版], [开源], [免费]
+
 > [官网](https://www.screentogif.com/), [GitHub](https://github.com/NickeManarin/ScreenToGif)
 
 虽然吾辈已经有了截图工具，但某些时候单靠截图并不能很好的表达意思，这时候就需要使用 Gif 去记录一系列的操作。这也是 ScreenToGif 的主要功能，将记录转换成 Gif 动态图。
@@ -345,6 +376,7 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 ### QuickLook：文件管理器预览增强
 
 [便携版], [开源], [免费]
+
 > [官网](https://pooi.moe/QuickLook/), [GitHub](https://github.com/xupefei/QuickLook)
 
 Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹进行预览，包括但不限于文本、图像、视频、音频、压缩包、文件夹等。在按下空格时，就弹出一个预览窗口，感觉还是不错的。
@@ -352,6 +384,7 @@ Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹�
 ### Bandizip：压缩/解压缩
 
 [便携版], [免费]
+
 > [官网](https://www.bandizip.com/)
 
 目前吾辈觉得最好的压缩/解压缩软件，具体压缩率/支持格式什么的吾辈也并非专业所以就不说了。但就使用体验上看 Bandizip 是要明显优于其他同类软件的（WinRAR, 7Zip）。
@@ -364,6 +397,7 @@ Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹�
 ### Ditto：剪切板增强
 
 [便携版], [免费]
+
 > [官网](https://ditto-cp.sourceforge.io/), [善用佳软评测](https://xbeta.info/ditto.htm)
 
 Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。[善用佳软评测](https://xbeta.info/ditto.htm) 对其的介绍很全面，这里也就无需赘述了，吾辈需要的只是它的剪切板历史功能。
@@ -371,6 +405,7 @@ Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。
 ### imageview：图片浏览
 
 [免费]
+
 > [官网](https://www.kantuwang.wang/)
 
 中文名是 **快眼看图王**，嗯，有点俗。不过软件本身还是不错的，作为 Windows 上纯粹看图的软件却是极好的了，鼠标按下就可以拖动图片，可以浏览同一文件夹下的其他图片，快捷键 `Ctrl + C` 就可以直接复制图片。
@@ -378,9 +413,11 @@ Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。
 ### Mindjet MindManager：思维导图
 
 [跨平台]
+
 > [官网](https://www.mindjet.com/mindmanager/), [中文教程](http://www.mindmanager.cc/jiaochengziliao.html)
 
 最近才开始用思维导图，Mindjet MindManager 算是国外比较老牌的思维导图工具了吧（XMind 好像也不错的样子），于是吾辈也就选择了它
+
 > 注：该软件没有中文官网（苏州思杰马克丁软件有限公司 <http://www.mindmanager.cc/> 的那个所谓的中文官网是假的！！！关于这家公司的黑历史请去 [Google](https://www.google.com/search?q=%20%E6%80%9D%E6%9D%B0%E9%A9%AC%E5%85%8B%E4%B8%81) 了解）
 
 ### MS Office：文档管理
@@ -392,6 +429,7 @@ MS 的办公套件全家桶，讲真吾辈更喜欢用 `Markdown`，然而工作
 ### Google 文档：在线文档管理
 
 [免费], [跨平台]
+
 > [官网](https://www.google.com/intl/zh-CN/docs/about/), [Chrome 插件](https://chrome.google.com/webstore/detail/gbkeegbaiigmenfmjfclcdgdpimamgkj)
 
 MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修改文档的，加上 Chrome 插件之后可以直接使用 **Chrome 浏览器** 打开文档，修改的话也能自动保存，感觉还是很方便的。
@@ -399,11 +437,13 @@ MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修
 ### SumatraPDF：电子书阅读（已被 [Calibre](#calibre电子书管理) 取代）
 
 [便携版], [开源], [免费]
+
 > [官网](https://www.sumatrapdfreader.org/), [GitHub](https://github.com/sumatrapdfreader/sumatrapdf)
 
 ### Calibre：电子书管理
 
 [便携版], [免费]
+
 > [官网](https://calibre-ebook.com), [GitHub](https://github.com/kovidgoyal/calibre)
 
 相比于上面的 [SumatraPDF](#sumatrapdf电子书阅读已被-calibre-取代)，Calibre 不但界面美观，功能也更为强大！而且是 PC 上少有的 Epub 阅读器，对一些自定义阅读设置也十分友好的提供了可视化设置（同样能以 CSS 配置），对电子书的管理、编辑、格式转换，书籍共享也支持的相当好。
@@ -411,6 +451,7 @@ MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修
 ### Mozilla FireFox：抱有期待的浏览器
 
 [开源], [跨平台], [免费]
+
 > [官网](https://firefox.com), [GitHub](https://github.com/mozilla/gecko-dev)
 
 FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私的浏览器，但现在，它已然有些没落了。尤其是最近的 FireFox57 后为了提升性能更新了浏览器的整体架构，导致旧的扩展基本全部失效，恢复曾经的附加扩展生态却又不知道需要多久了。但是，这些问题，相比于隐私（信息收集）与自由（不限制扩展）来说，还是值得考虑一下的，确实挺期待 FireFox 之后发展的。
@@ -420,6 +461,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### Pandoc：命令行转换文档格式
 
 [便携版], [开源], [跨平台], [免费]
+
 > [官网](https://pandoc.org/), [GitHub](https://github.com/jgm/pandoc)
 
 一个由 [Haskell](https://zh.wikipedia.org/wiki/Haskell) 语言开发的 [标记语言](https://zh.wikipedia.org/wiki/%E7%BD%AE%E6%A0%87%E8%AF%AD%E8%A8%80) 命令行转换工具，吾辈主要用来转换 Markdown 到 HTML/DOC。
@@ -427,6 +469,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### AIMP：漂亮的本地音乐播放器
 
 [便携版], [免費]
+
 > [官网](http://www.aimp.ru/)
 
 一个很漂亮的本地音乐播放器，也能在线加载本地歌曲的歌词，貌似对歌曲音质的支持也很好（没什么感触），之所以放弃 Foobar 的最大原因就是其没什么好看的皮肤。。。
@@ -434,6 +477,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### PotPlayer：视频播放器
 
 [便携版], [免费]
+
 > [官网](https://potplayer.daum.net/)
 
 非常强大/漂亮的本地视频播放器，虽然也可以播放 URL 的视频资源，但主要还是播放本地视频，支持大多数常见格式而且对于 1080P 之上的画质支持非常棒！
@@ -441,6 +485,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### Dism++：Windows 的一个集中式的系统管理工具
 
 [便携版], [免费]
+
 > [官网](https://www.chuyu.me), [GitHub](https://github.com/Chuyu-Team/Dism-Multi-language)
 
 一个集中式管理 Windows 各种设置的 GUI 控制面板，能够方便的控制系统的各种设置（包括 Windows 10 的更新。。。），提供了一个简单但却还算可以的垃圾清理工具，感觉上很干净而且可以独立运行！
@@ -454,6 +499,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### TreeSizeFree：以树状视图查看文件夹
 
 [便携版], [免费]
+
 > [官网](https://www.jam-software.com/treesize/)
 
 用来以树状结构查看文件夹大小的工具，可以知道到底是哪些文件占用了硬盘及其大小。
@@ -469,22 +515,24 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### EagleGet：多线程下载工具（已被 [PDM](#persepolis-download-manageraria2-图形化下载工具) 取代）
 
 [免费]
+
 > [官网](http://www.eagleget.com/)
 
 默认集成 Chrome 的多线程下载工具，同时支持 `HTTP/HTTPS`, `BT` 等下载协议。
 
 基本上满足吾辈日常的下载需求吧（不过静默下载这点不如 IDM，但谁让 EagleGet 是免费的呢！ ）
 
-- [X] 提供客户端界面
-- [X] 多线程
-- [X] 集成 chrome
+- [x] 提供客户端界面
+- [x] 多线程
+- [x] 集成 chrome
 - [ ] 静默下载
-- [X] 下载后可以打开文件/文件夹
+- [x] 下载后可以打开文件/文件夹
 - [ ] 便携版（配置可携带化）
 
 ### Persepolis Download Manager：Aria2 图形化下载工具
 
 [免费], [开源], [跨平台]
+
 > [官网](https://persepolisdm.github.io), [GitHub](https://github.com/persepolisdm/persepolis)
 
 简称 PDM，相比于上面 EagleGet 最大的优点就是开源/跨平台了，虽然缺少集成 BT 下载功能，但也没有 EagleGet 的强制条款和后台常驻。
@@ -494,6 +542,7 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### waifu2x-caffe：图片清晰化
 
 [便携版], [免费], [开源], [跨平台]
+
 > [官网](http://waifu2x.udp.jp), [GitHub](https://github.com/nagadomi/waifu2x), [GitHub Windows](https://github.com/lltcggie/waifu2x-caffe)
 
 可以让图片变得清晰，具体技术实现涉及机器学习等尖端技术（#dalao），可以说是很厉害了呢
@@ -518,12 +567,15 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 ### 搜狗拼音输入法：很老的一个输入法了
 
 [跨平台], [免费]
+
 > [官网](https://pinyin.sogou.com/)
 
 国内老牌输入法，云输入功能还是可以的。吾辈使用的唯一理由是 MS 原生输入法不支持全局半角符号导致 coding 时经常需要切换语输入半角符号 "**(**" 与中文很麻烦，所以就用了这个。
 
 ---
+
 > Pass：以上国内的流氓吾辈使用的都是修改过的版本，基本上没什么太多麻烦的东西了呢
+
 ---
 
 ## 名词解释
