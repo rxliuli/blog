@@ -32,11 +32,6 @@ tags: [IDEA, 随笔]
 在讲完 TeamCity 之后其实有个茶歇时间的，这里吾辈拍了一张会场入口的活动海报  
 ![幕间休息](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181113012530.png)
 
-然后，有没有注意到这张图片里面有位熟悉的 dalao！请看 [GitHub 上的 IDEA 中文简体教程](https://github.com/judasn/IntelliJ-IDEA-Tutorial) 的作者 [judasn](https://github.com/judasn) 头像
-![judasn](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181113013420.png)
-
-### 是的，就是本人！然而直到在回家的高铁上吾辈才想起来。。。#残念
-
 ## 感想
 
 虽然 dalao 们都是用英语进行口语交流，吾辈只能听懂七七八八，但参加活动还是感到很高兴。讲真只有在第一个主题吾辈基本能够听懂/参与的，毕竟 IDEA 用了好久。第二个主题的 TeamCity 表示没用过不明觉厉。Kotlin 虽然吾辈也没有用过，但看起来与 Scala 非常相像（语法糖真的太多了！），感觉还是很不错的！
