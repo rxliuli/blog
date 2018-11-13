@@ -22,6 +22,10 @@ create table topic (
   comment '主题表';
 ```
 
+> 这里的 `topic` 表有两个关键性的特点
+> - 主键可以进行比较（`int`）
+> - 主键整体存在趋势（自增/自减）
+
 ## 解决方案 1：直接使用 `order by rand()`
 
 直接使用 `order by rand()` 就可以获取到随机的数据了，而且能够获取到全部的数据（顺序仍然是随机的）。
@@ -55,7 +59,7 @@ order by order_column
 limit 50000;
 ```
 
-## 解决方案 2：使用 where 取中间的随机值
+## 解决方案 2：使用 `where subquery` 取中间的随机值
 
 因为 `order by rand()` 没有索引导致的排序太耗时，我们可以尝试绕过这个问题。
 
@@ -68,7 +72,7 @@ limit 50000;
 ```sql
 select *
 from topic
-where id <= ((select max(id)
+where id >= ((select max(id)
               from topic)
              - (select min(id)
                 from topic))
@@ -80,41 +84,108 @@ limit 50000;
 
 这种方法查询速度虽然极快（150 ms），但却会受到数据分布密度的影响。如果数据不是平均的，那么查询到的总数据条数就会受限。
 
-例如数据分布呈以下情况
+那么，下面来说该方法的缺陷
 
-`1,100002,100003,100004...199999,200000`
+- 获取到的数据受分布密度影响
 
-那么使用上述代码就只能获取到很少一部分数据（大约在 2.5w 条左右）。然而如果将符号稍微下改一下，将 `>=` 修改为 `<=`，那么能够获取到的平均数量将大大增加（7.5w 条左右）。
+  例如数据分布呈以下情况
 
-```sql
-select *
-from topic
-# 注意：这里的符号修改了
-where id >= ((select max(id)
-              from topic)
-             - (select min(id)
-                from topic))
-            * rand()
-            + (select min(id)
-               from topic)
-limit 50000;
-```
+  `1,100002,100003,100004...199999,200000`
+
+  那么使用上述代码就只能获取到很少一部分数据（大约在 2.5w 条左右）。然而如果将符号稍微下改一下，将 `>=` 修改为 `<=`，那么能够获取到的平均数量将大大增加（7.5w 条左右）。
+
+  ```sql
+  select *
+  from topic
+  # 注意：这里的符号修改了
+  where id >= ((select max(id)
+                from topic)
+              - (select min(id)
+                  from topic))
+              * rand()
+              + (select min(id)
+                from topic)
+  limit 50000;
+  ```
+
+- 每一条数据获取到的概率不是完全相同的
+  虽然获取到的全部数据是随机的，但每一个的概率却并不相同。例如在 `<=` 时会出现永远都为第一条的现象，究其原因就是因为 **第一条** 的概率实在是太大了，因为查询数据表时数据的检索规则是从第一条开始的呢！即便修改成 `>=`，所得到的第一条数据也普遍偏小。
+  使用 `>=` 的结果
+  - 数据越是在前面，那么获取到的概率就越低
+  - 但即便是很低概率，在最前面总有机会，所以第一条一般偏小
+  - 数据密度前面偏大时，获取到的数量会非常小
 
 密度越是趋于平均，获取到的最大随机数据条数的平均值愈接近 `1/2`，否则则会愈加偏离（不一定偏大还是偏小）。
 
-## 对比
+## 解决方案 3：使用临时表 `temporary`
 
-| 不同点                 | `order by rand()` | `where`    |
-| ---------------------- | ----------------- | ---------- |
-| 可以随机获取全部       | 可以              | 几乎不可能 |
-| 速度                   | 慢                | 极快       |
-| 需要可比较的主键类型   | 否                | 是         |
-| 受数据分布密度影响     | 否                | 是         |
-| 速度受表数据复杂度影响 | 很大              | 较小       |
+解决方案 2 着眼于避免使用没有索引的 `rand()` 进行排序，但这里思考另一个解决方案，使用加了索引之后的 `rand()` 进行排序。创建临时表，仅包含主键 `id` 和需要进行排序的索引列 `randomId`，然后排序完成过后获取到乱序数据。
+
+```sql
+drop temporary table if exists temp_topic;
+create temporary table temp_topic (
+  id       bigint primary key not null,
+  randomId double             not null,
+  index (randomId)
+)
+  as
+    select
+      id,
+      rand() as randomId
+    from topic;
+select t.*
+from topic t
+  join (
+         select id
+         from (
+                select id
+                from temp_topic
+                order by randomId
+              ) as temp
+         limit 50000
+       ) as temp
+    on t.id = temp.id;
+```
+
+这种方法的查询速度不算很快（878 ms，相比于第二种），而且仍然是与数据量呈正相关的（因为要复制数据）。但和第一种，也是真正的随机获取。
+
+## 解决方案 4：使用 `where rand()`
+
+吾辈在 [StackOverflow](https://stackoverflow.com) 上面看到了一个 [最优解 by 2016](https://stackoverflow.com/a/36013954/8409380)，一切表现的都很好，速度不算慢（261 ms），也可以获取到全部数据，也是真正的随机获取。
+
+```sql
+select g.*
+from
+  topic g
+  join
+  (select id
+   from
+     topic
+   where
+     rand() < (select ((50000 / count(0)) * 10)
+               from
+                 topic)
+   order by rand()
+   limit 50000) as z on z.id = g.id;
+```
+
+> 注：吾辈这里不清楚 `where rand()` 发生了什么，感觉 `rand()` 只要在 `where` 里面之后的排序就会变得很快！
+
+## 总结
+
+> 这里有一篇不错的英文文章对随机获取数据进行了分析：<http://jan.kneschke.de/projects/mysql/order-by-rand/>，其中部分内容在吾辈这里并未生效，原因未知。。
+
+| 不同点                 | `order by rand()` | `where subquery` | `temporary` | `where rand()` |
+| ---------------------- | ----------------- | ---------------- | ----------- | -------------- |
+| 可以随机获取全部       | 可以              | 几乎不可能       | 可以        | 可以           |
+| 速度                   | 慢                | 极快             | 较快        | 极快           |
+| 需要可比较的主键类型   | 否                | 是               | 否          | 否             |
+| 受数据分布密度影响     | 否                | 是               | 否          | 否             |
+| 速度受表数据复杂度影响 | 很大              | 极小             | 较小        | 极小           |
 
 那么，看完上面的不同点对比，我们也可以得出它们的使用场景了
 
-- 如果我们只需要获取很少的数据而主键恰好又是可以进行比较的类型，那么就使用 `where` 会更好（**推荐首选**）
-- 如果你需要随机获取很多的数据，甚至是打乱全部的数据，那么你也可以使用 `order by rand()` 来打乱顺序
+- 推荐首选 `where rand()`
+- 唯一不推荐的就是 `order by rand()`，这是新手才会写出来 sql
 
 > 注：如果仅仅只是需要打乱数据顺序的话还是更推荐将数据读取到内存中在进行操作更好！
