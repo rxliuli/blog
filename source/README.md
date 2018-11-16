@@ -1,6 +1,6 @@
 # 这里是吾辈的博客使用的 GitHub 仓库，查看 Blog 请右转 <https://blog.rxliuli.com/>
 
-> 附：目前博客已经迁移到 [Netlify](https://netlify.com/)，rxliuli.github.io 不再进行手动更新（仍然会重定向到 blog.rxliuli.com 获得最新内容）
+> 附：目前博客已经迁移到 [Netlify](https://netlify.com/)，<rxliuli.github.io> 只会重定向到 <blog.rxliuli.com> 上
 
 <!--
   注：之所以放在主题的 source 目录下是因为需要不被渲染成 HTML
