@@ -1,10 +1,10 @@
 ---
-title: Windows 下安装 Gralde
+title: Windows 下安装 Gradle
 date: 2018-11-16 21:04:23
 tags: [记录, Java, Gradle, Windows]
 ---
 
-# Windows 下安装 Gralde
+# Windows 下安装 Gradle
 
 > [官网](https://gradle.org), [GitHub](https://github.com/gradle/gradle)
 
