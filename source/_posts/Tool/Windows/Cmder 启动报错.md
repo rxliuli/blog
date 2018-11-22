@@ -3,6 +3,7 @@ title: Cmder 启动报错
 date: 2018-08-10 01:39:21
 tags: Cmder
 ---
+
 # Cmder 启动报错
 
 ## 场景
@@ -14,6 +15,7 @@ WARNING! The MacType's hooks are detected at 0x00007FF8E9D10000 D:\Program\MacTy
 ```
 
 其实在初次使用 `Cmder` 时可能会遇到这种情况，因为你的 PC 上肯定是同时安装了 `MacType`，在遇到这种情况时看一下官方的链接就好了（虽然官方也没给出如何将程序添加到排除列表中 23333）
+
 > [官方链接](https://conemu.github.io/en/Installation.html#mactype)
 
 官方的解释是：
@@ -31,7 +33,7 @@ That is because MacType tries to hook ConEmuC.exe and ConEmuC64.exe processes. B
 
 详情见下面的 Gif
 
-![Cmder 启动报错.gif](https://i.loli.net/2018/08/14/5b72966c0ef67.gif)
+![Cmder 启动报错](https://github.com/rxliuli/img-bed/blob/master/20181122211545.gif)
 
 ### 2. 编辑配置文件
 

@@ -3,10 +3,12 @@ title: Windows 下 Cmder 安装 Chocolatey
 date: 2018-06-27 01:39:21
 tags: Cmder
 ---
+
 # Windows 下 Cmder 安装 Chocolatey
 
-Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用命令解决。  
-> [官网](https://chocolatey.org/) / [GitHub 仓库](https://github.com/chocolatey/chocolatey)  
+Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用命令解决。
+
+> [官网](https://chocolatey.org/) / [GitHub 仓库](https://github.com/chocolatey/chocolatey)
 
 在 Cmder 的 Admin Bash 环境下输入以下命令：
 
@@ -14,18 +16,20 @@ Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用
 λ powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 ```
 
-![安装图示](https://i.loli.net/2018/04/18/5ad6341143964.png)
-> 此处千万注意三点：
-1. 使用 **Admin** 权限打开的 Cmder（或者是打开的新选项卡）  
-  如果提示你权限不足肯定就是因为这个啦
-2. 使用的是 Cmder **Bash** 而非 PowerShell  
-  在 powershell 下也能够安装（命令不太一样），然而我们想要在 Cmder Bash 下安装，所以不要搞混淆了哦
-3. 命令不要复制错误了（吾辈就错了。。。）  
-  如果提示 *使用“1”个参数调用“DownloadString”时发生异常:“不支持给定路径的格式。”* 的话一般都是下载路径那里多了个空格之类，仔细找找吧
+![安装图示](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181122211812.png)
 
- 安装完成之后输入 `choco` 验证一下，得到如下输出即为成功！
- ![成功的响应](https://i.loli.net/2018/04/18/5ad6349f94660.png)
- Chocolatey 常用的命令如下：
+> 此处千万注意三点：
+
+1. 使用 **Admin** 权限打开的 Cmder（或者是打开的新选项卡）  
+   如果提示你权限不足肯定就是因为这个啦
+2. 使用的是 Cmder **Bash** 而非 PowerShell  
+   在 powershell 下也能够安装（命令不太一样），然而我们想要在 Cmder Bash 下安装，所以不要搞混淆了哦
+3. 命令不要复制错误了（吾辈就错了。。。）  
+   如果提示 _使用“1”个参数调用“DownloadString”时发生异常:“不支持给定路径的格式。”_ 的话一般都是下载路径那里多了个空格之类，仔细找找吧
+
+安装完成之后输入 `choco` 验证一下，得到如下输出即为成功！
+![成功的响应](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181122211828.png)
+Chocolatey 常用的命令如下：
 
 ```bash
 λ choco list softwareName //查询软件列表
@@ -36,7 +40,7 @@ Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用
 λ cinst softwareName //安装软件简写
 ```
 
-[可安装软件包列表](https://chocolatey.org/packages)  
+[可安装软件包列表](https://chocolatey.org/packages)
 
 ## Windows 下常用的开发环境软件包
 
