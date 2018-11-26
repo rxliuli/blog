@@ -1,5 +1,4 @@
 ---
-layout: post
 title: 成为 Java 高级程序员需要掌握哪些？
 date: 2018-11-26 22:31:18
 tags: Java
