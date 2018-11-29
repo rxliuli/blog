@@ -1,7 +1,7 @@
 ---
 title: Windows 上的工具清单
 date: 2018-08-21
-updated: 2018-11-17
+updated: 2018-11-29
 tags: [Tool, Windows]
 ---
 
@@ -23,7 +23,7 @@ tags: [Tool, Windows]
     - [Apache SubVersion：公司使用的版本控制系统](#apache-subversion公司使用的版本控制系统)
     - [Apache Maven：Java 最流行的依赖管理工具](#apache-mavenjava-最流行的依赖管理工具)
     - [Apache Tomcat：Java Web 流行的开源服务器](#apache-tomcatjava-web-流行的开源服务器)
-    - [Gradle：比较新的依赖管理工具，Andriod 默认的依赖管理工具](#gradle比较新的依赖管理工具andriod-默认的依赖管理工具)
+    - [Gradle：Andriod 默认的依赖管理工具](#gradleandriod-默认的依赖管理工具)
     - [MobaXterm：非常强大的远程连接工具](#mobaxterm非常强大的远程连接工具)
     - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
   - [日常](#日常)
@@ -42,22 +42,23 @@ tags: [Tool, Windows]
     - [Mindjet MindManager：思维导图](#mindjet-mindmanager思维导图)
     - [MS Office：文档管理](#ms-office文档管理)
     - [Google 文档：在线文档管理](#google-文档在线文档管理)
-    - [SumatraPDF：电子书阅读（已被 [Calibre](#calibre 电子书管理) 取代）](#sumatrapdf电子书阅读已被-calibrecalibre电子书管理-取代)
     - [Calibre：电子书管理](#calibre电子书管理)
+    - [Steam：国外的游戏平台](#steam国外的游戏平台)
     - [Mozilla FireFox：抱有期待的浏览器](#mozilla-firefox抱有期待的浏览器)
-    - [Pandoc：命令行转换文档格式](#pandoc命令行转换文档格式)
     - [Foobar：本地音乐播放器](#foobar本地音乐播放器)
     - [PotPlayer：视频播放器](#potplayer视频播放器)
     - [Dism++：Windows 的一个集中式的系统管理工具](#dismwindows-的一个集中式的系统管理工具)
     - [CCleaner：PC 上著名的垃圾清理工具](#ccleanerpc-上著名的垃圾清理工具)
+    - [Pandoc：命令行转换文档格式](#pandoc命令行转换文档格式)
     - [TreeSizeFree：以树状视图查看文件夹](#treesizefree以树状视图查看文件夹)
     - [renamer：文件/文件夹重命名](#renamer文件文件夹重命名)
     - [FlashPlayer](#flashplayer)
     - [waifu2x-caffe：图片清晰化](#waifu2x-caffe图片清晰化)
   - [国内流氓](#国内流氓)
-    - [TIM：国内不得不用的流氓 IM](#tim国内不得不用的流氓-im)
+    - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
     - [BaiduNetdisk：国内一家独大的网盘客户端](#baidunetdisk国内一家独大的网盘客户端)
     - [搜狗拼音输入法：很老的一个输入法了](#搜狗拼音输入法很老的一个输入法了)
+    - [有道词典：国内算是很好用的词典了](#有道词典国内算是很好用的词典了)
   - [名词解释](#名词解释)
     - [便携版](#便携版)
     - [开源](#开源)
@@ -220,7 +221,7 @@ MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源�
 
 > [官网](http://cmder.net/), [GitHub](https://github.com/cmderdev/cmder)
 
-曾经有段时间吾辈也很迷信 Linux，觉得 Linux 适合开发者使用（事实上确实如此），但后来还是因为电脑的硬件原因（驱动问题，莫名其妙的卡死在登陆页面）而回到了 Windows。而最让人念念不忘的就是 Linux Bash 终端了，相比于 Windows 自带的 Cmd/PowerShell 来说漂亮/强大了许多。当然，Windows 相比于 Linux 的最大优点就是稳定（不怕折腾，很难损坏系统本身）以及可视化（大部分的设计都有可视化界面进行配置）。然而有时候还是不得不使用命令行，而这时便显示出 Windows 的不足了，直到后来吾辈在偶然的机会碰到了 Cmder，发现了 Windows 上果然已经有了解决方案。
+曾经有段时间吾辈也很迷信 Linux，觉得 Linux 适合开发者使用（事实上确实如此），但后来还是因为电脑的硬件原因（驱动问题，莫名其妙的卡死在登录页面）而回到了 Windows。而最让人念念不忘的就是 Linux Bash 终端了，相比于 Windows 自带的 Cmd/PowerShell 来说漂亮/强大了许多。当然，Windows 相比于 Linux 的最大优点就是稳定（不怕折腾，很难损坏系统本身）以及可视化（大部分的设计都有可视化界面进行配置）。然而有时候还是不得不使用命令行，而这时便显示出 Windows 的不足了，直到后来吾辈在偶然的机会碰到了 Cmder，发现了 Windows 上果然已经有了解决方案。
 
 Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对于吾辈而言，主要是因为 Cmder 比较漂亮，集成了很多组件（例如 Git, SSH, Curl, Less, vim），而且还能在上面安装 Windows 下的包管理系统 **Chocolatey**。安装了包管理器之后就能直接使用 `choco command options` 命令安装软件了。
 
@@ -296,7 +297,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 
 **Apache \* 3**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
 
-### Gradle：比较新的依赖管理工具，Andriod 默认的依赖管理工具
+### Gradle：Andriod 默认的依赖管理工具
 
 [便携版], [开源], [跨平台], [免费]
 
@@ -367,14 +368,16 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 [便携版], [免费]
 
 > [官网](https://zh.snipaste.com/), [GitHub](https://github.com/Snipaste), [GitBook 中文教程](https://docs.snipaste.com/zh-cn/)
-> 很漂亮，很漂亮，很漂亮！重要的话说三遍，Snipaste 相比于其他的截图软件（FSCapture）在使用时感觉漂亮了很多，而且在使用时会方便很多（截图完成后直接就进行编辑，而不是跳转到编辑器中编辑截图），保存时自动保存并且复制到剪切板也很方便。总而言之就是细节做的相当棒！
+
+很漂亮，很漂亮，很漂亮！重要的话说三遍，Snipaste 相比于其他的截图软件（FSCapture）在使用时感觉漂亮了很多，而且在使用时会方便很多（截图完成后直接就进行编辑，而不是跳转到编辑器中编辑截图），保存时自动保存并且复制到剪切板也很方便。总而言之就是细节做的相当棒！
 
 ### PicGo：图床上传
 
 [开源], [跨平台], [免费]
 
 > [官网](https://molunerfinn.com/PicGo/), [GitHub](https://github.com/rxliuli/PicGo)
-> 使用 Markdown 写作必备的图床工具，解决了吾辈关于 GitHub 图床的几个痛点。
+
+使用 Markdown 写作必备的图床工具，解决了吾辈关于 GitHub 图床的几个痛点。
 
 - 上传之前重命名
 - 上传一键就好
@@ -417,7 +420,8 @@ Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹�
 - [x] 多线程
 - [x] 集成 chrome
 - [x] 静默下载
-- [ ] 下载后可以打开文件/文件夹
+- [x] 下载后可以打开文件/文件夹
+- [ ] 下载完成后没有弹窗提示
 - [ ] 便携版（配置可携带化）
 
 ### Bandizip：压缩/解压缩
@@ -473,19 +477,26 @@ MS 的办公套件全家桶，讲真吾辈更喜欢用 `Markdown`，然而工作
 
 MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修改文档的，加上 Chrome 插件之后可以直接使用 **Chrome 浏览器** 打开文档，修改的话也能自动保存，感觉还是很方便的。
 
-### SumatraPDF：电子书阅读（已被 [Calibre](#calibre电子书管理) 取代）
-
-[便携版], [开源], [免费]
-
-> [官网](https://www.sumatrapdfreader.org/), [GitHub](https://github.com/sumatrapdfreader/sumatrapdf)
-
 ### Calibre：电子书管理
 
 [便携版], [免费]
 
 > [官网](https://calibre-ebook.com), [GitHub](https://github.com/kovidgoyal/calibre)
 
-相比于上面的 [SumatraPDF](#sumatrapdf电子书阅读已被-calibre-取代)，Calibre 不但界面美观，功能也更为强大！而且是 PC 上少有的 Epub 阅读器，对一些自定义阅读设置也十分友好的提供了可视化设置（同样能以 CSS 配置），对电子书的管理、编辑、格式转换，书籍共享也支持的相当好。
+相比于 SumatraPDF，Calibre 不但界面美观，功能也更为强大！而且是 PC 上少有的 Epub 阅读器，对一些自定义阅读设置也十分友好的提供了可视化设置（同样能以 CSS 配置），对电子书的管理、编辑、格式转换，书籍共享也支持的相当好。
+
+> 虽然 Calibre 不支持 PDF，但现代浏览器基本上都能直接打开 PDF 文档（Chrome/Firefox）
+
+### Steam：国外的游戏平台
+
+[跨平台], [免费]
+
+> [官网](https://steamcommunity.com)
+
+来自于金三胖出品的非常著名的游戏平台，非常之多的游戏在该平台上发售。Steam 提供了非常多的支付方式，对国内用户相当友好（支付宝/微信/银联）。吾辈个人是只玩 Galgame 的，所以能入正支持到做 Galgame 的公司表示还是很开心的。  
+唉，不过 Steam 也没能逃过魔掌呢。。。[steam 落户上海浦东](https://www.google.com/search?q=steam+%E8%90%BD%E6%88%B7%E4%B8%8A%E6%B5%B7%E6%B5%A6%E4%B8%9C)，吾辈表示转区势在必得了！
+
+> 附：Steam 上没有什么盗版游戏，所以想免费玩游戏的人就不用抱有什么幻想了
 
 ### Mozilla FireFox：抱有期待的浏览器
 
@@ -496,14 +507,6 @@ MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修
 FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私的浏览器，但现在，它已然有些没落了。尤其是最近的 FireFox57 后为了提升性能更新了浏览器的整体架构，导致旧的扩展基本全部失效，恢复曾经的附加扩展生态却又不知道需要多久了。但是，这些问题，相比于隐私（信息收集）与自由（不限制扩展）来说，还是值得考虑一下的，确实挺期待 FireFox 之后发展的。
 
 相比于其他的浏览器最大的特点就是隐私性和自由，收集隐私是完全可选的（国内的流氓浏览器信息收集简直过分），附加扩展基本不怎么限制（Chrome 限制扩展只能从官方商店直接安装）。
-
-### Pandoc：命令行转换文档格式
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://pandoc.org/), [GitHub](https://github.com/jgm/pandoc)
-
-一个由 [Haskell](https://zh.wikipedia.org/wiki/Haskell) 语言开发的 [标记语言](https://zh.wikipedia.org/wiki/%E7%BD%AE%E6%A0%87%E8%AF%AD%E8%A8%80) 命令行转换工具，吾辈主要用来转换 Markdown 到 HTML/DOC。
 
 ### Foobar：本地音乐播放器
 
@@ -534,6 +537,14 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 > [官网](https://www.ccleaner.com/)
 
 对于吾辈而言主要是用来清理垃圾（虽然和上面的 Dism++ 有些重复就是了）和注册表的，还提供了一个卸载软件的面板，相比于 Windows 自带的程序列表控制面板唯一的好处就是可以同时卸载多个程序。。。
+
+### Pandoc：命令行转换文档格式
+
+[便携版], [开源], [跨平台], [免费]
+
+> [官网](https://pandoc.org/), [GitHub](https://github.com/jgm/pandoc)
+
+一个由 [Haskell](https://zh.wikipedia.org/wiki/Haskell) 语言开发的 [标记语言](https://zh.wikipedia.org/wiki/%E7%BD%AE%E6%A0%87%E8%AF%AD%E8%A8%80) 命令行转换工具，吾辈主要用来转换 Markdown 到 HTML/DOC。
 
 ### TreeSizeFree：以树状视图查看文件夹
 
@@ -567,9 +578,9 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 
 ## 国内流氓
 
-### TIM：国内不得不用的流氓 IM
+### QQ：国内不得不用的流氓 IM
 
-> [官网](https://tim.qq.com/)
+> [官网](https://im.qq.com/)
 
 垃圾 QQ，毁我人生！  
 好了，以上纯属吐槽不用在意。QQ 是腾讯的社交 IM，由于国内使用人数极其庞大，所以吾辈也不得不用的软件。一个软件居然会向系统添加驱动服务，而且禁用了还不让使用，真是厉害了呀。。。
@@ -590,9 +601,17 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 
 国内老牌输入法，云输入功能还是可以的。吾辈使用的唯一理由是 MS 原生输入法不支持全局半角符号导致 coding 时经常需要切换语输入半角符号 "**(**" 与中文很麻烦，所以就用了这个。
 
+### 有道词典：国内算是很好用的词典了
+
+[跨平台], [免费]
+
+> [官网](https://dict.youdao.com/)
+
+原本吾辈是使用 [欧陆词典](https://www.eudic.net/) 的，但 PC 版欧陆词典无法连接到网络（询问过客服至今原因不明），Mobile 版本丢失过吾辈的单词本（更新之后），忍无可忍之下直接换回了国内的有道。。。
+
 ---
 
-> Pass：以上国内的流氓吾辈使用的都是修改过的版本，基本上没什么太多麻烦的东西了呢
+> Pass：以上国内的流氓吾辈使用的都是修改过的绿色版本，基本上没什么太多麻烦的东西了呢
 
 ---
 
