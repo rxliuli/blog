@@ -748,7 +748,7 @@ Markdown 支持以下这些符号前面加上反斜杠来帮助插入普通的�
 
 ## Markdown 免费编辑器
 
-> 如果你是一名 Developer，那吾辈首推 [VSCode](https://code.visualstudio.com/)。
+> 如果你是一名 Developer，那吾辈首推 [VSCode](https://code.visualstudio.com/)，免费开源的跨平台编辑器。
 
 Windows 平台
 
@@ -761,7 +761,7 @@ Linux 平台
 
 Mac 平台
 
-- [Mou](http://mouapp.com/)
+- [Mou](http://25.io/mou/)
 
 在线编辑器
 
@@ -769,9 +769,9 @@ Mac 平台
 
 浏览器插件
 
-- [MaDe](https://chrome.google.com/webstore/detail/oknndfeeopgpibecfjljjfanledpbkog) (Chrome)
+- [Markdown Here](https://chrome.google.com/webstore/detail/markdown-here/elifhakcjgalahccnjkneoccemfahfoa/)
 
 高级应用
 
-- [VSCode](https://code.visualstudio.com/) + [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
+- [VSCode](https://code.visualstudio.com/) + [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) / [教程](https://blog.rxliuli.com/2018/12/01/tool/vscode/vscode-%E6%90%AD%E5%BB%BA-markdown-%E5%86%99%E4%BD%9C%E7%8E%AF%E5%A2%83/)
 - [Sublime Text 2](http://www.sublimetext.com/2) + [MarkdownEditing](http://ttscoff.github.com/MarkdownEditing/) / [教程](http://lucifr.com/2012/07/12/markdownediting-for-sublime-text-2/)
