@@ -37,7 +37,8 @@ tags: [Tool, markdown]
 
 ## 概述
 
-> 该说明引用自 <https://www.appinn.com/markdown/>，吾辈添加/修复了一些内容。
+> 本文引用自 <https://www.appinn.com/markdown/>，吾辈添加/修复了一些内容。  
+> 本文同步部署到为了网站 <https://md-syntax.rxliuli.com/>，如有需要可以收藏（#笑）。
 
 ### 宗旨
 
