@@ -44,7 +44,7 @@ tags: [IDEA, Java, Maven, Web]
 
 ### 项目初始配置
 
-创建完成后会提示是否选择自动引入依赖，这里选择 **Enable Auto import**，当然，另一个要我们去配置 Web 框架的就不用管了，IDEA 已经自动完成了这一切。  
+创建完成后会提示是否选择自动引入依赖，这里选择 **Enable Auto import**。当然，另一个要我们去配置 Web 框架的提示就不用管了，IDEA 已经自动完成了这一切。  
 ![创建完成提示](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204184028.png)
 
 ### 配置 Tomcat 容器
@@ -62,7 +62,7 @@ tags: [IDEA, Java, Maven, Web]
 6. 选择本地 Tomcat 的目录并确定  
    ![选择本地 Tomcat 的目录](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204190127.png)
 7. 选择要运行的 war 包  
-   配置完成会发现下面多了一条警告 `Warning:No artifacts marked for deployment`，意思是没有构建被部署，这里我们只要点一下 Fix，并且选择 `war exploded`，之后 IDEA 会自动完成剩余的事  
+   配置完成会发现下面多了一条警告 `Warning:No artifacts marked for deployment`，意思是没有 jar/war 包需要被部署，这里我们只要点一下 Fix，并且选择 `war exploded`，之后 IDEA 会自动完成剩余的事  
    ![部署 war 项目](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204190459.png)
    > 注：有人觉得每次都要配置 Tomcat 真的挺麻烦的，这里吾辈坚决声明这是误解，只有第一次才需要配置各种环境，后面 IDEA 使能够 **记住** 的。
 8. 最后，修改一下运行配置的名字，然后点击 OK 按钮  
@@ -74,7 +74,7 @@ tags: [IDEA, Java, Maven, Web]
 
 至此，我们已经使用 IDEA 运行起来了一个基本的 Web 项目了呢！
 
-## 更多
+## 其他
 
 ### 配置项目目录结构
 
@@ -193,6 +193,6 @@ public class HomeServlet extends HttpServlet {
 
 - 这个演示项目吾辈也放到了 [GitHub](https://github.com/rxliuli/idea-maven-webapp-example) 上，如果需要可以随便下载
 - 如果你还不了解 maven 的话强烈建议稍微了解一下 maven 的基本概念。可以按照吾辈 blog 上的教程 [Windows 上 Maven 安装与使用](https://blog.rxliuli.com/2018/11/09/java/windows-%E4%B8%8A-maven-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/) 进行安装
-- 如果你还不了解 IDEA，推荐阅读 [IntelliJ IDEA 简体中文专题教程](https://github.com/judasn/IntelliJ-IDEA-Tutorial) 进行入门
+- 如果你还不了解 IDEA（废话，这不是当然的嘛！#打），推荐阅读 [IntelliJ IDEA 简体中文专题教程](https://github.com/judasn/IntelliJ-IDEA-Tutorial) 进行入门
 
 那么，这篇教程到这里便结束啦，希望我们都能愉快地使用 IDEA 呢 o(〃＾ ▽ ＾〃)o
