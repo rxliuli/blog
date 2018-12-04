@@ -4,7 +4,7 @@ date: 2018-11-09 12:34:16
 tags: [Java, Maven]
 ---
 
-# Maven 安装与使用
+# Windows 上 Maven 安装与使用
 
 > [官网](https://maven.apache.org), [GitHub](https://github.com/apache/maven)
 
