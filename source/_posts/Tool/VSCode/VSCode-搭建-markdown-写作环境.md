@@ -65,11 +65,11 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 常用操作只有三个：
 
 - 截图上传 `Ctrl-Alt-U`  
-  ![20181201170229.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170229.png)
+  ![截图上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102050.gif)
 - 文件管理器选择上传 `Ctrl-Alt-E`  
-  ![20181201170402.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170402.png)
+  ![文件管理器选择上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102356.gif)
 - 输入文件路径上传 `Ctrl-Alt-O`  
-  ![20181201170445.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170445.png)
+  ![输入文件路径上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102418.gif)
 
 > PicGo 默认使用 [smms](https://sm.ms/) 图床，如果你不想使用这个图床，则可以配置 GitHub 或者其他的图床，具体参考 [官方文档](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)。
 

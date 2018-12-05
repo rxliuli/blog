@@ -43,11 +43,11 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 常用操作只有三个：
 
 - 截图上传 `Ctrl-Alt-U`  
-  ![20181201170229.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170229.png)
+  ![截图上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102050.gif)
 - 文件管理器选择上传 `Ctrl-Alt-E`  
-  ![20181201170402.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170402.png)
+  ![文件管理器选择上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102356.gif)
 - 输入文件路径上传 `Ctrl-Alt-O`  
-  ![20181201170445.png](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201170445.png)
+  ![输入文件路径上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102418.gif)
 
 > 如果你不想使用 SMMS 图床，也可以配置 GitHub 或者其他的图床，具体参考 [官方文档](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)。
 
