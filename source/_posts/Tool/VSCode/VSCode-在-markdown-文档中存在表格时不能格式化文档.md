@@ -40,13 +40,9 @@ tags: [VSCode, Markdown, Prettier]
 
 开发者回复说明了这样的内容
 
-```md
-Thanks for the detailed description. The problem is vscode implicitly only allows one "formatter" per language. Then this extension('s formatter) and that of Prettier cannot co-exist.
-
-Related [Microsoft/vscode#41882](https://github.com/Microsoft/vscode/issues/41882).
-
-Is there an option of Prettier to format GFM table? If it can do this, you can disable this extension's formatter with `markdown.extension.tableFormatter.enabled`
-```
+> Thanks for the detailed description. The problem is vscode implicitly only allows one "formatter" per language. Then this extension('s formatter) and that of Prettier cannot co-exist.  
+> Related [Microsoft/vscode#41882](https://github.com/Microsoft/vscode/issues/41882).  
+> Is there an option of Prettier to format GFM table? If it can do this, you can disable this extension's formatter with `markdown.extension.tableFormatter.enabled`  
 
 大意是在 VSCode 中每种语言的格式化程序默认只能有一种，所以 **Markdown All in One** 的表格格式化 和 **Prettier** 的格式化就产生了冲突。然后他给出了解决方案，禁用掉表格格式化。  
 配置如下
