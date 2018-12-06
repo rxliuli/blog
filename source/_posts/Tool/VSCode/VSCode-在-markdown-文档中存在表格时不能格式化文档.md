@@ -20,8 +20,8 @@ tags: [VSCode, Markdown, Prettier]
 - [Markdown PDF](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-不能进行格式化吾辈的第一想法就是 **Markdown All in One** 插件是不是出问题了，毕竟吾辈写 Markdown 文档这么久了，也是第一次遇到这种问题呢\
-吾辈尝试禁用了 **Markdown All in One** 插件后，发现文档确实能够正常格式化了。\
+不能进行格式化吾辈的第一想法就是 **Markdown All in One** 插件是不是出问题了，毕竟吾辈写 Markdown 文档这么久了，也是第一次遇到这种问题呢  
+吾辈尝试禁用了 **Markdown All in One** 插件后，发现文档确实能够正常格式化了。  
 然而这并没能解决问题，因为在 VSCode 书写 markdown 文档的话，**Markdown All in One** 插件的功能是必不可少的（更好的语法高亮，自动完成，生成标题等）。
 
 实际上进行格式化的操作是由 **Prettier** 完成的，所以吾辈觉得应该是 **Markdown All in One** **阻碍** 了 **Prettier** 插件的格式化功能。
@@ -30,8 +30,8 @@ tags: [VSCode, Markdown, Prettier]
 
 ## 确认是否是普遍性问题
 
-之后，吾辈想要确认这是否是一个普遍性的问题。测试了几个 markdown 文档后惊奇的发现有些能够正常格式化，有些就不行。\
-这就很奇怪了，吾辈在逐次删减部分 markdown 内容后终于发现了影响格式化的代码 -- 表格。\
+之后，吾辈想要确认这是否是一个普遍性的问题。测试了几个 markdown 文档后惊奇的发现有些能够正常格式化，有些就不行。  
+这就很奇怪了，吾辈在逐次删减部分 markdown 内容后终于发现了影响格式化的代码 -- 表格。  
 这可真是太意外了，毕竟表格这种东西，感觉上不应该会影响到插件本身呀
 
 ## 解决
@@ -48,7 +48,7 @@ Related [Microsoft/vscode#41882](https://github.com/Microsoft/vscode/issues/4188
 Is there an option of Prettier to format GFM table? If it can do this, you can disable this extension's formatter with `markdown.extension.tableFormatter.enabled`
 ```
 
-大意是在 VSCode 中每种语言的格式化程序默认只能有一种，所以 **Markdown All in One** 的表格格式化 和 **Prettier** 的格式化就产生了冲突。然后他给出了解决方案，禁用掉表格格式化。\
+大意是在 VSCode 中每种语言的格式化程序默认只能有一种，所以 **Markdown All in One** 的表格格式化 和 **Prettier** 的格式化就产生了冲突。然后他给出了解决方案，禁用掉表格格式化。  
 配置如下
 
 ```js
