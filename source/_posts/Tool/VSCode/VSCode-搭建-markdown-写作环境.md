@@ -1,6 +1,7 @@
 ---
 title: VSCode 搭建 markdown 写作环境
 date: 2018-12-01 14:54:37
+updated: 2018-12-06
 tags: [Tool, VSCode, markdown]
 ---
 
@@ -31,26 +32,26 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 
 ## 安装插件
 
-- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)：Markdown 语言支持  
+- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)：Markdown 语言支持，
   提供比 VSCode 原生更加强大的语法高亮，以及非常好用的格式化功能
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)：Markdown 写作规范  
-  没有规范是不行的，即便是 Markdown 如此简单的标记语言亦是如此。它能够告诉我们写 Markdown 时的最佳实践
-- [Markdown PDF](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf)：Markdown 导出 PDF  
+- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)：Markdown 写作规范，
+  没有规范是不行的，即便是 Markdown 如此简单的标记语言亦是如此。它能够提示我们写 Markdown 时的最佳实践
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)：自动修复，
+  markdown 文档中经常有一些不好的格式错误，上面的 markdownlint 插件提示完自然要有自动修复啦
+- [Markdown PDF](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf)：Markdown 导出 PDF，
   写 Markdown 文档固然很方便，然而给别人看（尤其是不会 Markdown 的人）的时候却是不太友好，还是转换为 PDF 这种通用文档更好一点呢
-- [Markdown TOC](https://marketplace.visualstudio.com/items?itemName=AlanWalk.markdown-toc)：生成文章标题  
-  需要在文章顶部生成文章标题索引的话确实需要的呢
-  > 该功能 [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) 本身也有，然而不知为何突然不能使用了，所以便使用这个替代插件。
 
 ## 配置
 
 ```js
 {
-  // 设置打印 PDF 使用的 Chome 浏览器路径
   "markdown-pdf.executablePath": "C://Program Files (x86)//Google//Chrome//Application//chrome.exe",
   // markdown toc 设置兼容 github
   "markdown.extension.toc.githubCompatibility": true,
-  // 禁止 markdown 自动更新目录（行号一直闪跳好烦。。。）
+  // 保存时不要自动更新目录
   "markdown.extension.toc.updateOnSave": false,
+  // 禁用表格格式化功能
+  "markdown.extension.tableFormatter.enabled": false,
 }
 ```
 
@@ -77,6 +78,6 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 
 最后，配置完成的 VSCode 编辑器编辑 Mardkown 的效果图如下
 
-![编辑](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201165338.png)
+![编辑效果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201165338.png)
 
-那么，接下来，便使用 VSCode 愉快的写作吧 `ヾ（＠＾▽＾＠）ノ`
+那么，接下来，便使用 VSCode 愉快的写作吧 ヾ（＠＾ ▽ ＾＠）ノ
