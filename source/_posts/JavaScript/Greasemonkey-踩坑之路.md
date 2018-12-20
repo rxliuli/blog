@@ -2,7 +2,7 @@
 layout: post
 title: Greasemonkey 踩坑之路
 date: 2018-12-19 22:40:04
-updated: 2018-12-20
+updated: 2018-12-21
 tags: [JavaScript, Greasemonkey, 记录]
 ---
 
@@ -13,16 +13,20 @@ tags: [JavaScript, Greasemonkey, 记录]
   - [window 对象不能和外部交换数据](#window-对象不能和外部交换数据)
   - [Greasemonkey API 显示 undefined](#greasemonkey-api-显示-undefined)
   - [内存爆炸](#内存爆炸)
+  - [Greasemonkey 加载时机太晚](#greasemonkey-加载时机太晚)
+    - [等待一段时间再调用，例如等个几秒 Greasemonkey 脚本可能就加载了](#等待一段时间再调用例如等个几秒-greasemonkey-脚本可能就加载了)
+    - [延迟到 Greasemonkey 脚本加载完成再与之交互](#延迟到-greasemonkey-脚本加载完成再与之交互)
+    - [暴露出需要交互的函数等到 Greasemonkey 加载完成后进行回调](#暴露出需要交互的函数等到-greasemonkey-加载完成后进行回调)
 
 ## 场景
 
-最近在玩 `user.js` 脚本，遇到了各种奇怪的问题，便于此处统一记录一下。
+最近在玩 Greasemonkey 脚本，遇到了各种奇怪的问题，便于此处统一记录一下。
 
 ## window 对象不能和外部交换数据
 
 场景
 
-在写 user.js 时遇到的一个奇怪的问题，吾辈想要把某些数据添加到 `window` 对象上，方便在 DevTool console 中进行测试。然而却由此印发了一个新的问题，即 `window` 对象不是真正的 `window` 对象的问题。
+在写 Greasemonkey 脚本时遇到的一个奇怪的问题，吾辈想要把某些数据添加到 `window` 对象上，方便在 DevTool console 中进行测试。然而却由此印发了一个新的问题，即 `window` 对象不是真正的 `window` 对象的问题。
 
 ```js
 // ==UserScript==
@@ -64,7 +68,7 @@ tags: [JavaScript, Greasemonkey, 记录]
 > - Unless the @unwrap metadata imperative is present in the user script header, the entire script is wrapped inside an anonymous function, to guarantee the script's identifiers do not collide with identifiers present in the Mozilla JavaScript sandbox. This function wrapper captures any function definitions and var variable declarations made (e.g. var i = 5;) into the function's local scope. Declarations made without var will however end up on the script's this object, which in Greasemonkey is the global object, contrary to in the normal browser object model, where the window object fills this function. In effect, after i = 5;, the values of window['i'] and window.i remain undefined, whereas this['i'] and this.i will be 5. See also: Global object
 > - In order to access variables on the page, use the unsafeWindow object. To use values defined in a script, simply reference them by their names.
 
-大意是 Greasemonkey 为了安全所以 `user.js` 脚本是在沙箱中执行的，并且限制了一些内容。其中就包括了 `window` 对象并非浏览器的原生对象，而是 `XPCNativeWrapper`。  
+大意是 Greasemonkey 为了安全所以 Greasemonkey 脚本是在沙箱中执行的，并且限制了一些内容。其中就包括了 `window` 对象并非浏览器的原生对象，而是 `XPCNativeWrapper`。  
 所以，`XPCNativeWrapper` 是什么。。。？（一个 Greasemonkey 的坑太多了吧 #吐血）  
 吾辈找到了两篇文章
 
@@ -223,9 +227,128 @@ tags: [JavaScript, Greasemonkey, 记录]
 
 ---
 
-解决方案
+解决
 
 Debug 之后发现是调用 `GM.setValue()` 没有使用 `await` 造成的异步请求数量不断积累最终导致网页崩溃。果然 Promise 什么的还是要小心一点好呀  
-当然，不信的话你也可以新建一个 `user.js` 脚本尝试一下内存爆炸的感觉咯
+当然，不信的话你也可以新建一个 Greasemonkey 脚本尝试一下内存爆炸的感觉咯
 
-> 递归不是主要问题，吾辈 PC 上的 Chrome 最多到 1.4w+ 次递归就会抛出异常（网页没有崩溃），所以递归不是主要问题呀
+> 递归不是主要问题，吾辈 PC 上的 Chrome 最多到 1.4w+ 次递归就会抛出异常（网页没有崩溃），还没到 1.4w+ 次，所以说递归不是主要问题呀
+
+## Greasemonkey 加载时机太晚
+
+场景
+
+Greasemonkey 的加载是在页面加载完毕时，类似于 `window.onload`，所以造成了一个问题：如果想要在网站的 JavaScript 代码中与 Greasemonkey 脚本交互，那么必须要等到 Greasemonkey 加载完成，而加载完成的时机是不确定的。
+
+吾辈目前想要的解决方案有三种
+
+### 等待一段时间再调用，例如等个几秒 Greasemonkey 脚本可能就加载了
+
+思路
+
+现在没有人，我等会再来问一次！
+
+实现
+
+```js
+var wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+```
+
+使用
+
+```js
+// 实现和调用最为简单，但无法保证等待之后就一定能获得资源了
+wait(1000).then(() => console.log(完成))
+```
+
+### 延迟到 Greasemonkey 脚本加载完成再与之交互
+
+思路
+
+有人吗? 没有的话我等会再来问！
+
+实现
+
+```js
+/**
+ * 轮询等待指定资源加载完毕再执行操作
+ * 使用 Promises 实现，可以使用 ES7 的 {@async}/{@await} 调用
+ * @param {Function} resourceFn 判断必须的资源是否存在的方法
+ * @param {Object} options 选项
+ * @returns Promise 对象
+ */
+function waitResource(resourceFn, options) {
+  var optionsRes = Object.assign(
+    {
+      interval: 1000,
+      max: 10
+    },
+    options
+  )
+  var current = 0
+  return new Promise((resolve, reject) => {
+    var timer = setInterval(() => {
+      if (resourceFn()) {
+        clearInterval(timer)
+        resolve()
+      }
+      current++
+      if (current >= optionsRes.max) {
+        clearInterval(timer)
+        reject('等待超时')
+      }
+    }, optionsRes.interval)
+  })
+}
+```
+
+使用
+
+```js
+var resourceFn = (i => () => {
+  console.log(`第 ${i++} 次调用`)
+  return false
+})(1)
+
+waitResource(resourceFn, {
+  interval: 1000,
+  max: 3
+})
+  .then(() => console.log('完成'))
+  .catch(err => console.log(err))
+```
+
+### 暴露出需要交互的函数等到 Greasemonkey 加载完成后进行回调
+
+思路
+
+现在没有人，有人的时候再叫我！
+
+实现
+
+```js
+/**
+ * 等待被调用
+ * @param {Number} ms 超时毫秒数
+ * @param {String} name 准备被调用的挂载到 window 对象上的方法名
+ */
+function waitingToCall(ms, name = 'waiting') {
+  return new Promise((resolve, reject) => {
+    var timeout = setTimeout(() => {
+      reject('等待超时')
+    }, ms)
+    window[name] = () => {
+      clearTimeout(timeout)
+      resolve()
+    }
+  })
+}
+```
+
+使用
+
+```js
+waitingToCall(3000, 'waiting')
+  .then(() => console.log('完成'))
+  .catch(err => console.log(err))
+```
