@@ -2,14 +2,14 @@
 layout: post
 title: IDEA 创建和运行一个简单的 maven web 项目
 date: 2018-12-04 18:11:33
-tags: [IDEA, Java, Maven, Web]
+tags: [IDEA, Java, Maven, Web, 教程]
 ---
 
 # IDEA 创建和运行一个简单的 maven web 项目
 
 ## 场景
 
-本文是为了帮助刚接触 IDEA 的萌新快速了解如何创建与运行一个 Maven Web 项目，但由于 [知识的诅咒](https://en.wikipedia.org/wiki/Curse_of_knowledge)（#笑），如果有什么不太明白或者发现了什么问题，欢迎在最下方进行留言哟
+本文是为了帮助刚接触 IDEA 的萌新快速了解如何创建与运行一个 Maven Web 项目，但由于 [知识的诅咒](https://en.wikipedia.org/wiki/Curse_of_knowledge)（#笑），如果有什么不太明白或者发现了什么问题，欢迎在最下方进行留言哦
 
 ## 创建
 
@@ -29,7 +29,7 @@ tags: [IDEA, Java, Maven, Web]
 
 - GroupId：代表该项目的实体或组织。例如 `com.rxliuli.example` 就是一个组织 id。
   > 如果你对 maven 没有任何基础，可以直接使用 `com.{你的英文名}` 作为组织 id
-- ArtifactId：实际的工件名称。例如 `idea-maven=webapp-example` 就指明了该项目就是一个 idea 创建的 maven webapp 案例项目
+- ArtifactId：实际的工件名称。例如 `idea-maven-webapp-example` 就指明了该项目就是一个 idea 创建的 maven webapp 案例项目
 - Version：该项目的版本号，没什么好说的。
 
 ![Maven 基本配置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204183441.png)
@@ -64,7 +64,7 @@ tags: [IDEA, Java, Maven, Web]
 7. 选择要运行的 war 包  
    配置完成会发现下面多了一条警告 `Warning:No artifacts marked for deployment`，意思是没有 jar/war 包需要被部署，这里我们只要点一下 Fix，并且选择 `war exploded`，之后 IDEA 会自动完成剩余的事  
    ![部署 war 项目](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204190459.png)
-   > 注：有人觉得每次都要配置 Tomcat 真的挺麻烦的，这里吾辈坚决声明这是误解，只有第一次才需要配置各种环境，后面 IDEA 使能够 **记住** 的。
+   > 注：有人觉得每次都要配置 Tomcat 真的挺麻烦的，这里吾辈坚决声明这是误解，只有第一次才需要配置各种环境，后面 IDEA 是能够**记住**的。
 8. 最后，修改一下运行配置的名字，然后点击 OK 按钮  
    ![修改运行配置的名字](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181204191042.png)
 9. 在右上角的运行配置里应该已经显示出刚才添加的运行配置项 Tomcat 了，这是点击右边的 Debug 按钮，一切就开始了  
@@ -192,7 +192,7 @@ public class HomeServlet extends HttpServlet {
 ## 总结
 
 - 这个演示项目吾辈也放到了 [GitHub](https://github.com/rxliuli/idea-maven-webapp-example) 上，如果需要可以随便下载
-- 如果你还不了解 maven 的话强烈建议稍微了解一下 maven 的基本概念。可以按照吾辈 blog 上的教程 [Windows 上 Maven 安装与使用](https://blog.rxliuli.com/2018/11/09/java/windows-%E4%B8%8A-maven-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/) 进行安装
+- 如果你还不了解 maven 的话强烈建议稍微了解一下 maven 的基本概念。可以参照吾辈 blog 上的教程 [Windows 上 Maven 安装与使用](https://blog.rxliuli.com/2018/11/09/java/windows-%E4%B8%8A-maven-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/) 进行安装
 - 如果你还不了解 IDEA（废话，这不是当然的嘛！#打），推荐阅读 [IntelliJ IDEA 简体中文专题教程](https://github.com/judasn/IntelliJ-IDEA-Tutorial) 进行入门
 
 那么，这篇教程到这里便结束啦，希望我们都能愉快地使用 IDEA 呢 o(〃＾ ▽ ＾〃)o
