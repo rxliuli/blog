@@ -2,6 +2,7 @@
 layout: post
 title: MySQL 行列转换
 date: 2018-12-21 15:53:57
+updated: 2018-12-23
 tags: [MySQL, 记录]
 ---
 
@@ -381,12 +382,18 @@ sql 的技巧确实很多，然而相比之下 sql 只是一门 [结构化查询
 转换方法
 
 ```js
+/**
+ * 行转列
+ * @param {Array} arr 需要进行行转列的数组
+ * @returns {Array} 行转列得到的数组
+ */
 function rowToCol(arr) {
   /**
    * js 数组按照某个条件进行分组
    * 注：分组完成后会得到一个二维数组，并且顺序会被打乱
    * 时间复杂度为 2On
-   * @param fn 分组条件函数
+   * @param {Function} {fn} 元素分组的方法，默认使用 {@link JSON.stringify()}
+   * @returns {Array} 新的数组
    */
   Array.prototype.groupBy = function(fn = item => JSON.stringify(item)) {
     // 将元素按照分组条件进行分组得到一个 条件 -> 数组 的对象
@@ -402,8 +409,8 @@ function rowToCol(arr) {
 
   /**
    * js 的数组去重方法
-   * 注: 极大量的数组尽量避免使用该方法, 该方法效率很高但内存但代价是内存占用
-   * @returns {*[]} 进行去重操作之后得到的新的数组 (原数组并未改变)
+   * @param {Function} {fn} 唯一标识元素的方法，默认使用 {@link JSON.stringify()}
+   * @returns {Array} 进行去重操作之后得到的新的数组 (原数组并未改变)
    */
   Array.prototype.uniqueBy = function(fn = item => JSON.stringify(item)) {
     const obj = {}
@@ -412,6 +419,11 @@ function rowToCol(arr) {
     })
   }
 
+  /**
+   * 获取所有的科目 -> 分数映射表
+   * 看起来函数有点奇怪，但实际上只是一个闭包函数而已
+   * @returns {Object} 所有的科目 -> 分数映射表的拷贝
+   */
   const subjectMap = (obj => () => Object.assign({}, obj))(
     arr
       .map(row => row.subject)
@@ -484,7 +496,13 @@ function rowToCol(arr) {
 那么，如何转换回来呢？转换回来的话却是简单许多了呢
 
 ```js
+/**
+ * 列转行
+ * @param {Array} arr 需要进行列转行的数组
+ * @returns {Array} 列转行得到的数组
+ */
 function colToRow(arr) {
+  // 定义好需要进行合并列的数组
   var cols = ['语文', '英语', '数学', '物理', '化学', '生物']
   return arr.flatMap(row =>
     cols
