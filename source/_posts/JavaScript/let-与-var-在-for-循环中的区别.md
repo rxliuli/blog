@@ -36,7 +36,7 @@ for (var i = 0; i < 3; i++) {
 
 画图的话大概是下面这样
 
-![js for 循环和 setTimeout 理解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227180506.png)
+![js for 循环和 setTimeout 理解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227214410.png)
 
 那么答案只有一个，两段代码执行的结果应该都是 `0 1 2` 才对！Ｏ(≧▽≦)Ｏ
 
