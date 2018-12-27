@@ -9,7 +9,7 @@ tags: [JavaScript, 记录]
 
 ## 场景
 
-今天遇到的一个很有趣的题目，下面两段 js 代码执行的结果是什么？
+今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？
 
 ```js
 for (let i = 0; i < 3; i++) {
@@ -25,16 +25,16 @@ for (var i = 0; i < 3; i++) {
 }
 ```
 
-嗯，乍看之下好像没什么区别，只有一个 `let` 和 `var` 的声明方式不一样而已。
+嗯，乍看之下好像没什么区别，只有声明方式 `let` 和 `var` 不一样而已。
 
 ## 分析
 
-这里先说一下吾辈的两个关于 js 的认知
+这里先说一下吾辈两个关于 js 的认知
 
 1. js 里 `setTimeout` 如果延迟时间为 0 应该会立刻执行
 2. js 里的 for 循环和 java 应该差不多，for 循环内部是单独的作用域
 
-画图的话大概是下面这样
+图解如下
 
 ![js for 循环和 setTimeout 理解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227214410.png)
 
@@ -57,7 +57,7 @@ for (var i = 0; i < 3; i++) {
 
 在 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/EventLoop#%E9%9B%B6%E5%BB%B6%E8%BF%9F) 上有一段关于零延迟的描述
 
-> ## 零延迟
+> 零延迟
 >
 > 零延迟并不意味着回调会立即执行。以 0 为第二参数调用 `setTimeout` 并不表示在 `0` 毫秒后就立即调用回调函数。  
 > 其等待的时间取决于队列里待处理的消息数量。在下面的例子中，"this is just a message" 将会在回调获得处理之前输出到控制台，这是因为延迟参数是运行时处理请求所需的最小等待时间，但并不保证是准确的等待时间。  
