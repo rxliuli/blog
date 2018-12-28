@@ -2,6 +2,7 @@
 layout: post
 title: 使用 Greasemonkey 解除网页复制粘贴限制
 date: 2018-12-23 15:10:04
+updated: 2018-12-28
 tags: [JavaScript, Greasemonkey]
 ---
 
@@ -9,7 +10,7 @@ tags: [JavaScript, Greasemonkey]
 
 ## 场景
 
-在浏览网页时经常会出现的一件事，当我想要复制，突然发现复制好像没用了？（[知乎禁止转载的文章](https://www.zhihu.com/question/23994286)）亦或者是复制的最后多出了一点内容（[简书](https://www.jianshu.com/p/0a85e4c7d3d3)），或者干脆直接不能选中了（[360doc](http://www.360doc.cn)）。粘贴时也有可能发现一直粘贴不了（[支付宝登录](https://auth.alipay.com/login/index.htm)）。
+在浏览网页时经常会出现的一件事，当吾辈想要复制，突然发现复制好像没用了？（[知乎禁止转载的文章](https://www.zhihu.com/question/23994286)）亦或者是复制的最后多出了一点内容（[简书](https://www.jianshu.com/p/0a85e4c7d3d3)），或者干脆直接不能选中了（[360doc](http://www.360doc.cn)）。粘贴时也有可能发现一直粘贴不了（[支付宝登录](https://auth.alipay.com/login/index.htm)）。
 
 ## 问题
 
@@ -483,163 +484,106 @@ document.addEventListener(
 
 ## 重新实现 `addEventListener` 然后删除掉网站自定义的事件
 
-> 该实现来自 <https://greasyfork.org/en/scripts/41075>，几乎完美实现了解除限制的功能
+> 该实现来灵感来源自 <https://greasyfork.org/en/scripts/41075>，几乎完美实现了解除限制的功能
+
+原理很简单，修改原型，重新实现 `EventTarget` 和 `docuement` 的 `addEventListener` 函数
 
 ```js
 // ==UserScript==
-// @namespace         https://www.github.com/Cat7373/remove-web-limits/
-// @name              网页限制解除（精简优化版）
-// @description       解除大部分网站禁止复制、剪切、选择文本、右键菜单的限制。
-// @homepageURL       https://github.com/xinggsf/gm/
-// @supportURL        https://github.com/Cat7373/remove-web-limits/issues/
-// @author            Cat73  xinggsf
-// @version           1.5.5
-// @license           LGPLv3
-// @include           https://www.zhihu.com/*
-// @include           https://www.bilibili.com/read/*
-
-// @include           *://b.faloo.com/*
-// @include           *://bbs.coocaa.com/*
-// @include           *://book.hjsm.tom.com/*
-// @include           *://book.zhulang.com/*
-// @include           *://book.zongheng.com/*
-// @include           *://book.hjsm.tom.com/*
-// @include           *://chokstick.com/*
-// @include           *://chuangshi.qq.com/*
-// @include           *://yunqi.qq.com/*
-// @include           *://city.udn.com/*
-// @include           *://cutelisa55.pixnet.net/*
-// @include           *://huayu.baidu.com/*
-// @include           *://tiyu.baidu.com/*
-// @include           *://yd.baidu.com/*
-// @include           *://yuedu.baidu.com/*
-// @include           *://imac.hk/*
-// @include           https://life.tw/*
-// @include           *://luxmuscles.com/*
-// @include           *://read.qidian.com/*
-// @include           *://www.15yan.com/*
-// @include           *://www.17k.com/*
-// @include           *://www.18183.com/*
-// @include           *://www.360doc.com/*
-// @include           *://www.eyu.com/*
-// @include           *://www.hongshu.com/*
-// @include           *://www.coco01.com/*
-// @include           *://news.missevan.com/*
-// @include           *://www.hongxiu.com/*
-// @include           *://www.imooc.com/*
-// @include           *://www.readnovel.com/*
-// @include           *://www.tadu.com/*
-// @include           *://www.jjwxc.net/*
-// @include           *://www.xxsy.net/*
-// @include           *://www.z3z4.com/*
-// @include           *://yuedu.163.com/*
-// @grant             GM_addStyle
-// @run-at            document-start
-// @updateUrl    https://raw.githubusercontent.com/xinggsf/gm/master/Remove%20web%20limits.user.js
+// @name         force copy
+// @namespace    http://github.com/rxliuli
+// @version      1.0
+// @description  破解禁止复制/剪切/粘贴/选择/右键菜单的网站
+// @author       rxliuli
+// @include      https://www.jianshu.com/*
+// @grant        GM.getValue
+// @grant        GM.setValue
+// 这里的 @run-at 非常重要，设置在文档开始时就载入脚本
+// @run-at       document-start
 // ==/UserScript==
 
-'use strict'
-// 域名规则列表
-const rules = {
-  plus: {
-    name: 'default',
-    hook_eventNames: 'contextmenu|select|selectstart|copy|cut|dragstart',
-    unhook_eventNames: 'mousedown|mouseup|keydown|keyup',
-    dom0: true,
-    hook_addEventListener: true,
-    hook_preventDefault: true,
-    add_css: true
-  }
-}
+;(() => {
+  /**
+   * 监听所有的 addEventListener, removeEventListener 事件
+   */
+  var documentAddEventListener = document.addEventListener
+  var eventTargetAddEventListener = EventTarget.prototype.addEventListener
+  var documentRemoveEventListener = document.removeEventListener
+  var eventTargetRemoveEventListener = EventTarget.prototype.removeEventListener
+  var events = []
 
-const returnTrue = e => true
-// 获取目标域名应该使用的规则
-const getRule = host => {
-  return rules.plus
-}
-const dontHook = e => !!e.closest('form')
-// 储存被 Hook 的函数
-const EventTarget_addEventListener = EventTarget.prototype.addEventListener
-const document_addEventListener = document.addEventListener
-const Event_preventDefault = Event.prototype.preventDefault
-// 要处理的 event 列表
-let hook_eventNames, unhook_eventNames, eventNames
-
-// Hook addEventListener proc
-function addEventListener(type, func, useCapture) {
-  let _addEventListener =
-    this === document ? document_addEventListener : EventTarget_addEventListener
-  if (!hook_eventNames.includes(type)) {
-    _addEventListener.apply(this, arguments)
-  } else {
-    _addEventListener.apply(this, [type, returnTrue, useCapture])
-  }
-}
-
-// 清理或还原DOM节点的onxxx属性
-function clearLoop() {
-  let type,
-    prop,
-    c = [document, document.body, ...document.getElementsByTagName('div')],
-    // https://life.tw/?app=view&no=746862
-    e = document.querySelector('iframe[src="about:blank"]')
-  if (e && e.clientWidth > 99 && e.clientHeight > 11) {
-    e = e.contentWindow.document
-    c.push(e, e.body)
-  }
-
-  for (e of c) {
-    if (!e) continue
-    e = e.wrappedJSObject || e
-    for (type of eventNames) {
-      prop = 'on' + type
-      e[prop] = null
-    }
-  }
-}
-
-function init() {
-  // 获取当前域名的规则
-  let rule = getRule(location.host)
-
-  // 设置 event 列表
-  hook_eventNames = rule.hook_eventNames.split('|')
-  // Allowed to return value
-  unhook_eventNames = rule.unhook_eventNames.split('|')
-  eventNames = hook_eventNames.concat(unhook_eventNames)
-
-  if (rule.dom0) {
-    setInterval(clearLoop, 9e3)
-    setTimeout(clearLoop, 1e3)
-    window.addEventListener('load', clearLoop, true)
-  }
-
-  if (rule.hook_addEventListener) {
-    EventTarget.prototype.addEventListener = addEventListener
-    document.addEventListener = addEventListener
-  }
-
-  if (rule.hook_preventDefault) {
-    Event.prototype.preventDefault = function() {
-      if (dontHook(this.target) || !eventNames.includes(this.type)) {
-        Event_preventDefault.apply(this, arguments)
-      }
+  /**
+   * 用来保存监听到的事件信息
+   */
+  class Event {
+    constructor(el, type, listener, useCapture) {
+      this.el = el
+      this.type = type
+      this.listener = listener
+      this.useCapture = useCapture
     }
   }
 
-  if (rule.add_css)
-    GM_addStyle(`
-      html, * {
-        -webkit-user-select:text !important;
-        -moz-user-select:text !important;
-        user-select:text !important;
-      }
-      ::-moz-selection {color:#111 !important; background:#05D3F9 !important;}
-      ::selection {color:#111 !important; background:#05D3F9 !important;}
-    `)
-}
+  /**
+   * 自定义的添加事件监听函数
+   * @param {String} type 事件类型
+   * @param {EventListener} listener 事件监听函数
+   * @param {Boolean} {useCapture} 是否需要捕获事件冒泡，默认为 false
+   */
+  function addEventListener(type, listener, useCapture = false) {
+    var _this = this
+    var $addEventListener =
+      _this === document
+        ? documentAddEventListener
+        : eventTargetAddEventListener
+    events.push(new Event(_this, type, listener, useCapture))
+    $addEventListener.apply(this, arguments)
+  }
 
-init()
+  /**
+   * 自定义的根据类型删除事件函数
+   * 该方法会删除这个类型下面全部的监听函数，不管数量
+   * @param {String} type 事件类型
+   */
+  function removeEventListenerByType(type) {
+    var _this = this
+    var $removeEventListener =
+      _this === document
+        ? documentRemoveEventListener
+        : eventTargetRemoveEventListener
+    var removeIndexs = events
+      .map((e, i) => (e.el === _this || e.type === arguments[0] ? i : -1))
+      .filter(i => i !== -1)
+    removeIndexs.forEach(i => {
+      var e = events[i]
+      $removeEventListener.apply(e.el, [e.type, e.listener, e.useCapture])
+    })
+    removeIndexs.sort((a, b) => b - a).forEach(i => events.splice(i, 1))
+  }
+
+  function clearEvent() {
+    var eventTypes = [
+      'copy',
+      'cut',
+      'select',
+      'contextmenu',
+      'selectstart',
+      'dragstart'
+    ]
+    document.querySelectorAll('*').forEach(el => {
+      eventTypes.forEach(type => el.removeEventListenerByType(type))
+    })
+  }
+
+  ;(function() {
+    document.addEventListener = EventTarget.prototype.addEventListener = addEventListener
+    document.removeEventListenerByType = EventTarget.prototype.removeEventListenerByType = removeEventListenerByType
+  })()
+
+  window.onload = function() {
+    clearEvent()
+  }
+})()
 ```
 
 ---
