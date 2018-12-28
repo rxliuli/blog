@@ -2,7 +2,7 @@
 layout: post
 title: MySQL 行列转换
 date: 2018-12-21 15:53:57
-updated: 2018-12-23
+updated: 2018-12-28
 tags: [MySQL, 记录]
 ---
 
@@ -333,7 +333,7 @@ where biological != 0;
 
 ### sql 行转列的问题
 
-sql 的技巧确实很多，然而相比之下 sql 只是一门 [结构化查询语言](https://zh.wikipedia.org/wiki/SQL)，并不算是真正的查询语言呢，行转列/列转行这些需求放到真正的编程语言中是很容易处理的，下面演示使用 js 的实现。
+sql 的技巧确实很多，然而相比之下 sql 只是一门 [结构化查询语言](https://zh.wikipedia.org/wiki/SQL)，并不算是真正的编程语言呢！行转列/列转行这些需求放到真正的编程语言中是很容易处理的，下面演示使用 js 的实现
 
 ### 使用 JavaScript 实现行转列
 
