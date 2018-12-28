@@ -2,6 +2,7 @@
 layout: post
 title: let 与 var 在 for 循环中的区别
 date: 2018-12-27 17:32:38
+updated: 2018-12-28
 tags: [JavaScript, 记录]
 ---
 
@@ -163,7 +164,7 @@ for (let i = 0; i < 3; i++) {
 分析一下
 
 ```js
-for (let i = 0; i < 3; i++) {
+for (var i = 0; i < 3; i++) {
   setTimeout(() => console.log(i), 0)
 }
 ```
