@@ -16,7 +16,7 @@ tags: [HTML, JavaScript, 记录]
 ```html
 <form action="" id="form" onsubmit="submitFn()">
   <input type="text" name="username" placeholder="文本输入框" />
-  <button onclick="updateFn">修改</button> <button type="submit">提交</button>
+  <button onclick="updateFn()">修改</button> <button type="submit">提交</button>
 </form>
 <script>
   // 提交方法
@@ -26,7 +26,7 @@ tags: [HTML, JavaScript, 记录]
 
   // 修改方法
   function updateFn() {
-    const $username = document.querySelector('#username')
+    const $username = document.querySelector('#form > input')
     if (!$username.value) {
       return false
     }
@@ -55,7 +55,7 @@ tags: [HTML, JavaScript, 记录]
 <form action="" id="form" onsubmit="submitFn()">
   <input type="text" name="username" placeholder="文本输入框" />
   <!-- 实际上只是在这里加了一个 type="button" 属性而已 -->
-  <button type="button" onclick="updateFn">修改</button>
+  <button type="button" onclick="updateFn()">修改</button>
   <button type="submit">提交</button>
 </form>
 <script>
@@ -66,7 +66,7 @@ tags: [HTML, JavaScript, 记录]
 
   // 修改方法
   function updateFn() {
-    const $username = document.querySelector('#username')
+    const $username = document.querySelector('#form > input')
     if (!$username.value) {
       return false
     }
