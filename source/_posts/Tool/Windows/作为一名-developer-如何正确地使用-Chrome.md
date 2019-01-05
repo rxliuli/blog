@@ -2,10 +2,22 @@
 layout: post
 title: 作为一名 developer 如何正确地使用 Chrome
 date: 2018-12-24 14:08:52
+updated: 2019-01-05
 tags: [Chrome, Tool, 教程]
 ---
 
 # 作为一名 developer 如何正确地使用 Chrome
+
+- [作为一名 developer 如何正确地使用 Chrome](#作为一名-developer-如何正确地使用-chrome)
+  - [场景](#场景)
+  - [DevTool](#devtool)
+    - [Network](#network)
+    - [Element](#element)
+    - [Sources](#sources)
+  - [使用插件](#使用插件)
+    - [日常使用](#日常使用)
+    - [Stylus](#stylus)
+    - [Tampermonkey](#tampermonkey)
 
 ## 场景
 
@@ -69,6 +81,8 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 ## 使用插件
 
 自从 Firefox59 以来，随着大量旧体系的插件大量失效，Firefox 的插件库已经不像以往了。如今，Chrome 的插件库是这个星球上最庞大的浏览器插件库了。如果你还没有使用过插件，那恐怕只能使用 Chrome 的一部分功能罢了。
+
+### 日常使用
 
 - [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp)：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
 - [Checker Plus for Gmail™](https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj)：对于日常使用 Gmail 的吾辈而言非常有用
@@ -211,9 +225,11 @@ body::-webkit-scrollbar-track-piece {
 
 那么，说的好像很厉害的样子，具体能做些什么呢？下面列出吾辈常用的 user.js 脚本
 
+- [百度网盘导出数据](https://greasyfork.org/zh-CN/scripts/375701)：百度网盘将文件数据导出出来便于二次分析
 - [為什麼你們就是不能加個空格呢？](https://greasyfork.org/scripts/2185)：网站本身不加空格吾辈帮它加咯
 - [Google Hit Hider by Domain](https://greasyfork.org/scripts/1682)：Google 搜索结果过滤域名
 - [网页限制解除](https://greasyfork.org/scripts/41075)：解除网页不能复制/粘贴/右键的问题
+- [bilibili merged flv+mp4+ass+enhance](https://greasyfork.org/zh-CN/scripts/372516)：下载 bilibili 上的视频
 - [Ci-Aria2 百度云盘增强版](https://greasyfork.org/scripts/40496)：提取百度网盘下载直链
 - [网盘自动填写密码](https://greasyfork.org/scripts/29762)：自动填写百度网盘提取密码
 - [Booru Downloader + Viewer](https://greasyfork.org/scripts/34175)：图站抓图之用
@@ -222,3 +238,7 @@ body::-webkit-scrollbar-track-piece {
 哦，如果你很懒，也可以先去 [Greasy Fork](https://greasyfork.org) 搜索一下是否有你需要的 user.js 脚本。有的话可以直接安装。
 
 > Greasy Fork 上的脚本全部都是开源的，如果你不信任其他开发者，可以随意对脚本进行检查。
+
+---
+
+那么，有关 Chrome 的使用就到这里啦。如果你也知道什么有趣的操作，可以在下方留言告诉吾辈呢
