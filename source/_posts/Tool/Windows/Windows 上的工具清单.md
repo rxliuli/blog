@@ -1,7 +1,7 @@
 ---
 title: Windows 上的工具清单
 date: 2018-08-21
-updated: 2018-12-19
+updated: 2019-01-05
 tags: [Tool, Windows]
 ---
 
@@ -133,37 +133,35 @@ tags: [Tool, Windows]
 
 常用的 Plugin：
 
-- AutoPagerize：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
-- Checker Plus for Gmail™：对于日常使用 Gmail 的吾辈而言非常有用
-- Checker Plus for Google Calendar™：日常使用 Google Calendar 方便进行提醒
-- crxMouse Chrome™ 手势：鼠标手势插件，可以使用手势更简单地完成一些事情
-- Dark Reader：为所有网站加上黑色主题，大部分情况下都还不错
-- Enhancer for YouTube™：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
-- Fatkun 图片批量下载：批量下载网页上的图片，偶尔用一下吧
-- GitHub Hovercard：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
-- GitHub Plus：GitHub 增强插件，显示仓库大小并可以下载单个文件
-- Google 文档、表格及幻灯片的 Office 编辑扩展程序：使用 Chrome 浏览本地 Word，Excel，PPT 文档
-- Insight.io for Github：GitHub 增强插件，仓库文件树状导航列表
-- Isometric Contributions：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
-- IDM Integration Module：IDM Chrome 集成插件
-- Image Search Options：使用右键以图搜图
-- JetBrains IDE Support：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与上面的 IDEA 插件配合使用
-- LastPass: Free Password Manager：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
-- Mailto: for Gmail™：对于 mailto 链接以 Gmail 网页版打开
-- Markdown Here：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
-- Momentum：新标签页插件，这个纯粹看个人喜好
-- Neat URL：移除网址中的无用段，例如返利链接后面的参数
-- OwO：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
-- Proxy SwitchyOmega：科学上网必需
-- RightToCopy：强制复制内容，有些网站就是不让复制，吾辈偏要！
-- Stylus：使用自定义网站样式的插件，比 Stylish 的名声好一些
-- Tampermonkey：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
-- The Great Suspender：自动休眠标签页，避免 Chrome 使用的内存太过庞大
-- uBlock Origin：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
-- 扩展管理器（Extension Manager）：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
-- WEB 前端助手(FeHelper)：貌似是百度的前端插件，但目前还没有什么流氓行为
-- 隐私獾：拦截追踪器，并且防止 WebRTC 泄露，和 uBlock Origin 算是互补关系吧
-- 快翻译：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
+- [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp)：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
+- [Checker Plus for Gmail™](https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj)：对于日常使用 Gmail 的吾辈而言非常有用
+- [crxMouse Chrome™ 手势](https://chrome.google.com/webstore/detail/crxmouse-chrome-gestures/jlgkpaicikihijadgifklkbpdajbkhjo)：鼠标手势插件，可以使用手势更简单地完成一些事情
+- [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)：为所有网站加上黑色主题，大部分情况下都还不错
+- [Enhanced Github](https://chrome.google.com/webstore/detail/anlikcnbgdeidpacdbdljnabclhahhmd)：显示 GitHub Repository 大小，允许单独下载每一个文件
+- [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
+- [Fatkun 图片批量下载](https://chrome.google.com/webstore/detail/fatkun-batch-download-ima/nnjjahlikiabnchcpehcpkdeckfgnohf)：批量下载网页上的图片，偶尔用一下吧
+- [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp)：FDM Chrome 集成插件，将 Chrome 下载链接使用 FDM 多线程下载
+- [GitHub Hovercard](https://chrome.google.com/webstore/detail/github-hovercard/mmoahbbnojgkclgceahhakhnccimnplk)：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
+- [Image Search Options](https://chrome.google.com/webstore/detail/image-search-options/kljmejbpilkadikecejccebmccagifhl)：使用右键以图搜图
+- [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien)：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
+- [JetBrains IDE Support](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji)：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与 IDEA 的插件配合使用
+- [LastPass: Free Password Manager](https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd)：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
+- [Mailto: for Gmail™](https://chrome.google.com/webstore/detail/mailto-for-gmail/dgkkmcknielgdhebimdnfahpipajcpjn)：对于 mailto 协议的链接以 Gmail 网页版打开
+- [Markdown Here](https://chrome.google.com/webstore/detail/markdown-here/elifhakcjgalahccnjkneoccemfahfoa)：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
+- [Neat URL](https://chrome.google.com/webstore/detail/neat-url/jchobbjgibcahbheicfocecmhocglkco)：移除网址中的无用段，例如返利链接后面的参数
+- [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)：GitHub 代码树状图插件，方便查看项目文件
+- [OwO](https://chrome.google.com/webstore/detail/owo/ckfodameiahfhlainaclajkgfagkpodb)：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
+- [Proxy SwitchyOmega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)：科学上网必需
+- [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne)：使用自定义网站样式的插件，比 Stylish 的名声好一些
+- [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp)：新标签页插件
+- [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
+- [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg)：自动休眠标签页，避免 Chrome 使用的内存太过庞大
+- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
+- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 Vuejs 选项卡，便于对 Vuejs 进行调试
+- [WebRTC Network Limiter](https://chrome.google.com/webstore/detail/webrtc-network-limiter/npeicpdbkakmehahjeeohfdhnlpdklia)：阻止浏览器通过 WebRTC 泄露 IP 地址
+- [WEB 前端助手(FeHelper)](https://chrome.google.com/webstore/detail/web%E5%89%8D%E7%AB%AF%E5%8A%A9%E6%89%8Bfehelper/pkgccpejnmalmdinmhkkfafefagiiiad)：貌似是百度的前端插件，但目前还没有什么流氓行为
+- [快翻译](https://chrome.google.com/webstore/detail/%E5%BF%AB%E7%BF%BB%E8%AF%91/chpeaiibggkmaongjphijmielpkokcdg)：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
+- [扩展管理器（Extension Manager）](https://chrome.google.com/webstore/detail/extension-manager/gjldcdngmdknpinoemndlidpcabkggco)：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
 
 Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开始变得越来越封闭了。首先是 Chrome 应用被删除，现在又禁止安装非官方商店中的第三方插件（目前仍可以通过开发者模式安装），真心越来越麻烦了。
 
