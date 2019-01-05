@@ -47,15 +47,167 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 
    ![Break on](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190104221816.png)
 
+### Sources
+
+1. `Drawer Show Search`  
+   显示搜索框，全文搜索当前页面载入的代码，用于快速定位到指定的代码片段。如果你不知道某段代码在什么地方，就可以使用它快速查找。搜索的内容可以使用正则表达式以及区分大小写模式。
+   > 在除了 Console 选项卡之外都可以使用 `CS-F` 直接打开
+2. Debug
+   - 预览表达式结果
+     当你选中一个表达式后，鼠标悬浮在选中的代码上，Chrome 就会自动计算出表达式的结果，并在鼠标附近显示出来。
+     > 注：
+     >
+     > - 表达式不是代码片段，所以如果选中多段代码是不会得到结果的
+     > - 非纯函数，例如使用了 Ajax 请求
+   - `Evaluate in console`  
+     想要查看某段代码执行的结果，便可以选中这段代码，然后右键选择在控制台中执行它。该功能与上面的预览表达式结果相辅相成。
+   - `Conditional breakpoint`  
+     条件断点。允许指定某个断点在指定表达式为 `true` 的情况下才停止，便于在循环中使用断点调试某种特殊情况。
+   - `Deactivate breakpoints`  
+     停用所有的断点。当我们打了一大堆断点之后，想直接看一下效果，又不想把现有的断点删除，就可以暂时停用现有断点，方便查看效果。
+
 ## 使用插件
 
-自从 Firefox59 以来，随着大量旧体系的插件大量失效，Firefox 的插件库已经不像以往了。现在，Chrome 的插件库是这个星球上最庞大的浏览器插件库了。如果你还没有使用过插件，那恐怕只能使用 Chrome 的一部分能力罢了。
+自从 Firefox59 以来，随着大量旧体系的插件大量失效，Firefox 的插件库已经不像以往了。如今，Chrome 的插件库是这个星球上最庞大的浏览器插件库了。如果你还没有使用过插件，那恐怕只能使用 Chrome 的一部分功能罢了。
+
+- [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp)：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
+- [Checker Plus for Gmail™](https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj)：对于日常使用 Gmail 的吾辈而言非常有用
+- [crxMouse Chrome™ 手势](https://chrome.google.com/webstore/detail/crxmouse-chrome-gestures/jlgkpaicikihijadgifklkbpdajbkhjo)：鼠标手势插件，可以使用手势更简单地完成一些事情
+- [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)：为所有网站加上黑色主题，大部分情况下都还不错
+- [Enhanced Github](https://chrome.google.com/webstore/detail/anlikcnbgdeidpacdbdljnabclhahhmd)：显示 GitHub Repository 大小，允许单独下载每一个文件
+- [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
+- [Fatkun 图片批量下载](https://chrome.google.com/webstore/detail/fatkun-batch-download-ima/nnjjahlikiabnchcpehcpkdeckfgnohf)：批量下载网页上的图片，偶尔用一下吧
+- [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp)：FDM Chrome 集成插件，将 Chrome 下载链接使用 FDM 多线程下载
+- [GitHub Hovercard](https://chrome.google.com/webstore/detail/github-hovercard/mmoahbbnojgkclgceahhakhnccimnplk)：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
+- [Image Search Options](https://chrome.google.com/webstore/detail/image-search-options/kljmejbpilkadikecejccebmccagifhl)：使用右键以图搜图
+- [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien)：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
+- [JetBrains IDE Support](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji)：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与 IDEA 的插件配合使用
+- [LastPass: Free Password Manager](https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd)：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
+- [Mailto: for Gmail™](https://chrome.google.com/webstore/detail/mailto-for-gmail/dgkkmcknielgdhebimdnfahpipajcpjn)：对于 mailto 协议的链接以 Gmail 网页版打开
+- [Markdown Here](https://chrome.google.com/webstore/detail/markdown-here/elifhakcjgalahccnjkneoccemfahfoa)：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
+- [Neat URL](https://chrome.google.com/webstore/detail/neat-url/jchobbjgibcahbheicfocecmhocglkco)：移除网址中的无用段，例如返利链接后面的参数
+- [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)：GitHub 代码树状图插件，方便查看项目文件
+- [OwO](https://chrome.google.com/webstore/detail/owo/ckfodameiahfhlainaclajkgfagkpodb)：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
+- [Proxy SwitchyOmega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)：科学上网必需
+- [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne)：使用自定义网站样式的插件，比 Stylish 的名声好一些
+- [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp)：新标签页插件
+- [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
+- [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg)：自动休眠标签页，避免 Chrome 使用的内存太过庞大
+- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
+- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 Vuejs 选项卡，便于对 Vuejs 进行调试
+- [WebRTC Network Limiter](https://chrome.google.com/webstore/detail/webrtc-network-limiter/npeicpdbkakmehahjeeohfdhnlpdklia)：阻止浏览器通过 WebRTC 泄露 IP 地址
+- [WEB 前端助手(FeHelper)](https://chrome.google.com/webstore/detail/web%E5%89%8D%E7%AB%AF%E5%8A%A9%E6%89%8Bfehelper/pkgccpejnmalmdinmhkkfafefagiiiad)：貌似是百度的前端插件，但目前还没有什么流氓行为
+- [快翻译](https://chrome.google.com/webstore/detail/%E5%BF%AB%E7%BF%BB%E8%AF%91/chpeaiibggkmaongjphijmielpkokcdg)：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
+- [扩展管理器（Extension Manager）](https://chrome.google.com/webstore/detail/extension-manager/gjldcdngmdknpinoemndlidpcabkggco)：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
+
+### Stylus
+
+为网页自定义 CSS 样式，主要用于网站美化，但也可以用于屏蔽网站内容（现在某些网站会检测用户浏览器是否安装了 uBlock Origin 之类的广告过滤插件）。
+
+例如吾辈就写了一些 css 来提高使用浏览器的体验
+
+```css
+/* 全局字体设置 */
+* {
+  font-family: 'RTWS YueGothic Trial Regular';
+}
+
+/*滚动条美化*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: #cccccc;
+  -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  width: 5px;
+  background-color: #cccccc;
+  -webkit-border-radius: 6px;
+}
+
+/*滚动条滑块的宽高*/
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece:no-button {
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3994ef;
+  border-radius: 3px;
+}
+
+/*滑块的样式*/
+::-webkit-scrollbar-thumb:vertical {
+  height: 5px;
+  background-color: #4afffe;
+  -webkit-border-radius: 6px;
+}
+
+/*鼠标悬浮于滑块上*/
+::-webkit-scrollbar-thumb:hover {
+  background-color: #39ffff;
+}
+
+/*鼠标按下于滑块上*/
+::-webkit-scrollbar-thumb:active {
+  background-color: #00fffd;
+}
+
+/*纵向滚动条的宽度*/
+::-webkit-scrollbar-button:vertical {
+  width: 9px;
+}
+
+/*横向滚动条的宽度*/
+::-webkit-scrollbar-button:horizontal {
+  width: 9px;
+}
+
+/*纵向滚动条的开始按钮（右上角）*/
+::-webkit-scrollbar-button:vertical:start:decrement {
+  background-color: #00fffd;
+}
+
+/*纵向滚动条的开始按钮（右下角）*/
+::-webkit-scrollbar-button:vertical:end:increment {
+  background-color: #00fffd;
+}
+
+/*横向滚动条的开始按钮（左下角）*/
+::-webkit-scrollbar-button:horizontal:start:decrement {
+  background-color: #00fffd;
+}
+
+/*横向滚动条的结束按钮（右下角）*/
+::-webkit-scrollbar-button:horizontal:end:increment {
+  background-color: #00fffd;
+}
+
+body::-webkit-scrollbar-track-piece {
+  background-color: white;
+}
+```
+
+当然，也安装了一些其他人写好的
+
+- [GitHub Dark](https://userstyles.org/styles/37035/github-dark)：将 GitHub 页面设置为暗色护眼模式
+- [A Better Twitter](https://userstyles.org/styles/155039)：删除了 Twitter 上用不到的内容，例如广告，新闻栏
+- [Bilibili 屏蔽广告 & 首页去除 舞蹈、生活、时尚、娱乐…… 分类区块](https://userstyles.org/styles/144506/bilibili)：精简 Bilibili，毕竟，现在 B 站无关的内容实在太多了
 
 ### Tampermonkey
 
-> [Chrome Webstore](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
-
-非常强大的一个插件，如果真要展开说明，恐怕又要写一篇博客了。可以将用户自定义的 js 代码 **注入** 到网页中，而这，其实就代表着，任何只要会 JavaScript 的人，都可以在自己浏览器上任意修改网站。
+非常强大的一个插件，如果真要展开说明，恐怕又要写一篇博客了。可以将用户自定义的 js 代码 **注入** 到网页中，而这，其实就代表着，任何只要会 JavaScript 的人，都可以在自己浏览器上任意修改网站内容。
 
 那么，说的好像很厉害的样子，具体能做些什么呢？下面列出吾辈常用的 user.js 脚本
 
@@ -65,6 +217,7 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 - [Ci-Aria2 百度云盘增强版](https://greasyfork.org/scripts/40496)：提取百度网盘下载直链
 - [网盘自动填写密码](https://greasyfork.org/scripts/29762)：自动填写百度网盘提取密码
 - [Booru Downloader + Viewer](https://greasyfork.org/scripts/34175)：图站抓图之用
+- [Youtube Download](https://greasyfork.org/zh-CN/scripts/369418)：下载 Youtube 上的视频
 
 哦，如果你很懒，也可以先去 [Greasy Fork](https://greasyfork.org) 搜索一下是否有你需要的 user.js 脚本。有的话可以直接安装。
 
