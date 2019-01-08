@@ -2,7 +2,7 @@
 layout: post
 title: 作为一名 developer 如何正确地使用 Chrome
 date: 2018-12-24 14:08:52
-updated: 2019-01-05
+updated: 2019-01-08
 tags: [Chrome, Tool, 教程]
 ---
 
@@ -63,7 +63,11 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 
 1. `Drawer Show Search`  
    显示搜索框，全文搜索当前页面载入的代码，用于快速定位到指定的代码片段。如果你不知道某段代码在什么地方，就可以使用它快速查找。搜索的内容可以使用正则表达式以及区分大小写模式。
+
    > 在除了 Console 选项卡之外都可以使用 `CS-F` 直接打开
+
+   ![Drawer Show Search](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190108222409.png)
+
 2. Debug
    - 预览表达式结果
      当你选中一个表达式后，鼠标悬浮在选中的代码上，Chrome 就会自动计算出表达式的结果，并在鼠标附近显示出来。
