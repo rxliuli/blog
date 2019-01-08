@@ -2,7 +2,7 @@
 layout: post
 title: JavaScript 善用解构赋值
 date: 2019-01-08 20:36:58
-tags: [JavaScript, ES6]
+tags: [JavaScript]
 ---
 
 # JavaScript 善用解构赋值
@@ -74,7 +74,7 @@ function print(user) {
 > `||` / `&&` 解释
 >
 > - `||` 用来取默认值，避免太多的 `if` 判断。例如对于 `a || b` 我们可以认为：如果 `a` 为空，则赋值为 `b`
-> - `&&` 用来连续执行，避免深层嵌套的 `if` 判断。例如对于 `a || a.b`，我们可以认为：如果 `a` 不为空，则赋值为 `a.b`
+> - `&&` 用来连续执行，避免深层嵌套的 `if` 判断。例如对于 `a || b`，我们可以认为：如果 `a` 不为空，则赋值为 `b`
 >
 > 注：||`/`&&` 非常适合简单的默认值赋值，但一旦设置到深层嵌套默认值就不太合适了
 
@@ -148,7 +148,7 @@ var { name: newName = '未设置', age: newAge = 0 } = user // newName: '未设�
 // 计算属性名
 var key = 'name'
 var { [key]: name } = user
-// 数组迭代
+// 数组迭代解构
 var users = [
   {
     name: '琉璃',
@@ -166,7 +166,7 @@ function print({ name = '未设置', age = 0 } = {}) {
 }
 ```
 
-啊嘞？吾辈好像不知不觉间把解决方案写出来了。。。
+啊嘞，吾辈好像不知不觉间把解决方案写出来了。。。？
 
 ### 分析
 
@@ -178,17 +178,42 @@ function print({ name = '未设置', age = 0 } = {}) {
 }
 ```
 
-一眼看过去，是不是感觉很直观，如果稍微了解一点 ES6 就能瞬间明白这是解构并赋值默认值。
+一眼看过去，是不是感觉很直观，如果稍微了解一点 ES6 就能瞬间明白这是解构赋值以及默认参数
 
 我们分析一下具体流程
 
 1. 调用 `print` 函数
-2. 检查参数是否为有值，没有的话设置默认值 `{}`
-3. 解构参数，检查解构的属性是否有值，没有的话设置默认值
+2. 检查参数是否为有值，没有的话设置默认值 `{}`  
+   相当于
+
+   ```js
+   if (!user) {
+     user = {}
+   }
+   ```
+
+3. 解构参数，检查解构的属性是否有值，没有的话设置默认值  
+    相当于
+
+   ```js
+   var name
+   if (!user.name) {
+     name = '未设置'
+   } else {
+     name = user.name
+   }
+   var age
+   if (!user.age) {
+     age = 0
+   } else {
+     age = user.age
+   }
+   ```
+
 4. 进入函数内部
 
-关键就在于第 2,3 步，默认参数和解构赋值都是 ES6 的新特性，善于使用能大大简化代码的繁琐性。
+关键就在于第 2,3 步，[默认参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Default_parameters) 和 [解构赋值](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) 都是 ES6 的新特性，善于使用能大大简化代码的繁琐性。
 
 ---
 
-希望有更多的人能够学会怎么使用，让我们早日抛弃 Babel 吧 (\*＾ ▽ ＾)／
+希望有更多的人能够学会怎么使用，让我们早日抛弃 babel 吧 (\*＾ ▽ ＾)／
