@@ -1,0 +1,184 @@
+---
+layout: post
+title: 在传统项目中使用 babel 编译 ES6
+date: 2019-01-09 20:56:16
+tags: [JavaScript, 记录]
+---
+
+# 在传统项目中使用 babel 编译 ES6
+
+## 场景
+
+之前的项目基本上都是前后端分离的模式，最近新公司的项目却是使用的传统的模板视图的模式。  
+所以，一些东西发生了变化
+
+- `thymeleaf` 模板里面直接有 Java 的代码，在服务端直接编译 html 代码而非是纯粹的 API 交互
+- 使用最多的库是 `jquery`，主要用于操作 `dom`
+- 没有现代前端工具链 `nodejs/npm/webpack/babel/vuejs`
+
+所以吾辈使用 ES6 的语法就被同事诟病语法太新（还有人在用 `ES4@2008`），浏览器无法正常显示，所以吾辈只能尝试用 babel 来做兼容。众所周知，自 babel6 以来，模块化大行其道，由原先的使用浏览器引入脚本的方式修改为由 npm 等包管理器引入，官方也不推荐使用浏览器引入的方式。
+
+## 解决
+
+幸好吾辈找到了一个项目 [babel-standalone](https://github.com/babel/babel-standalone)，它提供了从浏览器中引入 babel 的功能。
+
+使用方式很简单，只要在你含有 ES6 代码的脚本之前引入，在含有 ES6 代码的 script 标签上加上 `text/babel` 即可。
+
+```js
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script type="text/babel">
+const getMessage = () => "Hello World";
+document.getElementById('output').innerHTML = getMessage();
+</script>
+```
+
+以上，官方是这么说的，然而实际上，吾辈还是遇到了一些问题
+
+1. 使用 `<script type="text/babel">` 标记需要编译确实很方便，然而 babel 的编译过程是异步的，所以如果想要在后面的脚本中使用这个脚本中的内容则是不可能的
+2. 某些语法仍然不能支持，例如 `function*` 生成器
+3. 不能直接使用未声明的变量
+4. 默认没有编译为 ES5
+
+这些问题我们下面一一解决
+
+### 异步编译
+
+例如有下面三个文件
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>index</title>
+  </head>
+  <body>
+    <h1 id="root"></h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script type="text/babel" src="./js/common.js"></script>
+    <script src="./js/index.js"></script>
+  </body>
+</html>
+```
+
+```js
+// common.js
+/**
+ * 等待指定的时间/等待指定表达式成立
+ * @param {Number|Function} param 等待时间/等待条件
+ * @returns {Promise} Promise 对象
+ */
+function wait(param) {
+  return new Promise(resolve => {
+    if (typeof param === 'number') {
+      setTimeout(resolve, param)
+    } else if (typeof param === 'function') {
+      var timer = setInterval(() => {
+        if (param()) {
+          clearInterval(timer)
+          resolve()
+        }
+      }, 100)
+    } else {
+      resolve()
+    }
+  })
+}
+```
+
+```js
+// index.js
+wait(3000).then(function() {
+  document.querySelector('#root').innerHTML = '等待 3s 结束'
+})
+```
+
+我们会得到一个错误
+
+```js
+Uncaught ReferenceError: wait is not defined
+```
+
+为什么会这样呢？原因就是加载 common.js 之后实际上还需要被 babel 编译，然而这并非同步操作，所以我们之后的脚本就无法取得全局函数 `wait()`。那么，如何解决呢？
+
+我们可以将所有的 `script` 标签都加上 `type="text/babel"`，所有的 script 脚本都是需要编译的，那么就不会有异步的编译的问题了。
+
+### babel 没有完全支持
+
+例如在 `common.js` 中添加一个函数 `indexGenerator()`
+
+```js
+/**
+ * 生成一个索引序列，从 0 开始，每次递增为 1
+ * @returns {Generator} 一个生成器
+ */
+function* indexGenerator() {
+  for (let i = 0; true; i++) {
+    yield i
+  }
+}
+```
+
+但我们只会得到一个错误
+
+```js
+Uncaught ReferenceError: regeneratorRuntime is not defined
+```
+
+这是因为 babel 基础包并没有实现所有的 ES6 的特性，所以就会出现不支持的情况。我们需要拓展包 `babel-polyfill`，在 `babel-standalone` 下引入即可
+
+```js
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>
+```
+
+### 不能使用未声明变量
+
+如果我们在标记为需要编译的 script 脚本中使用了未定义的变量，就会出现错误。例如在 `index.js` 中
+
+```js
+username = 'rxliuli'
+```
+
+错误消息
+
+```js
+Uncaught (in promise) ReferenceError: username is not defined
+```
+
+所以说编程规范很重要啦
+
+### 默认不支持 ES7
+
+是的，babel 默认是不支持 ES7 的，而 `async/await` 便属于 ES7 的内容。例如我们修改 `index.js`
+
+```js
+;(async () => {
+  await wait(3000)
+  document.querySelector('#root').innerHTML = '等待 3s 结束'
+})()
+```
+
+错误消息
+
+```js
+Uncaught SyntaxError: Unexpected token function
+```
+
+我们可以使用 `data-presets="latest"` 来修复这个问题，永远引入最新版的 `presets`。
+
+```js
+<script type="text/babel" src="./js/common.js"></script>
+<script
+  type="text/babel"
+  data-presets="latest"
+  src="./js/index.js"
+></script>
+```
+
+## 总结
+
+那么，有关在传统项目中使用 babel 编译 ES6/ES7 的问题就到这里了，希望有更多的人使用这些新特性，让我们早日抛弃掉 babel 吧
