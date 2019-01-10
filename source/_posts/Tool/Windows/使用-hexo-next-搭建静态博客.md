@@ -2,7 +2,8 @@
 layout: post
 title: 使用 hexo next 搭建静态博客
 date: 2018-12-09 16:32:42
-tags: [markdown, blog]
+updated: 2019-01-10
+tags: [markdown, blog, 教程]
 ---
 
 # 使用 hexo next 搭建静态博客
@@ -20,10 +21,10 @@ tags: [markdown, blog]
 - [x] [git](https://git-scm.com/)：分布式版本控制工具
 - [x] [gitlab](https://gitlab.com/)：私有代码托管平台
 - [x] [Bash/PowerShell/Cmd](.)：命令行操作
+- [x] [域名](.)：让别人能记住你的博客
 - [ ] [nodejs](https://nodejs.org/)：JavaScript 运行环境
 - [ ] [netlify](https://www.netlify.com/)：静态网站托管服务
 - [ ] [VSCode](https://code.visualstudio.com/)：文本编辑器（类 IDE）
-- [ ] [域名](.)：让别人能记住你的博客
 
 ## 使用 npm 全局安装 hexo
 
@@ -148,20 +149,49 @@ git push origin master
 > | 拆分测试 | 没有 | 是 |
 > | Lambda 函数集成 | 没有 | 是 |
 
+## s
+
 1. 首先你需要一个 [netlify](https://netlify.com/) 的账号，只需要邮箱即可注册。
 
 2. 登录之后进入你的 [个人首页](https://app.netlify.com/)  
    ![个人首页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211213.png)
+
 3. 由于我们的远程仓库使用的是 GitLab，所以我们连接自己的 GitLab 账户  
    ![连接到 GitLab](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211441.png)
+
 4. 接下来找到我们的远程仓库  
    ![远程仓库](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211616.png)
+
 5. 设定构建命令以及构建目录，没有意外的话 netlify 已经自动识别出这是 hexo 博客了
-   ![设置构建设定](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211803.png)
+   ![设定构建命令](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211803.png)
+
 6. 部署站点  
    点击部署之后就会帮你自动部署，部署完成后就可以在线访问你的博客啦  
    ![在线自动部署](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209212501.png)
-7. 访问博客  
+
+7. 自定义域名
+
+   > 如果你还没有自己的域名（本文假定你有），可以直接跳转到步骤 9
+
+   1. 点击 **Domain settings** 进入域名设置
+   2. 点击 **Add custom domain** 添加自定义的域名
+   3. 点击 **Verify => Yes, add domain** 验证并确认添加
+   4. 点击 **Check DNS configuration** 检查 DNS 配置
+   5. 查看其中的 CNAME DNS 记录，一会还要用
+
+   ![Gif 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190110234441.gif)
+
+8. 在你的域名 DNS 记录中添加上面的 CNAME 记录
+
+   1. 打开你的 DNS 管理器，这里以 [cloudflare](https://www.cloudflare.com) 为例
+   2. 添加一条 CNAME 记录，Name 是我们自定义的二级域名前缀 [blog-demo](https://blog-demo.rxliuli.com/)，Domain name 是 netlify 为我们自动生成的二级域名 [confident-joliot-3c1548.netlify.com](https://confident-joliot-3c1548.netlify.com/)。
+   3. 等待 DNS 刷新完成
+
+   ![Gif 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190110235636.gif)
+
+   > 这里吾辈再推荐一次 [cloudflare](https://www.cloudflare.com)，DNS 刷新时间不会超过 5 分钟，真的是有够快的了！
+
+9. 访问博客  
    ![访问博客](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209212636.png)
 
 ## 修改博客设置
