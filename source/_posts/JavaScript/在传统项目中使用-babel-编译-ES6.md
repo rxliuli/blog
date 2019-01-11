@@ -179,6 +179,36 @@ Uncaught SyntaxError: Unexpected token function
 ></script>
 ```
 
+### 不能使用模板字符串 HTML
+
+# thymeleaf 不能使用模板字符串 HTML
+
+同时使用 `type="text/babel" data-presets="latest"` 和 `th:inline="javascript"` 的时候，thymeleaf 将无法解析 `<a href="#"/>` 含有 HTML 的模板字符串。
+
+使用环境
+
+- spring-boot 2.0.3.RELEASE
+- babel 6.26.0
+- babel-polyfill 2.6.1
+
+例如下面这种代码
+
+```html
+<script type="text/babel" data-presets="latest" th:inline="javascript">
+  const htmlStr = `<a href="#"/>`
+  console.log(`htmlStr: ${htmlStr}`)
+</script>
+```
+
+甚至于注释了也没用，只能删除掉才可以
+
+```html
+<script type="text/babel" data-presets="latest" th:inline="javascript">
+  // const htmlStr = `<a href="#"/>`
+  console.log(`htmlStr: ${htmlStr}`)
+</script>
+```
+
 ## 总结
 
 那么，有关在传统项目中使用 babel 编译 ES6/ES7 的问题就到这里了，希望有更多的人使用这些新特性，让我们早日抛弃掉 babel 吧
