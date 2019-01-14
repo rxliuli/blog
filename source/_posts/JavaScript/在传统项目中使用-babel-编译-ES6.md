@@ -2,12 +2,15 @@
 layout: post
 title: 在传统项目中使用 babel 编译 ES6
 date: 2019-01-09 20:56:16
+updated: 2019-01-11
 tags: [JavaScript, 记录]
 ---
 
 # 在传统项目中使用 babel 编译 ES6
 
 ## 场景
+
+> 曾经吾辈以为 ES6 早已推广开来，然而事实上远比想象中更加复杂。传统后台的项目就是要兼容性，兼容 2 年前的浏览器，没有 babel，全程 jQuery 一把梭做到底。
 
 之前的项目基本上都是前后端分离的模式，最近新公司的项目却是使用的传统的模板视图的模式。  
 所以，一些东西发生了变化
@@ -57,7 +60,7 @@ document.getElementById('output').innerHTML = getMessage();
   </head>
   <body>
     <h1 id="root"></h1>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script type="text/babel" src="./js/common.js"></script>
     <script src="./js/index.js"></script>
   </body>
@@ -131,7 +134,7 @@ Uncaught ReferenceError: regeneratorRuntime is not defined
 这是因为 babel 基础包并没有实现所有的 ES6 的特性，所以就会出现不支持的情况。我们需要拓展包 `babel-polyfill`，在 `babel-standalone` 下引入即可
 
 ```js
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>
 ```
 
@@ -179,9 +182,7 @@ Uncaught SyntaxError: Unexpected token function
 ></script>
 ```
 
-### 不能使用模板字符串 HTML
-
-# thymeleaf 不能使用模板字符串 HTML
+### thymeleaf 不能使用模板字符串 HTML
 
 同时使用 `type="text/babel" data-presets="latest"` 和 `th:inline="javascript"` 的时候，thymeleaf 将无法解析 `<a href="#"/>` 含有 HTML 的模板字符串。
 
@@ -208,6 +209,32 @@ Uncaught SyntaxError: Unexpected token function
   console.log(`htmlStr: ${htmlStr}`)
 </script>
 ```
+
+目前的解决方案是分成两个 `script` 标签，分别使用 `type="text/babel" data-presets="latest"` 和 `th:inline="javascript"` 标签
+
+### 不能使用浏览器较新的 API
+
+使用一些浏览器较新的 API 时发现不能正常使用，`babel-core` 也没有实现。例如吾辈想要使用 `NodeList.forEach` 遍历 `a` 标签列表，然后打印出来他们的链接
+
+```js
+document.querySelectorAll('a').forEach(el => console.log(el.href))
+```
+
+会得到错误
+
+```js
+Uncaught TypeError: document.querySelectorAll(...).forEach is not a function
+```
+
+在旧版浏览器中，`NodeList` 并没有 `forEach` 方法，后来，吾辈找到了另一个库 [core-js](https://github.com/zloirock/core-js)，其最新版 `3.x beta` 实现了 `NodeList.forEach` API，唯一的缺点是我们要手动构建才行。
+
+引入也很简单，只要在 `babel-standalone` 之后，`babel-polyfill` 之前使用 `script` 标签引入就好了
+
+```html
+<script src="https://unpkg.com/core-js-bundle@3.0.0-beta.8/index.js"></script>
+```
+
+好了，下面我们可以愉快的使用新的浏览器 API 了
 
 ## 总结
 
