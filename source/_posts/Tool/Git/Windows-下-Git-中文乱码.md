@@ -12,7 +12,7 @@ tags: [Tool, Git, 记录]
 在公司的电脑上碰到了 Git 中文乱码的问题，例如想要查看一下仓库的状态，中文全部变成了 `\number` 的形式。
 
 ```sh
-$ git status
+git status
 On branch master
 Your branch is up to date with 'origin/master'.
 
@@ -35,10 +35,9 @@ no changes added to commit (use "git add" and/or "git commit -a")
 配置一下这些内容即可
 
 ```sh
-$ git config --global core.quotepath false # 显示 status 编码
-$ git config --global gui.encoding utf-8 # 图形界面编码
-$ git config --global i18n.commit.encoding utf-8 # 提交信息编码
-$ git config --global i18n.logoutputencoding utf-8 # 输出 log 编码
-$ export LESSCHARSET=utf-8
-# 最后一条命令是因为 git log 默认使用 less 分页，所以需要 bash 对 less 命令进行 utf-8 编码
+git config --global core.quotepath false # 显示 status 编码
+git config --global gui.encoding utf-8 # 图形界面编码
+git config --global i18n.commit.encoding utf-8 # 提交信息编码
+git config --global i18n.logoutputencoding utf-8 # 输出 log 编码
+export LESSCHARSET=utf-8 # 最后一条命令是因为 git log 默认使用 less 分页，所以需要 bash 对 less 命令进行 utf-8 编码
 ```
