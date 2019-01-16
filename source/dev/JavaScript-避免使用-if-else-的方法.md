@@ -9,8 +9,8 @@ tags: [JavaScript, 教程]
 
 ## 场景
 
-在日常编写 JavaScript 代码的过程中，或许会遇到一个很常见的问题。根据某个状态，进行判断，并执行不同的操作。
-例如下面这段代码，点击不同的按钮，切换不同的状态，并显示不同的面板。
+在日常编写 JavaScript 代码的过程中，或许会遇到一个很常见的问题。根据某个状态，进行判断，并执行不同的操作。吾辈并不是说 `if-else` 不好，简单的逻辑判断 `if-else` 毫无疑问是个不错的选择。然而在很多时候似乎我们习惯了使用 `if-else`，导致代码不断庞大的同时复杂度越来越高，所有的 JavaScript 代码都乱作一团，后期维护时越发困难。  
+例如下面这段代码，点击不同的按钮，显示不同的面板。
 
 ```html
 <!-- index.html -->
@@ -141,6 +141,98 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
 2. 根据状态使用 `if-else/switch` 判断然后调用不同的函数
 
 ```js
+// 抽取函数
+
+function switchFirst(header) {
+  document.querySelector('#extends-form').innerHTML = `
+          ${header}
+          <div>
+            <label for="name">姓名</label>
+            <input type="text" name="name" id="name" />
+          </div>
+          <div>
+            <label for="age">年龄</label>
+            <input type="number" name="age" id="age" />
+          </div>
+          <div>
+            <button type="submit">提交</button> <button type="reset">重置</button>
+          </div>
+        `
+}
+
+function switchSecond(header) {
+  document.querySelector('#extends-form').innerHTML = `
+      ${header}
+      <div>
+        <label for="avatar">头像</label>
+        <input type="file" name="avatar" id="avatar" />
+      </div>
+      <div><img id="avatar-preview" src="" /></div>
+      <div>
+        <button type="submit">提交</button> <button type="reset">重置</button>
+      </div>
+    `
+  function readLocalFile(file) {
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader()
+      fr.onload = event => {
+        resolve(event.target.result)
+      }
+      fr.onerror = error => {
+        reject(error)
+      }
+      fr.readAsDataURL(file)
+    })
+  }
+  document.querySelector('#avatar').addEventListener('change', evnet => {
+    const file = evnet.target.files[0]
+    if (!file) {
+      return
+    }
+    if (!file.type.includes('image')) {
+      return
+    }
+    readLocalFile(file).then(link => {
+      document.querySelector('#avatar-preview').src = link
+    })
+  })
+}
+
+function switchThree(header) {
+  const initData = new Array(100).fill(0).map((v, i) => `第 ${i} 项内容`)
+  document.querySelector('#extends-form').innerHTML = `
+      ${header}
+      <div>
+        <label for="search-text">搜索文本</label>
+        <input type="text" name="search-text" id="search-text" />
+        <ul id="search-result"></ul>
+      </div>
+    `
+  document.querySelector('#search-text').addEventListener('input', evnet => {
+    const searchText = event.target.value
+    document.querySelector('#search-result').innerHTML = initData
+      .filter(v => v.includes(searchText))
+      .map(v => `<li>${v}</li>`)
+      .join()
+  })
+}
+
+function switchTab(el) {
+  const index = el.dataset.index
+  const header = `<header><h2>${el.parentElement.innerText.trim()}</h2></header>`
+  // 如果为 1 就添加一个文本表单
+  if (index === '1') {
+    switchFirst(header)
+  } else if (index === '2') {
+    switchSecond(header)
+  } else if (index === '3') {
+    switchThree(header)
+  }
+}
+
+document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
+  el.addEventListener('click', () => switchTab(el))
+})
 ```
 
 ## Map 映射
