@@ -11,7 +11,7 @@ tags: [JavaScript, 教程]
 
 在日常编写 JavaScript 代码的过程中，或许会遇到一个很常见的问题。根据某个状态，进行判断，并执行不同的操作。吾辈并不是说 `if-else` 不好，简单的逻辑判断 `if-else` 毫无疑问是个不错的选择。然而在很多时候似乎我们习惯了使用 `if-else`，导致代码不断庞大的同时复杂度越来越高，所有的 JavaScript 代码都乱作一团，后期维护时越发困难。
 
-> [GitHub](https://github.com/rxliuli/avoid-if-else-example), [演示地址](https://blog.rxliuli.com/2019/01/17/javascript/javascript-%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8-if-else-%E7%9A%84%E6%96%B9%E6%B3%95/)
+> [GitHub](https://github.com/rxliuli/avoid-if-else-example), [演示地址](https://avoid-if-else.rxliuli.com/)
 
 例如下面这段代码，点击不同的按钮，显示不同的面板。
 
