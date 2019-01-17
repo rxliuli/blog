@@ -281,13 +281,35 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
 上面使用 class 继承多态实现的状态机虽然很好，但却并不能应对 **不确定** 具体有多少种状态的情况。因为每个子类都与父类有着强关联，直接在父类中进行了声明。那么，有没有一种方式，可以让父类 **自动** 找到所有的子类呢？
 
 1. 创建一个基类，并在其中声明一个需要被子类重写的方法
-2. 根据不同的状态创建不同的子类，并分别实现基类的方法
-3. 添加一个 `Builder` 类，使用反射拿到所有的子类，具体子类对应的状态由子类的某个属性决定
+2. 添加一个 `Builder` 类，具体子类对应的状态由子类的某个属性决定
+3. 根据不同的状态创建不同的子类，并分别实现基类的方法，最后调用 `Builder` 类的方法注册自身
+   > 此处因为 js 无法通过反射拿到所有子类，所以子类需要在 `Builder` 类注册自己
 4. 使用 `Builder` 构造子类对象，并调用基类声明的方法
 
 具体实现
 
 ```js
+class A {}
+
+const ABuilder = (function(clazzMap) {
+  return new class {
+    register(status, clazz) {
+      clazzMap.set(status, clazz)
+    }
+    getAll() {
+      return clazzMap
+    }
+    get(status) {
+      return clazzMap.get(status)
+    }
+  }()
+})(new Map())
+
+class B extends A {}
+ABuilder.register(1, B)
+
+class C extends A {}
+ABuilder.register(2, C)
 ```
 
 主要优势
