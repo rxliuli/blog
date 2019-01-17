@@ -399,30 +399,6 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
 具体实现
 
 ```js
-class A {}
-
-const ABuilder = (function(clazzMap) {
-  return new class {
-    register(status, clazz) {
-      clazzMap.set(status, clazz)
-    }
-    getAll() {
-      return clazzMap
-    }
-    get(status) {
-      return clazzMap.get(status)
-    }
-  }()
-})(new Map())
-
-class B extends A {}
-ABuilder.register(1, B)
-
-class C extends A {}
-ABuilder.register(2, C)
-```
-
-```js
 // 无限状态机
 
 class Tab {
