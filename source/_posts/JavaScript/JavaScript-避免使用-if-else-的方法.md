@@ -404,6 +404,8 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
 ```js
 // 无限状态机
 
+// 无限状态机
+
 class Tab {
   // 基类里面的初始化方法放一些通用的操作
   init(header) {
@@ -418,26 +420,39 @@ class Tab {
   initHTML() {}
 }
 
-const tabBuilder = (clazzMap => {
-  return new class TabBuilder {
-    // 注册一个 class，创建子类时调用，用于记录每一个 [状态 => 子类] 对应
+/**
+ * 状态注册器
+ * 更好的有限状态机，分离子类与构建的关系，无论子类如何增删该都不影响基类及工厂类
+ */
+const builder = (clazzMap => {
+  return new class Builder {
+    // noinspection JSMethodCanBeStatic
+    /**
+     * 注册一个 class，创建子类时调用，用于记录每一个 [状态 => 子类] 对应
+     * @param status 作为键的状态
+     * @param clazz 对应的子类型
+     * @returns {*} 返回 clazz 本身
+     */
     register(status, clazz) {
       clazzMap.set(status, clazz)
-      return this.clazz
+      return clazz
     }
+
+    // noinspection JSMethodCanBeStatic
     /**
      * 获取一个标签子类对象
-     * @param {Number} index 索引
-     * @returns {Tab} 子类对象
+     * @param {Number} status 状态索引
+     * @returns {QuestionType} 子类对象
      */
-    getInstance(index) {
-      const clazz = clazzMap.get(index)
-      return new clazz()
+    getInstance(status) {
+      const clazz = clazzMap.get(status)
+      //构造函数的参数
+      return new clazz(...Array.from(arguments).slice(1))
     }
   }()
 })(new Map())
 
-const Tab1 = tabBuilder.register(
+const Tab1 = builder.register(
   1,
   class Tab1 extends Tab {
     // 实现 initHTML，获得选项卡对应的 HTML
@@ -459,7 +474,7 @@ const Tab1 = tabBuilder.register(
   }
 )
 
-const Tab2 = tabBuilder.register(
+const Tab2 = builder.register(
   2,
   class Tab2 extends Tab {
     initHTML() {
@@ -506,7 +521,7 @@ const Tab2 = tabBuilder.register(
   }
 )
 
-const Tab3 = tabBuilder.register(
+const Tab3 = builder.register(
   3,
   class Tab3 extends Tab {
     initHTML() {
@@ -537,7 +552,7 @@ const Tab3 = tabBuilder.register(
 document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
   el.addEventListener('click', () =>
     // 调用方式不变
-    tabBuilder
+    builder
       .getInstance(Number.parseInt(el.dataset.index))
       .init(el.parentElement.innerText.trim())
   )
