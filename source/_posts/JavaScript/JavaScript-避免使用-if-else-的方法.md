@@ -419,40 +419,51 @@ class Tab {
 }
 
 /**
+ * 状态机
+ * 用于避免使用 if-else 的一种方式
+ */
+class StateMachine {
+  static getBuilder() {
+    const clazzMap = new Map()
+    /**
+     * 状态注册器
+     * 更好的有限状态机，分离子类与构建的关系，无论子类如何增删该都不影响基类及工厂类
+     */
+    return new class Builder {
+      // noinspection JSMethodCanBeStatic
+      /**
+       * 注册一个 class，创建子类时调用，用于记录每一个 [状态 => 子类] 对应
+       * @param state 作为键的状态
+       * @param clazz 对应的子类型
+       * @returns {*} 返回 clazz 本身
+       */
+      register(state, clazz) {
+        clazzMap.set(state, clazz)
+        return clazz
+      }
+
+      // noinspection JSMethodCanBeStatic
+      /**
+       * 获取一个标签子类对象
+       * @param {Number} state 状态索引
+       * @returns {QuestionType} 子类对象
+       */
+      getInstance(state) {
+        const clazz = clazzMap.get(state)
+        if (!clazz) {
+          return null
+        }
+        //构造函数的参数
+        return new clazz(...Array.from(arguments).slice(1))
+      }
+    }()
+  }
+}
+/**
  * 状态注册器
  * 更好的有限状态机，分离子类与构建的关系，无论子类如何增删该都不影响基类及工厂类
  */
-const builder = (clazzMap => {
-  return new class Builder {
-    // noinspection JSMethodCanBeStatic
-    /**
-     * 注册一个 class，创建子类时调用，用于记录每一个 [状态 => 子类] 对应
-     * @param {*} status 作为键的状态
-     * @param {*} clazz 对应的子类型
-     * @returns {*} 返回 clazz 本身
-     */
-    register(status, clazz) {
-      clazzMap.set(status, clazz)
-      return clazz
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * 获取一个标签子类对象
-     * 可能这个状态并不存在对应的子类，所以有可能为空
-     * @param {*} status 状态索引
-     * @returns {QuestionType} 子类对象
-     */
-    getInstance(status) {
-      const clazz = clazzMap.get(status)
-      if (!clazz) {
-        return null
-      }
-      //构造函数的参数
-      return new clazz(...Array.from(arguments).slice(1))
-    }
-  }()
-})(new Map())
+const builder = StateMachine.getBuilder()
 
 const Tab1 = builder.register(
   1,
