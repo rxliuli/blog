@@ -58,11 +58,12 @@ insert into question_type values (10, 9, '迪克拉之海');
 
 - 使用额外的字段存储节点全路径
 - 在应用层递归查询完成
+- 使用 Mybatis collection 标签
 - 使用存储过程
 - 使用 SQL 视图
 - 使用单条 SQL 实现
 
-吾辈目前只尝试了其中两种
+吾辈目前只尝试了其中三种
 
 ## 使用额外的字段存储节点全路径
 
@@ -203,8 +204,9 @@ public interface QuestionTypeDao {
      */
     List<QuestionType> selectListByParentId(@Param("parentId") Long parentId);
 }
+```
 
-
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.rxliuli.example.mybatisplussqlinjector.dao.QuestionTypeDao">
@@ -223,6 +225,53 @@ public interface QuestionTypeDao {
 ```
 
 调用的时候只要传入一个根节点 id 就可以查找到所有节点及其所有子节点了
+
+## 使用 Mybatis collection 标签
+
+如果你使用的 ORM 是 Mybatis，那么也可以使用 Mybatis collection 标签实现递归查询的功能。
+
+1. Mybatis `collection` 标签可以查询一个集合为字段赋值
+2. 那么我们可以使用 `select` 指向查询子分类本身
+3. 查询的参数 `cloumn` 设置为查询出来每一个对象的 `id` 字段
+4. 更改查询子分类的返回值为 `resultMap="RecursiveMap"`
+
+```java
+@Repository
+public interface QuestionTypeDao {
+    /**
+     * 根据父分类 id 递归查询子分类（不包含父分类本身）
+     *
+     * @param parentId 分类 id
+     * @return 查询到的分类树
+     */
+    List<QuestionType> selectRecursiveByParentId(@Param("parentId") Long parentId);
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rxliuli.example.mybatisplussqlinjector.dao.QuestionTypeDao">
+    <!-- 定义一个结果映射 -->
+    <resultMap id="RecursiveMap" type="com.rxliuli.example.mybatisplussqlinjector.entity.QuestionType">
+        <result property="id" column="id"/>
+        <result property="parentId" column="parentId"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <!-- 这里是关键，定义集合字段，元素类型，查询函数以及对应的列 -->
+        <collection property="childrenList" ofType="com.rxliuli.example.mybatisplussqlinjector.entity.QuestionType"
+                    select="com.rxliuli.example.mybatisplussqlinjector.dao.QuestionTypeDao.selectRecursiveByParentId"
+                    column="id"/>
+    </resultMap>
+
+    <!-- 正常查询子分类，唯一修改之处就是 resultMap -->
+    <select id="selectRecursiveByParentId" resultMap="RecursiveMap">
+        select *
+        from question_type
+        where parentId = #{parentId}
+    </select>
+</mapper>
+```
 
 ---
 
