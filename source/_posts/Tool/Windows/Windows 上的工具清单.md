@@ -35,7 +35,7 @@ tags: [Tool, Windows]
     - [QuickLook：文件管理器预览增强](#quicklook文件管理器预览增强)
     - [FDM：免费的多线程下载器](#fdm免费的多线程下载器)
     - [Bandizip：压缩/解压缩](#bandizip压缩解压缩)
-    - [ClipoardFusion：剪切板增强](#clipoardfusion剪切板增强)
+    - [Ditto：剪切板增强](#ditto剪切板增强)
     - [imageview：图片浏览](#imageview图片浏览)
     - [Mindjet MindManager：思维导图](#mindjet-mindmanager思维导图)
     - [MS Office：文档管理](#ms-office文档管理)
@@ -427,13 +427,13 @@ Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹�
 - 预览压缩文件时左侧有文件夹树状列表，不需要再用鼠标点击进进出出的活塞运动了
 - 自动解压，这个功能相当棒，可以智能解压压缩文件到文件夹中（如果压缩包里面只有一个文件夹就直接解压出来，否则会将压缩包里面的内容解压到一个与压缩包同名的文件夹中），这个功能看起来很不起眼，但吾辈在此之前并未找到（需要特别注意压缩包的内容）
 
-### ClipoardFusion：剪切板增强
+### Ditto：剪切板增强
 
-[便携版], [跨平台]
+[便携版], [免费]
 
-> [官网](https://www.clipboardfusion.com)
+> [官网](https://ditto-cp.sourceforge.io/), [善用佳软评测](https://xbeta.info/ditto.htm)
 
-Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。相比于大名鼎鼎的 Ditto，ClipoardFusion 在搜索历史方面进行了增强，然而冷响应速度是个问题！
+Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。[善用佳软评测](https://xbeta.info/ditto.htm) 对其的介绍很全面，这里也就无需赘述了，吾辈需要的只是它的剪切板历史功能。
 
 ### imageview：图片浏览
 
