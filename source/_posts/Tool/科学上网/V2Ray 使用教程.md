@@ -2,7 +2,7 @@
 title: V2Ray 使用教程
 date: 2018-09-02
 updated: 2019-01-04
-tags: [科学上网, 教程]
+tags: [FreeNetwork, 教程]
 ---
 
 # V2Ray 使用教程

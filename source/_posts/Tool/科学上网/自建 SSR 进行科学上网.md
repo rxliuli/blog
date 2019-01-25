@@ -2,7 +2,7 @@
 title: 自建 SSR 进行科学上网
 date: 2018-08-21 01:39:21
 updated: 2018-12-11
-tags: [科学上网, 教程]
+tags: [FreeNetwork, 教程]
 ---
 
 # 自建 SSR 进行科学上网
