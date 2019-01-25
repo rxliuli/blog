@@ -19,6 +19,8 @@ tags: [JavaScript, 记录]
 
 ## 步骤
 
+> 该记录的代码被吾辈放到了 [GitHub](https://github.com/rxliuli/rollup-example)，有需要的话可以看下。
+
 ### 前置条件
 
 开始之前，我们必须要对以下内容有所了解
