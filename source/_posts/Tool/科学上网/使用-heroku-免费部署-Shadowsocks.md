@@ -83,7 +83,7 @@ Welcome to Heroku https://github.com/onplus/shadowsocks-heroku
 
 ### 浏览器设置
 
-安装插件 [Proxy SwitchyOmega](https://www.switchyomega.com/download/)，然后在 _导入/导出 > 在线恢复_ 中点击 **恢复**。
+安装插件 [Proxy SwitchyOmega](https://www.switchyomega.com/download/)，然后在 _导入/导出 > 在线恢复_ 中输入 <https://gist.githubusercontent.com/rxliuli/7447e51653a35e2a36a294f2b8ba9052/raw/57154aaa799f1c9d413500b63f38eb91fd1c075c/SwitchyOmegaBak>，然后点击 **恢复**。
 
 ![设置 Proxy SwitchyOmega](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190127163834.png)
 
