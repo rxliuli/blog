@@ -1,12 +1,13 @@
 ---
 title: Markdown 图片粘贴工具 PicGo
 date: 2018-10-16
-tags: [Tool, markdown]
+updated: 2019-02-05
+tags: [教程, markdown]
 ---
 
 # Markdown 图片粘贴工具 PicGo
 
-## 情景
+## 场景
 
 使用 Markdown 的人都知道，想要在 Markdown 文件中插入图片并不是特别容易，因为你必须要先把图片上传到图床才行，一个好的图床能够节省很多时间。吾辈之前使用的是 smms，后来切换到了 GitHub，毕竟 GitHub 作为国外流行的托管网站，但事实上 GitHub 上传图片麻烦一点也不少。_add -> commit -> push -> browser -> copy url_，实在麻烦。直到，遇到了 PicGo。
 
@@ -20,7 +21,21 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 
 ![官网首页截图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181016231008.png)
 
+## 基本使用
+
+在 [GitHub Releases](https://github.com/Molunerfinn/picgo/releases) 下载最新版，然后安装一下即可开箱即用啦！
+
+> 注：上传图床默认是 [smms](https://sm.ms/)，速度很快，也很稳定
+
+启动之后会看到一个上传页，将图片拖到这里就可以自动上传，并在完成之后自动将链接复制到剪切板上。  
+![图片上传页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190205233313.png)
+
+在相册里可以对图片进行管理，方便浏览，复制 `URL`，删除本地记录等操作！  
+![上传图片管理](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190205233906.png)
+
 ## GitHub 设置
+
+> 如果你不玩 GitHub，可以跳过这一节
 
 这里可以参考 PicGo 的 [官方教程](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#github%E5%9B%BE%E5%BA%8A)
 
@@ -36,6 +51,8 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 
 ## VSCode 插件
 
+> 如果你不玩 VSCode，也可以跳过这一节了
+
 如果你使用的编辑器是 VSCode 并且不需要管理图片的话，便可以使用 VSCode 插件 [PicGo](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)
 
 基本上安装完成之后就可以直接使用了，默认使用 [SMMS 图床](https://sm.ms/)。
@@ -50,5 +67,7 @@ PicGo 对于吾辈而言主要解决了下面的问题：
   ![输入文件路径上传](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181205102418.gif)
 
 > 如果你不想使用 SMMS 图床，也可以配置 GitHub 或者其他的图床，具体参考 [官方文档](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)。
+
+---
 
 那么，关于 Markdown 图片粘贴工具到这里便结束了，愉快的使用 Markdown 写作吧 `o(〃＾▽＾〃)o`
