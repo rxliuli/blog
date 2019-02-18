@@ -24,6 +24,7 @@ tags: [Tool, Windows]
     - [Apache Tomcat：Java Web 流行的开源服务器](#apache-tomcatjava-web-流行的开源服务器)
     - [Gradle：Andriod 默认的依赖管理工具](#gradleandriod-默认的依赖管理工具)
     - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
+    - [freeFTPd：免费的 FTP/SFTP 服务端](#freeftpd免费的-ftpsftp-服务端)
   - [日常](#日常)
     - [Win + R：快速启动](#win--r快速启动)
     - [SSR：正常上网必须](#ssr正常上网必须)
@@ -52,6 +53,7 @@ tags: [Tool, Windows]
     - [renamer：文件/文件夹重命名](#renamer文件文件夹重命名)
     - [FlashPlayer：Flash 动画/游戏运行环境](#flashplayerflash-动画游戏运行环境)
     - [waifu2x-caffe：图片清晰化](#waifu2x-caffe图片清晰化)
+    - [Affinity Photo: 图片编辑](#affinity-photo-图片编辑)
     - [Bandicam：视频录制](#bandicam视频录制)
   - [国内流氓](#国内流氓)
     - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
@@ -187,21 +189,27 @@ MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源�
 
 常用的 Plugin
 
-- ESLint: JavaScript 代码规范检查
-- Git History: Git 历史
-- GitLens: Git 增强
-- IntelliJ IDEA Keybindings: IDEA 的快捷键设置
-- Markdown All in One: Markdown 编辑主要插件
-- Markdown PDF: 将 Markdown 导出 PDF 文档
-- markdownlint: Markdown 语法检查
-- Material Theme: Material 风格的 VSCode
-- Prettier: 其实是配合 ESLint 做代码格式自动修复的
-- Quokka.js：持续监听/运行 js 文件
-- Settings Sync: 通过 Gist 同步 VSCode 设置
-- Vetur: VueJS 框架支持
-- Vue 2 Snippets: 添加了 VueJS2 的一些代码片段
-- vuetify-vscode: 前端 Vuetify CSS 框架的 VSCode 代码提示
-- WakaTime: 记录与统计代码的时间
+- [auto-rename-tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag): 自动重命名对应标签
+- [code-settings-sync](https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync): VSCode 设置同步
+- [codeacejumper](https://marketplace.visualstudio.com/items?itemName=lucax88x.codeacejumper): 屏幕内代码跳转
+- [dotenv](https://marketplace.visualstudio.com/items?itemName=mikestead.dotenv): `env` 语法支持
+- [gitlens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): Git 增强插件
+- [intellij-idea-keybindings](https://marketplace.visualstudio.com/items?itemName=k--kato.intellij-idea-keybindings): IDEA 快捷键映射
+- [markdown-all-in-one](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): Markdown 编辑主要插件
+- [markdown-pdf](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf): 将 Markdown 导出 PDF 文档
+- [path-intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense): 路径提示
+- [prettier-vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): 其实是配合 ESLint 做代码格式自动修复的
+- [quokka-vscode](https://marketplace.visualstudio.com/items?itemName=WallabyJs.quokka-vscode): 持续监听/运行 js 文件
+- [stylus-supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy): `stylus` 格式化
+- [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur): `vuejs` 框架支持
+- [vsc-material-theme](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme): Material 风格的 VSCode
+- [vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): JavaScript 代码规范检查
+- [vscode-markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint): Markdown 语法检查
+- [vscode-mocha-sidebar](https://marketplace.visualstudio.com/items?itemName=maty.vscode-mocha-sidebar): Mocha 测试框架支持
+- [vscode-todo-highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight): `TODO` 注释高亮
+- [vscode-wakatime](https://marketplace.visualstudio.com/items?itemName=WakaTime.vscode-wakatime): 记录与统计代码的时间
+- [vue-snippets](https://marketplace.visualstudio.com/items?itemName=hollowtree.vue-snippets): 添加了 VueJS2 的一些代码片段
+- [vuetify-vscode](https://marketplace.visualstudio.com/items?itemName=vuetifyjs.vuetify-vscode): 前端 `Vuetify` CSS 框架的 VSCode 代码提示
 
 > [VSCode Settings](https://gist.github.com/rxliuli/529c425712b4b6fba23bd774a70e42b9)
 
@@ -316,6 +324,14 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 现代前端开发的基础，各种前端工具所必须的环境。像 NPM/Yarn/Bower 之类依赖管理，Gulp 这种自动化构建工具，还有各种前端库（JQuery/Twitter Bootstrap/React/Babel）都提供了使用 NPM 的依赖管理的引入方式，有些甚至不提供传统的手动引入方式！
 
 > 附：然而 NodeJS 的作者又开始开发了新的 JavaScript 运行时 Deno，前端开发这却是又要受苦了呢 ┐(‘～`；)┌
+
+### freeFTPd：免费的 FTP/SFTP 服务端
+
+[开源], [免费]
+
+> [官网](http://www.freesshd.com/)
+
+开源免费的 FTP/SFTP 服务端，非常适合在开发过程中模拟 FTP/SFTP 服务端使用。而且相比于 [FileZilla](https://filezilla-project.org/) 更加简单，也不会从一开始就出现错误需要解决。
 
 ---
 
@@ -567,6 +583,12 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 > [官网](http://waifu2x.udp.jp), [GitHub](https://github.com/nagadomi/waifu2x), [GitHub Windows](https://github.com/lltcggie/waifu2x-caffe)
 
 可以让图片变得清晰，具体技术实现涉及机器学习等尖端技术（#dalao），可以说是很厉害了呢
+
+### Affinity Photo: 图片编辑
+
+> [官网](https://affinity.serif.com/en-gb/)
+
+图片编辑工具，不像 PS 那么庞大而复杂，也不是如同美图秀秀那样纯粹面向小白用户，应对基本的照片修改需求应该是足够了。
 
 ### Bandicam：视频录制
 
