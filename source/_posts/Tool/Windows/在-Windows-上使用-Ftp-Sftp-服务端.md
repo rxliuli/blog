@@ -2,6 +2,7 @@
 layout: post
 title: 在 Windows 上使用 FTP/SFTP 服务端
 date: 2019-02-17
+updated: 2019-02-19
 tags: [FTP, 教程]
 ---
 
@@ -21,9 +22,9 @@ tags: [FTP, 教程]
 事实上这是很多开发者，尤其是 Linux 下的开发者，习惯了使用软件可能报错、可能有问题，对使用体验毫不在意。  
 所以吾辈滚了，滚去使用其他的软件了。
 
-## 使用 freeSSHd
+## 使用 freeFTPd
 
-> [freeSSHd 官网](http://www.freesshd.com/)
+> [freeFTPd 官网](http://www.freesshd.com/)
 
 点击 [下载链接](http://www.freesshd.com/freeFTPd.exe) 下载 freeFTPd，然后点击安装。第一次运行时会询问你 **是否创建/使用私钥** 和 **是否运行系统服务**，全部选择 **是** 即可。
 
