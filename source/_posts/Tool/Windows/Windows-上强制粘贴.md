@@ -2,6 +2,7 @@
 layout: post
 title: Windows 上强制粘贴
 date: 2019-02-19 20:56:36
+updated: 2019-02-19
 tags: [Windows]
 ---
 
@@ -13,11 +14,11 @@ tags: [Windows]
 
 ## 解决思路
 
-首先要清楚，QQ 这种客户端是如何屏蔽粘贴功能的呢？很显然，QQ 不仅仅是禁用右键/快捷键那么简单，不管怎样，我们都可以从根本的地方下手--模拟键盘输入，将剪切版的文字一个一个的输入进去！
+QQ 这种客户端是如何屏蔽粘贴功能的呢？很显然，QQ 不仅仅是禁用右键/快捷键那么简单，或许是添加键盘驱动了也说不定。但不管怎样，我们都可以从根本的地方下手 -- **模拟键盘输入，将剪切版的文字一个一个的输入进去！**
 
 ## 解决方案
 
-虽然不像 Linux 那样任何操作都可以使用脚本去控制（实际上也可以，只不过 Windows 的 cmd 脚本是在不怎么样），然而基于 Windows 丰富的生态，还是有人做出了第三方的脚本语言 -- **Autohotkey**。
+虽然不像 Linux 那样任何操作都可以使用脚本去控制（实际上也可以，只不过 Windows 的 `cmd` 脚本实在不怎么样），然而基于 Windows 丰富的生态，还是有人做出了第三方的脚本语言 -- **Autohotkey**。
 
 我们首先去 [官网](https://www.autohotkey.com/) 看一下，介绍只有简单的两句话。
 
@@ -47,6 +48,6 @@ tags: [Windows]
 
 当然，如果不喜欢安装 Autohotkey 的话也没关系，吾辈转换了一个 [.exe 可执行文件](https://blog.rxliuli.com/uploads/QQForcedPaste.exe)，也可以直接下载使用啦
 
-## 使用示例
+## 使用效果
 
 ![使用示例](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190219214116.gif)
