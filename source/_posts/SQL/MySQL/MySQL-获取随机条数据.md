@@ -1,7 +1,10 @@
 ---
 title: MySQL 获取随机条数据
+tags:
+  - DB
+  - MySQL
+abbrlink: 931be19d
 date: 2018-11-10 10:55:27
-tags: [DB, MySQL]
 ---
 
 # MySQL 获取随机条数据

@@ -1,7 +1,8 @@
 ---
 title: Linux Centos 6.5 下安装 JDK+Tomcat
-date: 2018-06-27 01:39:21
 tags: Linux
+abbrlink: 9a3e10ff
+date: 2018-06-27 01:39:21
 ---
 # Linux Centos 6.5 下安装 JDK+Tomcat
 

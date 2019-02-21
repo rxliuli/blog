@@ -1,8 +1,11 @@
 ---
 title: 配置文件 yml
+tags:
+  - Java
+  - 记录
+abbrlink: 2af8561b
 date: 2018-07-01 01:39:21
-updated: 2019-02-11
-tags: [Java, 记录]
+updated: 2019-02-11 00:00:00
 ---
 
 # 配置文件 yml

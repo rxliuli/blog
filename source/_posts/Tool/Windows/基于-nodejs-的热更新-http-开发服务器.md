@@ -1,8 +1,10 @@
 ---
 layout: post
 title: 基于 nodejs 的热更新 http 开发服务器
-date: 2019-02-20
-tags: [NodeJS]
+tags:
+  - NodeJS
+abbrlink: e4b2ad8f
+date: 2019-02-20 00:00:00
 ---
 
 # 基于 nodejs 的热更新 http 开发服务器

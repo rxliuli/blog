@@ -1,9 +1,13 @@
 ---
 layout: post
 title: 作为一名 developer 如何正确地使用 Chrome
+tags:
+  - Chrome
+  - Tool
+  - 教程
+abbrlink: 161af8c3
 date: 2018-12-24 14:08:52
-updated: 2019-01-08
-tags: [Chrome, Tool, 教程]
+updated: 2019-01-08 00:00:00
 ---
 
 # 作为一名 developer 如何正确地使用 Chrome

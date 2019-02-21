@@ -1,8 +1,9 @@
 ---
 title: Git 设置和取消代理
-date: 2018-07-23
-updated: 2018-10-06
 tags: Git
+abbrlink: 9b8bc525
+date: 2018-07-23 00:00:00
+updated: 2018-10-06 00:00:00
 ---
 # Git 设置和取消代理
 

@@ -1,8 +1,11 @@
 ---
 layout: post
 title: JavaScript 使用递归异步的请求
-date: 2019-01-06
-tags: [JavaScript, 记录]
+tags:
+  - JavaScript
+  - 记录
+abbrlink: 71b47285
+date: 2019-01-06 00:00:00
 ---
 
 # JavaScript 使用递归异步的请求

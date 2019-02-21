@@ -1,8 +1,11 @@
 ---
 layout: post
 title: JavaScript 避免使用 if-else 的方法
-date: 2019-01-17
-tags: [JavaScript, 教程]
+tags:
+  - JavaScript
+  - 教程
+abbrlink: e17d1a04
+date: 2019-01-17 00:00:00
 ---
 
 # JavaScript 避免使用 if-else 的方法

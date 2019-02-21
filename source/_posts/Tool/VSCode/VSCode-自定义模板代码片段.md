@@ -1,7 +1,8 @@
 ---
 title: VSCode 自定义模板代码片段
-date: 2018-10-30 11:23:29
 tags: VSCode
+abbrlink: b6915ccd
+date: 2018-10-30 11:23:29
 ---
 
 # VSCode 自定义模板代码片段

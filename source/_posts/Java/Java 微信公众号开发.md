@@ -1,8 +1,10 @@
 ---
 title: Java 微信公众号开发
-date: 2018-09-12
-updated: 2018-09-17
-tags: [Java]
+tags:
+  - Java
+abbrlink: 61fefd61
+date: 2018-09-12 00:00:00
+updated: 2018-09-17 00:00:00
 ---
 # Java 微信公众号开发
 

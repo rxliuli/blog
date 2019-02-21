@@ -1,7 +1,10 @@
 ---
 title: Linux Centos 安装 MongoDB
+tags:
+  - Linux
+  - DB
+abbrlink: 94fae9d6
 date: 2018-08-23 10:02:55
-tags: [Linux, DB]
 ---
 # Linux Centos 安装 MongoDB
 

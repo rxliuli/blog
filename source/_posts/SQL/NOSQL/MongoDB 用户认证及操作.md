@@ -1,7 +1,8 @@
 ---
 title: MongoDB 用户认证及操作
-date: 2018-08-16 01:39:21
 tags: DB
+abbrlink: aa421cf5
+date: 2018-08-16 01:39:21
 ---
 # MongoDB 用户认证及操作
 

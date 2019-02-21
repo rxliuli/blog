@@ -1,7 +1,8 @@
 ---
 title: JavaScript 自定义解析字符串为 Date 对象
-date: 2018-06-27 01:39:21
 tags: JavaScript
+abbrlink: c734677d
+date: 2018-06-27 01:39:21
 ---
 
 # JavaScript 自定义解析字符串为 Date 对象

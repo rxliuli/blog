@@ -1,7 +1,8 @@
 ---
 title: IDEA 设置 Git-Bash 为默认 Terminal
-date: 2018-08-09 01:39:21
 tags: IDEA
+abbrlink: '33085091'
+date: 2018-08-09 01:39:21
 ---
 # IDEA 设置 Git-Bash 为默认 Terminal
 

@@ -1,7 +1,8 @@
 ---
 title: 'Linux SSH 远程连接出现 [Host key verification failed]'
-date: 2018-08-22 09:33:40
 tags: Linux
+abbrlink: fdb60858
+date: 2018-08-22 09:33:40
 ---
 # Linux SSH 远程连接出现 [Host key verification failed]
 

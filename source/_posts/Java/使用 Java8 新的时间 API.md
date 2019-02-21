@@ -1,7 +1,9 @@
 ---
 title: 使用 Java8 新的时间 API
-date: 2018-09-04
-tags: [Java]
+tags:
+  - Java
+abbrlink: 7ef9e3d
+date: 2018-09-04 00:00:00
 ---
 # 使用 Java8 新的时间 API
 

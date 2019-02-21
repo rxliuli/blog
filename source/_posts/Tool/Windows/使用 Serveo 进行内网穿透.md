@@ -1,7 +1,9 @@
 ---
 title: 使用 Serveo 进行内网穿透
-date: 2018-09-08
-tags: [Tool]
+tags:
+  - Tool
+abbrlink: 5ad7fa84
+date: 2018-09-08 00:00:00
 ---
 # 使用 Serveo 进行内网穿透
 

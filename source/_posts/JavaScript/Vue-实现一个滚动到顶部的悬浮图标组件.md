@@ -1,7 +1,10 @@
 ---
 title: Vue 实现一个滚动到顶部的悬浮图标组件
+tags:
+  - JavaScript
+  - VueJS
+abbrlink: a4fbddd2
 date: 2018-11-03 18:11:06
-tags: [JavaScript, VueJS]
 ---
 
 # Vue 实现一个滚动到顶部的悬浮图标组件

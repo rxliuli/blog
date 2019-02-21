@@ -1,8 +1,11 @@
 ---
 layout: post
 title: Java 使用 FTP/SFTP
+tags:
+  - Java
+  - 记录
+abbrlink: 6e1ed646
 date: 2019-02-14 15:17:38
-tags: [Java, 记录]
 ---
 
 # Java 使用 FTP/SFTP

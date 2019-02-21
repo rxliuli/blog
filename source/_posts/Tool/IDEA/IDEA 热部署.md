@@ -1,7 +1,8 @@
 ---
 title: IDEA 热部署
-date: 2018-06-27 01:39:21
 tags: IDEA
+abbrlink: 81df2673
+date: 2018-06-27 01:39:21
 ---
 
 # IDEA 热部署

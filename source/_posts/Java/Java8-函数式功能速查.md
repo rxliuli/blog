@@ -1,8 +1,10 @@
 ---
 layout: post
 title: Java8 函数式功能速查
+tags:
+  - Java
+abbrlink: d66a3b89
 date: 2019-02-15 14:40:39
-tags: [Java]
 ---
 
 # Java8 函数式功能速查

@@ -1,8 +1,11 @@
 ---
 title: Xmind 激活
-date: 2018-08-24
-updated: 2018-08-25
-tags: [Windows, 教程]
+tags:
+  - Windows
+  - 教程
+abbrlink: 360baf38
+date: 2018-08-24 00:00:00
+updated: 2018-08-25 00:00:00
 ---
 
 # Xmind 激活

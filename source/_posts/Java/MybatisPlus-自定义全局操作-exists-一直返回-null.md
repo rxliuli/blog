@@ -1,9 +1,13 @@
 ---
 layout: post
 title: MybatisPlus 自定义全局操作 exists 一直返回 null
+tags:
+  - Java
+  - Mybatis
+  - 记录
+abbrlink: 5bd9a558
 date: 2018-12-11 19:26:18
-updated: 2018-12-12
-tags: [Java, Mybatis, 记录]
+updated: 2018-12-12 00:00:00
 ---
 
 # MybatisPlus 自定义全局操作 exists 一直返回 null

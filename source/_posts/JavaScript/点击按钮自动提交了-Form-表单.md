@@ -1,8 +1,12 @@
 ---
 layout: post
 title: 点击按钮自动提交了 Form 表单
+tags:
+  - HTML
+  - JavaScript
+  - 记录
+abbrlink: 1c7572aa
 date: 2019-01-04 20:22:43
-tags: [HTML, JavaScript, 记录]
 ---
 
 # 点击按钮自动提交了 Form 表单

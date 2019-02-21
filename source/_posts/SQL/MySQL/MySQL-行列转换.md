@@ -1,9 +1,12 @@
 ---
 layout: post
 title: MySQL 行列转换
+tags:
+  - MySQL
+  - 记录
+abbrlink: 73dac442
 date: 2018-12-21 15:53:57
-updated: 2018-12-28
-tags: [MySQL, 记录]
+updated: 2018-12-28 00:00:00
 ---
 
 # MySQL 行列转换

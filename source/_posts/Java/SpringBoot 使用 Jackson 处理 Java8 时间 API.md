@@ -1,8 +1,10 @@
 ---
 title: SpringBoot 使用 Jackson 处理 Java8 时间 API
-date: 2018-09-03
-updated: 2018-09-20
-tags: [Java]
+tags:
+  - Java
+abbrlink: '57527319'
+date: 2018-09-03 00:00:00
+updated: 2018-09-20 00:00:00
 ---
 # SpringBoot 使用 Jackson 处理 Java8 时间 API
 

@@ -1,8 +1,11 @@
 ---
 layout: post
 title: 使用 heroku 免费部署 Shadowsocks
-date: 2019-01-27
-tags: [FreeNetwork, 教程]
+tags:
+  - FreeNetwork
+  - 教程
+abbrlink: 302de6b9
+date: 2019-01-27 00:00:00
 ---
 
 # 使用 heroku 免费部署 Shadowsocks

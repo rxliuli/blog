@@ -1,7 +1,8 @@
 ---
 title: MySQL 使用 IF 判断是否执行 SQL
-date: 2018-07-05 01:39:21
 tags: DB
+abbrlink: a4fde72b
+date: 2018-07-05 01:39:21
 ---
 # MySQL 使用 IF 判断是否执行 SQL
 

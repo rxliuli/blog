@@ -1,7 +1,10 @@
 ---
 title: IntelliJ 开发者之夜@深圳之行
+tags:
+  - IDEA
+  - 随笔
+abbrlink: ad2f24b9
 date: 2018-11-13 01:11:23
-tags: [IDEA, 随笔]
 ---
 
 # IntelliJ 开发者之夜@深圳之行

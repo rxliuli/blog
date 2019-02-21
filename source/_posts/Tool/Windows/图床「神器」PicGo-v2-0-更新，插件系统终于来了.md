@@ -1,8 +1,11 @@
 ---
 layout: post
 title: 图床「神器」PicGo v2.0 更新，插件系统终于来了
+tags:
+  - Tool
+  - Markdown
+abbrlink: 7a26a254
 date: 2019-01-18 21:20:14
-tags: [Tool, Markdown]
 ---
 
 # 图床「神器」PicGo v2.0 更新，插件系统终于来了

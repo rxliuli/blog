@@ -1,8 +1,10 @@
 ---
 title: SpringBoot 进行测试
-date: 2018-09-05
-updated: 2018-09-05
-tags: [Java]
+tags:
+  - Java
+abbrlink: 5ed37fca
+date: 2018-09-05 00:00:00
+updated: 2018-09-05 00:00:00
 ---
 # SpringBoot 进行测试
 

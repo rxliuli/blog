@@ -1,7 +1,8 @@
 ---
 title: Windows 下 Cmder 安装 Chocolatey
-date: 2018-06-27 01:39:21
 tags: Cmder
+abbrlink: ad968d70
+date: 2018-06-27 01:39:21
 ---
 
 # Windows 下 Cmder 安装 Chocolatey

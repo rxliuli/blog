@@ -1,7 +1,11 @@
 ---
 title: Vue 深度监听
+tags:
+  - JavaScript
+  - VueJS
+  - 记录
+abbrlink: f30b2dbb
 date: 2018-11-27 12:57:46
-tags: [JavaScript, VueJS, 记录]
 ---
 
 # Vue 深度监听

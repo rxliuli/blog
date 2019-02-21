@@ -1,7 +1,8 @@
 ---
 title: MySQL 创建用户及授权
-date: 2018-08-14 01:39:21
 tags: DB
+abbrlink: 676cd338
+date: 2018-08-14 01:39:21
 ---
 # MySQL 创建用户及授权
 

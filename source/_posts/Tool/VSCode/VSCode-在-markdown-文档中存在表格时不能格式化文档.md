@@ -1,8 +1,12 @@
 ---
 layout: post
 title: VSCode 在 markdown 文档中存在表格时不能格式化文档
+tags:
+  - VSCode
+  - Markdown
+  - Prettier
+abbrlink: f59c5643
 date: 2018-12-06 21:19:43
-tags: [VSCode, Markdown, Prettier]
 ---
 
 # VSCode 在 markdown 文档中存在表格时不能格式化文档

@@ -1,7 +1,8 @@
 ---
 title: MySQL 无法插入中文数据
-date: 2018-08-16 01:39:21
 tags: DB
+abbrlink: a29680f6
+date: 2018-08-16 01:39:21
 ---
 # MySQL 无法插入中文数据
 

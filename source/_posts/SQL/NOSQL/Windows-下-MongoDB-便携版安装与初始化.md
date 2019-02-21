@@ -1,7 +1,11 @@
 ---
 title: Windows 下 MongoDB 便携版安装与初始化
+tags:
+  - Windows
+  - DB
+  - MongoDB
+abbrlink: 424bf4e1
 date: 2018-08-08 01:39:21
-tags: [Windows, DB, MongoDB]
 ---
 
 # Windows 下 MongoDB 便携版安装与初始化

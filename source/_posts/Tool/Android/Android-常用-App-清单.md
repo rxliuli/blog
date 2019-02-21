@@ -1,8 +1,11 @@
 ---
 layout: post
 title: Android 常用 App 清单
+tags:
+  - mobile
+  - Android
+abbrlink: 3943e19b
 date: 2019-02-07 00:09:03
-tags: [mobile, Android]
 ---
 
 # Android 常用 App 清单

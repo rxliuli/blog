@@ -1,9 +1,12 @@
 ---
 layout: post
 title: 在传统项目中使用 babel 编译 ES6
+tags:
+  - JavaScript
+  - 记录
+abbrlink: e73e3322
 date: 2019-01-09 20:56:16
-updated: 2019-01-11
-tags: [JavaScript, 记录]
+updated: 2019-01-11 00:00:00
 ---
 
 # 在传统项目中使用 babel 编译 ES6
