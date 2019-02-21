@@ -35,3 +35,25 @@ nodejs 热更新
 VSCode 插件
 
 - [LiveServer](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer): VSCode 中的插件，可以将任何一个 HTML 当作 web 程序打开，并自带热更新
+
+## live-server
+
+`live-server` 是一个 npm 包，全局安装之后可以很方便的使用，所以吾辈选择了这个。主要特点如下：
+
+- [x] 零配置
+- [x] 热插拔
+- [x] 自动打开浏览器
+
+下面来说一下如何使用
+
+1. 使用 npm 全局安装
+
+   ```sh
+   npm i -g live-server
+   ```
+
+2. 跳转到指定目录，然后使用 `live-server` 即可启动 http 服务器
+
+   ```sh
+   live-server
+   ```
