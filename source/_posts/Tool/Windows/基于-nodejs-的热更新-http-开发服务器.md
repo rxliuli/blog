@@ -9,7 +9,7 @@ tags: [NodeJS]
 
 ## 场景
 
-之前一直在使用 [http-server](https://www.npmjs.com/package/http-server) 作为本地快速启动静态 http 服务器的命令行工具，然而直到今天，吾辈实在难以忍受其在修改完 `HTML` 文件后，http-server 不会自动刷新浏览器重新渲染页面，而是需要我们手动刷新才行，真的是不厌其烦，所以吾辈开始找更好的工具。
+之前一直在使用 [http-server](https://www.npmjs.com/package/http-server) 作为本地快速启动静态 http 服务器的命令行工具，然而直到今天，吾辈实在难以忍受其在修改完 `HTML` 文件后，http-server 不会自动刷新浏览器重新渲染页面，而是需要手动刷新才行，真的是不厌其烦，所以吾辈开始找更好的工具。
 
 > 注：http-server 其实也已经热更新到内存中了，只不过不会触发浏览器刷新页面。
 
