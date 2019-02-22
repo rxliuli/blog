@@ -1,9 +1,12 @@
 ---
 layout: post
 title: let 与 var 在 for 循环中的区别
+tags:
+  - JavaScript
+  - 记录
+abbrlink: acfc2875
 date: 2018-12-27 17:32:38
-updated: 2018-12-28
-tags: [JavaScript, 记录]
+updated: 2018-12-28 00:00:00
 ---
 
 # let 与 var 在 for 循环中的区别

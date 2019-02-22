@@ -1,9 +1,12 @@
 ---
 layout: post
 title: Java8 时间格式化 DateTimeFormatter
-date: 2019-02-12
-updated: 2019-02-13
-tags: [Java, 记录]
+tags:
+  - Java
+  - 记录
+abbrlink: 256617c3
+date: 2019-02-12 00:00:00
+updated: 2019-02-13 00:00:00
 ---
 
 # Java8 时间格式化 DateTimeFormatter

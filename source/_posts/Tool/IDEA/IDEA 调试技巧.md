@@ -1,7 +1,8 @@
 ---
 title: IDEA 调试技巧
-date: 2018-08-15 01:39:21
 tags: IDEA
+abbrlink: 50bafe5a
+date: 2018-08-15 01:39:21
 ---
 # IDEA 调试技巧
 

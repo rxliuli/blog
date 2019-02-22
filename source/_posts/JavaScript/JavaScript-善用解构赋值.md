@@ -1,8 +1,10 @@
 ---
 layout: post
 title: JavaScript 善用解构赋值
+tags:
+  - JavaScript
+abbrlink: 5985b64e
 date: 2019-01-08 20:36:58
-tags: [JavaScript]
 ---
 
 # JavaScript 善用解构赋值

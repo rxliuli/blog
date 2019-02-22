@@ -1,9 +1,13 @@
 ---
 layout: post
 title: 使用 hexo next 搭建静态博客
+tags:
+  - markdown
+  - blog
+  - 教程
+abbrlink: '8034e749'
 date: 2018-12-09 16:32:42
-updated: 2019-01-10
-tags: [markdown, blog, 教程]
+updated: 2019-01-10 00:00:00
 ---
 
 # 使用 hexo next 搭建静态博客

@@ -1,8 +1,9 @@
 ---
 title: IDEA 使用技巧
-date: 2018-07-31
-updated: 2018-12-03
 tags: IDEA
+abbrlink: 2241d802
+date: 2018-07-31 00:00:00
+updated: 2018-12-03 00:00:00
 ---
 
 # IDEA 使用技巧

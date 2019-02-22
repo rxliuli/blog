@@ -1,7 +1,8 @@
 ---
 title: 使用 Spring 时进行测试
-date: 2018-07-31 01:39:21
 tags: Java
+abbrlink: c2870a27
+date: 2018-07-31 01:39:21
 ---
 # 使用 Spring 时进行测试
 

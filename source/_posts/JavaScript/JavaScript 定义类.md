@@ -1,7 +1,8 @@
 ---
 title: JavaScript 定义类
-date: 2018-06-28 01:39:21
 tags: JavaScript
+abbrlink: 7e1583b6
+date: 2018-06-28 01:39:21
 ---
 # 在 JavaScript 定义类
 

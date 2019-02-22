@@ -1,7 +1,8 @@
 ---
 title: Windows10 升级 Linux 的子系统 Ubuntu
-date: 2018-06-27 01:39:21
 tags: Linux
+abbrlink: 59023f68
+date: 2018-06-27 01:39:21
 ---
 # Windows10 升级 Linux 的子系统 Ubuntu
 

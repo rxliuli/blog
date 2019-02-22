@@ -1,7 +1,8 @@
 ---
 title: 使用 SSH 连接 Linux 服务器
-date: 2018-08-10 01:39:21
 tags: Linux
+abbrlink: '47304444'
+date: 2018-08-10 01:39:21
 ---
 # 使用 SSH 连接 Linux 服务器
 

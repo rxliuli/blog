@@ -1,9 +1,12 @@
 ---
 layout: post
 title: 使用 Greasemonkey 解除网页复制粘贴限制
+tags:
+  - JavaScript
+  - Greasemonkey
+abbrlink: 4b2822b2
 date: 2018-12-23 15:10:04
-updated: 2018-12-28
-tags: [JavaScript, Greasemonkey]
+updated: 2018-12-28 00:00:00
 ---
 
 # 使用 Greasemonkey 解除网页复制粘贴限制

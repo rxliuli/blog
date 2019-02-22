@@ -1,8 +1,11 @@
 ---
 layout: post
 title: Vue 实现一个简单的瀑布流组件
+tags:
+  - JavaScript
+  - VueJS
+abbrlink: 66b8c75b
 date: 2018-12-10 17:16:13
-tags: [JavaScript, VueJS]
 ---
 
 # Vue 实现一个简单的瀑布流组件

@@ -1,8 +1,12 @@
 ---
 title: VSCode 搭建 markdown 写作环境
+tags:
+  - Tool
+  - VSCode
+  - markdown
+abbrlink: 43851eb5
 date: 2018-12-01 14:54:37
-updated: 2018-12-06
-tags: [Tool, VSCode, markdown]
+updated: 2018-12-06 00:00:00
 ---
 
 # VSCode 搭建 markdown 写作环境

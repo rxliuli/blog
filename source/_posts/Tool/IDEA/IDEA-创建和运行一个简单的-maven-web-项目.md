@@ -1,8 +1,14 @@
 ---
 layout: post
 title: IDEA 创建和运行一个简单的 maven web 项目
+tags:
+  - IDEA
+  - Java
+  - Maven
+  - Web
+  - 教程
+abbrlink: 3dde13
 date: 2018-12-04 18:11:33
-tags: [IDEA, Java, Maven, Web, 教程]
 ---
 
 # IDEA 创建和运行一个简单的 maven web 项目

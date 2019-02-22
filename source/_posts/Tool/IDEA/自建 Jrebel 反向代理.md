@@ -1,7 +1,8 @@
 ---
 title: 自建 Jrebel 反向代理
-date: 2018-07-10 01:39:21
 tags: IDEA
+abbrlink: 88d60541
+date: 2018-07-10 01:39:21
 ---
 # 自建 Jrebel 反向代理
 

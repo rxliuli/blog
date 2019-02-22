@@ -1,8 +1,9 @@
 ---
 title: SpringBoot 使用阿里云的短信服务出现问题
+tags: Java
+abbrlink: f86d1ea4
 date: 2018-08-23 00:43:30
 updated: 2018-08-23 22:22:22
-tags: Java
 ---
 # SpringBoot 使用阿里云的短信服务出现问题
 

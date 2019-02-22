@@ -1,5 +1,6 @@
 ---
 title: Windows 上安装 JDK 并设置环境变量
+abbrlink: d0cf29fa
 date: 2018-10-17 15:07:15
 tags:
 ---

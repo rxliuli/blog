@@ -1,7 +1,10 @@
 ---
 title: Vue 打包的静态文件不能直接运行
-date: 2018-10-29
-tags: [JavaScript, VueJS]
+tags:
+  - JavaScript
+  - VueJS
+abbrlink: 7d805fde
+date: 2018-10-29 00:00:00
 ---
 
 # Vue 打包的静态文件不能直接运行

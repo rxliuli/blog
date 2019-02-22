@@ -1,7 +1,10 @@
 ---
 title: markdown 语法说明
+tags:
+  - Tool
+  - markdown
+abbrlink: 5042aac0
 date: 2018-12-01 14:52:19
-tags: [Tool, markdown]
 ---
 
 # markdown 语法说明

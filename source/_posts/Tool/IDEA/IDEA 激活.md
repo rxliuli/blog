@@ -1,8 +1,9 @@
 ---
 title: IDEA 激活
-date: 2018-08-03
-updated: 2018-11-20
 tags: IDEA
+abbrlink: 21faf030
+date: 2018-08-03 00:00:00
+updated: 2018-11-20 00:00:00
 ---
 
 # IDEA 激活

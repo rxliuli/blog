@@ -1,7 +1,10 @@
 ---
 title: SpringBoot 集成 WebSocket
-date: 2018-09-03
-tags: [Java, JavaScript]
+tags:
+  - Java
+  - JavaScript
+abbrlink: 7eaebba3
+date: 2018-09-03 00:00:00
 ---
 # SpringBoot 集成 WebSocket
 

@@ -1,8 +1,12 @@
 ---
 layout: post
 title: MySQL 递归查询
-date: 2019-01-11
-tags: [DB, MySQL, 记录]
+tags:
+  - DB
+  - MySQL
+  - 记录
+abbrlink: 5830226b
+date: 2019-01-11 00:00:00
 ---
 
 # MySQL 递归查询

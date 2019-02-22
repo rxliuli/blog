@@ -1,9 +1,13 @@
 ---
 layout: post
 title: Greasemonkey 踩坑之路
+tags:
+  - JavaScript
+  - Greasemonkey
+  - 记录
+abbrlink: 75bbc83f
 date: 2018-12-19 22:40:04
-updated: 2018-12-21
-tags: [JavaScript, Greasemonkey, 记录]
+updated: 2018-12-21 00:00:00
 ---
 
 # Greasemonkey 踩坑之路

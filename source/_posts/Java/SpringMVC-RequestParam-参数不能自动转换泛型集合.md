@@ -1,8 +1,11 @@
 ---
 layout: post
 title: SpringMVC @RequestParam 参数不能自动转换泛型集合
+tags:
+  - Java
+  - 记录
+abbrlink: 2f32308b
 date: 2019-01-17 17:48:57
-tags: [Java, 记录]
 ---
 
 # SpringMVC @RequestParam 参数不能自动转换泛型集合

@@ -1,7 +1,12 @@
 ---
 title: Windows 下安装 Gradle
+tags:
+  - 记录
+  - Java
+  - Gradle
+  - Windows
+abbrlink: 594d7b41
 date: 2018-11-16 21:04:23
-tags: [记录, Java, Gradle, Windows]
 ---
 
 # Windows 下安装 Gradle

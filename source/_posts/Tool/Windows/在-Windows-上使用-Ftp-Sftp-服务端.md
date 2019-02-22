@@ -1,9 +1,12 @@
 ---
 layout: post
 title: 在 Windows 上使用 FTP/SFTP 服务端
-date: 2019-02-17
-updated: 2019-02-19
-tags: [FTP, 教程]
+tags:
+  - FTP
+  - 教程
+abbrlink: 955b6aa1
+date: 2019-02-17 00:00:00
+updated: 2019-02-19 00:00:00
 ---
 
 # 在 Windows 上使用 FTP/SFTP 服务端

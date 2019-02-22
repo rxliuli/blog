@@ -1,7 +1,10 @@
 ---
 title: Chrome 强制复制粘贴
-date: 2018-10-01
-tags: [Tool, Chrome]
+tags:
+  - Tool
+  - Chrome
+abbrlink: 58a7c146
+date: 2018-10-01 00:00:00
 ---
 
 # Chrome 强制复制粘贴

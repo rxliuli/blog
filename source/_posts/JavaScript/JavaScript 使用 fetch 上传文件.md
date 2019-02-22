@@ -1,7 +1,8 @@
 ---
 title: JavaScript 使用 fetch 上传文件
-date: 2018-08-07 01:39:21
 tags: JavaScript
+abbrlink: b53ca747
+date: 2018-08-07 01:39:21
 ---
 # JavaScript 使用 fetch 上传文件
 

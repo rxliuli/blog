@@ -1,7 +1,8 @@
 ---
 title: IDEA 设置配置文件的位置
-date: 2018-07-16 01:39:21
 tags: IDEA
+abbrlink: 540b3d08
+date: 2018-07-16 01:39:21
 ---
 # IDEA 设置配置文件的位置
 

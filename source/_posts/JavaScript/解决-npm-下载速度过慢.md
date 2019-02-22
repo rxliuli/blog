@@ -1,8 +1,12 @@
 ---
 layout: post
 title: 解决 npm 下载速度过慢
+tags:
+  - JavaScript
+  - npm
+  - 教程
+abbrlink: dc4699e0
 date: 2018-12-21 01:23:30
-tags: [JavaScript, npm, 教程]
 ---
 
 # 解决 npm 下载速度过慢

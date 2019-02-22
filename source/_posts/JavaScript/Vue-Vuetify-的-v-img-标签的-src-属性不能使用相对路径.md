@@ -1,7 +1,11 @@
 ---
 title: Vue Vuetify 的 v-img 标签的 src 属性不能使用相对路径
+tags:
+  - JavaScript
+  - VueJS
+  - Vuetify
+abbrlink: 4bfec1fa
 date: 2018-11-01 10:13:19
-tags: [JavaScript, VueJS, Vuetify]
 ---
 
 # Vue Vuetify 的 v-img 标签的 src 属性不能使用相对路径

@@ -1,7 +1,10 @@
 ---
 title: Windows 上 Maven 安装与使用
+tags:
+  - Java
+  - Maven
+abbrlink: 82700e2a
 date: 2018-11-09 12:34:16
-tags: [Java, Maven]
 ---
 
 # Windows 上 Maven 安装与使用

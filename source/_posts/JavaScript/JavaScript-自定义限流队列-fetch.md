@@ -1,8 +1,11 @@
 ---
 layout: post
 title: JavaScript 自定义限流队列 fetch
-date: 2019-01-24
-tags: [JavaScript, 教程]
+tags:
+  - JavaScript
+  - 教程
+abbrlink: d47ba580
+date: 2019-01-24 00:00:00
 ---
 
 # JavaScript 自定义限流队列 fetch

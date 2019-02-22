@@ -1,8 +1,11 @@
 ---
 layout: post
 title: 使用 rollup 打包 JavaScript SDK
+tags:
+  - JavaScript
+  - 记录
+abbrlink: c30dd206
 date: 2019-01-24 12:43:57
-tags: [JavaScript, 记录]
 ---
 
 # 使用 rollup 打包 JavaScript SDK

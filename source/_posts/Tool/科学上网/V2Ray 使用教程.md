@@ -1,8 +1,11 @@
 ---
 title: V2Ray 使用教程
-date: 2018-09-02
-updated: 2019-01-04
-tags: [FreeNetwork, 教程]
+tags:
+  - FreeNetwork
+  - 教程
+abbrlink: dbfe5436
+date: 2018-09-02 00:00:00
+updated: 2019-01-04 00:00:00
 ---
 
 # V2Ray 使用教程

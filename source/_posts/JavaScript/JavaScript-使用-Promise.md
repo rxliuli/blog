@@ -1,8 +1,11 @@
 ---
 layout: post
 title: JavaScript 使用 Promise
+tags:
+  - JavaScript
+  - 教程
+abbrlink: e032f56a
 date: 2019-01-16 13:17:28
-tags: [JavaScript, 教程]
 ---
 
 # JavaScript 使用 Promise
