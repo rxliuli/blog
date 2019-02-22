@@ -12,6 +12,18 @@ tags:
 
 # 将 Mybatis/MongoDB 集成到 SpringBoot 中的示例
 
+## 前置要求
+
+本文假设你已经了解或知道以下技能，尤其而且是勾选的内容。
+
+- [x] Gradle
+- [x] SpringBoot
+- [x] Mybatis Plus
+- [x] MongoDB
+- [ ] SpringBoot MongoDB Data
+- [ ] H2DB
+- [ ] SpringTest
+
 ## 场景
 
 > [GitHub 项目](https://github.com/rxliuli/spring-boot-mybatis-plus-mongo), [Blog 教程](https://blog.rxliuli.com/p/872037f5/)

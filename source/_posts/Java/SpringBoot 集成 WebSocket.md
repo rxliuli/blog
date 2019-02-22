@@ -6,6 +6,7 @@ tags:
 abbrlink: 7eaebba3
 date: 2018-09-03 00:00:00
 ---
+
 # SpringBoot 集成 WebSocket
 
 - [SpringBoot 集成 WebSocket](#springboot-集成-websocket)
@@ -35,7 +36,9 @@ date: 2018-09-03 00:00:00
 5. 服务端可以在任何时候主动对指定某些客户端进行 **广播**
 6. 服务端可以识别客户端（状态），并以此进行 **点对点推送**
 
-## 前置知识
+## 前置要求
+
+本文假设你已经了解或知道以下技能，尤其而且是勾选的内容。
 
 - [x] Java
 - [x] Maven
@@ -128,66 +131,76 @@ public class BilateralBroadcastingSocket {
 ```html
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
+  <body>
+    <script
+      type="application/javascript"
+      src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"
+    ></script>
+    <script
+      type="application/javascript"
+      src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"
+    ></script>
+    <script>
+      let socket = new SockJS('http://127.0.0.1:8080/endpoint')
+      stompClient = Stomp.over(socket)
+      stompClient.connect(
+        {},
+        // 连接成功回调函数
+        frame => {
+          console.log('服务端 Socket 连接建立')
 
-<body>
-  <script type="application/javascript" src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
-  <script type="application/javascript" src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
-  <script>
-    let socket = new SockJS('http://127.0.0.1:8080/endpoint');
-    stompClient = Stomp.over(socket);
-    stompClient.connect(
-      {},
-      // 连接成功回调函数
-      frame => {
-        console.log('服务端 Socket 连接建立')
+          // 获取 websocket 连接的 sessionId
+          const sessionId = /\/([^\/]+)\/websocket/.exec(
+            socket._transport.url
+          )[1]
+          console.log('connected, session id: ' + sessionId)
 
-        // 获取 websocket 连接的 sessionId
-        const sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
-        console.log("connected, session id: " + sessionId);
+          // 订阅广播消息（双向通信）
+          // 这里是关键（订阅了服务端的 topic）
+          stompClient.subscribe(
+            '/topic/broadcasting/bilateral/allClient',
+            res => {
+              console.log(`[广播（双向通信）]: ${res.body}`)
+            }
+          )
 
-        // 订阅广播消息（双向通信）
-        // 这里是关键（订阅了服务端的 topic）
-        stompClient.subscribe('/topic/broadcasting/bilateral/allClient', res => {
-          console.log(`[广播（双向通信）]: ${res.body}`)
-        })
+          // 发送请求
+          send()
+        },
+        error => {
+          console.log('Socket 连接失败')
+        }
+      )
 
-        // 发送请求
-        send()
-
-      }, error => {
-        console.log('Socket 连接失败')
-      });
-
-    function send() {
-      // 发送一个消息到服务端
-      // 发送消息到服务端
-      var headers = {};
-      var body = {
-        'message': '消息内容'
-      };
-      stompClient.send("/talk", headers, JSON.stringify(body));
-    }
-
-    /**
-     * 监听窗口关闭事件，窗口关闭前，主动关闭连接，防止连接还没断开就关闭窗口，server 端会抛异常
-     */
-    window.onbeforeunload = function () {
-      if (stompClient !== null) {
-        stompClient.disconnect();
-        socket.close();
+      function send() {
+        // 发送一个消息到服务端
+        // 发送消息到服务端
+        var headers = {}
+        var body = {
+          message: '消息内容'
+        }
+        stompClient.send('/talk', headers, JSON.stringify(body))
       }
-      console.log('断开连接');
-    };
-  </script>
-</body>
 
+      /**
+       * 监听窗口关闭事件，窗口关闭前，主动关闭连接，防止连接还没断开就关闭窗口，server 端会抛异常
+       */
+      window.onbeforeunload = function() {
+        if (stompClient !== null) {
+          stompClient.disconnect()
+          socket.close()
+        }
+        console.log('断开连接')
+      }
+    </script>
+  </body>
 </html>
 ```
 
@@ -239,10 +252,12 @@ public class ScheduledRefreshJob {
 
 ```js
 // 订阅广播消息（服务端单向推送）
-const subscription_broadcast = stompClient.subscribe('/topic/broadcasting/unidirectional/allClient',
-    (response) => {
-        console.log(`[广播（服务端单向推送）]: ${response.body}`)
-    });
+const subscription_broadcast = stompClient.subscribe(
+  '/topic/broadcasting/unidirectional/allClient',
+  response => {
+    console.log(`[广播（服务端单向推送）]: ${response.body}`)
+  }
+)
 ```
 
 ## 点对点推送服务端
@@ -281,7 +296,7 @@ public class BilateralPushSocket {
 ```js
 // 订阅私人消息（双向通信）
 stompClient.subscribe(`/user/${sessionId}/push/bilateral/thisClient`, res => {
-    console.log(`[点对点推送（双向通信）]: ${res.body}`)
+  console.log(`[点对点推送（双向通信）]: ${res.body}`)
 })
 ```
 
@@ -333,9 +348,12 @@ public class ScheduledRefreshJob {
 
 ```js
 // 订阅私人消息（单向通信）
-stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res => {
-    console.log(`[点对点推送（单向通信）]：${res.body}`);
-});
+stompClient.subscribe(
+  `/user/${sessionId}/push/unidirectional/thisClient`,
+  res => {
+    console.log(`[点对点推送（单向通信）]：${res.body}`)
+  }
+)
 ```
 
 ## 记录 user -> Socket 会话对应的映射表
@@ -345,190 +363,190 @@ stompClient.subscribe(`/user/${sessionId}/push/unidirectional/thisClient`, res =
 
 1. 首先需要一个记录用户 `Socket Session Id` 的类，并注册为 SpringBoot 的组件。
 
-  ```java
-  /**
-  * 用户 session 记录类
-  *
-  * @author rxliuli
-  */
-  @Component
-  public class SocketSessionRegistry {
-      /**
-      * 未登录的用户默认存储的 user id
-      */
-      public static final String DIRECT_TOURIST = "DIRECT_TOURIST";
-      /**
-      * 这个集合存储 用户 id -> session 列表
-      * 单个用户可能打开多个页面，就会出现多个 Socket 会话
-      */
-      private final ConcurrentMap<String, Set<String>> userSessionIds = new ConcurrentHashMap<>();
-      private final Object lock = new Object();
+```java
+/**
+* 用户 session 记录类
+*
+* @author rxliuli
+*/
+@Component
+public class SocketSessionRegistry {
+    /**
+    * 未登录的用户默认存储的 user id
+    */
+    public static final String DIRECT_TOURIST = "DIRECT_TOURIST";
+    /**
+    * 这个集合存储 用户 id -> session 列表
+    * 单个用户可能打开多个页面，就会出现多个 Socket 会话
+    */
+    private final ConcurrentMap<String, Set<String>> userSessionIds = new ConcurrentHashMap<>();
+    private final Object lock = new Object();
 
-      /**
-      * 根据 user id 获取 sessionId
-      *
-      * @param user 用户 id
-      * @return 用户关联的 sessionId
-      */
-      public Set<String> getSessionIds(String user) {
-          Set<String> set = this.userSessionIds.get(user);
-          return set != null ? set : Collections.emptySet();
-      }
+    /**
+    * 根据 user id 获取 sessionId
+    *
+    * @param user 用户 id
+    * @return 用户关联的 sessionId
+    */
+    public Set<String> getSessionIds(String user) {
+        Set<String> set = this.userSessionIds.get(user);
+        return set != null ? set : Collections.emptySet();
+    }
 
-      /**
-      * 获取所有 session
-      *
-      * @return 所有的 用户 id -> session 列表
-      */
-      public ConcurrentMap<String, Set<String>> getAllSessionIds() {
-          return this.userSessionIds;
-      }
+    /**
+    * 获取所有 session
+    *
+    * @return 所有的 用户 id -> session 列表
+    */
+    public ConcurrentMap<String, Set<String>> getAllSessionIds() {
+        return this.userSessionIds;
+    }
 
-      /**
-      * 根据用户 id 注册一个 session
-      *
-      * @param user      用户 id
-      * @param sessionId Socket 会话 id
-      */
-      public void registerSessionId(String user, String sessionId) {
-          Assert.notNull(user, "User must not be null");
-          Assert.notNull(sessionId, "Session ID must not be null");
-          synchronized (this.lock) {
-              Set<String> set = this.userSessionIds.get(user);
-              if (set == null) {
-                  this.userSessionIds.put(user, new CopyOnWriteArraySet<>());
-              }
-              set.add(sessionId);
-          }
-      }
+    /**
+    * 根据用户 id 注册一个 session
+    *
+    * @param user      用户 id
+    * @param sessionId Socket 会话 id
+    */
+    public void registerSessionId(String user, String sessionId) {
+        Assert.notNull(user, "User must not be null");
+        Assert.notNull(sessionId, "Session ID must not be null");
+        synchronized (this.lock) {
+            Set<String> set = this.userSessionIds.get(user);
+            if (set == null) {
+                this.userSessionIds.put(user, new CopyOnWriteArraySet<>());
+            }
+            set.add(sessionId);
+        }
+    }
 
-      /**
-      * 根据用户 id 删除一个 session
-      *
-      * @param user      用户 id
-      * @param sessionId Socket 会话 id
-      */
-      public void unregisterSessionId(String user, String sessionId) {
-          Assert.notNull(user, "User Name must not be null");
-          Assert.notNull(sessionId, "Session ID must not be null");
-          synchronized (this.lock) {
-              Set set = this.userSessionIds.get(user);
-              if (set != null && set.remove(sessionId) && set.isEmpty()) {
-                  this.userSessionIds.remove(user);
-              }
-          }
-      }
-  }
-  ```
+    /**
+    * 根据用户 id 删除一个 session
+    *
+    * @param user      用户 id
+    * @param sessionId Socket 会话 id
+    */
+    public void unregisterSessionId(String user, String sessionId) {
+        Assert.notNull(user, "User Name must not be null");
+        Assert.notNull(sessionId, "Session ID must not be null");
+        synchronized (this.lock) {
+            Set set = this.userSessionIds.get(user);
+            if (set != null && set.remove(sessionId) && set.isEmpty()) {
+                this.userSessionIds.remove(user);
+            }
+        }
+    }
+}
+```
 
 2. 监听 `WebSocket` 连接建立和关闭事件
 
-  ```java
-  /**
-  * 会话事件监听基类
-  *
-  * @author rxliuli
-  */
-  public abstract class BaseSessionEventListener<Event extends AbstractSubProtocolEvent> implements ApplicationListener<Event> {
-      protected final Logger log = LoggerFactory.getLogger(getClass());
-      @Autowired
-      protected SocketSessionRegistry webAgentSessionRegistry;
+```java
+/**
+* 会话事件监听基类
+*
+* @author rxliuli
+*/
+public abstract class BaseSessionEventListener<Event extends AbstractSubProtocolEvent> implements ApplicationListener<Event> {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    protected SocketSessionRegistry webAgentSessionRegistry;
 
-      /**
-      * 计算出 user id 和 session id 并传入到自定义的函数中
-      *
-      * @param event      事件
-      * @param biConsumer 自定义的操作
-      */
-      protected void using(Event event, BiConsumer<String, String> biConsumer) {
-          StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-          //login get from browser
-          List<String> shaNativeHeader = sha.getNativeHeader("Authorization");
-          String user;
-          if (shaNativeHeader == null || shaNativeHeader.isEmpty()) {
-              user = null;
-          } else {
-              user = shaNativeHeader.get(0);
-          }
-          //如果当前用户没有登录（没有认证信息），就添加到游客里面
-          if (user == null || "".equals(user) || "undefined".equals(user) || "null".equals(user)) {
-              user = SocketSessionRegistry.DIRECT_TOURIST;
-          }
-          String sessionId = sha.getSessionId();
-          biConsumer.accept(user, sessionId);
-      }
-  }
+    /**
+    * 计算出 user id 和 session id 并传入到自定义的函数中
+    *
+    * @param event      事件
+    * @param biConsumer 自定义的操作
+    */
+    protected void using(Event event, BiConsumer<String, String> biConsumer) {
+        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        //login get from browser
+        List<String> shaNativeHeader = sha.getNativeHeader("Authorization");
+        String user;
+        if (shaNativeHeader == null || shaNativeHeader.isEmpty()) {
+            user = null;
+        } else {
+            user = shaNativeHeader.get(0);
+        }
+        //如果当前用户没有登录（没有认证信息），就添加到游客里面
+        if (user == null || "".equals(user) || "undefined".equals(user) || "null".equals(user)) {
+            user = SocketSessionRegistry.DIRECT_TOURIST;
+        }
+        String sessionId = sha.getSessionId();
+        biConsumer.accept(user, sessionId);
+    }
+}
 
-  /**
-  * Socket 连接建立监听
-  * 用于 session 注册 以及 key 值获取
-  *
-  * @author rxliuli
-  */
-  @Component
-  public class SessionConnectEventListener extends BaseSessionEventListener<SessionConnectEvent> {
-      @Override
-      public void onApplicationEvent(SessionConnectEvent event) {
-          using(event, (user, sessionId) -> webAgentSessionRegistry.registerSessionId(user, sessionId));
-      }
-  }
+/**
+* Socket 连接建立监听
+* 用于 session 注册 以及 key 值获取
+*
+* @author rxliuli
+*/
+@Component
+public class SessionConnectEventListener extends BaseSessionEventListener<SessionConnectEvent> {
+    @Override
+    public void onApplicationEvent(SessionConnectEvent event) {
+        using(event, (user, sessionId) -> webAgentSessionRegistry.registerSessionId(user, sessionId));
+    }
+}
 
-  /**
-  * Socket 会话断开监听
-  *
-  * @author rxliuli
-  */
-  @Component
-  public class SessionDisconnectEventListener extends BaseSessionEventListener<SessionDisconnectEvent> {
-      @Override
-      public void onApplicationEvent(SessionDisconnectEvent event) {
-          //这里先根据 session id 查询出 user，然后删除对应的会话 id
-          //前端无法传递 token 到这里却是只能出此下策了
-          using(event, (user, sessionId) -> webAgentSessionRegistry.getAllSessionIds().entrySet().stream()
-                  .filter(sse -> sse.getValue().contains(sessionId))
-                  .findFirst()
-                  .ifPresent(sse -> {
-                      webAgentSessionRegistry.unregisterSessionId(sse.getKey(), sessionId);
-                      log.info("Socket 连接断开，用户：{}，会话：{}", sse.getKey(), sessionId);
-                  }));
-      }
-  }
-  ```
+/**
+* Socket 会话断开监听
+*
+* @author rxliuli
+*/
+@Component
+public class SessionDisconnectEventListener extends BaseSessionEventListener<SessionDisconnectEvent> {
+    @Override
+    public void onApplicationEvent(SessionDisconnectEvent event) {
+        //这里先根据 session id 查询出 user，然后删除对应的会话 id
+        //前端无法传递 token 到这里却是只能出此下策了
+        using(event, (user, sessionId) -> webAgentSessionRegistry.getAllSessionIds().entrySet().stream()
+                .filter(sse -> sse.getValue().contains(sessionId))
+                .findFirst()
+                .ifPresent(sse -> {
+                    webAgentSessionRegistry.unregisterSessionId(sse.getKey(), sessionId);
+                    log.info("Socket 连接断开，用户：{}，会话：{}", sse.getKey(), sessionId);
+                }));
+    }
+}
+```
 
 3. 客户端在打开和关闭连接的时候需要发送 user 给服务端
 
-  这里使用 `headers` 存放用户认证信息（唯一标识），所以在连接和关闭时要带上请求头
-  
-  ```java
-  stompClient.connect(getHeaders(), function(){
-      console.log('打开 Socket 连接')
-  })
-  // TODO 这里还有一些问题，无法带上 headers 到后端
-  stompClient.disconnect(function () {
-      console.log('断开连接');
-  }, getHeaders());
+这里使用 `headers` 存放用户认证信息（唯一标识），所以在连接和关闭时要带上请求头
 
-  /**
-     * 获取一个认证的 headers 信息
-     * @return {{"X-Requested-With": string, Authorization: any}} 含有认证信息的 headers 对象
-     */
-    function getHeaders() {
-        return {
-            'X-Requested-With': 'X-Requested-With',
-            'Authorization': localStorage.token
-        }
-    }
-  ```
+```java
+stompClient.connect(getHeaders(), function(){
+    console.log('打开 Socket 连接')
+})
+// TODO 这里还有一些问题，无法带上 headers 到后端
+stompClient.disconnect(function () {
+    console.log('断开连接');
+}, getHeaders());
+
+/**
+   * 获取一个认证的 headers 信息
+   * @return {{"X-Requested-With": string, Authorization: any}} 含有认证信息的 headers 对象
+   */
+  function getHeaders() {
+      return {
+          'X-Requested-With': 'X-Requested-With',
+          'Authorization': localStorage.token
+      }
+  }
+```
 
 4. 使用记录的 `user -> session id` 发送消息给指定的用户
 
-  下面是获取到所有已经登录的用户的 `WebSocket` 连接并发送一条消息
+下面是获取到所有已经登录的用户的 `WebSocket` 连接并发送一条消息
 
-  ```java
-  socketSessionRegistry.getAllSessionIds().entrySet().stream()
-          .filter(kv -> !SocketSessionRegistry.DIRECT_TOURIST.equals(kv.getKey()))
-          .forEach(kv -> kv.getValue().forEach(sessionId -> simpMessagingTemplate.convertAndSendToUser(sessionId, "/push/unidirectional/thisClient", new Person(2L, "琉璃", false))));
-  ```
+```java
+socketSessionRegistry.getAllSessionIds().entrySet().stream()
+        .filter(kv -> !SocketSessionRegistry.DIRECT_TOURIST.equals(kv.getKey()))
+        .forEach(kv -> kv.getValue().forEach(sessionId -> simpMessagingTemplate.convertAndSendToUser(sessionId, "/push/unidirectional/thisClient", new Person(2L, "琉璃", false))));
+```
 
 ## 接受/返回复杂类型的消息（服务端）
 
@@ -563,15 +581,19 @@ public class ComplexMessageSocket {
 ```js
 // 订阅返回复杂类型的消息
 stompClient.subscribe('/topic/complexMessage/allClient', res => {
-    console.log('订阅复杂类型类型的返回消息：{}', JSON.parse(res.body))
-});
+  console.log('订阅复杂类型类型的返回消息：{}', JSON.parse(res.body))
+})
 
 // 发送一个复杂类型的消息
-stompClient.send('/complexMessage', headers, JSON.stringify({
+stompClient.send(
+  '/complexMessage',
+  headers,
+  JSON.stringify({
     id: 17,
     name: 'rxliuli',
     sex: false
-}))
+  })
+)
 ```
 
 ## WebSocket 客户端封装
@@ -589,93 +611,95 @@ stompClient.send('/complexMessage', headers, JSON.stringify({
  * 4. 断开连接
  */
 const socketUtil = {
-    //最大重连次数
-    maxLen: 10,
-    //当前重连次数
-    currentLen: 0,
-    // 每次连接的时间间隔
-    timeInterval: 3000,
-    // 连接的 Socket 节点
-    endpoint: undefined,
-    // Socket 连接信息
-    stompClient: undefined,
-    socket: undefined,
-    /**
-     * Socket 连接的方法
-     */
-    connectWebSocket(successFn, errorFn) {
-        this.socket = new SockJS(this.endpoint);
-        this.stompClient = Stomp.over(this.socket);
-        this.stompClient.connect(this.getHeaders(), successFn, error => {
-            if (this.currentLen++ < this.maxLen) {
-                console.log(`Socket 连接失败，将在 ${this.timeInterval / 1000}s 后重试`);
-                setTimeout(() => this.connectWebSocket(), 3000)
-            } else {
-                console.log('Socket 连接失败次数过多，将不再重试')
-            }
-            errorFn(error)
-        });
-    },
-    /**
-     * 断开连接的方法
-     */
-    disconnectWebSocket() {
-        if (this.stompClient) {
-            this.stompClient.disconnect(function () {
-                console.log('断开连接');
-            }, this.getHeaders());
-            this.socket.close();
-        }
-    },
-    /**
-     * 获取当前 Socket 连接的 session id
-     */
-    getSessionId() {
-        return /\/([^\/]+)\/websocket/.exec(this.socket._transport.url)[1]
-    },
-    /**
-     * 获取一个认证的 headers 信息
-     * 该方法可以被覆盖
-     * @return {{"X-Requested-With": string, Authorization: any}} 含有认证信息的 headers 对象
-     */
-    getHeaders() {
-        return {
-            'X-Requested-With': 'X-Requested-With',
-            'Authorization': localStorage.token
-        }
-    },
-    /**
-     * 发送简单文本类型的消息
-     */
-    sendText(url, body, headers = {}) {
-        return this.stompClient.send(url, headers, body)
-    },
-    /**
-     * 发送 json 类型的消息
-     */
-    sendJSON(url, body, headers = {}) {
-        return this.stompClient.send(url, headers, JSON.stringify(body))
-    },
-    /**
-     * 订阅简单文本类型的消息
-     */
-    subscribeText(url, successFn) {
-        return this.stompClient.subscribe(url, res => successFn(res))
-    },
-    /**
-     * 订阅 json 类型的消息
-     */
-    subscribeJSON(url, successFn) {
-        return this.stompClient.subscribe(url, res => successFn(JSON.parse(res.body)))
-    },
-    /**
-     * 取消订阅
-     * @param obj 订阅对象
-     */
-    unsubscribe(obj) {
-        if (obj && obj.unsubscribe) {
-            obj.unsubscribe()
-        }
+  //最大重连次数
+  maxLen: 10,
+  //当前重连次数
+  currentLen: 0,
+  // 每次连接的时间间隔
+  timeInterval: 3000,
+  // 连接的 Socket 节点
+  endpoint: undefined,
+  // Socket 连接信息
+  stompClient: undefined,
+  socket: undefined,
+  /**
+   * Socket 连接的方法
+   */
+  connectWebSocket(successFn, errorFn) {
+    this.socket = new SockJS(this.endpoint)
+    this.stompClient = Stomp.over(this.socket)
+    this.stompClient.connect(this.getHeaders(), successFn, error => {
+      if (this.currentLen++ < this.maxLen) {
+        console.log(`Socket 连接失败，将在 ${this.timeInterval / 1000}s 后重试`)
+        setTimeout(() => this.connectWebSocket(), 3000)
+      } else {
+        console.log('Socket 连接失败次数过多，将不再重试')
+      }
+      errorFn(error)
+    })
+  },
+  /**
+   * 断开连接的方法
+   */
+  disconnectWebSocket() {
+    if (this.stompClient) {
+      this.stompClient.disconnect(function() {
+        console.log('断开连接')
+      }, this.getHeaders())
+      this.socket.close()
     }
-};
+  },
+  /**
+   * 获取当前 Socket 连接的 session id
+   */
+  getSessionId() {
+    return /\/([^\/]+)\/websocket/.exec(this.socket._transport.url)[1]
+  },
+  /**
+   * 获取一个认证的 headers 信息
+   * 该方法可以被覆盖
+   * @return {{"X-Requested-With": string, Authorization: any}} 含有认证信息的 headers 对象
+   */
+  getHeaders() {
+    return {
+      'X-Requested-With': 'X-Requested-With',
+      Authorization: localStorage.token
+    }
+  },
+  /**
+   * 发送简单文本类型的消息
+   */
+  sendText(url, body, headers = {}) {
+    return this.stompClient.send(url, headers, body)
+  },
+  /**
+   * 发送 json 类型的消息
+   */
+  sendJSON(url, body, headers = {}) {
+    return this.stompClient.send(url, headers, JSON.stringify(body))
+  },
+  /**
+   * 订阅简单文本类型的消息
+   */
+  subscribeText(url, successFn) {
+    return this.stompClient.subscribe(url, res => successFn(res))
+  },
+  /**
+   * 订阅 json 类型的消息
+   */
+  subscribeJSON(url, successFn) {
+    return this.stompClient.subscribe(url, res =>
+      successFn(JSON.parse(res.body))
+    )
+  },
+  /**
+   * 取消订阅
+   * @param obj 订阅对象
+   */
+  unsubscribe(obj) {
+    if (obj && obj.unsubscribe) {
+      obj.unsubscribe()
+    }
+  }
+}
 ```
