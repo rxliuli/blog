@@ -484,6 +484,9 @@ public class UserInfoApi {
 
    说的是自动注入 `BaseMapper` 失败，实际上是因为 Mybatis 的 Dao SpringMongoData 无法处理。
 
+3. 最好使用不同的后缀名区分 `Mybatis Mapper` 和 `Mongo Repository`，或者放到不同的包  
+   也是为了避免扫描混乱，出现 `Mybatis` 扫描到 `Mongo Repository` 或是 `Mongo` 扫描到 `Mybatis Mapper` 的情况，出现上面的那两个错误。
+
 ---
 
 那么，关于在 SpringBoot 中同时使用 Mybatis Plus 和 MongoDB 的搭建就到这里啦
