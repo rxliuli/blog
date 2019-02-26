@@ -10,7 +10,7 @@ tags: [Java, Promise, 记录]
 
 ## 场景
 
-之前想把 Java 代码中使用回调函数的方法改成 `Promise` 风格，苦思冥想而不得其解。然而突发奇想之下，吾辈尝试在 Java 中实现 JavaScript 的 `setTimeout/setInterval`，并在之后想到了如何封装回调为 `Promise`，所以便先在此将这个想法的实现写出来以供参考。
+之前想把 Java 代码中使用回调函数的方法改成 `Promise` 风格，苦思冥想而不得其解。然而突发奇想之下，吾辈尝试在 Java 中实现 JavaScript 的 `setTimeout/setInterval`，并在之后想到了如何封装回调为 `Promise`，所以便先在此将这个想法的写出来以供参考。
 
 > `Promise` 是 ES6 添加的一个重要的元素，它将回调函数压平为了一级调用，并在 ES7 的 `async/await` 中彻底改变了异步的使用方式！
 
@@ -25,7 +25,7 @@ public class AsyncUtil {
      *
      * @param millis 毫秒
      */
-    private static void sleep(long millis) {
+    public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
@@ -55,7 +55,7 @@ public class AsyncUtil {
     public static CompletableFuture<Void> waitResource(Supplier<Boolean> condition) {
         return CompletableFuture.runAsync(() -> {
             while (!condition.get()) {
-                ThreadUtil.sleep(100);
+                sleep(100);
             }
         });
     }
