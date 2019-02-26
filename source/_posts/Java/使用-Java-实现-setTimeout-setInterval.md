@@ -89,6 +89,16 @@ public class AsyncUtil {
 
 ```java
 public class AsyncUtilTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    public static void main(String[] args) {
+        final AsyncUtilTest asyncUtilTest = new AsyncUtilTest();
+        asyncUtilTest.setTimeout();
+        asyncUtilTest.waitResource();
+        asyncUtilTest.setInterval();
+        ThreadUtil.sleep(4000);
+    }
+
     @Test
     public void setTimeout() {
         log.info("setTimeout completed before time: {}", LocalDateTime.now());
