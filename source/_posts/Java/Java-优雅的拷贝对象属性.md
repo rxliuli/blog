@@ -380,7 +380,7 @@ public class BeanCopyOperator<F, T> {
 
 ### 使用流程图
 
-![使用流程图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190227235821.png)
+![使用流程图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190228000845.png)
 
 ### 测试
 
