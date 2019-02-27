@@ -3,6 +3,7 @@ layout: post
 title: 使用 Java 实现 setTimeout/setInterval
 abbrlink: cfa900e1
 date: 2019-02-26 12:45:34
+updated: 2019-02-27
 tags: [Java, Promise, 记录]
 ---
 
@@ -96,7 +97,7 @@ public class AsyncUtilTest {
         asyncUtilTest.setTimeout();
         asyncUtilTest.waitResource();
         asyncUtilTest.setInterval();
-        ThreadUtil.sleep(4000);
+        AsyncUtil.sleep(4000);
     }
 
     @Test
@@ -112,7 +113,7 @@ public class AsyncUtilTest {
         final AtomicInteger i = new AtomicInteger(1);
         AsyncUtil.waitResource(() -> i.get() == 3)
                 .thenRunAsync(() -> log.info("waitResource completed after time: {}", LocalDateTime.now()));
-        ThreadUtil.sleep(2);
+        AsyncUtil.sleep(2);
         i.set(3);
     }
 
@@ -120,9 +121,9 @@ public class AsyncUtilTest {
     public void setInterval() {
         log.info("setInterval completed before time: {}", LocalDateTime.now());
         final CompletableFuture<Void> future = AsyncUtil.setInterval(100, () -> log.info("setInterval in the loop, current time: {}", LocalDateTime.now()));
-        ThreadUtil.sleep(500);
+        AsyncUtil.sleep(500);
         future.complete(null);
-        ThreadUtil.sleep(1000);
+        AsyncUtil.sleep(1000);
     }
 }
 ```
