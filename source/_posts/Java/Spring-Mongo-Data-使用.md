@@ -6,6 +6,7 @@ abbrlink: 80c83b5c
 tags:
   - Java
   - MonngoDB
+  - 教程
 ---
 
 # Spring Mongo Data 使用
@@ -44,7 +45,7 @@ public interface UserInfoLogRepository extends MongoRepository<UserInfoLog, Long
 }
 ```
 
-这个方法将会被 MongoData 自动实现，而我们做的只是复合 MongoData 的命名规范罢了。
+这个方法将会被 MongoData 自动实现，而我们做的只是让接口方法名符合 MongoData 的命名规范罢了。
 
 这里来说明一下 `findUserInfoLogByIdEquals` 方法，将之拆分开来
 
@@ -121,8 +122,8 @@ public class UserInfoLogRepositoryImpl implements UserInfoLogRepository {
 
 ### 集合 MongoRepository 和 MongoOperations
 
-那么，上面两种方式各有优缺点，`MongoRepository` 对于大部分常见的操作基本都可以正常替代，而 `MongoOperations` 比之灵活得多，我们是否只能**鱼与熊掌不可兼得**呢？  
-当然不是，MongoData 在设计之初便权衡过方便与灵活性的平衡点，所以，我们可以同时使用它们！
+总之，上面两种方式各有优缺点。`MongoRepository` 对于大部分常见的操作基本都可以正常替代，而 `MongoOperations` 比之灵活得多，我们是否只能**鱼与熊掌不可兼得**呢？  
+当然不是，MongoData 在设计之初便充分权衡过方便与灵活性的平衡点，所以，我们可以同时使用它们！
 
 具体使用步骤如下
 
@@ -171,7 +172,7 @@ public interface UserInfoLogRepository extends MongoRepository<UserInfoLog, Long
 
 #### 定义实现 UserInfoLogRepositoryImpl 类
 
-数据仓库 `UserInfoLogRepository` 的实现类，但请务必注意，实现类继承的是 `CustomUserInfoLogRepository` 接口，而非本应该继承的接口。而且实现类必须是基础接口 + `Impl`，因为 MongoData 自动生成的实现类就是这个名字。
+数据仓库 `UserInfoLogRepository` 的实现类，但请务必注意，实现类继承的是 `CustomUserInfoLogRepository` 接口，而非本应该继承的接口。而且实现类的名字必须是基础接口名 + `Impl`，因为 MongoData 默认使用的实现类就是这个名字。
 
 ```java
 public class UserInfoLogRepositoryImpl implements CustomUserInfoLogRepository {
