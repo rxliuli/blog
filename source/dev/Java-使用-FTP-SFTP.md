@@ -14,6 +14,23 @@ date: 2019-02-14 15:17:38
 
 项目中需要使用 FTP
 
+## UML 图像规范
+
+### 颜色
+
+> 注：此处参考自 IDEA UML 图中的颜色
+
+- 蓝色：类/步骤
+- 黄色：字段
+- 红色：函数
+- 紫色：配置
+
+### 图形
+
+- 长方形：类/配置文件/依赖项
+- 圆角长方形：字段/函数/对象/变量
+- 箭头：拥有/向下依赖的意思
+
 ## 目标
 
 封装简单的通用操作
@@ -48,3 +65,147 @@ date: 2019-02-14 15:17:38
 ![图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190226221826.png)
 
 ## 实现
+
+## FTP 使用
+
+FtpOperator API 图解  
+![FtpOperator API 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190302115433.png)
+
+上传部分流程图解  
+![上传部分流程图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190302120512.png)
+
+### 使用 FtpOperator 进行基本操作
+
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class FtpSpringConfigTest extends BaseTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private FtpOperator ftp;
+
+    @Test
+    public void put() throws UnsupportedEncodingException {
+        // 上传数据
+        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
+        final boolean result = ftp.put(is, "/test.txt");
+        assertThat(result)
+                .isTrue();
+    }
+
+    @Test
+    public void exist() {
+        // 判断数据是否存在于 ftp 服务器
+        final boolean exist = ftp.exist("/test.txt");
+        assertThat(exist)
+                .isTrue();
+    }
+
+    @Test
+    public void get() {
+        // 从 ftp 服务器上下载数据
+        ftp.get("/test.txt", is -> {
+            try {
+                final List<String> list = IOUtils.readLines(is);
+                log.info("list: {}", list);
+                assertThat(list)
+                        .isNotEmpty();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+    }
+
+    @Test
+    public void mkdir() {
+        // 创建文件夹
+        assertThat(ftp.mkdir("/test"))
+                .isTrue();
+    }
+
+    @Test
+    public void mkdirR() {
+        // 递归创建文件夹
+        assertThat(ftp.mkdirR("/test/test2/test3"))
+                .isTrue();
+    }
+
+    @Test
+    public void ls() {
+        // 获取目录下的文件信息列表
+        final List<Stat> list = ftp.ls("/");
+        log.info("list: {}", list.stream()
+                .map(Stat::getPath)
+                .collect(Collectors.joining("\n")));
+        assertThat(list)
+                .isNotEmpty();
+    }
+
+    @Test
+    public void lsr() {
+        // 获取目录下的文件信息列表
+        final List<Stat> list = ftp.lsR("/");
+        log.info("list: {}", list.stream()
+                .map(Stat::getPath)
+                .collect(Collectors.joining("\n")));
+        assertThat(list)
+                .isNotEmpty();
+    }
+
+    @Test
+    public void rm() {
+        // 删除单个文件
+        assertThat(ftp.rm("/test.txt"))
+                .isTrue();
+    }
+
+    @Test
+    public void rmdir() {
+        // 删除指定空目录
+        assertThat(ftp.rmdir("/test/test2/test3"))
+                .isTrue();
+    }
+
+    @Test
+    public void rmdirR() {
+        // 递归删除指定目录
+        assertThat(ftp.rmdirR("/test"))
+                .isTrue();
+    }
+}
+```
+
+### 使用 FtpOperator 上传文件并监听结果
+
+首先来看一下简单的监听操作
+
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class FtpSpringConfigTest extends BaseTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private FtpOperator ftp;
+    @Test
+    public void watch() throws InterruptedException, UnsupportedEncodingException {
+        // 监听新文件 /test.md 的出现
+        final String path = "/test.md";
+        ftp.watch((Predicate<String>) str -> str.equals(path))
+                .thenAcceptAsync(stat -> {
+                    log.warn("stat: {}", stat);
+                    assertThat(ftp.exist(stat.getPath()))
+                            .isNotNull();
+                });
+        // 创建测试文件
+        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
+        log.warn("test file upload completed!");
+        assertThat(ftp.put(is, path))
+                .isTrue();
+        // 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！
+        Thread.sleep(2000);
+        // 删除测试文件
+        ftp.rm(path);
+    }
+}
+```
