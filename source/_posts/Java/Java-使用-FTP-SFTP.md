@@ -6,13 +6,16 @@ tags:
   - 记录
 abbrlink: 6e1ed646
 date: 2019-03-10
+updated: 2019-03-10
 ---
 
 # Java 使用 FTP/SFTP
 
 ## 场景
 
-项目中需要使用 FTP
+项目中需要使用 FTP，所以做了简单的 `FTP/SFTP` 封装，此处仅做一下记录。
+
+> 注：这里并未实现连接池管理，生产环境强烈建议手动实现连接池以提高性能！
 
 ## UML 图像说明
 
@@ -209,3 +212,7 @@ public class FtpSpringConfigTest extends BaseTest {
     }
 }
 ```
+
+---
+
+那么，关于 Java 中使用 `FTP/SFTP` 便到此为止啦
