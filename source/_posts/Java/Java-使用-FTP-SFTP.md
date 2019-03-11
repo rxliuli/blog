@@ -5,18 +5,21 @@ tags:
   - Java
   - 记录
 abbrlink: 6e1ed646
-date: 2019-02-14 15:17:38
+date: 2019-03-10
+updated: 2019-03-10
 ---
 
 # Java 使用 FTP/SFTP
 
 ## 场景
 
-项目中需要使用 FTP
+项目中需要使用 FTP，所以做了简单的 `FTP/SFTP` 封装，此处仅做一下记录。
 
-## UML 图像规范
+> 注：这里并未实现连接池管理，生产环境强烈建议手动实现连接池以提高性能！
 
-### 颜色
+## UML 图像说明
+
+### 形状
 
 > 注：此处参考自 IDEA UML 图中的颜色
 
@@ -66,6 +69,8 @@ date: 2019-02-14 15:17:38
 
 ## 实现
 
+具体的代码吾辈就不贴到这里了，全部的代码已经放到 [GitHub 的公共仓库](https://github.com/rxliuli/ftp-demo) 上了。
+
 ## FTP 使用
 
 FtpOperator API 图解  
@@ -79,7 +84,7 @@ FtpOperator API 图解
 ```java
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FtpSpringConfigTest extends BaseTest {
+public class FtpSpringConfigTest {
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private FtpOperator ftp;
@@ -178,8 +183,6 @@ public class FtpSpringConfigTest extends BaseTest {
 
 ### 使用 FtpOperator 上传文件并监听结果
 
-首先来看一下简单的监听操作
-
 ```java
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -209,3 +212,7 @@ public class FtpSpringConfigTest extends BaseTest {
     }
 }
 ```
+
+---
+
+那么，关于 Java 中使用 `FTP/SFTP` 便到此为止啦
