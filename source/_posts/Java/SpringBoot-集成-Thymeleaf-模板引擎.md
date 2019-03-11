@@ -2,9 +2,10 @@
 layout: post
 title: SpringBoot 集成 Thymeleaf 模板引擎
 abbrlink: 229b5cfd
-date: 2019-03-04 14:07:07
+date: 2019-03-11
 tags:
   - Java
+  - 记录
 ---
 
 # SpringBoot 集成 Thymeleaf 模板引擎
@@ -165,8 +166,79 @@ dependencies {
 
 ## 更进一步
 
-## 问题
+难道每个页面我们都需要引入这些公共的文件么？有什么更好的方法么？例如每个页面只要写单独的部分，在渲染的时候 **自动** 将页面中的单独部分渲染到某个布局页面中。  
+很遗憾的是，`Thymeleaf` 本身并未提供这个功能。然而，`Thymeleaf` 已经有人做出了第三方的库以提供此功能。
 
-- 静态资源引用错误：绝对路径是 `/**` 而非 `/static/**`
-- 无法使用 layout 功能：缺少依赖
-- title 标题被覆盖
+1.添加依赖项
+
+```groovy
+implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
+```
+
+2.添加布局文件
+
+```html
+<!DOCTYPE html>
+<html
+  lang="zh-CN"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>layout</title>
+  </head>
+  <body>
+    <!--公共的头部-->
+    <div th:replace="common/common-header::common-header"></div>
+    <!--页面自定义的 HTML-->
+    <div layout:fragment="html"></div>
+    <!--公共的尾部-->
+    <div th:replace="common/common-footer::common-footer"></div>
+    <!--公共的 js 依赖-->
+    <div th:replace="common/common-lib-js::common-lib-js"></div>
+    <!--页面的 js 依赖-->
+    <div layout:fragment="js"></div>
+  </body>
+</html>
+```
+
+3.使用布局文件
+
+```html
+<!DOCTYPE html>
+<html
+  lang="zh-CN"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="common/layout"
+>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <style>
+      .text-center {
+        text-align: center;
+      }
+    </style>
+    <title>首页</title>
+  </head>
+  <body>
+    <main layout:fragment="html">
+      <p class="text-center">这里是页面单独的内容部分</p>
+    </main>
+    <script layout:fragment="js">
+      console.log($)
+    </script>
+  </body>
+</html>
+```
+
+再次刷新，将看到与直接引入有着相同的效果！
