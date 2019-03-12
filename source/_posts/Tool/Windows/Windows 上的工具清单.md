@@ -1,7 +1,6 @@
 ---
 title: Windows 上的工具清单
 tags:
-  - Tool
   - Windows
 abbrlink: c453742
 date: 2018-08-21 00:00:00
@@ -17,16 +16,15 @@ updated: 2019-01-05 00:00:00
     - [MS VSCode：文本编辑器，类 IDE](#ms-vscode文本编辑器类-ide)
     - [Cmder：Windows 上模拟 Linux 终端](#cmderwindows-上模拟-linux-终端)
     - [Git：Git 版本控制系统](#gitgit-版本控制系统)
+    - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
     - [MobaXterm：非常强大的远程连接工具](#mobaxterm非常强大的远程连接工具)
     - [JDK：Java Developer Kit](#jdkjava-developer-kit)
     - [MySQL：非常流行的开源数据库](#mysql非常流行的开源数据库)
     - [Redis：缓存数据库](#redis缓存数据库)
     - [HeidiSQL：SQL 客户端](#heidisqlsql-客户端)
-    - [Apache SubVersion：公司使用的版本控制系统](#apache-subversion公司使用的版本控制系统)
     - [Apache Maven：Java 最流行的依赖管理工具](#apache-mavenjava-最流行的依赖管理工具)
     - [Apache Tomcat：Java Web 流行的开源服务器](#apache-tomcatjava-web-流行的开源服务器)
     - [Gradle：Andriod 默认的依赖管理工具](#gradleandriod-默认的依赖管理工具)
-    - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
     - [freeFTPd：免费的 FTP/SFTP 服务端](#freeftpd免费的-ftpsftp-服务端)
   - [日常](#日常)
     - [Win + R：快速启动](#win--r快速启动)
@@ -43,6 +41,7 @@ updated: 2019-01-05 00:00:00
     - [imageview：图片浏览](#imageview图片浏览)
     - [Mindjet MindManager：思维导图](#mindjet-mindmanager思维导图)
     - [MS Office：文档管理](#ms-office文档管理)
+    - [OneNote：快速笔记](#onenote快速笔记)
     - [Google 文档：在线文档管理](#google-文档在线文档管理)
     - [Calibre：电子书管理](#calibre电子书管理)
     - [Steam：国外的游戏平台](#steam国外的游戏平台)
@@ -58,6 +57,7 @@ updated: 2019-01-05 00:00:00
     - [waifu2x-caffe：图片清晰化](#waifu2x-caffe图片清晰化)
     - [Affinity Photo: 图片编辑](#affinity-photo-图片编辑)
     - [Bandicam：视频录制](#bandicam视频录制)
+    - [LockHunter：解除文件占用](#lockhunter解除文件占用)
   - [国内流氓](#国内流氓)
     - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
     - [BaiduNetdisk：国内一家独大的网盘客户端](#baidunetdisk国内一家独大的网盘客户端)
@@ -236,6 +236,17 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 最初由 Linus 开发的一个分布式的版本控制系统，现在已经是最流行的版本控制系统之一了。说到 Git 不得不提 GitHub，GitHub 为 Git 实现了一个在线代码（或者其他）托管平台，相当好用而且托管开源项目是免费的。其实对于吾辈而言 Git 只是一个用于在本地操作 GitHub 的客户端罢了（很少有添加到 Git 而没有提交到 GitHub 的代码）。正是因为 GitHub 对 Git 的支持之好，所以吾辈才喜欢使用 Git 的。。。（#因果颠倒）
 
+### NodeJS：前端一把梭的基础
+
+[便携版], [开源], [跨平台], [免费]
+
+> [官网](https://nodejs.org/), [官网中文界面](https://nodejs.org/zh-cn/), [GitHub](https://github.com/nodejs/node)
+
+现代前端开发的基础，各种前端工具所必须的环境。像 `NPM/Yarn/Bower` `之类依赖管理，Gulp/Webpack` 这种自动化构建工具，还有各种前端库（`React/Twitter Bootstrap/Babel/Stylus`），以及各种基于 NodeJS 的程序（`hexo/live-server/yarn/create-react-app`），都使用 NPM 的管理依赖，有些甚至不提供传统的手动引入方式！
+
+> 附：然而 NodeJS 的作者又开始开发了新的 JavaScript 运行时 Deno，前端开发这却是又要受苦了呢 ┐(‘～`；)┌  
+> 好吧，现在吾辈也要变成前端开发的一员了 /(ㄒ o ㄒ)/~~
+
 ### MobaXterm：非常强大的远程连接工具
 
 [便携版]
@@ -252,7 +263,7 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 > [官网](http://www.oracle.com/technetwork/java/)
 
-Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占用非常高的内存。
+Java 开发必需，内存杀手，尤其而且是在启动 Web 项目时会占用非常高的内存。
 
 > 注：Minecraft 就是使用 Java 开发的游戏，所以运行起来非常占用资源而且很卡。
 
@@ -282,21 +293,13 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 
 > 附：吾辈很清楚 MySQL 有自带的导出命令，然而并不灵活。。。至少这个能够定义创建数据表，插入数据时使用的策略
 
-### Apache SubVersion：公司使用的版本控制系统
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://tortoisesvn.net/index.zh.html), [GitHub](https://github.com/apache/subversion)
-
-简称 **SVN** 或者小乌龟（图标），公司里面使用的版本控制工具。用于集中控制项目的进度，不能在本地进行提交进行本地版本控制，每次提交都必须要连接到中央服务器。
-
 ### Apache Maven：Java 最流行的依赖管理工具
 
 [便携版], [开源], [跨平台], [免费]
 
 > [官网](https://maven.apache.org/), [GitHub](https://github.com/apache/maven)
 
-又是 Apache 家的工具，吾辈主要用作项目的依赖管理、项目打包构建方面。所有的依赖都通过 `pom.xml` 进行定义，能够简单的对依赖的 jar 进行统一管理，而不必每个项目都复制一份。
+Apache 家的工具，吾辈主要用作项目的依赖管理、项目打包构建方面。所有的依赖都通过 `pom.xml` 进行定义，能够简单的对依赖的 jar 进行统一管理，而不必每个项目都复制一份。
 
 不过讲真现在 Maven 的默认配置不是特别好，JDK 默认仍然是 1.5，编码格式也默认为本地环境（都是坑），还有因为不可抗因素导致依赖下载的速度尤其的慢。
 
@@ -306,7 +309,7 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 
 > [官网](http://tomcat.apache.org/), [GitHub](https://github.com/apache/tomcat)
 
-**Apache \* 3**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
+**Apache \* 2**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
 
 ### Gradle：Andriod 默认的依赖管理工具
 
@@ -317,16 +320,6 @@ Java 开发必备，内存杀手，尤其而且是在启动 Web 项目时会占�
 号称是比 Maven 更好的依赖管理工具，在配置文件方面放弃了 Maven 的 XML 配置，采用了 `Groovy DSL` 作为配置文件语言，相比于 Maven 确实精简了不少。功能上可以直接将 Maven 的 `pom.xml` 转换为 `build.gradle`, 插件功能也比 Maven 更加强大。
 
 但，功能强大也意味着复杂，目前的项目仍有很多在使用 Maven 进行项目管理（例如吾辈的公司就在用 Maven）。
-
-### NodeJS：前端一把梭的基础
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://nodejs.org/), [官网中文界面](https://nodejs.org/zh-cn/), [GitHub](https://github.com/nodejs/node)
-
-现代前端开发的基础，各种前端工具所必须的环境。像 NPM/Yarn/Bower 之类依赖管理，Gulp 这种自动化构建工具，还有各种前端库（JQuery/Twitter Bootstrap/React/Babel）都提供了使用 NPM 的依赖管理的引入方式，有些甚至不提供传统的手动引入方式！
-
-> 附：然而 NodeJS 的作者又开始开发了新的 JavaScript 运行时 Deno，前端开发这却是又要受苦了呢 ┐(‘～`；)┌
 
 ### freeFTPd：免费的 FTP/SFTP 服务端
 
@@ -478,6 +471,15 @@ Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。
 
 MS 的办公套件全家桶，讲真吾辈更喜欢用 `Markdown`，然而工作中其他人却只会使用 Word,Excel,PPT 也没办法不是。虽然不是国内流氓，然而还是不得不装的软件。
 
+### OneNote：快速笔记
+
+[免费], [跨平台]
+
+> [官网](https://www.onenote.com/)
+
+在继博客之后，吾辈再次使用的一个知识管理工具。由于日常琐碎的知识实在太多了（知识爆炸），博客不足以整理数量繁多，复杂多样的零碎内容，笔记工具就是另一个更好的选择了。  
+在尝试了 Evernote 遇到了一些问题之后，吾辈转到了 MS 家免费的 OneNote。OneNote 提供全平台的程序，也对主流浏览器提供了插件，用以快速保存文章，Mobile 上的体验也还不错。作为一个日常 `Windows + Android` 的人表示，使用 OneNote 的体验还是不错的。
+
 ### Google 文档：在线文档管理
 
 [免费], [跨平台]
@@ -604,6 +606,14 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 - 窗口依附：可以轻松指定需要录制的窗口
 - 多格式输出：支持输出多种格式，按照不同分辨率，预置平台输出
 - 添加水印：防盗利器，在视频中添加自己的 LOGO
+
+### LockHunter：解除文件占用
+
+[免费]
+
+> [官网](https://lockhunter.com/)
+
+在删除文件/目录时，偶尔会遇到文件占用的问题，这个小工具直接集成到 MS Explorer 右键菜单中，可以方便查看占用程序，并关闭它。
 
 ## 国内流氓
 
