@@ -6,11 +6,12 @@ abbrlink: 5ed37fca
 date: 2018-09-05 00:00:00
 updated: 2018-09-05 00:00:00
 ---
+
 # SpringBoot 进行测试
 
 ## 概略
 
-SpringBoot 中进行测试比 Spring 项目中更加简单，想了解 Spring 项目中测试的可以参考 [使用 Spring 时进行测试](https://blog.rxliuli.com/2018/07/31/2018-07-31-%E4%BD%BF%E7%94%A8%20Spring%20%E6%97%B6%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95/)。
+SpringBoot 中进行测试比 Spring 项目中更加简单，想了解 Spring 项目中测试的可以参考 [使用 Spring 时进行测试](https://blog.rxliuli.com/p/c2870a27/)。
 
 ## 普通测试
 
@@ -457,4 +458,4 @@ public class UserControllerIntegratedTest {
 
 其实上面的测试类的注解感觉都差不多，我们可以将一些普遍的注解封装到基类，然后测试类只要继承基类就能得到所需要的环境，吾辈自己的测试基类在 `src/test/common` 下面，具体使用方法便留到下次再说吧
 
-> 以上代码已全部放到 [GitHub](https://github.com/rxliuli/springboot-test) 上面，可以直接 *clone* 下来进行测试
+> 以上代码已全部放到 [GitHub](https://github.com/rxliuli/springboot-test) 上面，可以直接 _clone_ 下来进行测试

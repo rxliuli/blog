@@ -46,10 +46,10 @@ date: 2018-06-27 01:39:21
 
 > 注：如果你还没有接触多模块的话，可以略过下面的内容。
 
-。。。然而不幸的是对于多模块项目以及各种各样的框架和类库，IDEA 本身的热部署实在不够看。所以如果你想要更强大的热部署功能的话，可以使用 **Jrebel** 来实现。
+。。。然而不幸的是对于多模块项目以及各种各样的框架和类库，IDEA 本身的热部署实在不够看。所以如果你想要更强大的热部署功能的话，可以使用 **Jrebel** 这个插件。
 
 1. IDEA 的官方 Plugin 商店里面就有这个，点击安装（由于众所周知的原因，下载可能比较慢），安装完成之后重启。
-   > 然后，如果你不愿意支持正版又不打算折腾破解的话，也可以不用看下面的内容了（关于破解方法可以参考 <https://blog.rxliuli.com/2018/07/10/%E8%87%AA%E5%BB%BA-Jrebel-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86.html>）  
+   > 然后，如果你不愿意支持正版又不打算折腾破解的话，也可以不用看下面的内容了（关于破解方法可以参考 <https://blog.rxliuli.com/p/88d60541/>）  
    > [Google 上的相关内容](https://www.google.lk/search?q=IDEA+Jrebel+%E7%A0%B4%E8%A7%A3&oq=IDEA+Jrebel+%E7%A0%B4%E8%A7%A3)
 2. 在 `help > Jrebel > Activation` 下输入 License
    ![20181122210822](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181122210822.png)  

@@ -4,6 +4,7 @@ tags: Git
 abbrlink: 3a42d8c9
 date: 2018-08-20 01:39:21
 ---
+
 # Git 频繁要输入密码的问题
 
 ## 场景
@@ -26,6 +27,6 @@ git config --global credential.helper store
 
 ### 2. 使用 SSH 连接
 
-在本机生成一个密钥对（已有的话就不需要了），参见 [使用-SSH-连接-Linux-服务器](https://blog.rxliuli.com/2018/08/10/%E4%BD%BF%E7%94%A8-SSH-%E8%BF%9E%E6%8E%A5-Linux-%E6%9C%8D%E5%8A%A1%E5%99%A8.html)，将密钥对的公钥（`id_rsa.pub`）配置到你的远程仓库即可。
+在本机生成一个密钥对（已有的话就不需要了），参见 [使用-SSH-连接-Linux-服务器](https://blog.rxliuli.com/p/47304444/)，将密钥对的公钥（`id_rsa.pub`）配置到你的远程仓库即可。
 
 > [GitHub SSH 设置](https://github.com/settings/keys)

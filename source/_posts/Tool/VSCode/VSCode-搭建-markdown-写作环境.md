@@ -16,7 +16,7 @@ updated: 2018-12-06 00:00:00
 Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-hant/Markdown)），目前已经是很流行的写作语言了。因为 Markdown 真的非常简单，易读易写是 Markdown 的目标。然而，虽然 Markdown 已经足够简单了，但我们还是希望能有一个专门的写作环境，用于实现诸如 **语法高亮**，**快捷键**，**即时预览**，**导出其他格式** 等功能。  
 而如果你和吾辈一样是个 Developer，那么 VSCode 应该是最好的选择，不仅能拥有完善的 Markdown 写作环境，同时 VSCode 的庞大生态任你使用！
 
-> 没有学习过 Markdown 的话可以去 [markdown 语法说明](https://blog.rxliuli.com/2018/12/01/tool/windows/markdown-%E8%AF%AD%E6%B3%95%E8%AF%B4%E6%98%8E/) 这里看看，15 分钟内应该就能基本了解了哦
+> 没有学习过 Markdown 的话可以去 [markdown 语法说明](https://blog.rxliuli.com/p/5042aac0/) 这里看看，15 分钟内应该就能基本了解了哦
 
 ## 安装
 

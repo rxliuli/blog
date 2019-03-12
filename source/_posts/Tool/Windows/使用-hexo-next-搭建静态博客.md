@@ -240,6 +240,6 @@ hexo new "[文章名]"
 
 - [hexo 官网](https://hexo.io/)
 - [next 主题官网](https://theme-next.iissnan.com/)
-- [markdown 语法说明](https://blog.rxliuli.com/2018/12/01/tool/windows/markdown-%E8%AF%AD%E6%B3%95%E8%AF%B4%E6%98%8E/)
-- [VSCode 搭建 markdown 写作环境](https://blog.rxliuli.com/2018/12/01/tool/vscode/vscode-%E6%90%AD%E5%BB%BA-markdown-%E5%86%99%E4%BD%9C%E7%8E%AF%E5%A2%83/)
-- [Markdown 图片粘贴工具 PicGo](https://blog.rxliuli.com/2018/10/16/tool/windows/markdown%20%E5%9B%BE%E7%89%87%E7%B2%98%E8%B4%B4%E5%B7%A5%E5%85%B7%20picgo/)
+- [markdown 语法说明](https://blog.rxliuli.com/p/5042aac0/)
+- [VSCode 搭建 markdown 写作环境](https://blog.rxliuli.com/p/43851eb5/)
+- [Markdown 图片粘贴工具 PicGo](https://blog.rxliuli.com/p/6138bec/)

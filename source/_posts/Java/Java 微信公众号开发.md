@@ -6,6 +6,7 @@ abbrlink: 61fefd61
 date: 2018-09-12 00:00:00
 updated: 2018-09-17 00:00:00
 ---
+
 # Java 微信公众号开发
 
 - [Java 微信公众号开发](#java-微信公众号开发)
@@ -26,15 +27,15 @@ updated: 2018-09-17 00:00:00
 
 ## 注册微信公众号
 
-首先在 [微信公众平台](https://mp.weixin.qq.com/) 注册一个账号，这里选择了 *订阅号*，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码操作（反人类操作）。
+首先在 [微信公众平台](https://mp.weixin.qq.com/) 注册一个账号，这里选择了 _订阅号_，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码操作（反人类操作）。
 
 ## 基本配置
 
 在【开发 > 基本配置】中设定好相关的信息，主要有
 
-- 开发者ID(AppID)：自动生成
+- 开发者 ID(AppID)：自动生成
 - 开发者密码(AppSecret)：修改完之后记录下来，一会还要用到
-- IP白名单：可以公网访问的服务器 IP 地址（没有也行，后面会说到 **内网穿透**）
+- IP 白名单：可以公网访问的服务器 IP 地址（没有也行，后面会说到 **内网穿透**）
 - 服务器地址(URL)：用于给微信校验的服务器地址，没有公网服务器也行
 - 令牌(Token)：自定义，随机字符串即可，可以在 [LastPass](https://www.lastpass.com/zh/password-generator) 生成一个
 - 消息加解密密钥(EncodingAESKey)：点击随机生成即可
@@ -66,7 +67,7 @@ updated: 2018-09-17 00:00:00
 ssh -o ServerAliveInterval=60 -R rx:80:localhost:8080 serveo.net
 ```
 
-> 具体可以参考 [官网](https://serveo.net/) 或 [使用 Serveo 进行内网穿透](https://blog.rxliuli.com/2018/09/08/2018-09-08-%E4%BD%BF%E7%94%A8%20Serveo%20%E8%BF%9B%E8%A1%8C%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/)
+> 具体可以参考 [官网](https://serveo.net/) 或 [使用 Serveo 进行内网穿透](https://blog.rxliuli.com/p/5ad7fa84/)
 
 现在，访问 <https://rx.serveo.net/>，是不是已经可以啦（出现的 `Whitelabel Error Page` 不用管，因为我们本来也没有处理 `/` 路径的访问）
 

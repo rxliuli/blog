@@ -65,6 +65,6 @@ vue init [option] <template> <app-name>
 
 ![vue 打包出来的文件在浏览器显示的空白页面](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181108185531.png)
 
-这是 `vue-cli` 默认模板的问题，具体原因与解决方案请参考 [Vue 打包的静态文件不能直接运行](https://blog.rxliuli.com/2018/10/29/javascript/vue-%E6%89%93%E5%8C%85%E7%9A%84%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E4%B8%8D%E8%83%BD%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C/)
+这是 `vue-cli` 默认模板的问题，具体原因与解决方案请参考 [Vue 打包的静态文件不能直接运行](https://blog.rxliuli.com/p/7d805fde/)
 
 那么，这篇使用 `vue-cli` 简单的建立项目就到这里啦，希望各位后端开发者都能尝试有趣的现代前端呢 -(๑☆‿ ☆#)ᕗ

@@ -749,7 +749,7 @@ function foo() {
   return {
     name: '灵梦',
     age: 17,
-    sex: false
+    sex: false,
   }
 }
 ```
@@ -762,7 +762,7 @@ function foo() {
   return {
     name: '灵梦',
     age: 17,
-    sex: false
+    sex: false,
   }
 }
 ```
@@ -900,5 +900,5 @@ Mac 平台
 
 高级应用
 
-- [VSCode](https://code.visualstudio.com/) + [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) / [教程](https://blog.rxliuli.com/2018/12/01/tool/vscode/vscode-%E6%90%AD%E5%BB%BA-markdown-%E5%86%99%E4%BD%9C%E7%8E%AF%E5%A2%83/)
+- [VSCode](https://code.visualstudio.com/) + [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) / [教程](https://blog.rxliuli.com/p/43851eb5/)
 - [Sublime Text 2](http://www.sublimetext.com/2) + [MarkdownEditing](http://ttscoff.github.com/MarkdownEditing/) / [教程](http://lucifr.com/2012/07/12/markdownediting-for-sublime-text-2/)

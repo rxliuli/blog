@@ -17,7 +17,7 @@ Maven 已经是 Java 事实上的依赖管理标准工具了，所以学习使�
 
 ## 前置要求
 
-- [x] 必须已经安装了 JDK 并设置了环境变量，如果还没有安装，请参考 [Windows 上安装 JDK 并设置环境变量](https://blog.rxliuli.com/2018/10/17/java/windows%20%E4%B8%8A%E5%AE%89%E8%A3%85%20jdk%20%E5%B9%B6%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/) 进行安装
+- [x] 必须已经安装了 JDK 并设置了环境变量，如果还没有安装，请参考 [Windows 上安装 JDK 并设置环境变量](https://blog.rxliuli.com/p/d0cf29fa/) 进行安装
 
 ## 下载
 

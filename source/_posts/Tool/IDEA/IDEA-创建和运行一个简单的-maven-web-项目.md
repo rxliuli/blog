@@ -198,7 +198,7 @@ public class HomeServlet extends HttpServlet {
 ## 总结
 
 - 这个演示项目吾辈也放到了 [GitHub](https://github.com/rxliuli/idea-maven-webapp-example) 上，如果需要可以随便下载
-- 如果你还不了解 maven 的话强烈建议稍微了解一下 maven 的基本概念。可以参照吾辈 blog 上的教程 [Windows 上 Maven 安装与使用](https://blog.rxliuli.com/2018/11/09/java/windows-%E4%B8%8A-maven-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/) 进行安装
+- 如果你还不了解 maven 的话强烈建议稍微了解一下 maven 的基本概念。可以参照吾辈 blog 上的教程 [Windows 上 Maven 安装与使用](https://blog.rxliuli.com/p/82700e2a/) 进行安装
 - 如果你还不了解 IDEA（废话，这不是当然的嘛！#打），推荐阅读 [IntelliJ IDEA 简体中文专题教程](https://github.com/judasn/IntelliJ-IDEA-Tutorial) 进行入门
 
 那么，这篇教程到这里便结束啦，希望我们都能愉快地使用 IDEA 呢 o(〃＾ ▽ ＾〃)o

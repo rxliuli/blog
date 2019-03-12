@@ -65,9 +65,9 @@ wait(
       () => document.querySelector('#b'),
       () => {
         console.log('a, b 两个资源已经全部加载完成')
-      }
+      },
     )
-  }
+  },
 )
 // 结果
 // a, b 两个资源已经全部加载完成
@@ -251,4 +251,4 @@ init()
 > 可以参考
 >
 > - [babeljs 官方文档](https://babeljs.io/docs/en/)
-> - [在传统项目中使用 babel 编译 ES6](https://blog.rxliuli.com/2019/01/09/javascript/%E5%9C%A8%E4%BC%A0%E7%BB%9F%E9%A1%B9%E7%9B%AE%E4%B8%AD%E4%BD%BF%E7%94%A8-babel-%E7%BC%96%E8%AF%91-es6/)
+> - [在传统项目中使用 babel 编译 ES6](https://blog.rxliuli.com/p/e73e3322/)

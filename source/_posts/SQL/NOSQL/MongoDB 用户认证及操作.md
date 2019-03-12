@@ -4,9 +4,10 @@ tags: DB
 abbrlink: aa421cf5
 date: 2018-08-16 01:39:21
 ---
+
 # MongoDB 用户认证及操作
 
-> 如果还没有安装 MongoDB 可以参考：<https://blog.rxliuli.com/2018/08/08/MongoDB-%E4%BE%BF%E6%90%BA%E7%89%88%E5%AE%89%E8%A3%85%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96.html>
+> 如果还没有安装 MongoDB 可以参考：[Windows 下 MongoDB 便携版安装与初始化](https://blog.rxliuli.com/p/424bf4e1/)
 
 ## 启动 `mongod` 和 `mongo shell` 服务
 
@@ -41,23 +42,24 @@ db.createUser(
 
 1. 重启一下 `mongod` 服务
 
-  ```bash
-  # 这里的 --auth 选项就代表着启用身份认证
-  mongod --auth --port 27017 --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data" --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"
-  ```
+```bash
+# 这里的 --auth 选项就代表着启用身份认证
+mongod --auth --port 27017 --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data" --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"
+```
 
 2. 测试 root 用户是否能正常登录
-  - 使用用户名/密码认证连接 mongodb
-    ```bash
-    # 这里添加了 --authenticationDatabase 设置认证的数据库
-    mongo --port 27017 -u "root" -p "root" --authenticationDatabase "admin"
-    ```
-  - 连接到 mongo 客户端后验证
-    ```bash
-    mongo --port 27017
-    use admin;
-    db.auth("root", "root");
-    ```
+
+- 使用用户名/密码认证连接 mongodb
+  ```bash
+  # 这里添加了 --authenticationDatabase 设置认证的数据库
+  mongo --port 27017 -u "root" -p "root" --authenticationDatabase "admin"
+  ```
+- 连接到 mongo 客户端后验证
+  ```bash
+  mongo --port 27017
+  use admin;
+  db.auth("root", "root");
+  ```
 
 ## 创建普通用户
 
