@@ -1,0 +1,52 @@
+---
+layout: post
+title: Git 错误 Reset 恢复
+abbrlink: cab000d7
+date: 2019-03-12 16:23:13
+tags:
+  - Git
+  - 记录
+---
+
+# Git 错误 Reset 恢复
+
+## 场景
+
+今天在帮同事操作 Git 的时候，因为没有清楚理解意思，吾辈错误撤回了一些提交。
+
+具体使用的命令是
+
+```sh
+git reset dd256c7d66ad2e9671cbd47650ffddc4267ca7d5
+```
+
+感觉吾辈今天不能撤销这个错误操作的话，恐怕今天走不出公司了呢 #笑
+
+## 解决
+
+当然，吾辈没有添加 `--hard` 参数，想来仓库还是有救的。之后使用 Google 搜索了一下相关的内容，找到了 [git 版本恢复命令 reset](http://www.voidcn.com/article/p-tfqxjpgj-bms.html)，然后吾辈便尝试进行了恢复。
+
+1. 找到使用 `git reset` 之前的最后一次提交的 `commit id`
+
+   ```sh
+   # 查看 git 记录的所有操作，包括回退操作也会记录
+   git reflog
+   ```
+
+2. 使用 `git reset --hard` 回退
+
+   ```sh
+   # 回退到指定提交，但不会将之后提交混入到未提交的内容
+   git reset --hard dd256c7d66ad2e9671cbd47650ffddc4267ca7d5
+   ```
+
+3. 使用 `git log` 检查最后一次提交是否恢复
+
+   ```sh
+   # 这时可以看到最后一次提交已经恢复了
+   git log
+   ```
+
+---
+
+嘛，只是偶然遇到的一个错误，吾辈也便稍微记录一下好了
