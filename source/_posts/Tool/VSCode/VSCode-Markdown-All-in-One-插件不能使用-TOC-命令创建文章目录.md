@@ -3,7 +3,7 @@ layout: post
 title: VSCode Markdown All in One 插件不能使用 TOC 命令创建文章目录
 tags:
   - VSCode
-  - markdown
+  - Markdown
 abbrlink: 3b2c0431
 date: 2018-12-02 00:00:00
 ---

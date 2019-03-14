@@ -2,7 +2,7 @@
 title: markdown 语法说明
 tags:
   - Tool
-  - markdown
+  - Markdown
 abbrlink: 5042aac0
 date: 2018-12-01 14:52:19
 ---

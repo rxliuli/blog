@@ -2,7 +2,7 @@
 layout: post
 title: 使用 hexo next 搭建静态博客
 tags:
-  - markdown
+  - Markdown
   - blog
   - 教程
 abbrlink: '8034e749'
