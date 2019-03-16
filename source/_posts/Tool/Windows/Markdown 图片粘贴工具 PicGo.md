@@ -2,7 +2,7 @@
 title: Markdown 图片粘贴工具 PicGo
 tags:
   - 教程
-  - markdown
+  - Markdown
 abbrlink: 6138bec
 date: 2018-10-16 00:00:00
 updated: 2019-02-05 00:00:00

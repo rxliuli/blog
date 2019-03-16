@@ -5,7 +5,7 @@ tags:
   - Git
 abbrlink: 5fddf106
 date: 2018-09-29 00:00:00
-updated: 2019-01-19 00:00:00
+updated: 2019-03-14
 ---
 
 # Git 常用命令
@@ -36,7 +36,9 @@ updated: 2019-01-19 00:00:00
 |          |                                       |                                                                                | `git branch`                                                             | 列出所有分支                                                         |
 |          |                                       |                                                                                | `git branch dev -D`                                                      | 删除名为 dev 的分支                                                  |
 | checkout | `git checkout [分支名]`               | 切换当前分支(分支之间不共享修改)                                               | `git checkout master`                                                    | 切换当前分支到 master 分支                                           |
+|          |                                       |                                                                                | `git checkout origin/dev -b dev`                                         | 拉取远程分支到本地并切换                                             |
 | merge    | `git merge [选项]`                    | 合并其他分支的修改到当前分支上                                                 | `git merge dev`                                                          | 合并 dev 分支的修改到当前分支(一般是 master 分支)                    |
+|          |                                       |                                                                                | `git merge origin/master --allow-unrelated-histories`                    | 强行合并远程分支到本地                                               |
 | push     | `git push [远程仓库名] :[分支名]`     | 删除掉指定的远程分支（仓库还在，只是删除分支）                                 | `git push origin :dev`                                                   | 删除远程仓库 origin 下的 dev 开发分支                                |
 | stash    | `git stash`                           | 暂存本地更改                                                                   |
 |          | `git stash list`                      | 查看所有暂存更改                                                               |
