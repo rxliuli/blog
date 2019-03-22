@@ -6,10 +6,10 @@ tags:
   - React
 abbrlink: 87bf8e8d
 date: 2019-03-22 21:40:11
-updated: 2019-03-22 21:40:11
+updated: 2019-03-22
 ---
 
-# react 入坑
+# react 入坑思考
 
 ## 场景
 
