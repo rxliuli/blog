@@ -1,8 +1,11 @@
 ---
 title: IDEA 热部署
-tags: IDEA
 abbrlink: 81df2673
 date: 2018-06-27 01:39:21
+updated: 2019-03-25
+tags: 
+  - 教程
+  - IDEA
 ---
 
 # IDEA 热部署
@@ -70,5 +73,11 @@ date: 2018-06-27 01:39:21
 
 4. 最后，点击 Jrebel 的 Debug 按钮即可  
    ![Jrebel Debug](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181122211005.png)
+5. 使用 Jrebel 调试项目即可  
+   ![Jrebel 调试项目](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190325101659.png)
+6. 现在，每当你的焦点离开 IDEA（切换到浏览器），Jrebel 就会自动检测变化的类和资源并帮你重新编译了（状态栏会有提示）
+
+> 附：这里提供吾辈自建的一个激活服务器，请勿滥用：<http://39.108.15.57:8181/947122a0-7e9a-4bea-814d-876525d3767f>  
+> 邮箱的话格式正确即可
 
 那么，IDEA 的热部署配置就到这里了，实际上使用了 `SpringBoot` 之后就自带了热部署相关的类库。。。#贴心
