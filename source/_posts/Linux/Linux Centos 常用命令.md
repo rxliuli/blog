@@ -1,10 +1,9 @@
 ---
 title: Linux Centos 常用命令
-tags: Linux
 abbrlink: a069437b
 date: 2018-08-22 22:24:37
 updated: 2019-03-20
-tags: 
+tags:
   - Linux
 ---
 
