@@ -5,6 +5,7 @@ tags:
   - JavaScript
 abbrlink: 5985b64e
 date: 2019-01-08 20:36:58
+updated: 2019-03-25
 ---
 
 # JavaScript 善用解构赋值
@@ -48,7 +49,7 @@ function print(user) {
   console.log(
     `姓名：${user.name ? user.name : '未设置'}，年龄：${
       user.age ? user.age : 0
-    }`
+    }`,
   )
 }
 ```
@@ -58,7 +59,7 @@ function print(user) {
 ```js
 function print(user) {
   console.log(
-    `姓名：${(user || {}).name || '未设置'}，年龄：${(user || {}).age || 0}`
+    `姓名：${(user || {}).name || '未设置'}，年龄：${(user || {}).age || 0}`,
   )
 }
 ```
@@ -68,7 +69,8 @@ function print(user) {
 ```js
 function print(user) {
   console.log(
-    `姓名：${(user && user.name) || '未设置'}，年龄：${(user && user.age) || 0}`
+    `姓名：${(user && user.name) || '未设置'}，年龄：${(user && user.age) ||
+      0}`,
   )
 }
 ```
@@ -86,7 +88,7 @@ function print(user) {
 function print(user) {
   _user = {
     name: '未设置',
-    age: 0
+    age: 0,
   }
   user = Object.assign(_user, user)
   console.log(`姓名：${user.name}，年龄：${user.age}`)
@@ -137,8 +139,9 @@ var user = {
   id: 1,
   name: '未设置',
   age: 0,
-  sex: false
+  sex: false,
 }
+// 排除指定属性
 var { name, age, ...rest } = user // name: '未设置', age: 0, 其他属性: { "id": 1,"sex": false }
 
 // 使用新的变量名
@@ -150,16 +153,17 @@ var { name: newName = '未设置', age: newAge = 0 } = user // newName: '未设�
 // 计算属性名
 var key = 'name'
 var { [key]: name } = user
+
 // 数组迭代解构
 var users = [
   {
     name: '琉璃',
-    age: 17
+    age: 17,
   },
   {
     name: '楚轩',
-    age: 23
-  }
+    age: 23,
+  },
 ]
 users.map(({ name, age }) => `name: ${name}, age: ${age}`).join('\n')
 // 解构函数实参
