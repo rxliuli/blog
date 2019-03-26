@@ -360,13 +360,26 @@ class BasicTableOption {
 class BasicTableVue extends Vue {
   /**
    * 构造函数
-   * @param option 初始化选项
-   * @param {BasicTableData} option.data vue 的 data 数据
+   * @param {BasicTableOption} option 初始化选项
+   * @param {BasicTableData|Function} option.data vue 的 data 数据，如果是 {@link Function} 类型，则必须返回 {@link BasicTableData} 的结构
    * @param {BasicTableMethods} option.methods vue 中的 methods 属性
    * @param {Function} option.mounted 初始化方法，如果覆盖则必须手动初始化表格
    */
-  constructor(option) {
-    super(_.merge(new BasicTableOption(), option))
+  constructor({ data, methods, mounted, ...args } = {}) {
+    //注：这里为了应对 data 既有可能是对象，又有可能是函数的情况
+    super(
+      _.merge(new BasicTableOption(), {
+        data: function() {
+          return _.merge(
+            new BasicTableData(),
+            typeof data === 'function' ? data.call(this) : data,
+          )
+        },
+        methods,
+        mounted,
+        ...args,
+      }),
+    )
   }
 }
 ```
@@ -502,10 +515,11 @@ const app = new BasicTableVue({
 })
 ```
 
-> 这里需要注意两点
+> 这里需要注意一些要点
 >
-> 1. 不要直接重写 `mounted()` 生命周期函数，而是在重写的 `init()` 中进行自定义操作
-> 2. 任何实体都需要有 `...args` 属性以避免一些没有声明的属性找不到
+> 1. 如果需要在 `data` 中调用 `methods` 中的函数，则 `data` 必须是一个函数并返回对象
+> 2. 不要直接重写 `mounted()` 生命周期函数，而是在重写的 `init()` 中进行自定义操作
+> 3. 任何实体都需要有 `...args` 属性以避免一些没有声明的属性找不到
 
 ---
 
