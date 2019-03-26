@@ -7,6 +7,7 @@ tags:
   - 记录
 abbrlink: aa3fd9e1
 date: 2019-03-25 15:48:58
+updated: 2019-03-26
 ---
 
 # Vue 表格封装 BasicTableVue
@@ -16,6 +17,34 @@ date: 2019-03-25 15:48:58
 后台项目中大量使用表格，我们使用的 `element-ui` 中的表格并不足以满足吾辈的需求，而且使用起来重复的代码实在太多，所以吾辈便对数据表格进行了二次封装。
 
 ## 实现
+
+### API 列表
+
+- `[el]`: 绑定的选择器。默认为 `'#app'`
+- `data`: 数据对象
+  - `form`: 搜索表单绑定对象
+  - `columns`: 表格的列数组。每个列定义参考 `TableColumn`
+  - `[formShow]`: 是否显示搜索表单
+  - `[page]`: 分页信息，包含分页的数据。具体参考 `Page`
+  - `[selectedIdList]`: 选中项的 `id` 列表
+  - `[fileSelectorShow]`: 是否显示导入 `Excel` 的文件选择器
+- `methods`: 绑定的函数
+  - `createForm`: 初始化 `form` 表单，主要是为了自定义初始化逻辑
+  - `getPage`: 获取分页信息
+  - `exportFile`: 导出文件
+  - `importFile`: 导入文件
+  - `deleteData`: 删除选择的数据
+  - `[init]`: 初始化函数，如果可能请使用该函数而非重写 `mounted` 生命周期函数，该函数会在 `mounted` 中调用
+  - `[resetFile]`: 重置导入选择的文件，必须为 `input:file` 绑定属性 `ref="fileInput"`
+  - `[searchPage]`: 搜索分页信息
+  - `[resetPage]`: 重置分页信息
+  - `[toggle]`: 切换搜索表单显示
+  - `[selection]`: 选择的 `id`
+  - `[changeSize]`: 改变一页的大小
+  - `[goto]`: 跳转到指定页数
+  - `[deleteSelected]`: 删除选择的数据项
+  - `[showFileSelector]`: 是否显示导入文件选择器
+  - `[initCommon]`: 初始化功能，如果重写了 `mounted` 生命周期函数，请务必调用它！
 
 ### 自定义表格组件
 
