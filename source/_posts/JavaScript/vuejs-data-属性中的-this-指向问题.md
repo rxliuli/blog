@@ -1,0 +1,171 @@
+---
+layout: post
+title: vuejs data 属性中的 this 指向问题
+tags:
+  - JavaScript
+  - VueJS
+  - 记录
+abbrlink: 2f1f8cdf
+date: 2019-03-27 08:25:23
+---
+
+# vuejs data 属性中的 this 指向问题
+
+## 场景
+
+之前在封装 table 组件 [BasicTableVue](https://blog.rxliuli.com/p/aa3fd9e1/) 的时候遇到的问题，在 `data` 属性中无法使用 `this.**` 调用 `methods` 中的函数。
+例如下面的代码
+
+```js
+class BasicTableData {
+  constructor({
+    user = {
+      name: 'rx',
+      age: 17,
+    },
+  } = {}) {
+    this.user = user
+  }
+}
+class Table extends Vue {
+  constructor({ data, methods, mounted, computed }) {
+    super({
+      data: _.merge(new BasicTableData(), data),
+      methods,
+      mounted,
+      computed,
+    })
+  }
+}
+
+const table = new Table({
+  data: {
+    user: {
+      birthday: new Date(),
+      birthdayFormatter: this.calcTime,
+    },
+  },
+  methods: {
+    calcTime(time) {
+      return time.toISOString()
+    },
+  },
+})
+
+// 将输出 undefined
+console.log(table.user.birthdayFormatter)
+```
+
+吾辈尝试了一下原生的 vuejs，发现这样的 data 仍然不能用。
+
+## 解决
+
+后来在官方文档找到了 [这里](https://cn.vuejs.org/v2/api/#data)，data 如果是一个对象或者箭头函数时，不会绑定 `this`，仅当 `data` 是一个普通函数（使用 `function` 声明）时，才会被绑定 `this`。
+
+那么，知道了原因，解决方案就很简单了。
+
+1. 如果需要使用在 `data` 中使用 `this` 调用 `methods` 中的函数，则 `data` 必须声明为普通函数
+2. 如果需要默认 `data` `defaultData`，则 `Table` 可以将合并后的 `data` 声明为函数，并将 `defaultData` 与 `data`（使用 `Table` 创建实例时传入的）的返回值合并
+
+修改后的代码如下
+
+```js
+class BasicTableData {
+  constructor({
+    user = {
+      name: 'rx',
+      age: 17,
+    },
+  } = {}) {
+    this.user = user
+  }
+}
+class Table extends Vue {
+  constructor({ data, methods, mounted, computed }) {
+    super({
+      // 关键是这里将 data 声明为普通函数
+      data() {
+        // 此处为了简洁使用 lodash 的深度合并
+        return _.merge(
+          new BasicTableData(),
+          // 此处判断 data 是否为函数,是的话就绑定 this 传入进去
+          typeof data === 'function' ? data.call(this) : data,
+        )
+      },
+      methods,
+      mounted,
+      computed,
+    })
+  }
+}
+
+const table = new Table({
+  data: function() {
+    return {
+      user: {
+        birthday: new Date(),
+        birthdayFormatter: this.calcTime,
+      },
+    }
+  },
+  methods: {
+    calcTime(time) {
+      return time.toISOString()
+    },
+  },
+})
+
+// 打印的结果是
+// ƒ calcTime(time) {
+//   return time.toISOString()
+// }
+console.log(table.user.birthdayFormatter)
+```
+
+## 思考
+
+现在问题解决了，那么，为什么 `vuejs` 就能够在传入 `data` 函数时就能调用 `methods` 中的函数了呢？吾辈稍微 debug 进入源码看了一下
+
+1. 创建 `Table` 进入构造函数
+   ![构造函数](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085616.png)
+2. 因为继承了 Vue，所以进入 Vue 的构造函数中
+   ![进入 Vue 的构造函数中](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085734.png)
+3. 因为当前实例属于 Vue，所以进入 `_init` 进行初始化
+   ![进入 _init 初始化](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085948.png)
+4. 跳转到 `initState(vm);` 处，该函数将对 data 属性进行初始化（至于为什么是 state 可能是因为最初就是模仿 react 写的？）
+   ![跳转到 initState()](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090323.png)
+5. 进入到 `initState()`，跳转到 `initData(vm);` 处
+   ![initData(vm) 处](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090559.png)
+6. 进入到 `initData()` 函数，看到了判断逻辑
+   ![判断逻辑](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090946.png)
+
+   ```js
+   var data = vm.$options.data
+   data = vm._data = typeof data === 'function' ? getData(data, vm) : data || {}
+   ```
+
+   注意看，这里的 vue 内部判断了 data 是否为函数，如果是就去 `getData(data, vm)`
+
+7. 进入 `getData()` 函数看看，发现了关键代码
+   ![关键代码](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327091155.png)
+
+   ```js
+   return data.call(vm, vm)
+   ```
+
+   是的，data 调用时使用 `call` 绑定 `this` 为 vm，而此时 `vm.calcTime` 已经有值了。
+
+8. 那么，`vm.calcTime` 是什么时候被初始化的呢？
+   其实也在 `initState` 函数中，可以看到，vue 的初始化顺序是
+
+   1. `props`: 外部传递的属性
+   2. `methods`: 组件的函数
+   3. `data`: 组件的属性
+   4. `computed`: 计算属性
+   5. `watch`: 监听函数
+
+   ![初始化顺序](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327091843.png)
+
+## 总结
+
+相比于 react，vue 做了更多的 **黑魔法** 呢！就像 this 指向问题，react 是交由用户自行解决的，而 vue 则在后面偷偷的为函数绑定 this 为 vue 实例本身。
