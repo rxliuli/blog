@@ -88,7 +88,7 @@ class Table extends Vue {
         // 此处为了简洁使用 lodash 的深度合并
         return _.merge(
           new BasicTableData(),
-          // 此处判断 data 是否为函数,是的话就绑定 this 传入进去
+          // 此处判断 data 是否为函数,是的话就绑定 this 计算结果
           typeof data === 'function' ? data.call(this) : data,
         )
       },
