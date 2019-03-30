@@ -10,11 +10,13 @@ date: 2019-03-30 13:39:46
 
 # 使用 jest 和 babel 测试
 
+> [博客](https://blog.rxliuli.com/p/3a7e1b3c/), [GitHub 示例](https://github.com/rxliuli/jest-example)
+
 ## 场景
 
-最近想为吾辈的工具函数库 [rx-util](https://github.com/rxliuli/rx-util) 添加单元测试，因为目前还在学习 ReactJS，所以最终选择了 jest 进行测试。这里记录一下整个过程，以供其他人参考。
+最近想为吾辈的工具函数库 [rx-util](https://github.com/rxliuli/rx-util) 添加单元测试，因为目前还在学习 ReactJS，所以最终选择了 Fackbook 家的 jest 进行测试。这里记录一下整个过程，以供他人参考。
 
-> 注：`Babel` 是现代前端库的天坑之一，不保证不同版本按照该教程能正常完成。如果出现了错误，请对比示例项目库 [jest-example](.)。
+> 注：`Babel` 是现代前端库的天坑之一，不保证不同版本按照该教程能正常完成。如果出现了错误，请对比示例项目库 [jest-example](https://github.com/rxliuli/jest-example)。
 
 ## 过程
 
@@ -60,7 +62,7 @@ module.exports = {
 
 现在，我们可以进行基本的测试了
 
-在 `src` 下添加一个 `add.js`
+在 _src_ 下添加一个 _add.js_
 
 ```js
 // src/add.js
@@ -117,7 +119,7 @@ test('test uniqueBy', () => {
 
 ### 异步测试
 
-或许你会认为异步测试需要单独的配置？然而事实上 `jest` 不愧是开箱即用的，直接就可以使用 `async/await` 进行异步测试。
+或许你会认为异步测试需要单独的配置？然而事实上 jest 不愧是开箱即用的，直接就可以使用 `async/await` 进行异步测试。
 
 下面是一个简单的异步函数及其测试代码
 
@@ -160,7 +162,7 @@ test('test wait sepecify time', async () => {
 
 ### 集成 ESLint
 
-一般而言，项目中都会使用 `ESLint` 进行代码规范，而 jest 所使用的全局变量 `test` 和 `expect` 却并不符合 `ESLint` 默认的规范。
+一般而言，项目中都会使用 eslint 进行代码规范，而 jest 所使用的全局变量 `test` 和 `expect` 却并不符合 eslint 默认的规范。
 
 添加 eslint 依赖，这里选择 `standard` 模板
 
@@ -215,4 +217,4 @@ module.exports = {
 }
 ```
 
-那么，运行 `yarn lint`，一切都将正常运行！
+那么，使用 `yarn lint`，一切都将正常运行！
