@@ -1,0 +1,77 @@
+---
+layout: post
+title: 使用 esdocs 生成文档
+abbrlink: 91fc75b3
+date: 2019-03-31
+tags:
+  - JavaScript
+  - 教程
+---
+
+# 使用 esdocs 生成文档
+
+> [esdocs 官网](https://esdoc.org/), [博客地址](https://blog.rxliuli.com/p/91fc75b3/), [示例项目](https://github.com/rxliuli/esdocs-example)
+
+## 场景
+
+在尝试过使用 [markdown](https://md.rxliuli.com/), [jsdoc](http://usejsdoc.org/), [docz](https://www.docz.site/) 之后，吾辈终于找到了一个比较满意工具 -- esdocs。
+
+## 期望
+
+- **开箱即用**: 毫无疑问, js 正在把一切事情变得复杂，到处都是大量的配置，永远都学不会开箱即用
+- **支持 jsdoc 注释**: 已经熟悉了 jsdoc，所以不太希望切换到其他的注释规范了呢
+- **可配置自定义页**: 作为文档 API 列表还算合适，然而首页的话果然还是自定义最好
+
+因为以上的期望，吾辈最终选择了 esdocs。
+
+## 使用
+
+### 添加依赖
+
+```sh
+yarn add -D esdoc esdoc-standard-plugin
+```
+
+### 初始化配置
+
+创建一个配置文件 _.esdoc.json_
+
+```json
+{
+  "source": "./src",
+  "destination": "./docs",
+  "plugins": [{ "name": "esdoc-standard-plugin" }]
+}
+```
+
+当然，如果你使用的命令行是 **bash**/**git-for-bash**/**cmder** 的话，亦可使用命令快速完成
+
+```sh
+echo '{
+  "source": "./src",
+  "destination": "./docs",
+  "plugins": [{"name": "esdoc-standard-plugin"}]
+}' > .esdoc.json
+```
+
+### 打包
+
+在 _package.json_ 中添加一个打包文档的 `script` 命令
+
+```json
+"scripts": {
+  "docs": "esdoc"
+}
+```
+
+然后使用 `yarn docs` 命令即可打包一份新鲜可用的文档啦
+
+### 查看
+
+然后打开 _docs/index.html_ 文件即可查看了，下面截张吾辈的工具库 [rx-util](https://rx-util.rxliuli.com/) 生成的文档。
+
+![rx-util](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190331002416.png)
+
+## 总结
+
+感觉是不是很简单，吾辈也是这样认为的呢！后面会整理一份 jsdoc 的标签列表，便于快速查找与一览。
