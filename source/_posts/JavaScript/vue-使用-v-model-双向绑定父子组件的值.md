@@ -117,3 +117,39 @@ Vue.component('RxSelect', {
 ```
 
 使用代码完全一样，然而组件 `RxSelect` 的代码却多了许多。。。
+
+## 解决
+
+一种更优雅的方式是使用 `computed` 计算属性以及其的 `get/set`，代码增加的程度还是可以接受的
+
+```js
+Vue.component('RxSelect', {
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
+  props: {
+    value: [Number, String],
+    map: Map,
+  },
+  computed: {
+    innerValue: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('change', val)
+      },
+    },
+  },
+  template: `
+  <select v-model="innerValue">
+    <option
+      v-for="[k,v] in map"
+      :value="k"
+      :key="k"
+    >{{v}}</option>
+  </select>
+  `,
+})
+```
