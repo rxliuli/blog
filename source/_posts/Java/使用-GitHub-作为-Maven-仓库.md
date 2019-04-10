@@ -7,6 +7,7 @@ tags:
   - 记录
 abbrlink: e76f3cb1
 date: 2019-04-09 21:13:07
+updated: 2019-04-10
 ---
 
 # 使用 GitHub 作为 Maven 仓库
@@ -166,7 +167,21 @@ mvn clean deploy
 
 ## 使用
 
-就像使用所有的其他 maven 仓库一样，我们知道 `groupId`, `artifactId` 与 `version`，自然可以直接使用啦
+添加仓库地址
+
+```xml
+<repositories>
+  <repository>
+    <id>maven-repository-example</id>
+    <!-- 格式是 https://raw.githubusercontent.com/[github 用户名]/[github 仓库名]/[分支名]/repository -->
+    <url>
+      https://raw.githubusercontent.com/rxliuli/maven-repository-example/mvn-repo/repository
+    </url>
+  </repository>
+</repositories>
+```
+
+就像其他 maven 仓库一样，我们知道 `groupId`, `artifactId` 与 `version`，自然可以直接使用啦
 
 ```xml
  <dependency>
