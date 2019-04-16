@@ -5,6 +5,7 @@ tags:
   - Windows
 abbrlink: 854bd198
 date: 2018-11-02 08:44:58
+updated: 2018-11-02 08:44:58
 ---
 
 # Windows 为当前用户添加开机自启项

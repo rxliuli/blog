@@ -5,6 +5,7 @@ tags:
   - VueJS
 abbrlink: 985beb7b
 date: 2018-11-08 00:00:00
+updated: 2018-11-08 00:00:00
 ---
 
 # 使用 vue-cli 创建模板项目

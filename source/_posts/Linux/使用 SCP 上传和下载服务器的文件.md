@@ -3,7 +3,9 @@ title: 使用 SCP 上传和下载服务器的文件
 tags: Linux
 abbrlink: 8c85cbe2
 date: 2018-08-11 01:39:21
+updated: 2018-08-11 01:39:21
 ---
+
 # 使用 SCP 上传和下载服务器的文件
 
 ## 简介
@@ -13,64 +15,78 @@ date: 2018-08-11 01:39:21
 ## 本地 >> 远程
 
 1. 将本地文件上传到服务器  
-    命令格式：
-    ```bash
-    scp localFile user@ip:remoteDir
-    ```
-    - localFile：本地文件的路径
-    - user@ip：服务器的用户名/IP
-    - remoteDir：服务器上的目录，本地文件将被上传到该目录下
+   命令格式：
 
-    例如下面将本地的 ssh 公钥上传到服务器的 `~`（当前用户目录）
-    ```bash
-    scp ~/.ssh/id_rsa.pub user@191.2.2.131:~
-    ```
+   ```bash
+   scp localFile user@ip:remoteDir
+   ```
+
+   - localFile：本地文件的路径
+   - user@ip：服务器的用户名/IP
+   - remoteDir：服务器上的目录，本地文件将被上传到该目录下
+
+   例如下面将本地的 ssh 公钥上传到服务器的 `~`（当前用户目录）
+
+   ```bash
+   scp ~/.ssh/id_rsa.pub user@191.2.2.131:~
+   ```
+
 2. 将本地目录上传到服务器  
-    命令格式：
-    ```bash
-    scp -r localDir user@ip:remoteDir
-    ```
-    - -r：递归整个目录
-    - localDir：本地目录的路径
-    - user@ip：服务器的用户名/IP
-    - remoteDir：服务器上的目录，本地目录将被上传到该目录下
+   命令格式：
 
-    例如下面将本地的 `/d/ssh` 目录上传到服务器 `~` 目录下
-    ```bash
-    scp -r /d/ssh/ user@191.2.2.131:~
-    ```
+   ```bash
+   scp -r localDir user@ip:remoteDir
+   ```
+
+   - -r：递归整个目录
+   - localDir：本地目录的路径
+   - user@ip：服务器的用户名/IP
+   - remoteDir：服务器上的目录，本地目录将被上传到该目录下
+
+   例如下面将本地的 `/d/ssh` 目录上传到服务器 `~` 目录下
+
+   ```bash
+   scp -r /d/ssh/ user@191.2.2.131:~
+   ```
 
 > 其实你应该已经发现了，文件与目录的却别就在于一个 `-r` 参数而已
 
 ## 远程 >> 本地
 
 1. 下载服务器文件到本地
-    命令格式：
-    ```bash
-    scp user@ip:remoteFile localDir
-    ```
-    - user@ip：服务器的用户名/IP
-    - remoteFile：服务器上文件的路径
-    - localDir：本地的目录，服务器文件将被下载到该目录下
+   命令格式：
 
-    例如下面将服务器的 ssh 公钥下载到本地的 `~` 下面
-    ```bash
-    scp user@191.2.2.131:~/.ssh/id_rsa.pub ~
-    ```
+   ```bash
+   scp user@ip:remoteFile localDir
+   ```
+
+   - user@ip：服务器的用户名/IP
+   - remoteFile：服务器上文件的路径
+   - localDir：本地的目录，服务器文件将被下载到该目录下
+
+   例如下面将服务器的 ssh 公钥下载到本地的 `~` 下面
+
+   ```bash
+   scp user@191.2.2.131:~/.ssh/id_rsa.pub ~
+   ```
+
 2. 下载服务器目录到本地
-    命令格式：
-    ```bash
-    scp -r user@ip:remoteDir localDir
-    ```
-    - -r：递归整个目录
-    - user@ip：服务器的用户名/IP
-    - remoteDir：服务器上的目录
-    - localDir：本地的目录，服务器目录将被下载到该目录下
+   命令格式：
 
-    例如下面将服务器的 .ssh 目录下载到本地的 `~` 下面
-    ```bash
-    scp -r user@191.2.2.131:~/.ssh ~
-    ```
+   ```bash
+   scp -r user@ip:remoteDir localDir
+   ```
+
+   - -r：递归整个目录
+   - user@ip：服务器的用户名/IP
+   - remoteDir：服务器上的目录
+   - localDir：本地的目录，服务器目录将被下载到该目录下
+
+   例如下面将服务器的 .ssh 目录下载到本地的 `~` 下面
+
+   ```bash
+   scp -r user@191.2.2.131:~/.ssh ~
+   ```
 
 ## 下面列出 SCP 的全部选项
 

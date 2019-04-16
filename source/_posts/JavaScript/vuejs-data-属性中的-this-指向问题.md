@@ -7,6 +7,7 @@ tags:
   - 记录
 abbrlink: 2f1f8cdf
 date: 2019-03-27 08:25:23
+updated: 2019-03-27 08:25:23
 ---
 
 # vuejs data 属性中的 this 指向问题

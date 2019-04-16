@@ -3,7 +3,9 @@ title: 'Linux SSH 远程连接出现 [Host key verification failed]'
 tags: Linux
 abbrlink: fdb60858
 date: 2018-08-22 09:33:40
+updated: 2018-08-22 09:33:40
 ---
+
 # Linux SSH 远程连接出现 [Host key verification failed]
 
 今早设置了服务器的 SSH 后尝试连接结果出现了这个错误

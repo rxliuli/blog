@@ -4,7 +4,9 @@ tags:
   - Tool
 abbrlink: 5ad7fa84
 date: 2018-09-08 00:00:00
+updated: 2018-09-08 00:00:00
 ---
+
 # 使用 Serveo 进行内网穿透
 
 > [官网](https://serveo.net/)  
@@ -31,7 +33,7 @@ ssh -o ServerAliveInterval=60 -R 80:localhost:8888 serveo.net
 
 1. 添加 A 纪录 `A | serveo | 159.89.214.31`
 2. 添加 TXT 记录 `TXT | serveo | authkeyfp=SHA256:g6VHWesncgnhwPjvENkhgrC3tkx9SzAKoMOl9xvXgPo`
-  > authkeyfp 后面跟的那一串东西其实是 rsa 密钥指纹，使用 `ssh-keygen -l` 可以查看，一般都在 `~/.ssh/id_rsa`，没有的话用 `ssh-keygen` 生成一个就好了
+   > authkeyfp 后面跟的那一串东西其实是 rsa 密钥指纹，使用 `ssh-keygen -l` 可以查看，一般都在 `~/.ssh/id_rsa`，没有的话用 `ssh-keygen` 生成一个就好了
 
 进行连接（其实也就是在远程端口前面加上自定义域名而已）
 

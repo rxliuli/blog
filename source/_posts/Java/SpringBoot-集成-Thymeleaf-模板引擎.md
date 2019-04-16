@@ -3,6 +3,7 @@ layout: post
 title: SpringBoot 集成 Thymeleaf 模板引擎
 abbrlink: 229b5cfd
 date: 2019-03-11
+updated: 2019-03-11
 tags:
   - Java
   - 记录

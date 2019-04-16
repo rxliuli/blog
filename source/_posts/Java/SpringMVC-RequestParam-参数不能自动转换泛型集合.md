@@ -6,6 +6,7 @@ tags:
   - 记录
 abbrlink: 2f32308b
 date: 2019-01-17 17:48:57
+updated: 2019-01-17 17:48:57
 ---
 
 # SpringMVC @RequestParam 参数不能自动转换泛型集合
@@ -40,7 +41,7 @@ fd.append(2, 2)
 fd.append(3, 3)
 fetch('/testMap', {
   method: 'post',
-  body: fd
+  body: fd,
 })
   .then(res => res.json())
   .then(json => console.log(json))
@@ -134,11 +135,11 @@ fetch('/testMap', {
   body: JSON.stringify({
     1: 1,
     2: 2,
-    3: 3
+    3: 3,
   }),
   headers: {
-    'content-type': 'application/json'
-  }
+    'content-type': 'application/json',
+  },
 })
   .then(res => res.json())
   .then(json => console.log(json))

@@ -5,7 +5,9 @@ tags:
   - Git
 abbrlink: c6b28b5a
 date: 2018-08-25 00:25:30
+updated: 2018-08-25 00:25:30
 ---
+
 # Git Push 提示不支持具有 Socks5 方案的代理
 
 ## 场景
@@ -30,24 +32,27 @@ fatal: NotSupportedException encountered.
 ## 解决方案
 
 1. 取消代理
-  使用以下简单命令即可取消代理
+   使用以下简单命令即可取消代理
 
-  ```bash
-  git config --global --unset http.proxy
-  git config --global --unset https.proxy
-  ```
+```bash
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
 
-  > 注：取消代理会出现另外一个错误，所以并不能解决实际问题
-  > ```bash
-  > git config --global --unset http.proxy
-  > git config --global --unset https.proxy
-  > ```
+> 注：取消代理会出现另外一个错误，所以并不能解决实际问题
+>
+> ```bash
+> git config --global --unset http.proxy
+> git config --global --unset https.proxy
+> ```
+
 2. 取消远程的 `SSH`
-  在下面的页面中删除你的 `SSH Keys` 即可
-  >- [GitHub](https://github.com/settings/keys)
-  >- [Bitbucket](https://bitbucket.org/account/user/your_username/ssh-keys/)
-  
-3. 提交内容到远程 `Git` 服务器时选择 `SSH` 协议
-  设置远程仓库为 `SSH` 协议，例如 `GitHub` 的 `SSH` 链接就是 <git@github.com:rxliuli/rxliuli.github.io.git>
+   在下面的页面中删除你的 `SSH Keys` 即可
 
-好了，关于 `Git` 提示错误 *Git Push 提示不支持具有 Socks5 方案的代理* 就到这里啦
+   > - [GitHub](https://github.com/settings/keys)
+   > - [Bitbucket](https://bitbucket.org/account/user/your_username/ssh-keys/)
+
+3. 提交内容到远程 `Git` 服务器时选择 `SSH` 协议
+   设置远程仓库为 `SSH` 协议，例如 `GitHub` 的 `SSH` 链接就是 <git@github.com:rxliuli/rxliuli.github.io.git>
+
+好了，关于 `Git` 提示错误 _Git Push 提示不支持具有 Socks5 方案的代理_ 就到这里啦

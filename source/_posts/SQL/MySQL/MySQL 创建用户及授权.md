@@ -3,14 +3,16 @@ title: MySQL 创建用户及授权
 tags: DB
 abbrlink: 676cd338
 date: 2018-08-14 01:39:21
+updated: 2018-08-14 01:39:21
 ---
+
 # MySQL 创建用户及授权
 
 ## 用户
 
 ### 创建用户
 
-使用 `root` 用户登录到 MySQL  
+使用 `root` 用户登录到 MySQL
 
 ```sql
 CREATE USER rxliuli
@@ -27,13 +29,13 @@ DROP USER rxliuli;
 
 ### 添加授权
 
-命令格式：  
+命令格式：
 
 ```sql
 GRANT privilegesCode ON dbName.tableName TO username@host IDENTIFIED BY "password";
 ```
 
-例如下面就是为 rxliuli 用户赋予了 mytimelinedb 数据库所有表的所有操作权限  
+例如下面就是为 rxliuli 用户赋予了 mytimelinedb 数据库所有表的所有操作权限
 
 ```sql
 GRANT ALL PRIVILEGES ON mytimelinedb.* TO rxliuli
@@ -52,7 +54,7 @@ IDENTIFIED BY '123456';
 `dbName.tableName` 代表数据库.数据表，常用选项如下：
 
 - .：所有数据库的所有表的权限
-- dbName.*：指定数据库的所有表的权限
+- dbName.\*：指定数据库的所有表的权限
 - dbName.tableName：指定数据库下指定数据表的权限
 
 `username@host` 表示授予的用户及允许该用户登录的 IP 地址。host 常用选项是：

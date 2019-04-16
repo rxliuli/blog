@@ -5,6 +5,7 @@ tags:
   - JavaScript
 abbrlink: b039fdae
 date: 2019-04-01 20:44:15
+updated: 2019-04-01 20:44:15
 ---
 
 # vue 使用 v-model 双向绑定父子组件的值

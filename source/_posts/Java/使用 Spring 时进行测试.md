@@ -3,7 +3,9 @@ title: 使用 Spring 时进行测试
 tags: Java
 abbrlink: c2870a27
 date: 2018-07-31 01:39:21
+updated: 2018-07-31 01:39:21
 ---
+
 # 使用 Spring 时进行测试
 
 - [使用 Spring 时进行测试](#使用-spring-时进行测试)
@@ -39,6 +41,7 @@ date: 2018-07-31 01:39:21
 - Web 层测试：测试对外部提供的接口
 
 这里新建一个用来测试的项目，吾辈将之丢到了 GitHub 上面
+
 > [项目链接](https://github.com/rxliuli/springtest)
 
 你也可以自己创建一个基础的 Maven 项目，项目结构应当如下：
@@ -420,14 +423,14 @@ public class UserDaoTest {
 手动加载的基本思路就是：
 
 - 先加载 ApplicationContext 初始化 Spring 环境
-    注：这一步实际上就已经加载了 Spring 容器，并且使用 `initDatabase.sql` 初始化 h2 DB 了
+  注：这一步实际上就已经加载了 Spring 容器，并且使用 `initDatabase.sql` 初始化 h2 DB 了
 - 使用 ApplicationContext 对象获得 UserDao 实例
 - 调用被测试的方法
 - 对结果进行断言
 
 但这里实际上，ApplicationContext 是会被初始化两次的，所以会造成浪费和麻烦（例如初始化 sql 脚本也会被执行两次，当然这里吾辈先把 user 表删除后再创建的所以没事）。其实 Spring 早已想到了这一切，并为我们准备了解决方案。
 
-使用 `SpringTest` 整合测试！  
+使用 `SpringTest` 整合测试！
 
 ### 使用注解自动加载 Spring 测试环境
 
@@ -481,7 +484,7 @@ public class UserDaoSpringTest {
 可以看到，这里我们甚至可以使用 Spring 的自动注入注解 `@Autowired` 了
 
 当然，现在还有一个问题就是现在测试对数据库的影响是持久的，也就是说不能重复的测试。
-例如删除了一个为 id 为 1 的用户，返回值应当是 1，但第二次删除时，因为 id 为 1 的用户已经不存在了，所以返回值是 0，然后就报错了 23333  
+例如删除了一个为 id 为 1 的用户，返回值应当是 1，但第二次删除时，因为 id 为 1 的用户已经不存在了，所以返回值是 0，然后就报错了 23333
 
 我们可以测试一下
 
@@ -776,14 +779,15 @@ public class UserController {
 ```
 
 这时候启动 web 项目在浏览器中访问 `localhost:8080/{上下文}/user/1` 应当会得到一个 User 对象。
+
 > 注：上下文 IDEA 默认为空，Eclipse 默认为项目名
 
 然而测试却是有两种方法：
 
 1. 独立安装测试  
-  手动加载单个 Controller，所以测试其他 Controller 中的接口会发生异常。但测试速度上较快，所以应当优先选择。
+   手动加载单个 Controller，所以测试其他 Controller 中的接口会发生异常。但测试速度上较快，所以应当优先选择。
 2. 集成 Web 环境测试  
-  将启动并且加载所有的 Controller, 所以效率上之于 BaseWebUnitTest 来说非常低下, 仅适用于集成测试多个 Controller 时使用。
+   将启动并且加载所有的 Controller, 所以效率上之于 BaseWebUnitTest 来说非常低下, 仅适用于集成测试多个 Controller 时使用。
 
 ### 独立安装测试
 

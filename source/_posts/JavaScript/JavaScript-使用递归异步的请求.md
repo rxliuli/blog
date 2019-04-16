@@ -6,6 +6,7 @@ tags:
   - 记录
 abbrlink: 71b47285
 date: 2019-01-06 00:00:00
+updated: 2019-01-06 00:00:00
 ---
 
 # JavaScript 使用递归异步的请求
@@ -80,7 +81,7 @@ async function syncList(path) {
       file.server_filename,
       file.size,
       file.isdir,
-      file
+      file,
     )
     if (res.isdir !== 1) {
       return [res]
@@ -212,7 +213,7 @@ async function asyncList(path = '/', limit = 5) {
             file.server_filename,
             file.size,
             file.isdir,
-            file
+            file,
           )
           result.push(res)
           if (res.isdir === 1) {

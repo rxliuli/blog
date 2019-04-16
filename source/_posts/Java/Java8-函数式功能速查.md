@@ -5,6 +5,7 @@ tags:
   - Java
 abbrlink: d66a3b89
 date: 2019-02-15 14:40:39
+updated: 2019-02-15 14:40:39
 ---
 
 # Java8 函数式功能速查

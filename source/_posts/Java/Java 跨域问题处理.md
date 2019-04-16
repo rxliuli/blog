@@ -3,7 +3,9 @@ title: Java 跨域问题处理
 tags: Java
 abbrlink: 4f68e5a8
 date: 2018-08-20 01:39:21
+updated: 2018-08-20 01:39:21
 ---
+
 # Java 跨域问题处理
 
 ## 问题
@@ -129,8 +131,8 @@ public class CorsConfig {
 
   ```js
   fetch(url)
-      .then(res => res.json())
-      .then(json => console.log(json))
+    .then(res => res.json())
+    .then(json => console.log(json))
   ```
 
 - 表单请求
@@ -141,26 +143,26 @@ public class CorsConfig {
   fd.append('password', 'rx')
 
   fetch(url, {
-      method: 'POST',
-      body: fd,
+    method: 'POST',
+    body: fd,
   })
-      .then(res => res.json())
-      .then(json => console.log(json))
+    .then(res => res.json())
+    .then(json => console.log(json))
   ```
 
 - 需要认证的请求
 
   ```js
   fetch(url, {
-      /**
-       * 关键就在这里，代表用户是否应该在跨域的情况下发送 cookies 和 HTTP Basic authentication 等验信息以及服务端能否返回 Set-Cookie（服务端 Session 需要使用这个向 cookie 中设置 sessionId）。
-       * 包含三个可选值：omit(从不发送), same-origin(同源才发送), include(总会发送)
-       * 参考链接：<https://developer.mozilla.org/zh-CN/docs/Web/API/Request/credentials>
-       */
-      credentials: "include"
+    /**
+     * 关键就在这里，代表用户是否应该在跨域的情况下发送 cookies 和 HTTP Basic authentication 等验信息以及服务端能否返回 Set-Cookie（服务端 Session 需要使用这个向 cookie 中设置 sessionId）。
+     * 包含三个可选值：omit(从不发送), same-origin(同源才发送), include(总会发送)
+     * 参考链接：<https://developer.mozilla.org/zh-CN/docs/Web/API/Request/credentials>
+     */
+    credentials: 'include',
   })
-      .then(res => res.json())
-      .then(json => console.log(json))
+    .then(res => res.json())
+    .then(json => console.log(json))
   ```
 
   > 注：如果想要服务端返回 `Set-Cookie`（`SessionId` 也需要通过这个响应属性去设置） 就必须设置这个请求参数！

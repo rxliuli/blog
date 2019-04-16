@@ -5,7 +5,9 @@ tags:
   - DB
 abbrlink: 94fae9d6
 date: 2018-08-23 10:02:55
+updated: 2018-08-23 10:02:55
 ---
+
 # Linux Centos 安装 MongoDB
 
 ## 创建一个 `mongodb` 的 `yum` 仓库

@@ -6,6 +6,7 @@ tags:
   - MongoDB
 abbrlink: 424bf4e1
 date: 2018-08-08 01:39:21
+updated: 2018-08-08 01:39:21
 ---
 
 # Windows 下 MongoDB 便携版安装与初始化

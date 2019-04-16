@@ -4,7 +4,9 @@ tags:
   - Java
 abbrlink: 7ef9e3d
 date: 2018-09-04 00:00:00
+updated: 2018-09-04 00:00:00
 ---
+
 # 使用 Java8 新的时间 API
 
 ## 简介
@@ -35,7 +37,7 @@ Java8 面世以来已经 6 年了，许多人也开始使用起了 `lambda`,`Str
 
 ### LocalDate
 
-一个不可变（线程安全）的日期对象，用且表示 *年-月-日* 的时间，默认 `toString()` 格式是 `yyyy-MM-dd`。
+一个不可变（线程安全）的日期对象，用且表示 _年-月-日_ 的时间，默认 `toString()` 格式是 `yyyy-MM-dd`。
 
 基本操作
 
@@ -71,7 +73,7 @@ System.out.println(between);
 
 ### LocalTime
 
-一个不可变的（线程安全）的时间对象，用于表示 *时：分：秒：毫秒* 的时间，默认 `toString()` 格式是 `hh:mm:ss.SSS`。
+一个不可变的（线程安全）的时间对象，用于表示 _时：分：秒：毫秒_ 的时间，默认 `toString()` 格式是 `hh:mm:ss.SSS`。
 
 基本操作
 
@@ -103,7 +105,7 @@ System.out.println(between);
 
 ### LocalDateTime
 
-不可变的日期时间对象，用于表示 *日-月-年 时：分：秒：毫秒* 的日期时间，默认格式化格式是 `yyyy-MM-ddThh:mm:ss.SSS`。
+不可变的日期时间对象，用于表示 _日-月-年 时：分：秒：毫秒_ 的日期时间，默认格式化格式是 `yyyy-MM-ddThh:mm:ss.SSS`。
 
 基本操作
 
@@ -145,7 +147,7 @@ System.out.println("当前时间：" + localTime);
 
 ## OffsetDateTime
 
-代表偏移标准 UTC 时间的日期时间不可变对象，用于表示 *日-月-年 时：分：秒：毫秒时区*，默认格式是 `yyyy-MM-ddThh:mm:ss.SSSZoneId`
+代表偏移标准 UTC 时间的日期时间不可变对象，用于表示 _日-月-年 时：分：秒：毫秒时区_，默认格式是 `yyyy-MM-ddThh:mm:ss.SSSZoneId`
 
 基本操作
 
@@ -303,4 +305,4 @@ System.out.println("转换后的日期时间：" + toLocalDateTime);
 - Jackson：jackson-datatype-jsr310
 - Mybatis：mybatis-typehandlers-jsr310
 
-那么，关于 Java8 新的时间 API 的使用暂且到这里了，想到什么吾辈再补充啦（=´∇｀=）
+那么，关于 Java8 新的时间 API 的使用暂且到这里了，想到什么吾辈再补充啦（=´∇ ｀=）

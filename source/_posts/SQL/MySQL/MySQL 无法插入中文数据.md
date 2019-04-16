@@ -3,7 +3,9 @@ title: MySQL 无法插入中文数据
 tags: DB
 abbrlink: a29680f6
 date: 2018-08-16 01:39:21
+updated: 2018-08-16 01:39:21
 ---
+
 # MySQL 无法插入中文数据
 
 刚刚在 Linux Centos 装完 MySQL 后，想试一下是否能正常使用，但在插入中文数据时发生了下面的这个错误。
@@ -33,6 +35,7 @@ show variables like '%char%';
 | validate_password_special_char_count | 1                          |
 
 果然有几个编码是不支持中文的，所以将 `latin1` 编码修改为 `utf8mb4`/`utf8` 就好啦
+
 > 有关编码格式请参考：[latin1](https://zh.wikipedia.org/wiki/ISO/IEC_8859-1), [utf8](https://zh.wikipedia.org/wiki/UTF-8), `utf8mb4` 与 `utf8` 区别可以参考 <https://my.oschina.net/xsh1208/blog/1052781>
 
 修改它们
@@ -78,17 +81,17 @@ show full columns from user;
 
 1. 删除重建数据库的话只需要将数据库导出 sql 脚本，然后重新执行即可（如果存在很多数据/数据库正在使用则此方法不适用）
 2. 手动修改编码
-    1. 修改数据库编码
-        ```sql
-        alter database <db_name> character set utf8mb4;
-        ```
-    2. 修改数据表编码
-        ```sql
-        alter table <table_name> character set utf8mb4;
-        ```
-    3. 修改字段编码
-        ```sql
-        ALTER TABLE <table_name> MODIFY COLUMN <field_name> <field_type> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-        ```
+   1. 修改数据库编码
+      ```sql
+      alter database <db_name> character set utf8mb4;
+      ```
+   2. 修改数据表编码
+      ```sql
+      alter table <table_name> character set utf8mb4;
+      ```
+   3. 修改字段编码
+      ```sql
+      ALTER TABLE <table_name> MODIFY COLUMN <field_name> <field_type> CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      ```
 
 那么，关于 MySQL 不能插入中文数据的问题就到这里啦

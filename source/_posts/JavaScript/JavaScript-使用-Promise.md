@@ -6,6 +6,7 @@ tags:
   - 教程
 abbrlink: e032f56a
 date: 2019-01-16 13:17:28
+updated: 2019-01-16 13:17:28
 ---
 
 # JavaScript 使用 Promise

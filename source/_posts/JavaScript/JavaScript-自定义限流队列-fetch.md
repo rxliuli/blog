@@ -6,6 +6,7 @@ tags:
   - 教程
 abbrlink: d47ba580
 date: 2019-01-24 00:00:00
+updated: 2019-01-24 00:00:00
 ---
 
 # JavaScript 自定义限流队列 fetch
@@ -136,7 +137,7 @@ new Array(100).fill(0).forEach(i =>
   requestLimiting
     ._fetch('/')
     .then(res => console.log(res))
-    .catch(err => console.log(err))
+    .catch(err => console.log(err)),
 )
 ```
 
@@ -208,7 +209,7 @@ class RequestLimiting {
       console.debug(
         `执行 execCount: ${this.execCount}, waitArr length: ${
           this.waitArr.length
-        }, index: ${JSON.stringify(this.waitArr[0])}`
+        }, index: ${JSON.stringify(this.waitArr[0])}`,
       )
       const args = this.waitArr.shift(0)
       if (!args) {
@@ -222,7 +223,7 @@ class RequestLimiting {
       } catch (err) {
         // 否则返回 err
         callback({
-          err: err
+          err: err,
         })
       } finally {
         this.execCount--
@@ -255,14 +256,14 @@ new Array(100).fill(0).forEach((item, i) =>
     {
       // 这里设置添加时的 index，用于验证是否真的顺序执行了
       headers: {
-        index: i
-      }
+        index: i,
+      },
     },
     // 这里使用了回调函数，参数使用解构得到
     ({ res, err }) => {
       console.log(`res: ${res}, err: ${err}`)
-    }
-  )
+    },
+  ),
 )
 ```
 
@@ -337,7 +338,7 @@ class RequestLimiting {
       console.log(
         `执行 execCount: ${this.execCount}, waitArr length: ${
           this.waitArr.length
-        }, index: ${JSON.stringify(this.waitArr[0])}`
+        }, index: ${JSON.stringify(this.waitArr[0])}`,
       )
       this.execCount++
       const args = this.waitArr.shift(0)
@@ -364,11 +365,11 @@ new Array(100).fill(0).forEach((item, i) =>
     ._fetch('/', {
       // 这里设置添加时的 index，用于验证是否真的顺序执行了
       headers: {
-        index: i
-      }
+        index: i,
+      },
     })
     .then(res => console.log(res))
-    .catch(err => console.log(err))
+    .catch(err => console.log(err)),
 )
 ```
 

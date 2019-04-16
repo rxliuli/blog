@@ -6,6 +6,7 @@ abbrlink: '57527319'
 date: 2018-09-03 00:00:00
 updated: 2018-09-20 00:00:00
 ---
+
 # SpringBoot 使用 Jackson 处理 Java8 时间 API
 
 ## 场景
@@ -46,7 +47,7 @@ updated: 2018-09-20 00:00:00
 </dependency>
 ```
 
-修改 `application.yml`，配置 `spring.jackson.serialization.write_dates_as_timestamps` 禁用 *打印日期为时间戳的功能*。
+修改 `application.yml`，配置 `spring.jackson.serialization.write_dates_as_timestamps` 禁用 _打印日期为时间戳的功能_。
 
 ```yaml
 spring:

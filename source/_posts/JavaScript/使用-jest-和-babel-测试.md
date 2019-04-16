@@ -6,6 +6,7 @@ tags:
   - 记录
 abbrlink: 3a7e1b3c
 date: 2019-03-30 13:39:46
+updated: 2019-03-30 13:39:46
 ---
 
 # 使用 jest 和 babel 测试

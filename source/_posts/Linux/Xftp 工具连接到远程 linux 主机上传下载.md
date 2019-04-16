@@ -3,6 +3,7 @@ title: Xftp 工具连接到远程 linux 主机上传下载
 tags: Linux
 abbrlink: 2935b4ea
 date: 2018-06-27 01:39:21
+updated: 2018-06-27 01:39:21
 ---
 
 # Xftp 工具连接到远程 linux 主机上传下载

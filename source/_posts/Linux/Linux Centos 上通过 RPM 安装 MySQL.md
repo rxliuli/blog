@@ -5,6 +5,7 @@ tags:
   - 记录
 abbrlink: 74cbb0a6
 date: 2018-06-30 01:39:21
+updated: 2018-06-30 01:39:21
 ---
 
 # Linux Centos 上通过 RPM 安装 MySQL

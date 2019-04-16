@@ -5,6 +5,7 @@ tags:
   - JavaScript
 abbrlink: 7eaebba3
 date: 2018-09-03 00:00:00
+updated: 2018-09-03 00:00:00
 ---
 
 # SpringBoot 集成 WebSocket
@@ -158,7 +159,7 @@ public class BilateralBroadcastingSocket {
 
           // 获取 websocket 连接的 sessionId
           const sessionId = /\/([^\/]+)\/websocket/.exec(
-            socket._transport.url
+            socket._transport.url,
           )[1]
           console.log('connected, session id: ' + sessionId)
 
@@ -168,7 +169,7 @@ public class BilateralBroadcastingSocket {
             '/topic/broadcasting/bilateral/allClient',
             res => {
               console.log(`[广播（双向通信）]: ${res.body}`)
-            }
+            },
           )
 
           // 发送请求
@@ -176,7 +177,7 @@ public class BilateralBroadcastingSocket {
         },
         error => {
           console.log('Socket 连接失败')
-        }
+        },
       )
 
       function send() {
@@ -184,7 +185,7 @@ public class BilateralBroadcastingSocket {
         // 发送消息到服务端
         var headers = {}
         var body = {
-          message: '消息内容'
+          message: '消息内容',
         }
         stompClient.send('/talk', headers, JSON.stringify(body))
       }
@@ -256,7 +257,7 @@ const subscription_broadcast = stompClient.subscribe(
   '/topic/broadcasting/unidirectional/allClient',
   response => {
     console.log(`[广播（服务端单向推送）]: ${response.body}`)
-  }
+  },
 )
 ```
 
@@ -352,7 +353,7 @@ stompClient.subscribe(
   `/user/${sessionId}/push/unidirectional/thisClient`,
   res => {
     console.log(`[点对点推送（单向通信）]：${res.body}`)
-  }
+  },
 )
 ```
 
@@ -591,8 +592,8 @@ stompClient.send(
   JSON.stringify({
     id: 17,
     name: 'rxliuli',
-    sex: false
-  })
+    sex: false,
+  }),
 )
 ```
 
@@ -663,7 +664,7 @@ const socketUtil = {
   getHeaders() {
     return {
       'X-Requested-With': 'X-Requested-With',
-      Authorization: localStorage.token
+      Authorization: localStorage.token,
     }
   },
   /**
@@ -689,7 +690,7 @@ const socketUtil = {
    */
   subscribeJSON(url, successFn) {
     return this.stompClient.subscribe(url, res =>
-      successFn(JSON.parse(res.body))
+      successFn(JSON.parse(res.body)),
     )
   },
   /**
@@ -700,6 +701,6 @@ const socketUtil = {
     if (obj && obj.unsubscribe) {
       obj.unsubscribe()
     }
-  }
+  },
 }
 ```

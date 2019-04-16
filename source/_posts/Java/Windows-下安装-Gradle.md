@@ -7,6 +7,7 @@ tags:
   - Windows
 abbrlink: 594d7b41
 date: 2018-11-16 21:04:23
+updated: 2018-11-16 21:04:23
 ---
 
 # Windows 下安装 Gradle

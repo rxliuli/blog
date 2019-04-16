@@ -6,6 +6,7 @@ tags:
   - 教程
 abbrlink: e17d1a04
 date: 2019-01-17 00:00:00
+updated: 2019-01-17 00:00:00
 ---
 
 # JavaScript 避免使用 if-else 的方法
@@ -369,8 +370,8 @@ class TabBuilder {
       Object.entries({
         1: () => new Tab1(),
         2: () => new Tab2(),
-        3: () => new Tab3()
-      })
+        3: () => new Tab3(),
+      }),
     )
     return tabMap.get(index)()
   }
@@ -380,8 +381,8 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
   el.addEventListener('click', () =>
     // 首先通过 Builder 构造类获取 Tab 子类实例，然后调用初始化方法 init
     TabBuilder.getInstance(el.dataset.index).init(
-      el.parentElement.innerText.trim()
-    )
+      el.parentElement.innerText.trim(),
+    ),
   )
 })
 ```
@@ -487,7 +488,7 @@ const Tab1 = builder.register(
         </div>
       `
     }
-  }
+  },
 )
 
 const Tab2 = builder.register(
@@ -534,7 +535,7 @@ const Tab2 = builder.register(
         fr.readAsDataURL(file)
       })
     }
-  }
+  },
 )
 
 const Tab3 = builder.register(
@@ -562,7 +563,7 @@ const Tab3 = builder.register(
             .join()
         })
     }
-  }
+  },
 )
 
 document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
@@ -570,7 +571,7 @@ document.querySelectorAll('#tab input[name="form-tab-radio"]').forEach(el => {
     // 调用方式不变
     builder
       .getInstance(Number.parseInt(el.dataset.index))
-      .init(el.parentElement.innerText.trim())
+      .init(el.parentElement.innerText.trim()),
   )
 })
 ```

@@ -3,6 +3,7 @@ title: JavaScript 自定义解析字符串为 Date 对象
 tags: JavaScript
 abbrlink: c734677d
 date: 2018-06-27 01:39:21
+updated: 2018-06-27 01:39:21
 ---
 
 # JavaScript 自定义解析字符串为 Date 对象
@@ -59,7 +60,7 @@ Date.of = function(dateStr, fmt) {
     hour: 'h{1,2}',
     minute: 'm{1,2}',
     second: 's{1,2}',
-    milliSecond: 'S{1,3}'
+    milliSecond: 'S{1,3}',
   }
   //如果没有格式化某项的话则设置为默认时间
   const defaultDateValues = {
@@ -69,7 +70,7 @@ Date.of = function(dateStr, fmt) {
     hour: '00',
     minute: '00',
     second: '00',
-    milliSecond: '000'
+    milliSecond: '000',
   }
   //保存对传入的日期字符串进行格式化的全部信息数组列表
   const dateUnits = []
@@ -85,12 +86,12 @@ Date.of = function(dateStr, fmt) {
           fmtName,
           String.fill('\\d', matchStr.length),
           null,
-          index
-        )
+          index,
+        ),
       )
     } else {
       dateUnits.push(
-        new DateFormat(fmtName, null, defaultDateValues[fmtName], -1)
+        new DateFormat(fmtName, null, defaultDateValues[fmtName], -1),
       )
     }
   }
@@ -118,11 +119,11 @@ Date.of = function(dateStr, fmt) {
   const obj = dateUnits.toObject(function(item) {
     return {
       key: item.name,
-      value: item.value
+      value: item.value,
     }
   })
   const date = '{year}-{month}-{day}T{hour}:{minute}:{second}.{milliSecond}'.format(
-    obj
+    obj,
   )
   try {
     return new Date(date)

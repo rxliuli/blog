@@ -2,15 +2,17 @@
 title: Windows 上安装 JDK 并设置环境变量
 abbrlink: d0cf29fa
 date: 2018-10-17 15:07:15
+updated: 2018-10-17 15:07:15
 tags:
 ---
+
 # Windows 上安装 JDK 并设置环境变量
 
 ## 从 Oracle 官网下载 JDK
 
 首先在浏览器打开 [JDK8 下载页面](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
-找到  **Java SE Development Kit 8uXXX** 勾选 **Accept License Agreement**，点击下载平台对应的二进制文件，这里以 Windows 平台为例，选择 **jdk-8u191-windows-x64.exe** 下载就好了
+找到 **Java SE Development Kit 8uXXX** 勾选 **Accept License Agreement**，点击下载平台对应的二进制文件，这里以 Windows 平台为例，选择 **jdk-8u191-windows-x64.exe** 下载就好了
 
 ![JDK8 下载](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017141137.png)
 
@@ -38,17 +40,18 @@ tags:
 
 1. 在 **此电脑** 上右键选择 **属性**
 
-  ![此电脑右键属性](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142509.png)
+![此电脑右键属性](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142509.png)
 
 2. 在 **控制面板\系统和安全\系统** 选择 **高级系统设置**
 
-  ![高级系统设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142726.png)
+![高级系统设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142726.png)
 
 3. 在 **系统属性 > 高级** 选项卡选择 **环境变量**
 
-  ![环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142652.png)
-  
+![环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142652.png)
+
 JDK：需要设置 3 个环境变量（如果找不到就添加）
+
 > 附：这里一般设置到 **系统变量** 里面
 
 ![环境变量设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143203.png)
@@ -56,16 +59,18 @@ JDK：需要设置 3 个环境变量（如果找不到就添加）
 - JAVA_HOME：浏览文件夹选择 JDK 安装路径就行了
 
   ![JAVA_HOME 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143629.png)
+
 - CLASSPATH：`.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;`
 
   ![CLASSPATH 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017144048.png)
+
 - Path：添加 `%JAVA_HOME%\bin` 和 `%JAVA_HOME%\jre\bin`
 
   ![Path 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143940.png)
 
 设置完环境变量之后一定要按确定依次关闭 **环境变量**，**系统属性** 窗口
 
-JDK 安装完成了，现在测试一下能否正常使用，使用 `Win + R` 输入 `cmd` 打开 CMD 命令行窗口，或者在菜单中找到 *Windows系统 > 命令提示符* 点击也同样能打开 CMD。
+JDK 安装完成了，现在测试一下能否正常使用，使用 `Win + R` 输入 `cmd` 打开 CMD 命令行窗口，或者在菜单中找到 _Windows 系统 > 命令提示符_ 点击也同样能打开 CMD。
 
 ## 测试 JDK 是否安装成功
 

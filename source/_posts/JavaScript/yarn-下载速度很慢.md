@@ -6,6 +6,7 @@ tags:
   - yarn
 abbrlink: 68eef0ee
 date: 2019-04-06 22:55:36
+updated: 2019-04-06 22:55:36
 ---
 
 # yarn 下载速度很慢
