@@ -4,16 +4,16 @@ tags:
   - Windows
 abbrlink: c453742
 date: 2018-08-21 00:00:00
-updated: 2019-03-13
+updated: 2019-04-18
 ---
 
 # Windows 上的工具清单
 
 - [Windows 上的工具清单](#windows-上的工具清单)
   - [开发](#开发)
-    - [IDEA：最好的 Java IDE](#idea最好的-java-ide)
+    - [MS VSCode：前端标准 IDE](#ms-vscode前端标准-ide)
     - [Google Chrome：最好的浏览器](#google-chrome最好的浏览器)
-    - [MS VSCode：文本编辑器，类 IDE](#ms-vscode文本编辑器类-ide)
+    - [IDEA：最好的 Java IDE](#idea最好的-java-ide)
     - [Cmder：Windows 上模拟 Linux 终端](#cmderwindows-上模拟-linux-终端)
     - [Git：Git 版本控制系统](#gitgit-版本控制系统)
     - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
@@ -58,6 +58,7 @@ updated: 2019-03-13
     - [Affinity Photo: 图片编辑](#affinity-photo-图片编辑)
     - [Bandicam：视频录制](#bandicam视频录制)
     - [LockHunter：解除文件占用](#lockhunter解除文件占用)
+    - [rufus：USB 启动盘制作工具](#rufususb-启动盘制作工具)
   - [国内流氓](#国内流氓)
     - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
     - [BaiduNetdisk：国内一家独大的网盘客户端](#baidunetdisk国内一家独大的网盘客户端)
@@ -70,6 +71,96 @@ updated: 2019-03-13
     - [免费](#免费)
 
 ## 开发
+
+### MS VSCode：前端标准 IDE
+
+[便携版], [开源], [跨平台], [免费]
+
+> 具体可以参考：[官网](https://code.visualstudio.com/), [GitHub](https://github.com/Microsoft/vscode), [GitBook 中文介绍](https://jeasonstudio.gitbooks.io/vscode-cn-doc/content/)
+
+MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源文本编辑器。目前已经使用了半年多了，对其的了解也更加深入。就目前看来，VSCode 应该是前端生态最好的 IDE 了。即便是 Webstorm，也没有 VSCode 的插件多，而且由于 VSCode 的插件可以用 js/ts 编写，而 Webstorm 的插件则必须使用 Java，这确实是一个很大的代沟 -- 编写插件的人和使用插件的人不是同一类。
+
+主要优点：
+
+- 开箱即用：基本上下载完就能开始使用了，不需要太多自定义的配置
+- 多语言支持：这是很多文本编辑器/IDE 都没有做到的，例如上面吾辈最喜欢的 IDEA 到目前为止仍然只支持英文，但吾辈仍然觉得本土化之后才能对萌新更加友好（门槛低，学习曲线平缓）
+- 插件丰富：目前吾辈使用 VSCode 主要用于前端，编辑 Markdown 文章，一些系统/程序的配置文件等，安装了插件之后使用对各种功能的支持还算不错。
+
+缺点：
+
+很明显，MS 的东西最后会不会变成全家桶/流氓谁也不清楚，虽然去年貌似 MS 在 GitHub 上的贡献量超过了 Google，但想想 MS 的开源黑历史。。。
+
+常用的 Plugin
+
+- [auto-rename-tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag): 自动重命名对应标签
+- [code-settings-sync](https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync): VSCode 设置同步
+- [dotenv](https://marketplace.visualstudio.com/items?itemName=mikestead.dotenv): `env` 语法支持
+- [es7-react-js-snippets](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets): react es7 的代码片段
+- [gitlens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): Git 增强插件
+- [inline-html](https://marketplace.visualstudio.com/items?itemName=pushqrdx.inline-html): js 模板字符串中的 `HTML` 代码提示
+- [intellij-idea-keybindings](https://marketplace.visualstudio.com/items?itemName=k--kato.intellij-idea-keybindings): IDEA 快捷键映射
+- [language-stylus](https://marketplace.visualstudio.com/items?itemName=sysoev.language-stylus): `stylus` 语言支持
+- [markdown-all-in-one](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): Markdown 编辑主要插件
+- [markdown-pdf](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf): 将 Markdown 导出 PDF 文档
+- [material-icon-theme](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme): material 风格的图标
+- [path-intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense): 路径提示
+- [prettier-vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): 配合 ESLint 做代码格式自动修复
+- [quokka-vscode](https://marketplace.visualstudio.com/items?itemName=WallabyJs.quokka-vscode): 持续监听/运行 js 文件
+- [stylus-supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy): `stylus` 格式化
+- [vsc-material-theme](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme): Material 风格的 VSCode
+- [vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): JavaScript 代码规范检查
+- [vscode-extension-auto-import](https://marketplace.visualstudio.com/items?itemName=NuclleaR.vscode-extension-auto-import): 自动 import 函数
+- [vscode-jest-runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner): 快速运行/调试 jest 测试
+- [vscode-markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint): Markdown 语法检查
+- [vscode-postfix-ts](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts): Markdown 语法检查
+- [vscode-todo-highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight): `TODO` 注释高亮
+- [vscode-wakatime](https://marketplace.visualstudio.com/items?itemName=WakaTime.vscode-wakatime): 记录与统计代码的时间
+
+> [VSCode Settings](https://gist.github.com/rxliuli/9069f63e5bc0fc0f5cbbfc44a8b0da44)
+
+### Google Chrome：最好的浏览器
+
+[部分开源], [跨平台], [免费]
+
+> [官网](https://www.google.com/chrome/), [Google Chromium 各版本下载](https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html)
+
+非常有名的浏览器，来源于 Google，在 PC 上不管是用于开发还是日常使用都能够满足需求。相比于国内的流氓而言非常干净简洁（至少，看起来而言），相比于 FireFox 来说更快，插件体系也已经足够庞大完整，基本上想要的都有了。
+
+常用的 Plugin：
+
+- [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp)：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
+- [Checker Plus for Gmail™](https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj)：对于日常使用 Gmail 的吾辈而言非常有用
+- [crxMouse Chrome™ 手势](https://chrome.google.com/webstore/detail/crxmouse-chrome-gestures/jlgkpaicikihijadgifklkbpdajbkhjo)：鼠标手势插件，可以使用手势更简单地完成一些事情
+- [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)：为所有网站加上黑色主题，大部分情况下都还不错
+- [Enhanced Github](https://chrome.google.com/webstore/detail/anlikcnbgdeidpacdbdljnabclhahhmd)：显示 GitHub Repository 大小，允许单独下载每一个文件
+- [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
+- [Fatkun 图片批量下载](https://chrome.google.com/webstore/detail/fatkun-batch-download-ima/nnjjahlikiabnchcpehcpkdeckfgnohf)：批量下载网页上的图片，偶尔用一下吧
+- [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp)：FDM Chrome 集成插件，将 Chrome 下载链接使用 FDM 多线程下载
+- [GitHub Hovercard](https://chrome.google.com/webstore/detail/github-hovercard/mmoahbbnojgkclgceahhakhnccimnplk)：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
+- [Image Search Options](https://chrome.google.com/webstore/detail/image-search-options/kljmejbpilkadikecejccebmccagifhl)：使用右键以图搜图
+- [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien)：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
+- [JetBrains IDE Support](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji)：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与 IDEA 的插件配合使用
+- [LastPass: Free Password Manager](https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd)：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
+- [Mailto: for Gmail™](https://chrome.google.com/webstore/detail/mailto-for-gmail/dgkkmcknielgdhebimdnfahpipajcpjn)：对于 mailto 协议的链接以 Gmail 网页版打开
+- [Markdown Here](https://chrome.google.com/webstore/detail/markdown-here/elifhakcjgalahccnjkneoccemfahfoa)：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
+- [Neat URL](https://chrome.google.com/webstore/detail/neat-url/jchobbjgibcahbheicfocecmhocglkco)：移除网址中的无用段，例如返利链接后面的参数
+- [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)：GitHub 代码树状图插件，方便查看项目文件
+- [OwO](https://chrome.google.com/webstore/detail/owo/ckfodameiahfhlainaclajkgfagkpodb)：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
+- [Proxy SwitchyOmega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)：科学上网必需
+- [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne)：使用自定义网站样式的插件，比 Stylish 的名声好一些
+- [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp)：新标签页插件
+- [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
+- [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg)：自动休眠标签页，避免 Chrome 使用的内存太过庞大
+- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
+- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 Vuejs 选项卡，便于对 Vuejs 进行调试
+- [WebRTC Network Limiter](https://chrome.google.com/webstore/detail/webrtc-network-limiter/npeicpdbkakmehahjeeohfdhnlpdklia)：阻止浏览器通过 WebRTC 泄露 IP 地址
+- [WEB 前端助手(FeHelper)](https://chrome.google.com/webstore/detail/web%E5%89%8D%E7%AB%AF%E5%8A%A9%E6%89%8Bfehelper/pkgccpejnmalmdinmhkkfafefagiiiad)：貌似是百度的前端插件，但目前还没有什么流氓行为
+- [快翻译](https://chrome.google.com/webstore/detail/%E5%BF%AB%E7%BF%BB%E8%AF%91/chpeaiibggkmaongjphijmielpkokcdg)：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
+- [扩展管理器（Extension Manager）](https://chrome.google.com/webstore/detail/extension-manager/gjldcdngmdknpinoemndlidpcabkggco)：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
+
+Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开始变得越来越封闭了。首先是 Chrome 应用被删除，现在又禁止安装非官方商店中的第三方插件（目前仍可以通过开发者模式安装），真心越来越麻烦了。
+
+> 附：这里提供一个快捷安装第三方插件的工具 [Chrome 插件伴侣](http://www.webappbus.com/)，方便解决 Chrome67 之后安装非商店插件的麻烦
 
 ### IDEA：最好的 Java IDE
 
@@ -127,94 +218,6 @@ updated: 2019-03-13
 - WakaTime：统计使用的编程语言，不同 IDE 的记录。[官网](https://wakatime.com)
 
 > 入门推荐教程（简体中文）：<https://github.com/judasn/IntelliJ-IDEA-Tutorial>
-
-### Google Chrome：最好的浏览器
-
-[部分开源], [跨平台], [免费]
-
-> [官网](https://www.google.com/chrome/), [Google Chromium 各版本下载](https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html)
-
-非常有名的浏览器，来源于 Google，在 PC 上不管是用于开发还是日常使用都能够满足需求。相比于国内的流氓而言非常干净简洁（至少，看起来而言），相比于 FireFox 来说更快，插件体系也已经足够庞大完整，基本上想要的都有了。
-
-常用的 Plugin：
-
-- [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp)：自动翻页插件，浏览很多网站时不需要手动点击下一页了，可以自动加载出来下一页的结果。
-- [Checker Plus for Gmail™](https://chrome.google.com/webstore/detail/checker-plus-for-gmail/oeopbcgkkoapgobdbedcemjljbihmemj)：对于日常使用 Gmail 的吾辈而言非常有用
-- [crxMouse Chrome™ 手势](https://chrome.google.com/webstore/detail/crxmouse-chrome-gestures/jlgkpaicikihijadgifklkbpdajbkhjo)：鼠标手势插件，可以使用手势更简单地完成一些事情
-- [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)：为所有网站加上黑色主题，大部分情况下都还不错
-- [Enhanced Github](https://chrome.google.com/webstore/detail/anlikcnbgdeidpacdbdljnabclhahhmd)：显示 GitHub Repository 大小，允许单独下载每一个文件
-- [Enhancer for YouTube™](https://chrome.google.com/webstore/detail/enhancer-for-youtube/ponfpcnoihfmfllpaingbgckeeldkhle)：怎么说呢，Youtube 已经很好了，但吾辈还是觉得需要这个插件来优化播放体验
-- [Fatkun 图片批量下载](https://chrome.google.com/webstore/detail/fatkun-batch-download-ima/nnjjahlikiabnchcpehcpkdeckfgnohf)：批量下载网页上的图片，偶尔用一下吧
-- [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp)：FDM Chrome 集成插件，将 Chrome 下载链接使用 FDM 多线程下载
-- [GitHub Hovercard](https://chrome.google.com/webstore/detail/github-hovercard/mmoahbbnojgkclgceahhakhnccimnplk)：GitHub 增强插件，鼠标悬浮在仓库链接上面就可以预览
-- [Image Search Options](https://chrome.google.com/webstore/detail/image-search-options/kljmejbpilkadikecejccebmccagifhl)：使用右键以图搜图
-- [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien)：GitHub 美化插件，将 GitHub 贡献以 3D 的效果显示出来
-- [JetBrains IDE Support](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji)：使用 Chrome 实时显示 IDEA 的 HTML/CSS/JavaScript 文件，与 IDEA 的插件配合使用
-- [LastPass: Free Password Manager](https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd)：跨平台的免费密码管理器，有了这个之后再也不用所有网站都使用同一个密码了
-- [Mailto: for Gmail™](https://chrome.google.com/webstore/detail/mailto-for-gmail/dgkkmcknielgdhebimdnfahpipajcpjn)：对于 mailto 协议的链接以 Gmail 网页版打开
-- [Markdown Here](https://chrome.google.com/webstore/detail/markdown-here/elifhakcjgalahccnjkneoccemfahfoa)：在线将 Markdown 转换为有格式的文档，例如在一个普通的富文本编辑器（不支持 Markdown）中，可以先用 Markdown 语法写内容，然后转换一下就得到了有样式的内容了。
-- [Neat URL](https://chrome.google.com/webstore/detail/neat-url/jchobbjgibcahbheicfocecmhocglkco)：移除网址中的无用段，例如返利链接后面的参数
-- [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)：GitHub 代码树状图插件，方便查看项目文件
-- [OwO](https://chrome.google.com/webstore/detail/owo/ckfodameiahfhlainaclajkgfagkpodb)：颜文字插件，多亏了这个让吾辈能够愉快的刷推了
-- [Proxy SwitchyOmega](https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif)：科学上网必需
-- [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne)：使用自定义网站样式的插件，比 Stylish 的名声好一些
-- [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp)：新标签页插件
-- [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
-- [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg)：自动休眠标签页，避免 Chrome 使用的内存太过庞大
-- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
-- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 Vuejs 选项卡，便于对 Vuejs 进行调试
-- [WebRTC Network Limiter](https://chrome.google.com/webstore/detail/webrtc-network-limiter/npeicpdbkakmehahjeeohfdhnlpdklia)：阻止浏览器通过 WebRTC 泄露 IP 地址
-- [WEB 前端助手(FeHelper)](https://chrome.google.com/webstore/detail/web%E5%89%8D%E7%AB%AF%E5%8A%A9%E6%89%8Bfehelper/pkgccpejnmalmdinmhkkfafefagiiiad)：貌似是百度的前端插件，但目前还没有什么流氓行为
-- [快翻译](https://chrome.google.com/webstore/detail/%E5%BF%AB%E7%BF%BB%E8%AF%91/chpeaiibggkmaongjphijmielpkokcdg)：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
-- [扩展管理器（Extension Manager）](https://chrome.google.com/webstore/detail/extension-manager/gjldcdngmdknpinoemndlidpcabkggco)：插件很少的时候还好，一多起来还是需要一个插件进行管理，快速启用和禁用一些插件，根据场景切换启用插件列表
-
-Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开始变得越来越封闭了。首先是 Chrome 应用被删除，现在又禁止安装非官方商店中的第三方插件（目前仍可以通过开发者模式安装），真心越来越麻烦了。
-
-> 附：这里提供一个快捷安装第三方插件的工具 [Chrome 插件伴侣](http://www.webappbus.com/)，方便解决 Chrome67 之后安装非商店插件的麻烦
-
-### MS VSCode：文本编辑器，类 IDE
-
-[便携版], [开源], [跨平台], [免费]
-
-> 具体可以参考：[官网](https://code.visualstudio.com/), [GitHub](https://github.com/Microsoft/vscode), [GitBook 中文介绍](https://jeasonstudio.gitbooks.io/vscode-cn-doc/content/)
-
-MS VSCode 是微软出品的一个跨平台，基于 Web 的，免费的开源文本编辑器。虽然吾辈刚接触了不到一个月，但已然觉得离不开它了。
-
-主要优点：
-
-- 开箱即用：基本上下载完就能开始使用了，不需要太多自定义的配置
-- 多语言支持：这是很多文本编辑器/IDE 都没有做到的，例如上面吾辈最喜欢的 IDEA 到目前为止仍然只支持英文（虽然现在来说也没什么影响了），但吾辈仍然觉得本土化之后才能对萌新更加友好（门槛低，学习曲线平缓）
-- 插件丰富：目前吾辈使用 VSCode 主要用于编辑 Markdown 文章，一些系统/程序的配置文件等，安装了插件之后使用对 Markdown 的功能支持还算不错。
-
-缺点：
-
-很明显，MS 的东西最后会不会变成全家桶/流氓谁也不清楚，虽然去年貌似 MS 在 GitHub 上的贡献量超过了 Google，但想想 MS 的开源黑历史。。。
-
-常用的 Plugin
-
-- [auto-rename-tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag): 自动重命名对应标签
-- [code-settings-sync](https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync): VSCode 设置同步
-- [codeacejumper](https://marketplace.visualstudio.com/items?itemName=lucax88x.codeacejumper): 屏幕内代码跳转
-- [dotenv](https://marketplace.visualstudio.com/items?itemName=mikestead.dotenv): `env` 语法支持
-- [gitlens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): Git 增强插件
-- [intellij-idea-keybindings](https://marketplace.visualstudio.com/items?itemName=k--kato.intellij-idea-keybindings): IDEA 快捷键映射
-- [markdown-all-in-one](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): Markdown 编辑主要插件
-- [markdown-pdf](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf): 将 Markdown 导出 PDF 文档
-- [path-intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense): 路径提示
-- [prettier-vscode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): 其实是配合 ESLint 做代码格式自动修复的
-- [quokka-vscode](https://marketplace.visualstudio.com/items?itemName=WallabyJs.quokka-vscode): 持续监听/运行 js 文件
-- [stylus-supremacy](https://marketplace.visualstudio.com/items?itemName=thisismanta.stylus-supremacy): `stylus` 格式化
-- [vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur): `vuejs` 框架支持
-- [vsc-material-theme](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme): Material 风格的 VSCode
-- [vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): JavaScript 代码规范检查
-- [vscode-markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint): Markdown 语法检查
-- [vscode-mocha-sidebar](https://marketplace.visualstudio.com/items?itemName=maty.vscode-mocha-sidebar): Mocha 测试框架支持
-- [vscode-todo-highlight](https://marketplace.visualstudio.com/items?itemName=wayou.vscode-todo-highlight): `TODO` 注释高亮
-- [vscode-wakatime](https://marketplace.visualstudio.com/items?itemName=WakaTime.vscode-wakatime): 记录与统计代码的时间
-- [vue-snippets](https://marketplace.visualstudio.com/items?itemName=hollowtree.vue-snippets): 添加了 VueJS2 的一些代码片段
-- [vuetify-vscode](https://marketplace.visualstudio.com/items?itemName=vuetifyjs.vuetify-vscode): 前端 `Vuetify` CSS 框架的 VSCode 代码提示
-
-> [VSCode Settings](https://gist.github.com/rxliuli/529c425712b4b6fba23bd774a70e42b9)
 
 ### Cmder：Windows 上模拟 Linux 终端
 
@@ -614,6 +617,14 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 > [官网](https://lockhunter.com/)
 
 在删除文件/目录时，偶尔会遇到文件占用的问题，这个小工具直接集成到 MS Explorer 右键菜单中，可以方便查看占用程序，并关闭它。
+
+### rufus：USB 启动盘制作工具
+
+[便携版], [免费], [开源]
+
+> [官网](https://rufus.ie/), [GitHub](https://github.com/pbatard/rufus)
+
+小巧方便的 USB 启动盘制作工具，完全的一键操作，**下载 => 解压 => 运行** 三连之后就是父母辈的人都能看懂的界面了！
 
 ## 国内流氓
 
