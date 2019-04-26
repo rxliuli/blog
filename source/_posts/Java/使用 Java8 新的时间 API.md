@@ -4,7 +4,7 @@ tags:
   - Java
 abbrlink: 7ef9e3d
 date: 2018-09-04 00:00:00
-updated: 2018-09-04 00:00:00
+updated: 2019-04-26
 ---
 
 # 使用 Java8 新的时间 API
@@ -13,27 +13,27 @@ updated: 2018-09-04 00:00:00
 
 Java8 面世以来已经 6 年了，许多人也开始使用起了 `lambda`,`Stream<T>`,`Optional<T>` 之类的新的语言特性，然而对于 Java8 提供的新的时间 `API` 虽然据说比旧版本的 `Date` 好很多，但并没有得到完全的使用。一方面是为了兼容旧的系统，另一方面 Java8 的时间 API 似乎太过于强大了，让人有些不知所措，不知道应该从何下手。再加上因为对 `Date`,`Calendar` 的熟悉，此消彼长之下自然是懒得去修改了。
 
-其实对于新的时间 API，大致的基本需求是一样的
+其实对于时间 API，大致的需求是一样的
 
 - 创建/修改/比较/转换简单
 - 对遗留系统的时间可以集成/转换
 - 主流框架对其要有支持
-- 线程安全/不可变
 
 ## API
 
 ### 常用的类
 
-- [LocalDate](#LocalDate)：日期的不可变类
-- [LocalTime](#LocalTime)：时间的不可变类
-- [LocalDateTime](#LocalDateTime)：日期时间的不可变类
-- [OffsetDateTime](#OffsetDateTime)：偏移标准 UTC 时间的日期时间不可变类
-- [Period](#Period)：计算日期差值
-- [Duration](#Duration)：计算时间时间差值
-- [TemporalField/ChronoField](#TemporalField/ChronoField)：时间的单位
-- [TemporalUnit/ChronoUnit](#TemporalUnit/ChronoUnit)：根据指定的单位计算时间
-- [DateTimeFormatter](#DateTimeFormatter)：时间格式化
-- [兼容 Date](#兼容-Date)：兼容旧的 Date 类
+- [LocalDate](#LocalDate): 日期的不可变类
+- [LocalTime](#LocalTime): 时间的不可变类
+- [LocalDateTime](#LocalDateTime): 日期时间的不可变类
+- [OffsetDateTime](#OffsetDateTime): 偏移标准 UTC 时间的日期时间不可变类
+- [Temporal/TemporalAccessor](#Temporal/TemporalAccessor): 上面几个时间类的基类
+- [Period](#Period): 计算日期差值
+- [Duration](#Duration): 计算日期时间差值
+- [ChronoField/TemporalField](#TemporalField/ChronoField): 时间的单位
+- [ChronoUnit/TemporalUnit](#TemporalUnit/ChronoUnit): 根据指定的单位计算时间
+- [DateTimeFormatter](#DateTimeFormatter): 时间格式化
+- [兼容 Date](#兼容-Date): 兼容旧的 Date 类
 
 ### LocalDate
 
@@ -133,6 +133,11 @@ System.out.println("当前时间的小时数（通过 get() 获取）：" + hour
 //比较两个日期的差值
 final long between = ChronoUnit.HOURS.between(now, localTimePlusHourOne);
 System.out.println(between);
+//获取一天的开始和结束
+final LocalDateTime start = LocalDateTime.of(yesterday, LocalTime.MIN);
+final LocalDateTime end = LocalDateTime.of(yesterday, LocalTime.MAX);
+System.out.println(start);
+System.out.println(end);
 ```
 
 可以看到，和上面的 [LocalTime](#LocalTime) 除了类型不同外，代码是完全相同的，因为 [LocalDateTime](#LocalDateTime) 是包含 [LocalDate](#LocalDate) 与 [LocalTime](#LocalTime) 的。在源码中也可以看到其包含了两个属性。
@@ -163,6 +168,34 @@ System.out.println(zone);
 ZonedDateTime zonedDateTime = now.atZoneSameInstant(ZoneId.of("+00:00"));
 System.out.println(zonedDateTime);
 //其他基本操作和上面的差不多，就不啰嗦啦
+```
+
+### Temporal/TemporalAccessor
+
+上面的 [LocalDate](#LocalDate), [LocalTime](#LocalTime), [LocalDateTime](#LocalDateTime), [OffsetDateTime](#OffsetDateTime) 的基类，并定义了一系列非常通用的方法
+
+- minus: 减少时间
+- plus: 增加时间
+- with: 获取时间指定单位的值
+
+```java
+final LocalDateTime now = LocalDateTime.now();
+//获取上个星期
+final LocalDateTime lastWeek = now.minus(1, ChronoUnit.WEEKS);
+//获取下个月
+final LocalDateTime nextMonth = now.plus(1, ChronoUnit.MONTHS);
+//获取当前是今年的第几个星期
+final int weekValue = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+//获取这周星期一的时间
+final LocalDateTime nowOfMonday = now.with(DayOfWeek.MONDAY);
+final LocalDateTime nowOfMonday2 = now.with(ChronoField.DAY_OF_WEEK, 1);
+System.out.println(
+    "lastWeek: " + lastWeek
+        + "\nnextMonth: " + nextMonth
+        + "\nweekValue: " + weekValue
+        + "\nnowOfMonday: " + nowOfMonday
+        + "\nnowOfMonday2: " + nowOfMonday2
+);
 ```
 
 ### Period
