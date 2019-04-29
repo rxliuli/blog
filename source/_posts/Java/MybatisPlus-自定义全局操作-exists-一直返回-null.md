@@ -10,6 +10,8 @@ date: 2018-12-11 19:26:18
 updated: 2018-12-12 00:00:00
 ---
 
+> 该仓库为博客记录示例，如果需要可以前往博客查看内容 [MybatisPlus 自定义全局操作 exists 一直返回 null](https://blog.rxliuli.com/p/5bd9a558/)
+
 # MybatisPlus 自定义全局操作 exists 一直返回 null
 
 ## 场景
@@ -184,6 +186,6 @@ public class CustomSqlInjector extends AutoSqlInjector {
 }
 ```
 
-> 代码已经上传到 [mybatis-plus-sql-injector](https://github.com/rxliuli/mybatis-plus-sql-injector)
+> 代码已经上传到 [GitHub](https://github.com/rxliuli/mybatis-plus-sql-injector-example)
 
 虽然只是个不起眼的小错误，不过这里还是记录一下吧，毕竟坑只要踩过一次就够了 ┐(￣ヮ￣)┌

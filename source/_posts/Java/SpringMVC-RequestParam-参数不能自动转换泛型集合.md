@@ -11,6 +11,8 @@ updated: 2019-01-17 17:48:57
 
 # SpringMVC @RequestParam 参数不能自动转换泛型集合
 
+> [GitHub example](https://github.com/rxliuli/springmvc-not-generic-param-example)
+
 ## 场景
 
 在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 `Map<Integer, Integer>l`。然而浏览器传递过来的是 `Map<String, String>`。然而，此时 SpringMVC 并没有直接说参数类型错误。

@@ -21,7 +21,7 @@ tags:
 - [x] MongoDB
 - [x] SpringBoot 集成 MongoDB
 
-> 注：本文不谈 SpringBoot 如何整合 MongoDB，如果需要可以去吾辈的另一篇记录 [SpringBoot 整合 Mybatis Plus/MongoDB](https://blog.rxliuli.com/p/872037f5/) 查看，并且本文以项目 [spring-boot-mybatis-plus-mongo](https://github.com/rxliuli/spring-boot-mybatis-plus-mongo) 为基础作为说明。
+> 注：本文不谈 SpringBoot 如何整合 MongoDB，如果需要可以去吾辈的另一篇记录 [SpringBoot 整合 Mybatis Plus/MongoDB](https://blog.rxliuli.com/p/872037f5/) 查看，并且本文以项目 [spring-boot-mybatis-plus-mongo-example](https://github.com/rxliuli/spring-boot-mybatis-plus-mongo-example) 为基础作为说明。
 
 ## 使用
 

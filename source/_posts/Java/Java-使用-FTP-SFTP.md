@@ -69,7 +69,7 @@ updated: 2019-03-10
 
 ## 实现
 
-具体的代码吾辈就不贴到这里了，全部的代码已经放到 [GitHub 的公共仓库](https://github.com/rxliuli/ftp-demo) 上了。
+具体的代码吾辈就不贴到这里了，全部的代码已经放到 [GitHub 的公共仓库](https://github.com/rxliuli/java-ftp-example) 上了。
 
 ## FTP 使用
 
