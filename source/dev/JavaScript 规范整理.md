@@ -262,26 +262,41 @@ function hello({ name, age, sex }) {
 }
 ```
 
-### 如果变量有所关联则使用对象而非单独的变量
+### 不要写多余的 await
 
-### 不要使用多余的变量
+如果 `await` 是不必要的（在返回语句时，那么就不要用 `async` 标识函数），这是没有必要的 -- 除非，你需要在这个函数内异步请求完成后有其他操作。
 
 错误示例
 
 ```js
-// 模拟登录异步请求
-const login = async ({ username, password }) => {
-  const res = username === 'rx' && password === 'rx'
-  return res
+const login = async searchText => {
+  if (!useranme) {
+    console.log('用户名不能为空')
+    return
+  }
+  if (!password) {
+    console.log('密码不能为空')
+    return
+  }
+  // 真正发起登录请求
+  return await userApi.login(user)
 }
 ```
 
 正确示例
 
 ```js
-// 模拟登录异步请求
-const login = async ({ username, password }) => {
-  return username === 'rx' && password === 'rx'
+const login = searchText => {
+  if (!useranme) {
+    console.log('用户名不能为空')
+    return
+  }
+  if (!password) {
+    console.log('密码不能为空')
+    return
+  }
+  // 真正发起登录请求
+  return userApi.login(user)
 }
 ```
 
@@ -311,6 +326,27 @@ const login = async ({ username, password }) => {
 // 模拟登录异步请求
 const login = async ({ username, password }) =>
   username === 'rx' && password === 'rx'
+```
+
+### 不要使用多余的变量
+
+错误示例
+
+```js
+// 模拟登录异步请求
+const login = async ({ username, password }) => {
+  const res = username === 'rx' && password === 'rx'
+  return res
+}
+```
+
+正确示例
+
+```js
+// 模拟登录异步请求
+const login = async ({ username, password }) => {
+  return username === 'rx' && password === 'rx'
+}
 ```
 
 ### 不要使用嵌套 if
@@ -462,3 +498,13 @@ function formatUser({ username = 'noname', password = 'blank' } = {}) {
   return `username: ${username}, password: ${password}`
 }
 ```
+
+### 如果变量有所关联则使用对象而非多个单独的变量
+
+### 应该尽量解决编辑器警告
+
+如果编辑器对我们的代码发出警告，那么一般都是我们代码出现了问题（一般开发人员的能力并不足以比肩编辑器 #MS 那些 dalao 的能力）。所以，如果出现了警告，应该先去解决它 -- 如果你确认发生了错误，则通过注释/配置禁用它！
+
+### 使用类型定义参数对象
+
+如果一个函数需要一个对象参数，最好专门定义一个类型，并在注释上说明，便于在使用时 IDE 进行提示，而不需要去查找文档手册。
