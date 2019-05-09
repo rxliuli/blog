@@ -300,6 +300,57 @@ const login = searchText => {
 }
 ```
 
+### 不要使用 == 进行比较
+
+在 js 中使用 `==` 比较相当危险，你永远不知道 js 到底是按照什么类型比较的，因为 js 会做各种隐式转换。而如果使用 `===` 比较，则会同时比较 **值** 和 **类型** 是否都相同，避免了各种不确定的问题。
+
+错误示例
+
+```js
+console.log(1 == true) // true
+console.log(1 == '1') // true
+console.log('1' == true) // true
+console.log('0' == true) // false
+console.log([] == []) // false
+```
+
+扪心自问，你真的知道上面为什么会出现这种结果么？即便知道，对于其他人而言仍然是难以预测的，所以抛弃掉 `==` 吧，学会使用更好的 `===` 最好
+
+```js
+console.log(1 == true) // false
+console.log(1 == '1') // false
+console.log('1' == true) // false
+console.log('0' == true) // false
+console.log([] == []) // false
+```
+
+### 使用计算属性名替代使用方括号表示法赋值
+
+目前而言已经有了 [计算属性名](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Object_initializer#%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7%E5%90%8D) 用以在初始化时计算属性名，所以不需要再先声明对象再使用 [方括号表示法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Property_Accessors#%E6%96%B9%E6%8B%AC%E5%8F%B7%E8%A1%A8%E7%A4%BA%E6%B3%95) 进行赋值了。
+
+ES5 写法
+
+```js
+const state = {
+  'user.username': function() {},
+}
+
+state[Date.now()] = new Date()
+
+console.log(state)
+```
+
+ES6 写法
+
+```js
+const state = {
+  'user.username'() {},
+  [Date.now()]: new Date(),
+}
+
+console.log(state)
+```
+
 ## 逻辑代码
 
 ### 不要判断一个 Boolean 值并以此返回 Boolean 值
@@ -508,3 +559,43 @@ function formatUser({ username = 'noname', password = 'blank' } = {}) {
 ### 使用类型定义参数对象
 
 如果一个函数需要一个对象参数，最好专门定义一个类型，并在注释上说明，便于在使用时 IDE 进行提示，而不需要去查找文档手册。
+
+错误示例
+
+```js
+/**
+ * 格式化用户
+ * @param {Object} user 格式化的用户对象
+ */
+function formatUser(user) {
+  const { username, password } = user || {}
+  return `user, username: ${username}, password: ${password}`
+}
+
+// 此处别人并不知道 User 里面到底有什么属性，只能去查看文档
+const str = formatUser({ username: 'rx', password: '123456' })
+console.log(str)
+```
+
+正确示例
+
+```js
+class User {
+  constructor(username, password) {
+    this.username = username
+    this.password = password
+  }
+}
+
+/**
+ * 格式化用户
+ * @param {User} user 格式化的用户对象
+ */
+function formatUser(user) {
+  const { username, password } = user || {}
+  return `user, username: ${username}, password: ${password}`
+}
+
+const str = formatUser(new User('rx', '123456'))
+console.log(str)
+```
