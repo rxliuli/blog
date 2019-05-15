@@ -6,6 +6,7 @@ tags:
   - 教程
 abbrlink: 1a8df23d
 date: 2019-05-09 11:29:51
+updated: 2019-05-15
 ---
 
 # JavaScript 防抖和节流
@@ -282,7 +283,7 @@ function debounce(delay, action, init = undefined) {
 })()
 ```
 
-第一种思路实现
+第二种思路实现
 
 ```js
 const debounce = (delay, action, init = undefined) => {
