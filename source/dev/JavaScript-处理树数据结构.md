@@ -63,3 +63,8 @@ class SysPermission {
   }
 }
 ```
+
+下面让我们使用 `Proxy` 来抹平访问它们之间的差异
+
+```js
+```
