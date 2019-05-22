@@ -67,4 +67,130 @@ class SysPermission {
 下面让我们使用 `Proxy` 来抹平访问它们之间的差异
 
 ```js
+const sysMenuMap = new Map().set('parentId', 'parent')
+const sysMenu = new Proxy(new SysMenu(1, 'rx', 0), {
+  get(_, k) {
+    if (sysMenuMap.has(k)) {
+      return Reflect.get(_, sysMenuMap.get(k))
+    }
+    return Reflect.get(_, k)
+  },
+})
+console.log(sysMenu.id, sysMenu.name, sysMenu.parentId) // 1 'rx' 0
+
+const sysPermissionMap = new Map().set('id', 'uid').set('name', 'label')
+const sysPermission = new Proxy(new SysPermission(1, 'rx', 0), {
+  get(_, k) {
+    if (sysPermissionMap.has(k)) {
+      return Reflect.get(_, sysPermissionMap.get(k))
+    }
+    return Reflect.get(_, k)
+  },
+})
+console.log(sysPermission.id, sysPermission.name, sysPermission.parentId) // 1 'rx' 0
+```
+
+现在，差异确实抹平了，我们可以通过访问相同的属性来获取到不同结构对象的值！然而，每个对象都写一次代理终究有点麻烦，所以我们实现一个通用函数用以包装。
+
+```js
+/**
+ * 桥接对象不存在的字段
+ * @param {Object} map 代理的字段映射 Map
+ * @returns {Function} 转换一个对象为代理对象
+ */
+export function bridge(map) {
+  /**
+   * 为对象添加代理的函数
+   * @param {Object} obj 任何对象
+   * @returns {Proxy} 代理后的对象
+   */
+  return function(obj) {
+    return new Proxy(obj, {
+      get(target, k) {
+        console.log('s')
+        if (Reflect.has(map, k)) {
+          return Reflect.get(target, Reflect.get(map, k))
+        }
+        return Reflect.get(target, k)
+      },
+      set(target, k, v) {
+        if (Reflect.has(map, k)) {
+          Reflect.set(target, Reflect.get(map, k), v)
+          return true
+        }
+        Reflect.set(target, k, v)
+        return true
+      },
+    })
+  }
+}
+```
+
+现在，我们可以用更简单的方式来做代理了。
+
+```js
+const sysMenu = bridge({
+  parentId: 'parent',
+})(new SysMenu(1, 'rx', 0))
+console.log(sysMenu.id, sysMenu.name, sysMenu.parentId) // 1 'rx' 0
+
+const sysPermission = bridge({
+  id: 'uid',
+  name: 'label',
+})(new SysPermission(1, 'rx', 0))
+console.log(sysPermission.id, sysPermission.name, sysPermission.parentId) // 1 'rx' 0
+```
+
+## 实现列表转树
+
+列表转树，除了递归之外，也可以使用循环实现，这里便以循环为示例。
+
+思路
+
+1. 在外层遍历子节点
+2. 如果是根节点，就添加到根节点中并不在找其父节点。
+3. 否则在内层循环中找该节点的父节点，找到之后将子节点追加到父节点的子节点列表中，然后结束本次内层循环。
+
+```js
+/**
+ * 将列表转换为树节点
+ * 注：该函数默认树的根节点只有一个，如果有多个，则返回一个数组
+ * @param {Array.<Object>} list 树节点列表
+ * @param {Object} [options] 其他选项
+ * @param {Function} [options.isRoot] 判断节点是否为根节点。默认根节点的父节点为空
+ * @param {Function} [options.bridge=returnItself] 桥接函数，默认返回自身
+ * @returns {Object|Array.<String>} 树节点，或是树节点列表
+ */
+export function listToTree(
+  list,
+  { isRoot = node => !node.parentId, bridge = i => i } = {},
+) {
+  const res = list.reduce((root, _sub) => {
+    if (isRoot(sub)) {
+      root.push(sub)
+      return root
+    }
+    const sub = bridge(_sub)
+    for (let _parent of list) {
+      const parent = bridge(_parent)
+      if (sub.parentId === parent.id) {
+        parent.child = parent.child || []
+        parent.child.push(sub)
+        return root
+      }
+    }
+    return root
+  }, [])
+  // 根据顶级节点的数量决定如何返回
+  const len = res.length
+  if (len === 0) return {}
+  if (len === 1) return res[0]
+  return res
+}
+```
+
+## 实现树转列表
+
+```js
+
 ```
