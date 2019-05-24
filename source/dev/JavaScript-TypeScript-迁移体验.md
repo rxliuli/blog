@@ -157,4 +157,72 @@ export function timing(
 
 ### TypeScript 类型系统就是认为吾辈错了怎么办？
 
+有时候，明明自己知道是正确的，但 TypeScript 偏偏认为你写错了。思考以下功能如何实现？
+
+将 Array 转换为 Map，接受三个参数
+
+1. 需要转换的数组
+2. 将数组元素转换为 Map key 的函数
+3. 将数组元素转换为 Map value 的函数，可选，默认为数组元素
+
+```ts
+function returnItself<T = any>(obj: T): T {
+  return obj
+}
+
+export type ArrayCallback<T, R> = (item: T, index: number, arr: T[]) => R
+
+export function arrayToMap<T, K, V>(
+  arr: T[],
+  kFn: ArrayCallback<T, K>,
+  vFn: ArrayCallback<T, V> = returnItself,
+): Map<K, V> {
+  return arr.reduce(
+    (res, item, index, arr) =>
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map<K, V>(),
+  )
+}
+```
+
+可能有以上代码，然而实际上 `returnItself` 无法直接赋值给 `ArrayCallback<T, V>`。当然，我们知道，这一定是可以赋值的，但 TypeScript 却无法编译通过！
+
+```ts
+export function arrayToMap<T, K, V>(
+  arr: T[],
+  kFn: ArrayCallback<T, K>,
+  // 是的，这里添加 as any 就好了
+  vFn: ArrayCallback<T, V> = returnItself as any,
+): Map<K, V> {
+  return arr.reduce(
+    (res, item, index, arr) =>
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map<K, V>(),
+  )
+}
+```
+
+或者，如果 `returnItself` 用的比较多的话（例如吾辈），可以使用另一种方式
+
+```ts
+// 修改 returnItself 的返回值
+function returnItself<T, R = T>(obj: T): R {
+  return obj as any
+}
+
+export type ArrayCallback<T, R> = (item: T, index: number, arr: T[]) => R
+
+export function arrayToMap<T, K, V>(
+  arr: T[],
+  kFn: ArrayCallback<T, K>,
+  vFn: ArrayCallback<T, V> = returnItself,
+): Map<K, V> {
+  return arr.reduce(
+    (res, item, index, arr) =>
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map<K, V>(),
+  )
+}
+```
+
 ### 如何强制调用非空时对象上的函数？
