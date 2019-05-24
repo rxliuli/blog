@@ -25,7 +25,7 @@ date: 2019-05-23 20:22:36
 - 答: JavaScript 因为一些固有问题和工具缺少支持，导致代码写起来会感觉很不方便
 - 问: 具体谈谈
 - 答: 有很多令人不满意的地方，这里只谈几点:
-  - JavaScript 没有类型，所以写 JSDoc 感觉很麻烦，但不写又不太好。然而，写多了 JavaScript 之后太顺的话就不会想起来去加 JSDoc，然后之后就很难看懂。
+  - JavaScript 没有类型，所以写 JSDoc 感觉很麻烦，但不写又不太好。然而，JavaScript 代码写的太顺利的话就可能忘记加上 JSDoc，然后之后就很难维护。
   - VSCode 支持不好，这点或许才是最重要的: VSCode 使用 TypeScript 编写，并基于 TypeScript 实现的语法提示功能，虽然也支持根据 JSDoc 的注释进行提示，然而当你去做一个开源项目，并将之发布到 npm 之后，情况发生了变化。。。当一个用户使用 npm/yarn 安装了你的项目之后，发现并没有任何代码提示，如此你会怎么做？
   - 复杂的类型很难使用 JSDoc 表达出来并清晰地告诉调用者，例如高阶函数。
   - 等等。。。。
@@ -69,6 +69,91 @@ function returnItself<T = any>(obj: T): T {
 这里主要声明了参数和返回值是同一类型，默认为 any，但具体取决于参数的不同而使得返回值也不同，返回值不会丢失类型信息。
 
 ### 如何声明参数与返回值类型有关联？
+
+例如一个计算函数执行时间的函数 `timing`，接受一个函数参数，有可能是同步/异步的，所以要根据函数的返回值确定 `timing` 的返回值为 `number/Promise<number>`
+
+```ts
+export function timing(
+  fn: (...args: any[]) => any | Promise<any>,
+): number | Promise<number> {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() => performance.now() - begin)
+}
+```
+
+然而在使用时你会发现返回值类型不太对，因为 `timing` 的返回值是 `number | Promise<number>` 这种复合类型
+
+```ts
+// 这里会提示类型错误
+const res: number = timing(() => sleep(100))
+expect(res).toBeGreaterThan(99)
+```
+
+解决方案有二
+
+1. 使用函数声明重载
+2. 使用类型判断
+
+#### 使用函数声明重载
+
+```ts
+export function timing(fn: (...args: any[]) => Promise<any>): Promise<number>
+export function timing(fn: (...args: any[]) => any): number
+export function timing(
+  fn: (...args: any[]) => any | Promise<any>,
+): number | Promise<number> {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() => performance.now() - begin)
+}
+```
+
+感觉函数声明顺序有点奇怪是因为 `Promise<any>` 属于 `any` 的子类，而函数声明重载必须由具体到宽泛。当然，我们有方法可以在 `any` 中排除掉 `Promise<any>`，这样顺序就对了！
+
+```ts
+export function timing(
+  fn: (...args: any[]) => Exclude<any, Promise<any>>,
+): number
+export function timing(fn: (...args: any[]) => Promise<any>): Promise<number>
+export function timing(
+  fn: (...args: any[]) => any | Promise<any>,
+): number | Promise<number> {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() => performance.now() - begin)
+}
+```
+
+#### 使用类型判断
+
+```ts
+export function timing(
+  fn: (...args: any[]) => any | Promise<any>,
+  // 函数返回类型是 Promise 的话，则返回 Promise<number>，否则返回 number
+): R extends Promise<any> ? Promise<number> : number {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return (performance.now() - begin) as any
+  }
+  return result.then(() => performance.now() - begin) as any
+}
+```
+
+#### 总结
+
+可以看出来，第一种方式的优点在于可以很精细的控制每个不同参数对应的返回值，并且，可以处理特别复杂的情况，缺点则是如果写 doc 文档的话需要为每个声明都写上，即便，它们有大部分注释是相同的。
+而第二种方式，则在代码量上有所减少，而且不必使用函数声明重载。缺点则是无法应对特别复杂的情况，另外一点就是使用了 `any`，可能会造成**重构火葬场**。
 
 ### TypeScript 类型系统就是认为吾辈错了怎么办？
 
