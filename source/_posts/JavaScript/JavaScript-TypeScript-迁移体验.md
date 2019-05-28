@@ -6,6 +6,7 @@ tags:
   - 记录
 abbrlink: eeb7bc5
 date: 2019-05-23 20:22:36
+updated: 2019-05-28
 ---
 
 # JavaScript => TypeScript 迁移体验
@@ -22,10 +23,10 @@ date: 2019-05-23 20:22:36
 ## 原因
 
 - 问: 为什么吾辈用 JavaScript 用的好好的，偏偏自找麻烦去入坑了 TypeScript 了呢？
-- 答: JavaScript 因为一些固有问题和工具缺少支持，导致代码写起来会感觉很不方便
+- 答: JavaScript 因为一些固有问题和主流编辑器 VSCode 支持不力，导致代码写起来会感觉很不方便
 - 问: 具体谈谈
 - 答: 有很多令人不满意的地方，这里只谈几点:
-  - JavaScript 没有类型，所以写 JSDoc 感觉很麻烦，但不写又不太好。然而，JavaScript 代码写的太顺利的话就可能忘记加上 JSDoc，然后之后就很难维护。
+  - JavaScript 没有类型，所以写 JSDoc 感觉很麻烦，但不写又不太好。然而，JavaScript 代码写的太顺利的话就可能忘记加上 JSDoc，之后代码就很难维护。
   - VSCode 支持不好，这点或许才是最重要的: VSCode 使用 TypeScript 编写，并基于 TypeScript 实现的语法提示功能，虽然也支持根据 JSDoc 的注释进行提示，然而当你去做一个开源项目，并将之发布到 npm 之后，情况发生了变化。。。当一个用户使用 npm/yarn 安装了你的项目之后，发现并没有任何代码提示，如此你会怎么做？
   - 复杂的类型很难使用 JSDoc 表达出来并清晰地告诉调用者，例如高阶函数。
   - 等等。。。。
@@ -150,7 +151,7 @@ export function timing(
 }
 ```
 
-#### 总结
+#### 思考
 
 可以看出来，第一种方式的优点在于可以很精细的控制每个不同参数对应的返回值，并且，可以处理特别复杂的情况，缺点则是如果写 doc 文档的话需要为每个声明都写上，即便，它们有大部分注释是相同的。
 而第二种方式，则在代码量上有所减少，而且不必使用函数声明重载。缺点则是无法应对特别复杂的情况，另外一点就是使用了 `any`，可能会造成**重构火葬场**。
@@ -226,3 +227,47 @@ export function arrayToMap<T, K, V>(
 ```
 
 ### 如何强制调用非空时对象上的函数？
+
+当有时候你得到一个对象可能为空时，无法直接调用其上的函数，会提示函数不存在。
+例如下面从数组中查询字符串，然后获取长度，在 TypeScript 中便会报错，因为 str 的类型为 string/undefined。
+
+```ts
+const arr = ['a', 'b', 'c']
+const str = arr.find(s => s === 'b')
+//
+console.log(str.length)
+```
+
+之前使用 JavaScript 从未遇到过这种事情，事实上确实有可能为空，但 JavaScript 太过于动态，并不会提示错误，而 TypeScript 就会提示这种低级错误，因为类型系统。
+但是啊，凡事都有例外，当吾辈确实想调用 string 上的函数时报错真的是有点讨厌，那么有什么办法呢？
+
+1. 使用 `!` 强制调用
+
+   ```ts
+   const arr = ['a', 'b', 'c']
+   const str = arr.find(s => s === 'b')
+   console.log(str!.length)
+   ```
+
+2. 使用 `(str as any)` 转换为 any 类型之后再随意调用任何函数
+
+   ```ts
+   const arr = ['a', 'b', 'c']
+   const str = arr.find(s => s === 'b')
+   console.log((str as any).length)
+   ```
+
+3. 使用注释 `// @ts-ignore` 忽略错误（非常强力，少用）
+
+   ```ts
+   const arr = ['a', 'b', 'c']
+   const str = arr.find(s => s === 'b')
+   // @ts-ignore
+   console.log(str.length)
+   ```
+
+注意: 三种方式推荐程度逐渐降低，因为后两种实际上都会忽略类型系统，导致编写代码没有提示！
+
+## 总结
+
+截至目前为止，吾辈已经着手使用 TypeScript 重构工具函数库 [rx-util](https://github.com/rxliuli/rx-util) 两周了，基本上打包配置，文档生成，类型定义基本上算是大致完成，感觉之后的公共项目大概都会用 TypeScript 实现了，毕竟前端主流开发工具 VSCode 对其的支持真的很好，而且 TypeScript 的接口这种概念真的太有用了！
