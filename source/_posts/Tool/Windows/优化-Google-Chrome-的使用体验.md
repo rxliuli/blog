@@ -58,7 +58,7 @@ input {
 看起来标题栏很违和？安装一个 [Dark 主题](https://chrome.google.com/webstore/detail/morpheon-dark/mafbdhjdkjnoafhfelkjpchpaepjknad) 试试看。
 现在，是不是变得很和谐了呢？
 
-![暗色标题栏](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531203702.png)
+![暗色标题栏](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531225833.png)
 
 ## 广告过滤
 
