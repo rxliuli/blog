@@ -1,0 +1,190 @@
+---
+layout: post
+title: 优化 Google Chrome 的使用体验
+abbrlink: 54be2845
+date: 2019-05-27 18:29:11
+updated: 2019-05-31
+tags:
+  - Chrome
+---
+
+# 优化 Google Chrome 的使用体验
+
+## 前言
+
+> 假若我没有看见光明，我本可以忍受黑暗。
+
+下面是吾辈在使用 Chrome 遇到的一些不舒服的地方，以及对应的解决方法。一切皆是为了一个目标：**提高浏览器的使用体验！**
+
+## 字体
+
+在之前吾辈也未曾对字体有过什么注意，直到后来听闻 MacOS 的字体显示比 Windows 上好很多，去看了一下确实如此。想要有一个好看的字体，字体本身极为重要，这里吾辈目前在使用，也很推荐的字体是 [Sarasa Gothic](https://github.com/be5invis/Sarasa-Gothic)。支持 **简中/繁中/英/日** 四种语言，虽然体积稍微庞大，但效果却是相当不错。
+
+Windows 字体预览
+
+![更纱黑体](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527190659.png)
+
+> 这里也推荐作为编程字体，毕竟程序中同时存在中英文，而一个同时支持中英文的等宽字体实在难得。
+
+## 设置网页默认字体
+
+安装完了字体，然而 Chrome 默认并不会使用它，我们还需要 [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne) 进行指定。
+
+![添加 UserCSS](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527221308.png)
+
+添加一个新的样式，内容只需要设置所有元素使用的字体为 **Sarasa Mono CL**
+
+```css
+/* 全局字体设置 */
+* {
+  font-family: 'Sarasa Mono CL';
+}
+/* 强制指定 input 框中的字体 */
+input {
+  font-family: 'Sarasa Mono CL' !important;
+}
+```
+
+这时候查看一下字体效果
+
+![效果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527221458.png)
+
+## 夜间模式
+
+如果你像吾辈一样，喜欢暗色的主题，可以使用插件 [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)，它能够让网页默认使用暗色模式，看起来和编辑器保持一致：并且，看起来很 **Geek**！
+
+![暗色模式](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531203702.png)
+
+看起来标题栏很违和？安装一个 [Dark 主题](https://chrome.google.com/webstore/detail/morpheon-dark/mafbdhjdkjnoafhfelkjpchpaepjknad) 试试看。
+现在，是不是变得很和谐了呢？
+
+![暗色标题栏](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531203702.png)
+
+## 广告过滤
+
+目前而言，浏览网站时，没有一个广告过滤插件的话，广告的数量将是难以置信的庞大，而且讨人厌！
+吾辈目前在 Chrome 上仅推荐 [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)，开源免费，不推荐 [Adblock Plus](https://chrome.google.com/webstore/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb) 与 [Ublock](https://chrome.google.com/webstore/detail/ublock/epcnnfbjfcgphgdmggkamkmgojdagdnn)。前者将广告拦截做成了生意（参见 [向来以屏蔽互联网广告为己任的 AdBlock Plus，为什么卖起广告了？](https://36kr.com/p/5052897)），后者则是接手开发者的自私接受捐款导致原作者 Fork 并开发了新版本 Ublock Origin（参见 [Wiki uBlock Origin 历史](https://zh.wikipedia.org/zh-hans/UBlock_Origin)）。
+
+虽然吾辈基本上日常 Google，不过为了比较这里来看一下未进行广告过滤前的百度搜索结果
+
+搜索**购物**，天啊，第一页全都是**广告**，百度真的丧心病狂。。。
+
+> 注意每个搜索结果下面的小字 **广告**
+
+![百度的广告](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210354.png)
+
+使用插件后的效果
+
+![过滤后的百度搜索](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210454.png)
+
+嗯，清爽了许多呢 ~ o(\*￣ ▽ ￣\*)o
+
+这里对比一下 Google 的搜索结果，可以明显看出来百度的广告的数量之多。。。
+
+![对比的 Google 搜索结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210759.png)
+
+## 自动翻页
+
+如果你也觉得搜索结果需要翻页好麻烦，那么 [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp) 可以一样可以帮到你！
+
+下面是使用了 AutoPagerize 后的 Google 搜索结果，会在滚动到接近底部时，自动获取下一页的内容并拼接到最后！
+
+![使用 AutoPagerize](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531211313.png)
+
+当然，它也支持百度哦
+
+## 屏蔽 Google 搜索结果
+
+当你搜索中文技术相关的内容时，一定会遇到一个令人厌恶的社区 -- CSDN 博客。里面的内容基本上都是复制粘贴，甚至作者都并未真实尝试过就发出来了，实在是太烂了！
+所以，使用 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) 油猴插件 + 油猴脚本便可以轻松屏蔽掉它们。
+
+> 吾辈并不否认 CSDN 有很多有趣的作者，但是啊，相比于这个平台的大多数人，他们实在太少了，简直如同大海捞针一般。
+> [油猴脚本](https://zh.wikipedia.org/zh/Greasemonkey): 是一段可以在某个网页自动运行的 JavaScript 脚本，事实上，抛开 Tampermonkey 这个运行容器不说，油猴脚本就是彻头彻尾的 JavaScript 代码，任何了解过 Web 开发的人应该都能写一个简单的油猴脚本。如果你打算尝试玩玩油猴脚本，可以参考吾辈踩过的坑 [Greasemonkey 踩坑之路](https://blog.rxliuli.com/p/75bbc83f/)
+
+你需要先安装 [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) 插件，然后在 [Greasy Fork](https://greasyfork.org/zh-CN/) 安装脚本 [Google Hit Hider by Domain](https://greasyfork.org/zh-CN/scripts/1682)。
+
+然后在 Google 搜索 [js 数组去重](https://www.google.com/search?q=js+%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D)，可以看到包含了几个的 CSDN 博客的结果
+
+![CSND 博客搜索结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531213523.png)
+
+现在，让我们从 Google 搜索中屏蔽 blog.csdn.net 这个域名
+
+![Block 操作](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531214002.png)
+
+屏蔽后的搜索结果，CSDN Blog 那些垃圾博客不见了，心情大好！
+
+![屏蔽后的结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531214650.png)
+
+## 新标签页
+
+你是否也曾厌倦了 Chrome 浏览器千篇一律的新标签页，这里吾辈个人使用的是 [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp/related)。最早是在 Firefox 遇到的，后来作者将之移植到了 Chrome 上，开源免费，每次的新标签页都是不一样的风景。
+
+![新标签页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531215447.png)
+
+也能在每次打开新标签的时候放松心情，吾辈觉得是极好的。
+
+## 冻结后台标签页
+
+你是否也曾因为 Chrome 开了太多标签页而占用了庞大的内存？那么 [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg) 就是最好的帮手，它能自动冻结后台一段时间没有访问的标签页，以便于释放系统内存。并且，当你再次访问时，标签页将会自动重新加载。如果你也经常开了很多个标签页忘记关闭了，那么它可以帮助你自动管理他们。
+
+下面演示多个标签页被冻结的效果
+
+![冻结的标签页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531220652.png)
+
+## 下载拦截
+
+你使用 Chrome 下载过资料么？是否也对 Chrome 单线程下载并且在下载完成后强制检查资源安全性感到不满？那么 [FDM](https://www.freedownloadmanager.org/zh/) 应该是 Windows 上比较好的选择下载工具了，你可以下载并安装到 PC 上，然后安装 Chrome 插件 [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp) 即可将所有 Chrome 中的下载请求交给 FDM，并且，它携带着 Cookie，所以即使是有权限校验的下载也能够胜任。
+
+FDM 的优势
+
+- 多线程下载
+- 断点续传
+- 支持 BT
+- 自动分类
+- 下载限速
+- 国际化
+- 自由免费
+
+所以，如果经常下载资料的话推荐入坑 FDM，这里放一张首页
+
+![FDM 首页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531221709.png)
+
+## GitHub 优化
+
+众所周知，GitHub 作为最大的开源平台，平时访问的频率是相当高的，这里吾辈推荐一些插件/UserCSS 以增强使用体验。
+
+### 树结构浏览代码
+
+GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推荐 [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc) 这个插件。它能够为 GitHub 添加一个侧边栏，极大的方便了在线代码浏览。
+
+![Octotree](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531222359.png)
+
+嗯？好像有点配色不对？Octotree 默认使用亮色主题，而其他主题则需要 Pro 版本 -- 即收费版本。如果需要的话，可以去官网支持一下 <https://www.octotree.io/>。
+
+> Pass: 吾辈不需要 Pro 那么多的功能，只需要暗色主题 #笑
+
+不过我们也可以加个 UserCSS 补丁，使用上面的 Stylus 安装 [Octotree for GitHub Ice Dark](https://userstyles.org/styles/170999/) 这个主题，刷新一下 GitHub。
+
+![暗色 Octotree](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223206.png)
+
+### 立体化 GitHub 用户活动
+
+当你查看一个 GitHub 用户的活动概览时，总是平面方块未免有些无聊，而且以颜色深浅区分也尚不明了。
+
+![GitHub 用户活动平面图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223619.png)
+
+所以，你可以使用 [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien) 插件，让活动变得更有趣一点，变成更直观的 3D 柱状图。
+
+![GitHub 用户活动 3D 图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223909.png)
+
+### 统计仓库大小
+
+或许你也有 clone 之前先知道仓库大小的习惯，这在网络稍差的环境中尤为重要，例如 TypeScript 的仓库大小超过 1G，如果没有准备的话直接下载很容易炸！
+
+> GitHub 下载仓库时并不会给出下载的百分比，所以什么时候下载完成是个玄学。。。
+
+![统计仓库大小](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531224452.png)
+
+## 总结
+
+Chrome 有很多可以优化体验的地方，这里也只是吾辈所接触到的一部分罢了，欢迎在下面留言补充！
