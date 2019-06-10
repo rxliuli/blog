@@ -1,10 +1,24 @@
+---
+layout: post
+title: JavaScript 规范整理
+tags:
+  - JavaScript
+abbrlink: 6e442bc3
+date: 2019-06-10 12:56:43
+updated: 2019-06-10 00:00:00
+---
+
 # JavaScript 规范整理
+
+## 场景
+
+日常 `review` 代码时看到一些奇怪的代码，这里记录一下重构方案以及原因。
 
 ## 命名规范
 
 ### 不要使用拼音命名
 
-如果不熟悉英语，可以使用 [Google 翻译](https://translate.google.com)，避免使用拼音命名。
+如果不熟悉英语，可以使用 [Codelf](https://unbug.github.io/codelf/) 或者 [Google 翻译](https://translate.google.com)，避免使用拼音命名。
 
 错误示例
 
@@ -59,11 +73,22 @@ class DateFormat {
 
 如果一个对象的变量名已经很好的标识了该对象，那么内部的属性就不能使用对象名作为前缀！
 
+错误示例
+
 ```js
 // 活跃的日志信息
 const activeLog = {
   activeUserId: 'rx',
   activeTime: new Date(),
+}
+```
+
+正确示例
+
+```js
+const activeLog = {
+  userId: 'rx',
+  time: new Date(),
 }
 ```
 
@@ -264,12 +289,12 @@ function hello({ name, age, sex }) {
 
 ### 不要写多余的 await
 
-如果 `await` 是不必要的（在返回语句时，那么就不要用 `async` 标识函数），这是没有必要的 -- 除非，你需要在这个函数内异步请求完成后有其他操作。
+如果 `await` 是不必要的（在返回语句时，那么就不要用 `async` 标识函数），这是没有必要的 -- 除非，你需要在这个函数内异步操作完成后有其他操作。
 
 错误示例
 
 ```js
-const login = async searchText => {
+const login = async ({ username, password }) => {
   if (!useranme) {
     console.log('用户名不能为空')
     return
@@ -286,7 +311,7 @@ const login = async searchText => {
 正确示例
 
 ```js
-const login = searchText => {
+const login = ({ username, password }) => {
   if (!useranme) {
     console.log('用户名不能为空')
     return
@@ -351,6 +376,97 @@ const state = {
 console.log(state)
 ```
 
+### 简单的选项列表优先使用 Map 而非数组
+
+对于复选框，想必很多人相当熟悉。下面使用 js 模拟一个复选框
+
+```js
+const item = {
+  id: 1,
+  role: ['1', '2'],
+  name: '',
+}
+const options = [
+  {
+    roleid: '1',
+    label: '黄金糕',
+  },
+  {
+    roleid: '2',
+    label: '双皮奶',
+  },
+  {
+    roleid: '3',
+    label: '蚵仔煎',
+  },
+]
+```
+
+现在的需求是根据 `role` 计算显示值 `name` 的值
+
+```js
+item.name = item.role
+  .map(role => options.find(op => op.roleid === role))
+  .filter(s => s)
+  .join(',')
+```
+
+但实际上这里应该使用 `Map` 替代数组，因为数组的 `find` 其实非常低效，也需要进行遍历，使用 `Map` 的实现
+
+```js
+const item = {
+  id: 1,
+  role: [1, 2],
+  name: '',
+}
+const options = new Map()
+  .set(1, '黄金糕')
+  .set(2, '双皮奶')
+  .set(3, '蚵仔煎')
+
+function calcName(role) {
+  return role
+    .map(k => options.get(k))
+    .filter(s => s)
+    .join(',')
+}
+
+item.name = calcName(item.role)
+```
+
+可以看到，获取时使用了 `Map#get`，在效率上应该是极好的。
+
+> 附: 该问题来自 <https://segmentfault.com/q/1010000019426996>
+
+### 存放 id 标识列表使用 Set 而非数组
+
+还是上面的例子，当你需要存取当前选中复选框的值 `role` 使用数组时，有可能遇到 id 重复的问题，实际上导致每次添加前需要使用 `Array#includes` 判断是否已存在。这里可以使用 `Set` 从数据结构层面避免掉可能重复的问题。
+
+修改后的实现
+
+```js
+const item = {
+  id: 1,
+  role: new Set([1, 2]),
+  name: '',
+}
+const options = new Map()
+  .set(1, '黄金糕')
+  .set(2, '双皮奶')
+  .set(3, '蚵仔煎')
+
+function calcName(role) {
+  return Array.from(role)
+    .map(k => options.get(k))
+    .filter(s => s)
+    .join(',')
+}
+
+item.name = calcName(item.role)
+```
+
+先判断是否存在执行某些操作也非常方便，可以使用 `Set#has` 进行判断，当然时间复杂度时 O1。
+
 ## 逻辑代码
 
 ### 不要判断一个 Boolean 值并以此返回 Boolean 值
@@ -380,6 +496,8 @@ const login = async ({ username, password }) =>
 ```
 
 ### 不要使用多余的变量
+
+如果一个表达式立刻被使用并且只会被使用一次，那就不要使用变量声明，直接在需要的地方使用好了。
 
 错误示例
 
@@ -552,6 +670,45 @@ function formatUser({ username = 'noname', password = 'blank' } = {}) {
 
 ### 如果变量有所关联则使用对象而非多个单独的变量
 
+如果变量有所关联，例如一个表单，存储的时候不要使用单独的变量，将之存储到一个表单变量中更好。
+
+错误示例
+
+```js
+function login(){
+  const username = document.querySelector('#username')
+  const password = document.querySelector('#password')
+  const remeberMe = document.querySelector('#remeberMe')
+
+  // 一些校验。。。
+  if (!validate(username, password, remeberMe)) {
+    return
+  }
+  // 请求后台
+  const res = await userLogin.login(username, password, remeberMe)
+  // 后处理。。。
+}
+```
+
+正确示例
+
+```js
+function login(){
+  const user = {
+    username : document.querySelector('#username'),
+    password : document.querySelector('#password'),
+    remeberMe : document.querySelector('#remeberMe'),
+  }
+  // 一些校验。。。
+  if (!validate(user)) {
+    return
+  }
+  // 请求后台
+  const res = await userLogin.login(user)
+  // 后处理。。。
+}
+```
+
 ### 应该尽量解决编辑器警告
 
 如果编辑器对我们的代码发出警告，那么一般都是我们代码出现了问题（一般开发人员的能力并不足以比肩编辑器 #MS 那些 dalao 的能力）。所以，如果出现了警告，应该先去解决它 -- 如果你确认发生了错误，则通过注释/配置禁用它！
@@ -599,3 +756,9 @@ function formatUser(user) {
 const str = formatUser(new User('rx', '123456'))
 console.log(str)
 ```
+
+### 尽量扁平化代码
+
+尽量将 `a` 调用 `b`, `b` 调用 `c`，然后 `b` 调用 `d`，优化为依次调用 `a, b, c, d`。
+
+> 注意: 这里使用的是**尽量**而非**不要**，深层嵌套不可避免，但在局部上，应该采取扁平化的策略，**提前 return** 避免嵌套 if-else 是个很好的例子。
