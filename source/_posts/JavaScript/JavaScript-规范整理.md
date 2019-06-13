@@ -764,3 +764,39 @@ console.log(str)
 尽量将 `a` 调用 `b`, `b` 调用 `c`，然后 `b` 调用 `d`，优化为依次调用 `a, b, c, d`。
 
 > 注意: 这里使用的是**尽量**而非**不要**，深层嵌套不可避免，但在局部上，应该采取扁平化的策略，**提前 return** 避免嵌套 if-else 是个很好的例子。
+
+### 自执行函数前面必须加分号
+
+如果我们需要使用自执行函数，则开头必须加上 `;` 以避免可能出现的歧义。
+
+错误示例
+
+```sh
+function returnItself(o) {
+  return o
+}
+returnItself(() => console.log(1))
+(() => {
+  console.log(2)
+})()
+```
+
+上面这段代码是有问题的，因为后面的自执行函数会被认为是上一句的 `returnItself` 返回函数的参数，最后的括号会被认为又是一次调用，将会抛出错误
+
+```js
+returnItself(...)(...) is not a function
+```
+
+正确示例
+
+```js
+function returnItself(o) {
+  return o
+}
+returnItself(() => console.log(1))
+;(() => {
+  console.log(2)
+})()
+```
+
+使用分号可以明确告诉 JavaScript 这是一行新的代码，上面的代码已经到此为止了。
