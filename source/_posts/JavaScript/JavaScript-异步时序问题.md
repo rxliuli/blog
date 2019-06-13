@@ -347,10 +347,10 @@ function asyncTimeout(timeout, action) {
 
 ### 结合使用
 
+[测试一下](https://codepen.io/pen/?editors=1112)
+
 ```js
 ;(async () => {
-  let last = 0
-  let sum = 0
   // 模拟一个异步请求，接受参数并返回它，然后等待指定的时间
   async function get(ms) {
     await wait(ms)
@@ -358,19 +358,18 @@ function asyncTimeout(timeout, action) {
   }
   const time = 100
   const fn = asyncTimeout(time, throttle(time, get))
+  let last = 0
+  let sum = 0
   await Promise.all([
     fn(30).then(res => {
-      console.log(res, last, sum)
       last = res
       sum += res
     }),
     fn(20).then(res => {
-      console.log(res, last, sum)
       last = res
       sum += res
     }),
     fn(10).then(res => {
-      console.log(res, last, sum)
       last = res
       sum += res
     }),
