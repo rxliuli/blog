@@ -3,8 +3,10 @@ layout: post
 title: JavaScript 异步时序问题
 abbrlink: debc4f0e
 date: 2019-06-12 18:10:19
+updated: 2019-06-13
 tags:
   - JavaScript
+  - 教程
 ---
 
 # JavaScript 异步时序问题
@@ -273,3 +275,117 @@ function concatMap(fn) {
 
 1. 是否允许异步操作并发？否: `concatMap`, 是: 到下一步
 2. 是否需要处理旧的的结果？否: `switchMap`, 是: `mergeMap`
+
+## 降低触发频率并限制异步超时时间
+
+思考一下第二种解决方式，本质上其实是 **限流 + 自动超时**，首先实现这两个函数。
+
+- 限流: 限制函数调用的频率，如果调用的频率过快则不会真正执行调用而是返回旧值
+- 自动超时: 如果到了超时时间，即便函数还未得到结果，也会自动超时并抛出错误
+
+下面来分别实现它们
+
+### 限流实现
+
+> 具体实现思路可见: [JavaScript 防抖和节流](https://blog.rxliuli.com/p/1a8df23d/)
+
+```js
+/**
+ * 函数节流
+ * 节流 (throttle) 让一个函数不要执行的太频繁，减少执行过快的调用，叫节流
+ * 类似于上面而又不同于上面的函数去抖, 包装后函数在上一次操作执行过去了最小间隔时间后会直接执行, 否则会忽略该次操作
+ * 与上面函数去抖的明显区别在连续操作时会按照最小间隔时间循环执行操作, 而非仅执行最后一次操作
+ * 注: 该函数第一次调用一定会执行，不需要担心第一次拿不到缓存值，后面的连续调用都会拿到上一次的缓存值
+ * 注: 返回函数结果的高阶函数需要使用 {@link Proxy} 实现，以避免原函数原型链上的信息丢失
+ *
+ * @param {Number} delay 最小间隔时间，单位为 ms
+ * @param {Function} action 真正需要执行的操作
+ * @return {Function} 包装后有节流功能的函数。该函数是异步的，与需要包装的函数 {@link action} 是否异步没有太大关联
+ */
+const throttle = (delay, action) => {
+  let last = 0
+  let result
+  return new Proxy(action, {
+    apply(target, thisArg, args) {
+      return new Promise(resolve => {
+        const curr = Date.now()
+        if (curr - last > delay) {
+          result = Reflect.apply(target, thisArg, args)
+          last = curr
+          resolve(result)
+          return
+        }
+        resolve(result)
+      })
+    },
+  })
+}
+```
+
+### 自动超时
+
+> 注: `asyncTimeout` 函数实际上只是为了避免一种情况，异步请求时间超过节流函数最小间隔时间导致结果返回顺序错乱。
+
+```js
+/**
+ * 为异步函数添加自动超时功能
+ * @param timeout 超时时间
+ * @param action 异步函数
+ * @returns 包装后的异步函数
+ */
+function asyncTimeout(timeout, action) {
+  return new Proxy(action, {
+    apply(_, _this, args) {
+      return Promise.race([
+        Reflect.apply(_, _this, args),
+        wait(timeout).then(Promise.reject),
+      ])
+    },
+  })
+}
+```
+
+### 结合使用
+
+```js
+;(async () => {
+  let last = 0
+  let sum = 0
+  // 模拟一个异步请求，接受参数并返回它，然后等待指定的时间
+  async function get(ms) {
+    await wait(ms)
+    return ms
+  }
+  const time = 100
+  const fn = asyncTimeout(time, throttle(time, get))
+  await Promise.all([
+    fn(30).then(res => {
+      console.log(res, last, sum)
+      last = res
+      sum += res
+    }),
+    fn(20).then(res => {
+      console.log(res, last, sum)
+      last = res
+      sum += res
+    }),
+    fn(10).then(res => {
+      console.log(res, last, sum)
+      last = res
+      sum += res
+    }),
+  ])
+  // last 结果为 10，和 switchMap 的不同点在于会保留最小间隔期间的第一次，而抛弃掉后面的异步结果，和 switchMap 正好相反！
+  console.log(last)
+  // 实际上确实执行了 3 次，结果也确实为第一次次调用参数的 3 倍
+  console.log(sum)
+})()
+```
+
+起初吾辈因为好奇实现了这种方式，但原以为会和 `concatMap` 类似的函数却变成了现在这样 -- 更像倒置的 `switchMap` 了。不过由此看来这种方式的可行性并不大，毕竟，没人需要旧的数据。
+
+## 总结
+
+其实第一种实现方式属于 [rxjs](https://github.com/ReactiveX/rxjs) 早就已经走过的道路，目前被 Angular 大量采用（类比于 React 中的 Redux）。但 rxjs 实在太强大也太复杂了，对于吾辈而言，仅仅需要一只香蕉，而不需要拿着香蕉的大猩猩，以及其所处的整个森林（此处原本是被人吐槽面向对象编程的隐含环境，这里吾辈稍微藉此吐槽一下动不动就上库的开发者）。
+
+> 可以看到吾辈在这里大量使用了 `Proxy`，那么，原因是什么呢？这个疑问就留到下次再说吧！
