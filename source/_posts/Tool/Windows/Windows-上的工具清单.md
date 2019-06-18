@@ -4,64 +4,52 @@ tags:
   - Windows
 abbrlink: c453742
 date: 2018-08-21 00:00:00
-updated: 2019-04-18
+updated: 2019-06-18
 ---
 
 # Windows 上的工具清单
 
-- [Windows 上的工具清单](#windows-上的工具清单)
+- [Windows 上的工具清单](#Windows-上的工具清单)
   - [开发](#开发)
-    - [MS VSCode：前端标准 IDE](#ms-vscode前端标准-ide)
-    - [Google Chrome：最好的浏览器](#google-chrome最好的浏览器)
-    - [IDEA：最好的 Java IDE](#idea最好的-java-ide)
-    - [Cmder：Windows 上模拟 Linux 终端](#cmderwindows-上模拟-linux-终端)
-    - [Git：Git 版本控制系统](#gitgit-版本控制系统)
-    - [NodeJS：前端一把梭的基础](#nodejs前端一把梭的基础)
-    - [MobaXterm：非常强大的远程连接工具](#mobaxterm非常强大的远程连接工具)
-    - [JDK：Java Developer Kit](#jdkjava-developer-kit)
-    - [MySQL：非常流行的开源数据库](#mysql非常流行的开源数据库)
-    - [Redis：缓存数据库](#redis缓存数据库)
-    - [HeidiSQL：SQL 客户端](#heidisqlsql-客户端)
-    - [Apache Maven：Java 最流行的依赖管理工具](#apache-mavenjava-最流行的依赖管理工具)
-    - [Apache Tomcat：Java Web 流行的开源服务器](#apache-tomcatjava-web-流行的开源服务器)
-    - [Gradle：Andriod 默认的依赖管理工具](#gradleandriod-默认的依赖管理工具)
-    - [freeFTPd：免费的 FTP/SFTP 服务端](#freeftpd免费的-ftpsftp-服务端)
+    - [MS VSCode：前端标准 IDE](#MS-VSCode前端标准-IDE)
+    - [Google Chrome：最好的浏览器](#Google-Chrome最好的浏览器)
+    - [IDEA：最好的 Java IDE](#IDEA最好的-Java-IDE)
+    - [Cmder：Windows 上模拟 Linux 终端](#CmderWindows-上模拟-Linux-终端)
+    - [Git：Git 版本控制系统](#GitGit-版本控制系统)
+    - [MobaXterm：非常强大的远程连接工具](#MobaXterm非常强大的远程连接工具)
+    - [HeidiSQL：SQL 客户端](#HeidiSQLSQL-客户端)
+    - [freeFTPd：免费的 FTP/SFTP 服务端](#freeFTPd免费的-FTPSFTP-服务端)
   - [日常](#日常)
-    - [Win + R：快速启动](#win--r快速启动)
-    - [SSR：正常上网必须](#ssr正常上网必须)
-    - [MacType：字体美化](#mactype字体美化)
-    - [Everything：文件快速搜索](#everything文件快速搜索)
-    - [Snipaste：截图/贴图](#snipaste截图贴图)
-    - [PicGo：图床上传](#picgo图床上传)
-    - [ScreenToGif：录制 GIF 动态图](#screentogif录制-gif-动态图)
-    - [QuickLook：文件管理器预览增强](#quicklook文件管理器预览增强)
-    - [FDM：免费的多线程下载器](#fdm免费的多线程下载器)
-    - [Bandizip：压缩/解压缩](#bandizip压缩解压缩)
-    - [Ditto：剪切板增强](#ditto剪切板增强)
+    - [Win + R：快速启动](#Win--R快速启动)
+    - [SSR：正常上网必须](#SSR正常上网必须)
+    - [MacType：字体美化](#MacType字体美化)
+    - [FDM：免费的多线程下载器](#FDM免费的多线程下载器)
+    - [Bandizip：压缩/解压缩](#Bandizip压缩解压缩)
+    - [Ditto：剪切板增强](#Ditto剪切板增强)
     - [imageview：图片浏览](#imageview图片浏览)
-    - [Mindjet MindManager：思维导图](#mindjet-mindmanager思维导图)
-    - [MS Office：文档管理](#ms-office文档管理)
-    - [OneNote：快速笔记](#onenote快速笔记)
-    - [Google 文档：在线文档管理](#google-文档在线文档管理)
-    - [Calibre：电子书管理](#calibre电子书管理)
-    - [Steam：国外的游戏平台](#steam国外的游戏平台)
-    - [Mozilla FireFox：抱有期待的浏览器](#mozilla-firefox抱有期待的浏览器)
-    - [Foobar：本地音乐播放器](#foobar本地音乐播放器)
-    - [PotPlayer：视频播放器](#potplayer视频播放器)
-    - [Bitcomet：BT 客户端](#bitcometbt-客户端)
-    - [Dism++：Windows 的一个集中式的系统管理工具](#dismwindows-的一个集中式的系统管理工具)
-    - [CCleaner：PC 上著名的垃圾清理工具](#ccleanerpc-上著名的垃圾清理工具)
-    - [TreeSizeFree：以树状视图查看文件夹](#treesizefree以树状视图查看文件夹)
+    - [Everything：文件快速搜索](#Everything文件快速搜索)
+    - [Snipaste：截图/贴图](#Snipaste截图贴图)
+    - [PicGo：图床上传](#PicGo图床上传)
+    - [ScreenToGif：录制 GIF 动态图](#ScreenToGif录制-GIF-动态图)
+    - [QuickLook：文件管理器预览增强](#QuickLook文件管理器预览增强)
+    - [MS Office：文档管理](#MS-Office文档管理)
+    - [Google 文档：在线文档管理](#Google-文档在线文档管理)
+    - [Calibre：电子书管理](#Calibre电子书管理)
+    - [Steam：国外的游戏平台](#Steam国外的游戏平台)
+    - [Mozilla FireFox：抱有期待的浏览器](#Mozilla-FireFox抱有期待的浏览器)
+    - [AIMP：本地音乐播放器](#AIMP本地音乐播放器)
+    - [PotPlayer：视频播放器](#PotPlayer视频播放器)
+    - [Bitcomet：BT 客户端](#BitcometBT-客户端)
+    - [Dism++：Windows 的一个集中式的系统管理工具](#DismWindows-的一个集中式的系统管理工具)
+    - [TreeSizeFree：以树状视图查看文件夹](#TreeSizeFree以树状视图查看文件夹)
     - [renamer：文件/文件夹重命名](#renamer文件文件夹重命名)
-    - [FlashPlayer：Flash 动画/游戏运行环境](#flashplayerflash-动画游戏运行环境)
     - [waifu2x-caffe：图片清晰化](#waifu2x-caffe图片清晰化)
-    - [Affinity Photo: 图片编辑](#affinity-photo-图片编辑)
-    - [Bandicam：视频录制](#bandicam视频录制)
-    - [LockHunter：解除文件占用](#lockhunter解除文件占用)
-    - [rufus：USB 启动盘制作工具](#rufususb-启动盘制作工具)
+    - [Bandicam：视频录制](#Bandicam视频录制)
+    - [LockHunter：解除文件占用](#LockHunter解除文件占用)
+    - [rufus：USB 启动盘制作工具](#rufusUSB-启动盘制作工具)
   - [国内流氓](#国内流氓)
-    - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
-    - [BaiduNetdisk：国内一家独大的网盘客户端](#baidunetdisk国内一家独大的网盘客户端)
+    - [QQ：国内不得不用的流氓 IM](#QQ国内不得不用的流氓-IM)
+    - [BaiduNetdisk：国内一家独大的网盘客户端](#BaiduNetdisk国内一家独大的网盘客户端)
     - [有道词典：国内算是很好用的词典了](#有道词典国内算是很好用的词典了)
   - [名词解释](#名词解释)
     - [便携版](#便携版)
@@ -239,17 +227,6 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 最初由 Linus 开发的一个分布式的版本控制系统，现在已经是最流行的版本控制系统之一了。说到 Git 不得不提 GitHub，GitHub 为 Git 实现了一个在线代码（或者其他）托管平台，相当好用而且托管开源项目是免费的。其实对于吾辈而言 Git 只是一个用于在本地操作 GitHub 的客户端罢了（很少有添加到 Git 而没有提交到 GitHub 的代码）。正是因为 GitHub 对 Git 的支持之好，所以吾辈才喜欢使用 Git 的。。。（#因果颠倒）
 
-### NodeJS：前端一把梭的基础
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://nodejs.org/), [官网中文界面](https://nodejs.org/zh-cn/), [GitHub](https://github.com/nodejs/node)
-
-现代前端开发的基础，各种前端工具所必须的环境。像 `NPM/Yarn/Bower` `之类依赖管理，Gulp/Webpack` 这种自动化构建工具，还有各种前端库（`React/Twitter Bootstrap/Babel/Stylus`），以及各种基于 NodeJS 的程序（`hexo/live-server/yarn/create-react-app`），都使用 NPM 的管理依赖，有些甚至不提供传统的手动引入方式！
-
-> 附：然而 NodeJS 的作者又开始开发了新的 JavaScript 运行时 Deno，前端开发这却是又要受苦了呢 ┐(‘～`；)┌  
-> 好吧，现在吾辈也要变成前端开发的一员了 /(ㄒ o ㄒ)/~~
-
 ### MobaXterm：非常强大的远程连接工具
 
 [便携版]
@@ -260,32 +237,6 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 > 页面优雅并且跨平台：[Termius](https://www.termius.com/)，但免费功能不支持 SFTP 功能
 
-### JDK：Java Developer Kit
-
-[开源], [跨平台], [免费]
-
-> [官网](http://www.oracle.com/technetwork/java/)
-
-Java 开发必需，内存杀手，尤其而且是在启动 Web 项目时会占用非常高的内存。
-
-> 注：Minecraft 就是使用 Java 开发的游戏，所以运行起来非常占用资源而且很卡。
-
-### MySQL：非常流行的开源数据库
-
-[便携版], [开源], [跨平台]
-
-> [官网](https://www.mysql.com/), [GitHub](https://github.com/mysql/mysql-server)
-
-几乎是市场上最流行的开源数据库了，虽然现在老东家 Oracle 做的越来越过分，也有很多有志想要后来居上的数据库，但 MySQL 的流行度还是非常之高，具体可以参考 <https://db-engines.com/en/ranking>。而且前些年的 LMAP 架构中的 M 指的就是 MySQL，可见流行度之高了。
-
-### Redis：缓存数据库
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://redis.io/), [GitHub](https://github.com/antirez/redis)
-
-主要用来做缓存功能的 `key-value` 数据库，相比于传统数据库而言比较快。吾辈主要用来对热点数据进行缓存，控制超时等。
-
 ### HeidiSQL：SQL 客户端
 
 [便携版], [开源], [免费]
@@ -295,34 +246,6 @@ Java 开发必需，内存杀手，尤其而且是在启动 Web 项目时会占�
 一个支持 MSSQL,MySQL 和 PostgreSQL 的开源数据库轻量级客户端。吾辈使用这个 SQL 客户端最重要的原因就是满足了吾辈对于数据库文件的导入/导出需求，谁让 IDEA 自带的 DataGrip 没有导出功能呢
 
 > 附：吾辈很清楚 MySQL 有自带的导出命令，然而并不灵活。。。至少这个能够定义创建数据表，插入数据时使用的策略
-
-### Apache Maven：Java 最流行的依赖管理工具
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://maven.apache.org/), [GitHub](https://github.com/apache/maven)
-
-Apache 家的工具，吾辈主要用作项目的依赖管理、项目打包构建方面。所有的依赖都通过 `pom.xml` 进行定义，能够简单的对依赖的 jar 进行统一管理，而不必每个项目都复制一份。
-
-不过讲真现在 Maven 的默认配置不是特别好，JDK 默认仍然是 1.5，编码格式也默认为本地环境（都是坑），还有因为不可抗因素导致依赖下载的速度尤其的慢。
-
-### Apache Tomcat：Java Web 流行的开源服务器
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](http://tomcat.apache.org/), [GitHub](https://github.com/apache/tomcat)
-
-**Apache \* 2**，Tomcat 是一个流行很多年的开源 Java Web 应用服务器，基本上很多中小企业都在用吧（`SpringBoot Web Starter` 里面直接内置了 Tomcat）。
-
-### Gradle：Andriod 默认的依赖管理工具
-
-[便携版], [开源], [跨平台], [免费]
-
-> [官网](https://gradle.org), [GitHub](https://github.com/gradle/gradle)
-
-号称是比 Maven 更好的依赖管理工具，在配置文件方面放弃了 Maven 的 XML 配置，采用了 `Groovy DSL` 作为配置文件语言，相比于 Maven 确实精简了不少。功能上可以直接将 Maven 的 `pom.xml` 转换为 `build.gradle`, 插件功能也比 Maven 更加强大。
-
-但，功能强大也意味着复杂，目前的项目仍有很多在使用 Maven 进行项目管理（例如吾辈的公司就在用 Maven）。
 
 ### freeFTPd：免费的 FTP/SFTP 服务端
 
@@ -358,7 +281,55 @@ Apache 家的工具，吾辈主要用作项目的依赖管理、项目打包构�
 
 Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），不过 MacType 可以缓解这一现象。它可以美化 Windows 对字体的渲染（绝大部分程序都不会出现问题），让吾辈在使用 Windows 的时候看着代码更舒服一点。
 
+> 附: MacType 配置推荐 **注册表加载 + Iof => XHei => Default**
 > 附：字体个人推荐 [Sarasa-Gothic](https://github.com/be5invis/Sarasa-Gothic)，中文名是更纱黑体，包含 **英/简中/繁中/日** 四种语言
+
+### FDM：免费的多线程下载器
+
+[免费]
+
+> [官网](http://http://www.freedownloadmanager.org)
+
+全称 Free Download Manager，没什么太多好说的，但用起来还算不错，不会弹个窗口提示下载什么的，然而下载完成也没提示真的坑。。。
+
+基本上满足吾辈日常的下载需求吧
+
+- [x] 提供客户端界面
+- [x] 多线程
+- [x] 集成 chrome
+- [x] 静默下载
+- [x] 下载后可以打开文件/文件夹
+- [ ] 下载完成后没有弹窗提示
+- [ ] 便携版（配置可携带化）
+
+### Bandizip：压缩/解压缩
+
+[便携版], [免费]
+
+> [官网](https://www.bandizip.com/)
+
+目前吾辈觉得最好的压缩/解压缩软件，具体压缩率/支持格式什么的吾辈也并非专业所以就不说了。但就使用体验上看 Bandizip 是要明显优于其他同类软件的（WinRAR, 7Zip）。
+
+吾辈看到的优点：
+
+- 预览压缩文件时左侧有文件夹树状列表，不需要再用鼠标点击进进出出的活塞运动了
+- 自动解压，这个功能相当棒，可以智能解压压缩文件到文件夹中（如果压缩包里面只有一个文件夹就直接解压出来，否则会将压缩包里面的内容解压到一个与压缩包同名的文件夹中），这个功能看起来很不起眼，但吾辈在此之前并未找到（需要特别注意压缩包的内容）
+
+### Ditto：剪切板增强
+
+[便携版], [免费]
+
+> [官网](https://ditto-cp.sourceforge.io/), [善用佳软评测](https://xbeta.info/ditto.htm)
+
+Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。[善用佳软评测](https://xbeta.info/ditto.htm) 对其的介绍很全面，这里也就无需赘述了，吾辈需要的只是它的剪切板历史功能。
+
+### imageview：图片浏览
+
+[免费]
+
+> [官网](https://www.kantuwang.wang/)
+
+中文名是 **快眼看图王**，嗯，有点俗。不过软件本身还是不错的，作为 Windows 上纯粹看图的软件却是极好的了，鼠标按下就可以拖动图片，可以浏览同一文件夹下的其他图片，快捷键 `Ctrl + C` 就可以直接复制图片。
 
 ### Everything：文件快速搜索
 
@@ -411,77 +382,11 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 
 Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹进行预览，包括但不限于文本、图像、视频、音频、压缩包、文件夹等。在按下空格时，就弹出一个预览窗口，感觉还是不错的。
 
-### FDM：免费的多线程下载器
-
-[免费]
-
-> [官网](http://http://www.freedownloadmanager.org)
-
-全称 Free Download Manager，没什么太多好说的，但用起来还算不错，不会弹个窗口提示下载什么的，然而下载完成也没提示真的坑。。。
-
-基本上满足吾辈日常的下载需求吧
-
-- [x] 提供客户端界面
-- [x] 多线程
-- [x] 集成 chrome
-- [x] 静默下载
-- [x] 下载后可以打开文件/文件夹
-- [ ] 下载完成后没有弹窗提示
-- [ ] 便携版（配置可携带化）
-
-### Bandizip：压缩/解压缩
-
-[便携版], [免费]
-
-> [官网](https://www.bandizip.com/)
-
-目前吾辈觉得最好的压缩/解压缩软件，具体压缩率/支持格式什么的吾辈也并非专业所以就不说了。但就使用体验上看 Bandizip 是要明显优于其他同类软件的（WinRAR, 7Zip）。
-
-吾辈看到的优点：
-
-- 预览压缩文件时左侧有文件夹树状列表，不需要再用鼠标点击进进出出的活塞运动了
-- 自动解压，这个功能相当棒，可以智能解压压缩文件到文件夹中（如果压缩包里面只有一个文件夹就直接解压出来，否则会将压缩包里面的内容解压到一个与压缩包同名的文件夹中），这个功能看起来很不起眼，但吾辈在此之前并未找到（需要特别注意压缩包的内容）
-
-### Ditto：剪切板增强
-
-[便携版], [免费]
-
-> [官网](https://ditto-cp.sourceforge.io/), [善用佳软评测](https://xbeta.info/ditto.htm)
-
-Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。[善用佳软评测](https://xbeta.info/ditto.htm) 对其的介绍很全面，这里也就无需赘述了，吾辈需要的只是它的剪切板历史功能。
-
-### imageview：图片浏览
-
-[免费]
-
-> [官网](https://www.kantuwang.wang/)
-
-中文名是 **快眼看图王**，嗯，有点俗。不过软件本身还是不错的，作为 Windows 上纯粹看图的软件却是极好的了，鼠标按下就可以拖动图片，可以浏览同一文件夹下的其他图片，快捷键 `Ctrl + C` 就可以直接复制图片。
-
-### Mindjet MindManager：思维导图
-
-[跨平台]
-
-> [官网](https://www.mindjet.com/mindmanager/), [中文教程](http://www.mindmanager.cc/jiaochengziliao.html)
-
-最近才开始用思维导图，Mindjet MindManager 算是国外比较老牌的思维导图工具了吧（XMind 好像也不错的样子），于是吾辈也就选择了它
-
-> 注：该软件没有中文官网（苏州思杰马克丁软件有限公司 <http://www.mindmanager.cc/> 的那个所谓的中文官网是假的！！！关于这家公司的黑历史请去 [Google](https://www.google.com/search?q=%20%E6%80%9D%E6%9D%B0%E9%A9%AC%E5%85%8B%E4%B8%81) 了解）
-
 ### MS Office：文档管理
 
 > [官网](https://products.office.com)
 
 MS 的办公套件全家桶，讲真吾辈更喜欢用 `Markdown`，然而工作中其他人却只会使用 Word,Excel,PPT 也没办法不是。虽然不是国内流氓，然而还是不得不装的软件。
-
-### OneNote：快速笔记
-
-[免费], [跨平台]
-
-> [官网](https://www.onenote.com/)
-
-在继博客之后，吾辈再次使用的一个知识管理工具。由于日常琐碎的知识实在太多了（知识爆炸），博客不足以整理数量繁多，复杂多样的零碎内容，笔记工具就是另一个更好的选择了。  
-在尝试了 Evernote 遇到了一些问题之后，吾辈转到了 MS 家免费的 OneNote。OneNote 提供全平台的程序，也对主流浏览器提供了插件，用以快速保存文章，Mobile 上的体验也还不错。作为一个日常 `Windows + Android` 的人表示，使用 OneNote 的体验还是不错的。
 
 ### Google 文档：在线文档管理
 
@@ -522,13 +427,17 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 
 相比于其他的浏览器最大的特点就是隐私性和自由，收集隐私是完全可选的（国内的流氓浏览器信息收集简直过分），附加扩展基本不怎么限制（Chrome 限制扩展只能从官方商店直接安装）。
 
-### Foobar：本地音乐播放器
+> 补充:
+>
+> - 2019-06-18: 现在 Chrome 居然限制 **uBlock Origin** 这类的扩展了。。。
 
-[便携版], [免費]
+### AIMP：本地音乐播放器
 
-> [官网](https://www.foobar2000.org)
+[免費]
 
-一个很漂亮的本地音乐播放器，也能在线加载本地歌曲的歌词，貌似对歌曲音质的支持也很好（没什么感触，不玩耳机的萌新一只）。。。
+> [官网](http://www.aimp.ru/)
+
+一个非常漂亮的本地音乐播放器，貌似对歌曲音质的支持也很好（没什么感触，不玩耳机的萌新一只）。。。
 
 ### PotPlayer：视频播放器
 
@@ -554,12 +463,6 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 
 一个集中式管理 Windows 各种设置的 GUI 控制面板，能够方便的控制系统的各种设置（包括 Windows 10 的更新。。。），提供了一个简单但却还算可以的垃圾清理工具，感觉上很干净而且可以独立运行！
 
-### CCleaner：PC 上著名的垃圾清理工具
-
-> [官网](https://www.ccleaner.com/)
-
-对于吾辈而言主要是用来清理垃圾（虽然和上面的 Dism++ 有些重复就是了）和注册表的，还提供了一个卸载软件的面板，相比于 Windows 自带的程序列表控制面板唯一的好处就是可以同时卸载多个程序。。。
-
 ### TreeSizeFree：以树状视图查看文件夹
 
 [便携版], [免费]
@@ -576,14 +479,6 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 
 或许很多人想吐槽，重命名不就一个 F2 的事情么？是的，如果只需要重命名一个文件，F2 是最快捷的方式。但 rename 针对的是需要重命名数十，数百个文件的情况，这种时候手动重命名实在太过于糟糕了点！
 
-### FlashPlayer：Flash 动画/游戏运行环境
-
-[免费]
-
-> [官网](https://www.flash.cn/)
-
-早先时候流行的网页插件，有了 HTML5 之后逐步被放弃，但某些网页还是不得不用呀（好吧其实是吾辈偶尔想玩一些 Flash 游戏 #暴露年龄）
-
 ### waifu2x-caffe：图片清晰化
 
 [便携版], [免费], [开源], [跨平台]
@@ -591,12 +486,6 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 > [官网](http://waifu2x.udp.jp), [GitHub](https://github.com/nagadomi/waifu2x), [GitHub Windows](https://github.com/lltcggie/waifu2x-caffe)
 
 可以让图片变得清晰，具体技术实现涉及机器学习等尖端技术（#dalao），可以说是很厉害了呢
-
-### Affinity Photo: 图片编辑
-
-> [官网](https://affinity.serif.com/en-gb/)
-
-图片编辑工具，不像 PS 那么庞大而复杂，也不是如同美图秀秀那样纯粹面向小白用户，应对基本的照片修改需求应该是足够了。
 
 ### Bandicam：视频录制
 
