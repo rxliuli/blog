@@ -9,6 +9,8 @@ updated: 2019-06-18
 
 # Windows 上的工具清单
 
+> 但弄雕虫之技，尘芥草莽，于泥泞自勉……
+
 - [Windows 上的工具清单](#Windows-上的工具清单)
   - [开发](#开发)
     - [MS VSCode：前端标准 IDE](#MS-VSCode前端标准-IDE)
