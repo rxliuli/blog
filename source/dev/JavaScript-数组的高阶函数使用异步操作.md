@@ -13,7 +13,7 @@ updated: 2019-06-21 12:56:21
 
 ## 场景
 
-> 我是一只在飞向太阳的萤火虫
+> 吾辈是一只在飞向太阳的萤火虫
 
 JavaScript 中的数组是一个相当泛用性的数据结构，能当数组，元组，队列，栈进行操作，更好的是 JavaScript 提供了很多原生的高阶函数，便于我们对数组整体操作。
 然而，JavaScript 中的高阶函数仍有缺陷 -- 异步！当你把它们放在一起使用时，就会感觉到这种问题的所在。
@@ -139,26 +139,44 @@ new AsyncArray(...ids).map(get).forEach(async res => console.log(res))
 })()
 ```
 
-是不是感觉超级蠢？吾辈也是这样认为的！我们可以尝试使用链式调用加延迟执行
+是不是感觉超级蠢？吾辈也是这样认为的！
+
+## 链式调用加延迟执行
+
+我们可以尝试使用链式调用加延迟执行修改这个 `AsyncArray`
 
 ```js
+/**
+ * 保存高阶函数传入的异步操作
+ */
 class AsyncArrayAction {
-  constructor(action, fn) {
+  constructor(type, action) {
+    /**
+     * @field 异步操作的类型
+     * @type {string}
+     */
+    this.type = type
+    /**
+     * @field 异步操作
+     * @type {Function}
+     */
     this.action = action
-    this.fn = fn
   }
 }
 
+/**
+ * 真正实现的异步数组
+ */
 class _AsyncArray {
-  constructor(...args) {
-    this._arr = Array.from(args)
+  constructor(arr) {
+    this._arr = arr
   }
   async forEach(fn) {
-    this._task.push()
     const arr = this._arr
     for (let i = 0, len = arr.length; i < len; i++) {
       await fn(arr[i], i, this)
     }
+    this._arr = []
   }
   async map(fn) {
     const arr = this._arr
@@ -166,6 +184,18 @@ class _AsyncArray {
     for (let i = 0, len = arr.length; i < len; i++) {
       res.push(await fn(arr[i], i, this))
     }
+    this._arr = res
+    return this
+  }
+  async filter(fn) {
+    const arr = this._arr
+    const res = []
+    for (let i = 0, len = arr.length; i < len; i++) {
+      if (await fn(arr[i], i, this)) {
+        res.push(arr[i])
+      }
+    }
+    this._arr = res
     return this
   }
 }
@@ -173,20 +203,180 @@ class _AsyncArray {
 class AsyncArray {
   constructor(...args) {
     this._arr = Array.from(args)
+    /**
+     * @field 保存异步任务
+     * @type {AsyncArrayAction[]}
+     */
     this._task = []
   }
-  async forEach(fn) {
+  forEach(fn) {
     this._task.push(new AsyncArrayAction('forEach', fn))
     return this
   }
-  async map(fn) {
-    const arr = this._arr
-    const res = []
-    for (let i = 0, len = arr.length; i < len; i++) {
-      res.push(await fn(arr[i], i, this))
-    }
+  map(fn) {
+    this._task.push(new AsyncArrayAction('map', fn))
     return this
   }
-  async value() {}
+  /**
+   * 终结整个链式操作并返回结果
+   */
+  async value() {
+    const arr = new _AsyncArray(this._arr)
+    let result
+    for (let task of this._task) {
+      result = await arr[task.type](task.action)
+    }
+    return result
+  }
 }
+```
+
+使用一下
+
+```js
+await new AsyncArray(...ids)
+  .map(get)
+  .forEach(async res => console.log(res))
+  .value()
+```
+
+可以看到，确实符合预期了，然而每次都要调用 `value()`，终归有些麻烦。
+
+## 使用 then 以支持 await 自动结束
+
+这里使用 `then()` 替代它以使得可以使用 `await` **自动**计算结果
+
+```js
+class AsyncArray {
+  // 上面的其他内容...
+  /**
+   * 等待计算完成所有的异步结果
+   */
+  async then() {
+    const arr = new _AsyncArray(this._arr)
+    let result
+    for (let task of this._task) {
+      result = await arr[task.type](task.action)
+    }
+    return result
+  }
+}
+```
+
+现在，可以使用 `await` 结束这次链式调用了
+
+```js
+await new AsyncArray(...ids).map(get).forEach(async res => console.log(res))
+```
+
+突然之间，我们发现了一个问题，为什么会这么慢？一个个去进行异步操作太慢了，难道就不能一次性全部发送出去，然后有序的处理结果就好了嘛？
+
+## 并发异步操作
+
+我们可以使用 `Promise.all` 并发执行异步操作，然后对它们的结果进行有序地处理。
+
+```js
+/**
+ * 并发实现的异步数组
+ */
+class _AsyncArrayParallel {
+  constructor(arr) {
+    this._arr = arr
+  }
+  async _all(fn) {
+    return Promise.all(this._arr.map(fn))
+  }
+  async forEach(fn) {
+    await this._all(fn)
+    this._arr = []
+  }
+  async map(fn) {
+    this._arr = await this._all(fn)
+    return this
+  }
+  async filter(fn) {
+    const arr = await this._all(fn)
+    this._arr = this._arr.filter((v, i) => arr[i])
+    return this
+  }
+}
+```
+
+然后修改 `AsyncArray`，使用 `_AsyncArrayParallel` 即可
+
+```js
+class AsyncArray {
+  // 上面的其他内容...
+  /**
+   * 终结整个链式操作并返回结果
+   */
+  async then() {
+    const arr = new _AsyncArrayParallel(this._arr)
+    let result
+    for (let task of this._task) {
+      result = await arr[task.type](task.action)
+    }
+    return result
+  }
+}
+```
+
+调用方式不变。当然，由于使用 `Promise.all` 实现，也同样受到它的限制 -- 异步操作实际上全部执行了。
+
+## 串行/并行相互转换
+
+现在我们的 `_AsyncArray` 和 `_AsyncArrayParallel` 两个类只能二选一，所以，我们需要添加两个函数用于互相转换。
+
+```js
+class AsyncArray {
+  constructor(...args) {
+    this._arr = Array.from(args)
+    /**
+     * @field 保存异步任务
+     * @type {AsyncArrayAction[]}
+     */
+    this._task = []
+    /**
+     * 是否并行化
+     */
+    this._parallel = false
+  }
+  // 其他内容...
+  parallel() {
+    this._parallel = true
+    return this
+  }
+  serial() {
+    this._parallel = false
+    return this
+  }
+  /**
+   * 终结整个链式操作并返回结果
+   */
+  async then() {
+    const arr = this._parallel
+      ? new _AsyncArray(this._arr)
+      : new _AsyncArrayParallel(this._arr)
+    let result
+    for (let task of this._task) {
+      result = await arr[task.type](task.action)
+    }
+    return result
+  }
+}
+```
+
+现在，我们可以在真正执行之前在任意位置对其进行转换了
+
+```js
+await new AsyncArray(...ids)
+  .parallel()
+  .filter(async i => i % 2 === 0)
+  .map(get)
+  .forEach(async res => console.log(res))
+```
+
+## 补全一览
+
+```js
 ```
