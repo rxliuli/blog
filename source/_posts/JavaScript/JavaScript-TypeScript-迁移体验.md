@@ -6,7 +6,7 @@ tags:
   - 记录
 abbrlink: eeb7bc5
 date: 2019-05-23 20:22:36
-updated: 2019-05-28
+updated: 2019-06-22
 ---
 
 # JavaScript => TypeScript 迁移体验
@@ -271,3 +271,7 @@ console.log(str.length)
 ## 总结
 
 截至目前为止，吾辈已经着手使用 TypeScript 重构工具函数库 [rx-util](https://github.com/rxliuli/rx-util) 两周了，基本上打包配置，文档生成，类型定义基本上算是大致完成，感觉之后的公共项目大概都会用 TypeScript 实现了，毕竟前端主流开发工具 VSCode 对其的支持真的很好，而且 TypeScript 的接口这种概念真的太有用了！
+
+---
+
+使用了有一段时间了，这里不得不再次声明一下，TypeScript 的类型系统复杂度超乎想象，如果你没有准备好在生产系统中使用，那就最好不要使用。缺少关于类型系统（尤其是原生类型，例如 `PromiseLike` 居然没有人讲过）的说明，使得 TypeScript 的类型系统很多时候看起来都只是为了**好玩**而已。而且稍微复杂一点的情况思考如何设计类型的时间将会超过具体的代码实现，使用它请务必再三慎重考虑！
