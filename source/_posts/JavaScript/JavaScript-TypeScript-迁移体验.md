@@ -13,6 +13,8 @@ updated: 2019-06-22
 
 ## 前言
 
+> 如果你使用 JavaScript 没出现什么问题，那吾辈就不推荐你迁移到 TypeScript！
+
 - `JavaScript` 不能无缝迁移到 `TypeScript`！
 - `JavaScript` 不能无缝迁移到 `TypeScript`！
 - `JavaScript` 不能无缝迁移到 `TypeScript`！
