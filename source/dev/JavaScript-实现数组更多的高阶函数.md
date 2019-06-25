@@ -1,0 +1,226 @@
+---
+layout: post
+title: JavaScript 实现数组更多的高阶函数
+abbrlink: fc1eb87f
+date: 2019-06-25 17:55:01
+tags:
+  - JavaScript
+---
+
+# JavaScript 实现数组更多的高阶函数
+
+## 场景
+
+> 虽说人人平等，但有些人更加平等。
+
+为什么有了 Lodash 这种通用函数工具库，吾辈要写这篇文章呢？吾辈在 SegmentFault 上经常看到关于 JavaScript 数组的相关疑问，甚至于，相同类型的问题，只是数据变化了一些，就直接提出了一个新的问题（实际上，对自身并无帮助）。简单[搜索了一下 Array](https://segmentfault.com/search?q=Array&type=question)，居然有 2360+ 条的结果，足可见这类问题的频率之高。若是有一篇适合 JavaScript 萌新阅读的自己实现数组更多操作的文章，情况是否会发生变化呢？
+
+下面吾辈便来实现以下几种常见的操作
+
+- `uniqueBy`: 去重
+- `sortBy`: 排序
+- `filterItems`: 过滤掉一些元素
+- `diffBy`: 差异
+- `groupBy`: 分组
+
+> 前言
+> 你至少需要了解 ES6 的 `Set, Map` 等特性
+
+## `uniqueBy`: 去重
+
+```js
+/**
+ * js 的数组去重方法
+ * @param arr 要进行去重的数组
+ * @param kFn 唯一标识元素的方法，默认使用 {@link returnItself}
+ * @returns 进行去重操作之后得到的新的数组 (原数组并未改变)
+ */
+function uniqueBy(arr, kFn = val => val) {
+  const set = new Set()
+  return arr.filter((v, ...args) => {
+    const k = kFn(v, ...args)
+    if (set.has(k)) {
+      return false
+    }
+    set.add(k)
+    return true
+  })
+}
+```
+
+使用
+
+```js
+console.log(uniqueBy([1, 2, 3, '1', '2'])) // [ 1, 2, 3, '1', '2' ]
+console.log(uniqueBy([1, 2, 3, '1', '2'], i => i + '')) // [ 1, 2, 3 ]
+```
+
+## `sortBy`: 排序
+
+```js
+/**
+ * 快速根据指定函数对数组进行排序
+ * 注: 使用递归实现，对于超大数组（其实前端的数组不可能特别大吧？#笑）可能造成堆栈溢出
+ * @param arr 需要排序的数组
+ * @param kFn 对数组中每个元素都产生可比较的值的函数，默认返回自身进行比较
+ * @returns 排序后的新数组
+ */
+function sortBy(arr, kFn = v => v) {
+  // TODO 此处为了让 typedoc 能生成文档而不得不加上类型
+  const newArr = arr.map((v, i) => [v, i])
+  function _sort(arr, fn) {
+    // 边界条件，如果传入数组的值
+    if (arr.length <= 1) {
+      return arr
+    }
+    // 根据中间值对数组分治为两个数组
+    const medianIndex = Math.floor(arr.length / 2)
+    const medianValue = arr[medianIndex]
+    const left = []
+    const right = []
+    for (let i = 0, len = arr.length; i < len; i++) {
+      if (i === medianIndex) {
+        continue
+      }
+      const v = arr[i]
+      if (fn(v, medianValue) <= 0) {
+        left.push(v)
+      } else {
+        right.push(v)
+      }
+    }
+    return _sort(left, fn)
+      .concat([medianValue])
+      .concat(_sort(right, fn))
+  }
+  return _sort(newArr, ([t1, i1], [t2, i2]) => {
+    const k1 = kFn(t1, i1, arr)
+    const k2 = kFn(t2, i2, arr)
+    if (k1 === k2) {
+      return 0
+    } else if (k1 < k2) {
+      return -1
+    } else {
+      return 1
+    }
+  }).map(([_v, i]) => arr[i])
+}
+```
+
+使用
+
+```js
+console.log(sortBy([1, 3, 5, 2, 4])) // [ 1, 2, 3, 4, 5 ]
+console.log(sortBy([1, 3, 5, '2', '4'])) // [ 1, '2', 3, '4', 5 ]
+console.log(sortBy([1, 3, 5, '2', '4'], i => -i)) // [ 5, '4', 3, '2', 1 ]
+```
+
+## `filterItems`: 过滤掉一些元素
+
+```js
+/**
+ * 从数组中移除指定的元素
+ * 注: 时间复杂度为 1~3On
+ * @param arr 需要被过滤的数组
+ * @param deleteItems 要过滤的元素数组
+ * @param kFn 每个元素的唯一键函数
+ */
+function filterItems(arr, deleteItems, kFn = v => v) {
+  const kSet = new Set(deleteItems.map(kFn))
+  return arr.filter((v, i, arr) => !kSet.has(kFn(v, i, arr)))
+}
+```
+
+使用
+
+```js
+console.log(filterItems([1, 2, 3, 4, 5], [1, 2, 0])) // [ 3, 4, 5 ]
+console.log(filterItems([1, 2, 3, 4, 5], ['1', '2'], i => i + '')) // [ 3, 4, 5 ]
+```
+
+## `diffBy`: 差异
+
+```js
+/**
+ * 比较两个数组的差异
+ * @param left 第一个数组
+ * @param right 第二个数组
+ * @param kFn 每个元素的唯一标识产生函数
+ * @returns 比较的差异结果
+ */
+function diffBy(left, right, kFn = v => v) {
+  // 首先得到两个 kSet 集合用于过滤
+  const kThanSet = new Set(left.map(kFn))
+  const kThatSet = new Set(right.map(kFn))
+  const leftUnique = left.filter((v, ...args) => !kThatSet.has(kFn(v, ...args)))
+  const rightUnique = right.filter(
+    (v, ...args) => !kThanSet.has(kFn(v, ...args)),
+  )
+  const kLeftSet = new Set(leftUnique.map(kFn))
+  const common = left.filter((v, ...args) => !kLeftSet.has(kFn(v, ...args)))
+  return { left: leftUnique, right: rightUnique, common }
+}
+```
+
+使用
+
+```js
+console.log(diffBy([1, 2, 3], [2, 3, 4])) // { left: [ 1 ], right: [ 4 ], common: [ 2, 3 ] }
+console.log(diffBy([1, 2, 3], ['2', 3, 4])) // { left: [ 1, 2 ], right: [ '2', 4 ], common: [ 3 ] }
+console.log(diffBy([1, 2, 3], ['2', 3, 4], i => i + '')) // { left: [ 1 ], right: [ 4 ], common: [ 2, 3 ] }
+```
+
+## `groupBy`: 分组
+
+```js
+/**
+ * js 数组按照某个条件进行分组
+ *
+ * @param arr 要进行分组的数组
+ * @param kFn 元素分组的唯一标识函数
+ * @param vFn 元素分组的值处理的函数。第一个参数是累计值，第二个参数是当前正在迭代的元素，如果你使用过 {@link Array#reduce} 函数的话应该对此很熟悉
+ * @param init 每个分组的产生初始值的函数。类似于 reduce 的初始值，但它是一个函数，避免初始值在所有分组中进行累加。
+ * @returns 元素标识 => 数组映射 Map
+ */
+function groupBy(
+  arr,
+  kFn = v => v,
+  /**
+   * 默认的值处理函数
+   * @param res 最终 V 集合
+   * @param item 当前迭代的元素
+   * @returns 将当前元素合并后的最终 V 集合
+   */
+  vFn = (res, item) => {
+    res.push(item)
+    return res
+  },
+  init = () => [],
+) {
+  // 将元素按照分组条件进行分组得到一个 条件 -> 数组 的对象
+  return arr.reduce((res, item, index, arr) => {
+    const k = kFn(item, index, arr)
+    // 如果已经有这个键了就直接追加, 否则先将之初始化再追加元素
+    if (!res.has(k)) {
+      res.set(k, init())
+    }
+    res.set(k, vFn(res.get(k), item, index, arr))
+    return res
+  }, new Map())
+}
+```
+
+使用
+
+```js
+console.log(groupBy([1, 2, 2, 2, 4, 4, 5, 5, 6], i => i)) // Map { 1 => [ 1 ],  2 => [ 2, 2, 2 ],  4 => [ 4, 4 ],  5 => [ 5, 5 ],  6 => [ 6 ] }
+console.log(groupBy([1, 2, 2, 2, 4, 4, 5, 5, 6], i => i % 2 === 0)) // Map { false => [ 1, 5, 5 ], true => [ 2, 2, 2, 4, 4, 6 ] }
+console.log(
+  groupBy(
+    [1, 2, 2, 2, 4, 4, 5, 5, 6],
+    i => i % 2 === 0,
+    (res, i) => res.add(i),
+    () => new Set(),
+  ),
+) // Map { false => Set { 1, 5 }, true => Set { 2, 4, 6 } }
+```
