@@ -32,7 +32,7 @@ updated: 2018-11-01 10:13:19
 
 是的，居然必须用 `require()` 引入图片才能生效，那为什么 `img` 标签可以直接使用相对路径呢？这和 [vue-loader 资源路径处理](https://vue-loader-v14.vuejs.org/zh-cn/configurations/asset-url.html) 有关系。
 
-![官方资源路径处理](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181101130706.png)
+![官方资源路径处理](https://img.rxliuli.com/20181101130706.png)
 
 官方明确指出会将所有资源路径作为模块依赖，也就是后台 `vue-loader` 帮我们转换成 `require()` 的形式了。
 
@@ -47,7 +47,7 @@ updated: 2018-11-01 10:13:19
 
 吾辈的配置文件在 _build > vue-loader.conf.js_
 
-![vue-loader 配置文件](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181101131408.png)
+![vue-loader 配置文件](https://img.rxliuli.com/20181101131408.png)
 
 > [vue-loader 官方文档参考](https://vue-loader-v14.vuejs.org/zh-cn/options.html#transformtorequire)
 

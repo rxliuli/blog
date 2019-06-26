@@ -40,7 +40,7 @@ for (var i = 0; i < 3; i++) {
 
 图解如下
 
-![js for 循环和 setTimeout 理解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227214410.png)
+![js for 循环和 setTimeout 理解](https://img.rxliuli.com/20181227214410.png)
 
 那么答案只有一个，两段代码执行的结果应该都是 `0 1 2` 才对！Ｏ(≧▽≦)Ｏ
 
@@ -160,7 +160,7 @@ for (let i = 0; i < 3; i++) {
 
 图解如下
 
-![let + for 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227212650.png)
+![let + for 图解](https://img.rxliuli.com/20181227212650.png)
 
 ### var + for
 
@@ -177,7 +177,7 @@ for (var i = 0; i < 3; i++) {
 3. setTimeout 函数执行，闭包绑定函数作用域外部变量 i，在循环结束输出 i 的值 3
 4. 继续迭代
 
-![var + for 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181227213014.png)
+![var + for 图解](https://img.rxliuli.com/20181227213014.png)
 
 ---
 

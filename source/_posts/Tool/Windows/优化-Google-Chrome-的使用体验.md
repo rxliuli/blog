@@ -22,7 +22,7 @@ tags:
 
 Windows 字体预览
 
-![更纱黑体](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527190659.png)
+![更纱黑体](https://img.rxliuli.com/20190527190659.png)
 
 > 这里也推荐作为编程字体，毕竟程序中同时存在中英文，而一个同时支持中英文的等宽字体实在难得。
 
@@ -30,7 +30,7 @@ Windows 字体预览
 
 安装完了字体，然而 Chrome 默认并不会使用它，我们还需要 [Stylus](https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne) 进行指定。
 
-![添加 UserCSS](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527221308.png)
+![添加 UserCSS](https://img.rxliuli.com/20190527221308.png)
 
 添加一个新的样式，内容只需要设置所有元素使用的字体为 **Sarasa Mono CL**
 
@@ -47,18 +47,18 @@ input {
 
 这时候查看一下字体效果
 
-![效果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190527221458.png)
+![效果](https://img.rxliuli.com/20190527221458.png)
 
 ## 夜间模式
 
 如果你像吾辈一样，喜欢暗色的主题，可以使用插件 [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)，它能够让网页默认使用暗色模式，看起来和编辑器保持一致：并且，看起来很 **Geek**！
 
-![暗色模式](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531203702.png)
+![暗色模式](https://img.rxliuli.com/20190531203702.png)
 
 看起来标题栏很违和？安装一个 [Dark 主题](https://chrome.google.com/webstore/detail/morpheon-dark/mafbdhjdkjnoafhfelkjpchpaepjknad) 试试看。
 现在，是不是变得很和谐了呢？
 
-![暗色标题栏](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531225833.png)
+![暗色标题栏](https://img.rxliuli.com/20190531225833.png)
 
 ## 广告过滤
 
@@ -71,17 +71,17 @@ input {
 
 > 注意每个搜索结果下面的小字 **广告**
 
-![百度的广告](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210354.png)
+![百度的广告](https://img.rxliuli.com/20190531210354.png)
 
 使用插件后的效果
 
-![过滤后的百度搜索](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210454.png)
+![过滤后的百度搜索](https://img.rxliuli.com/20190531210454.png)
 
 嗯，清爽了许多呢 ~ o(\*￣ ▽ ￣\*)o
 
 这里对比一下 Google 的搜索结果，可以明显看出来百度的广告的数量之多。。。
 
-![对比的 Google 搜索结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531210759.png)
+![对比的 Google 搜索结果](https://img.rxliuli.com/20190531210759.png)
 
 ## 自动翻页
 
@@ -89,7 +89,7 @@ input {
 
 下面是使用了 AutoPagerize 后的 Google 搜索结果，会在滚动到接近底部时，自动获取下一页的内容并拼接到最后！
 
-![使用 AutoPagerize](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531211313.png)
+![使用 AutoPagerize](https://img.rxliuli.com/20190531211313.png)
 
 当然，它也支持百度哦
 
@@ -105,21 +105,21 @@ input {
 
 然后在 Google 搜索 [js 数组去重](https://www.google.com/search?q=js+%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D)，可以看到包含了几个的 CSDN 博客的结果
 
-![CSND 博客搜索结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531213523.png)
+![CSND 博客搜索结果](https://img.rxliuli.com/20190531213523.png)
 
 现在，让我们从 Google 搜索中屏蔽 blog.csdn.net 这个域名
 
-![Block 操作](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531214002.png)
+![Block 操作](https://img.rxliuli.com/20190531214002.png)
 
 屏蔽后的搜索结果，CSDN Blog 那些垃圾博客不见了，心情大好！
 
-![屏蔽后的结果](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531214650.png)
+![屏蔽后的结果](https://img.rxliuli.com/20190531214650.png)
 
 ## 新标签页
 
 你是否也曾厌倦了 Chrome 浏览器千篇一律的新标签页，这里吾辈个人使用的是 [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp/related)。最早是在 Firefox 遇到的，后来作者将之移植到了 Chrome 上，开源免费，每次的新标签页都是不一样的风景。
 
-![新标签页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531215447.png)
+![新标签页](https://img.rxliuli.com/20190531215447.png)
 
 也能在每次打开新标签的时候放松心情，吾辈觉得是极好的。
 
@@ -129,7 +129,7 @@ input {
 
 下面演示多个标签页被冻结的效果
 
-![冻结的标签页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531220652.png)
+![冻结的标签页](https://img.rxliuli.com/20190531220652.png)
 
 ## 下载拦截
 
@@ -147,7 +147,7 @@ FDM 的优势
 
 所以，如果经常下载资料的话推荐入坑 FDM，这里放一张首页
 
-![FDM 首页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531221709.png)
+![FDM 首页](https://img.rxliuli.com/20190531221709.png)
 
 ## GitHub 优化
 
@@ -157,7 +157,7 @@ FDM 的优势
 
 GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推荐 [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc) 这个插件。它能够为 GitHub 添加一个侧边栏，极大的方便了在线代码浏览。
 
-![Octotree](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531222359.png)
+![Octotree](https://img.rxliuli.com/20190531222359.png)
 
 嗯？好像有点配色不对？Octotree 默认使用亮色主题，而其他主题则需要 Pro 版本 -- 即收费版本。如果需要的话，可以去官网支持一下 <https://www.octotree.io/>。
 
@@ -165,17 +165,17 @@ GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推�
 
 不过我们也可以加个 UserCSS 补丁，使用上面的 Stylus 安装 [Octotree for GitHub Ice Dark](https://userstyles.org/styles/170999/) 这个主题，刷新一下 GitHub。
 
-![暗色 Octotree](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223206.png)
+![暗色 Octotree](https://img.rxliuli.com/20190531223206.png)
 
 ### 立体化 GitHub 用户活动
 
 当你查看一个 GitHub 用户的活动概览时，总是平面方块未免有些无聊，而且以颜色深浅区分也尚不明了。
 
-![GitHub 用户活动平面图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223619.png)
+![GitHub 用户活动平面图](https://img.rxliuli.com/20190531223619.png)
 
 所以，你可以使用 [Isometric Contributions](https://chrome.google.com/webstore/detail/isometric-contributions/mjoedlfflcchnleknnceiplgaeoegien) 插件，让活动变得更有趣一点，变成更直观的 3D 柱状图。
 
-![GitHub 用户活动 3D 图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531223909.png)
+![GitHub 用户活动 3D 图](https://img.rxliuli.com/20190531223909.png)
 
 ### 统计仓库大小
 
@@ -183,7 +183,7 @@ GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推�
 
 > GitHub 下载仓库时并不会给出下载的百分比，所以什么时候下载完成是个玄学。。。
 
-![统计仓库大小](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190531224452.png)
+![统计仓库大小](https://img.rxliuli.com/20190531224452.png)
 
 ## 总结
 

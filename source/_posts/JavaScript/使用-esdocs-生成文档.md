@@ -71,7 +71,7 @@ echo '{
 
 然后打开 _docs/index.html_ 文件即可查看了，下面截张吾辈的工具库 [rx-util](https://rx-util.rxliuli.com/) 生成的文档。
 
-![rx-util](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190331002416.png)
+![rx-util](https://img.rxliuli.com/20190331002416.png)
 
 ## 总结
 

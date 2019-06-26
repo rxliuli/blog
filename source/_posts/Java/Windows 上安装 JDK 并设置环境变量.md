@@ -14,25 +14,25 @@ tags:
 
 找到 **Java SE Development Kit 8uXXX** 勾选 **Accept License Agreement**，点击下载平台对应的二进制文件，这里以 Windows 平台为例，选择 **jdk-8u191-windows-x64.exe** 下载就好了
 
-![JDK8 下载](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017141137.png)
+![JDK8 下载](https://img.rxliuli.com/20181017141137.png)
 
 ## 运行安装程序
 
 双击打开 JDK 安装，其实基本上就是一路 Next 下去就好啦
 
-![JDK 安装 01](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017145812.png)
+![JDK 安装 01](https://img.rxliuli.com/20181017145812.png)
 
-![JDK 安装 02](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017145854.png)
+![JDK 安装 02](https://img.rxliuli.com/20181017145854.png)
 
-![JDK 安装 02](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017145932.png)
+![JDK 安装 02](https://img.rxliuli.com/20181017145932.png)
 
-![JDK 安装 03](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017150018.png)
+![JDK 安装 03](https://img.rxliuli.com/20181017150018.png)
 
 这里需要注意一下，对于安装 JDK 的人来说，Java 安装是可有可无的，所以我们这里直接点 X 就好再确定就好。
 
-![不安装 Java](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017150310.png)
+![不安装 Java](https://img.rxliuli.com/20181017150310.png)
 
-![安装完成](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017150357.png)
+![安装完成](https://img.rxliuli.com/20181017150357.png)
 
 安装完成，关闭安装窗口即可，然而我们并不能立刻开始使用 JDK，因为我们还需要设置 JDK 的环境变量
 
@@ -40,33 +40,33 @@ tags:
 
 1. 在 **此电脑** 上右键选择 **属性**
 
-![此电脑右键属性](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142509.png)
+![此电脑右键属性](https://img.rxliuli.com/20181017142509.png)
 
 2. 在 **控制面板\系统和安全\系统** 选择 **高级系统设置**
 
-![高级系统设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142726.png)
+![高级系统设置](https://img.rxliuli.com/20181017142726.png)
 
 3. 在 **系统属性 > 高级** 选项卡选择 **环境变量**
 
-![环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017142652.png)
+![环境变量](https://img.rxliuli.com/20181017142652.png)
 
 JDK：需要设置 3 个环境变量（如果找不到就添加）
 
 > 附：这里一般设置到 **系统变量** 里面
 
-![环境变量设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143203.png)
+![环境变量设置](https://img.rxliuli.com/20181017143203.png)
 
 - JAVA_HOME：浏览文件夹选择 JDK 安装路径就行了
 
-  ![JAVA_HOME 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143629.png)
+  ![JAVA_HOME 环境变量](https://img.rxliuli.com/20181017143629.png)
 
 - CLASSPATH：`.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;`
 
-  ![CLASSPATH 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017144048.png)
+  ![CLASSPATH 环境变量](https://img.rxliuli.com/20181017144048.png)
 
 - Path：添加 `%JAVA_HOME%\bin` 和 `%JAVA_HOME%\jre\bin`
 
-  ![Path 环境变量](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017143940.png)
+  ![Path 环境变量](https://img.rxliuli.com/20181017143940.png)
 
 设置完环境变量之后一定要按确定依次关闭 **环境变量**，**系统属性** 窗口
 
@@ -74,7 +74,7 @@ JDK 安装完成了，现在测试一下能否正常使用，使用 `Win + R` �
 
 ## 测试 JDK 是否安装成功
 
-![在菜单中打开 CMD](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181017145201.png)
+![在菜单中打开 CMD](https://img.rxliuli.com/20181017145201.png)
 
 在命令行输入 `javac`，你应该得到类似于下面的这些输出
 

@@ -39,7 +39,7 @@ tags: [Java, 教程]
 
 图解
 
-![图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190227215703.png)
+![图解](https://img.rxliuli.com/20190227215703.png)
 
 ## 实现
 
@@ -380,7 +380,7 @@ public class BeanCopyOperator<F, T> {
 
 ### 使用流程图
 
-![使用流程图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190228000845.png)
+![使用流程图](https://img.rxliuli.com/20190228000845.png)
 
 ### 测试
 

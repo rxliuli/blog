@@ -37,7 +37,7 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
    以 `fetch` 方式复制这个请求，如果你对 `fetch` 还不了解，可以去 [MDN: 使用 Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 上查看它，并尝试使用它。这是一个浏览器原生的接口，用于进行 HTTP 操作。相比于 `XMLHttpRequest`，`fetch` 通常被称为下一代的 Ajax 技术。  
    这也正是吾辈将之单独列出的重要原因，因为它是纯 JavaScript 的，所以我们可以直接在浏览器中对其进行测试/修改/执行，这点对于 `user.js` 和 `nodejs 爬虫` 尤其重要。
 
-   ![Copy => Copy as fetch](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190104212920.png)
+   ![Copy => Copy as fetch](https://img.rxliuli.com/20190104212920.png)
 
 2. Network 设置
 
@@ -45,14 +45,14 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
    - `Preserve log`：保留日志。一般而言，当你刷新页面后，`Network` 将被清空。然而有时候，我们想知道代码修改前后请求发生了哪些变化（修改之前请求一切正常，修改之后就 GG 了），这是便需要使用该选项保留所有的网络请求，方便对比刷新前后请求的变化。
    - `Group by frame`：根据 frame 对请求进行分组。常见于 Web 后台开发，很多后台项目都使用 frame 实现了标签页的功能，所以按照 frame 进行分组会方便进行查看一点。
 
-   ![Network 设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190104214338.png)
+   ![Network 设置](https://img.rxliuli.com/20190104214338.png)
 
 ### Element
 
 1. `Copy => Copy selector`  
    复制 DOM 元素的选择器，该选择器实际上是供 [Selectors API](https://developer.mozilla.org/zh-CN/docs/Web/API/Document_Object_Model/Locating_DOM_elements_using_selectors) 使用（`querySelector/querySelectorAll`），但 jquery 的选择器应该兼容它。我们复制完选择器后就可以使用 `Selectors API` 或 `jquery` 之类的选择器去获取到元素，然后对之进行操作。这对 `user.js`/`nodejs 爬虫`/`快速获取元素` 有着重要的意义。
 
-   ![Copy => Copy selector](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190104220838.png)
+   ![Copy => Copy selector](https://img.rxliuli.com/20190104220838.png)
 
 2. `Break on`  
    在开发过程中，你是否遇到过这样的问题：“某个元素改变了，但始终不知道是那里的代码改变的”。这时候，DOM 断点就派上用场了，监听某个元素，并根据条件触发并暂停当前 JavaScript 进入 Debug 模式。
@@ -61,7 +61,7 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
    - `attribute modification`：当节点属性发生改变时触发
    - `node removal`：当节点移除时触发
 
-   ![Break on](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190104221816.png)
+   ![Break on](https://img.rxliuli.com/20190104221816.png)
 
 ### Sources
 
@@ -70,7 +70,7 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 
    > 在除了 Console 选项卡之外都可以使用 `CS-F` 直接打开
 
-   ![Drawer Show Search](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190108222409.png)
+   ![Drawer Show Search](https://img.rxliuli.com/20190108222409.png)
 
 2. Debug
    - 预览表达式结果

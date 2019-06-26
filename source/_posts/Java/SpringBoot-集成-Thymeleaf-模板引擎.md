@@ -148,7 +148,7 @@ dependencies {
 
 效果图
 
-![效果图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190309095422.png)
+![效果图](https://img.rxliuli.com/20190309095422.png)
 
 可以看到 `common-lib-js`, `common-header`, `common-footer` 都已经引入成功
 

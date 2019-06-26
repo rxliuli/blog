@@ -35,7 +35,7 @@ That is because MacType tries to hook ConEmuC.exe and ConEmuC64.exe processes. B
 
 详情见下面的 Gif
 
-![Cmder 启动报错](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181122211545.gif)
+![Cmder 启动报错](https://img.rxliuli.com/20181122211545.gif)
 
 ### 2. 编辑配置文件
 

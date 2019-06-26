@@ -54,7 +54,7 @@ updated: 2019-01-27 00:00:00
 - [x] 选择 Shadowsocks 连接密码
 - [ ] 选择加密算法，默认 aes-26-cfb
 
-![heroku app 设置](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190127154903.png)
+![heroku app 设置](https://img.rxliuli.com/20190127154903.png)
 
 设置完成后点击 **Deploy app**，等待部署完成后，点击最下方的 **View** 按钮，如果在新标签页看到下面的这句话就代表部署成功了
 
@@ -66,7 +66,7 @@ Welcome to Heroku https://github.com/onplus/shadowsocks-heroku
 
 在 [Shadowsocks 客户端页面](https://github.com/onplus/shadowsocks-heroku/releases) 下载对应平台的客户端，Windows 平台的链接是 <https://github.com/onplus/shadowsocks-heroku/releases/download/0.9.10.1/ss-h-win64.zip>。
 
-![解压出来的文件](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190127155739.png)
+![解压出来的文件](https://img.rxliuli.com/20190127155739.png)
 
 解压出来，可以看到 `config.json` 文件，我们需要修改一下配置
 
@@ -89,10 +89,10 @@ Welcome to Heroku https://github.com/onplus/shadowsocks-heroku
 
 安装插件 [Proxy SwitchyOmega](https://www.switchyomega.com/download/)，然后在 _导入/导出 > 在线恢复_ 中输入 <https://gist.githubusercontent.com/rxliuli/7447e51653a35e2a36a294f2b8ba9052/raw/57154aaa799f1c9d413500b63f38eb91fd1c075c/SwitchyOmegaBak>，然后点击 **恢复**。
 
-![设置 Proxy SwitchyOmega](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190127163834.png)
+![设置 Proxy SwitchyOmega](https://img.rxliuli.com/20190127163834.png)
 
 访问 <https://www.google.com/>，嗯，现在还无法访问，我们选择 **AutoSwitch** 模式
 
-![选择 AutoSwitch 模式](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190127164040.png)
+![选择 AutoSwitch 模式](https://img.rxliuli.com/20190127164040.png)
 
 好了，大功告成，我们以后可以正常在浏览器上网了！

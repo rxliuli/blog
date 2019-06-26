@@ -21,8 +21,8 @@ updated: 2018-10-01 00:00:00
 使用 F12 打开 Chrome 开发者工具，勾选 **Setting -> Preferences -> Debugger -> Disable JavaScript**，临时禁用掉 JavaScript，然后在粘贴密码之后记得要取消勾选哦，因为支付宝的登录还要用到 JavaScript 呢
 
 1. 打开 Chrome 开发者工具  
-   [![打开 Chrome 开发者工具](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190117221230.png)](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190117221230.png)
+   [![打开 Chrome 开发者工具](https://img.rxliuli.com/20190117221230.png)](https://img.rxliuli.com/20190117221230.png)
 2. 临时禁用 JavaScript  
-   [![临时禁用 JavaScript](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190117221505.png)](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190117221505.png)
+   [![临时禁用 JavaScript](https://img.rxliuli.com/20190117221505.png)](https://img.rxliuli.com/20190117221505.png)
 
 > 快速切换的方法暂且还没有找到 Chrome 插件呢，有什么好推荐的也可以告诉吾辈哦

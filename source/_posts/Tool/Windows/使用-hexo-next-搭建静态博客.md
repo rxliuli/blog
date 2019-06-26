@@ -42,13 +42,13 @@ npm i hexo -g
 
 安装过程
 
-![hexo cli 安装过程](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209170408.png)
+![hexo cli 安装过程](https://img.rxliuli.com/20181209170408.png)
 
 验证一下
 
 输入 `hexo`，应该会得到类似下面的响应
 
-![hexo 安装验证](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209170553.png)
+![hexo 安装验证](https://img.rxliuli.com/20181209170553.png)
 
 ## 初始化 hexo 博客
 
@@ -60,11 +60,11 @@ hexo init
 
 输出
 
-![hexo init 输出](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209174358.png)
+![hexo init 输出](https://img.rxliuli.com/20181209174358.png)
 
 安装完成后文件夹如下
 
-![安装后的文件夹](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209175833.png)
+![安装后的文件夹](https://img.rxliuli.com/20181209175833.png)
 
 ## 本地运行博客
 
@@ -75,7 +75,7 @@ hexo s
 ```
 
 在浏览器打开 <http://localhost:4000/> 页面，可以看到 hexo 博客的初始页面  
-![hexo 博客的初始页面](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209175541.png)
+![hexo 博客的初始页面](https://img.rxliuli.com/20181209175541.png)
 
 嗯，有点丑，我们可以更换一下主题，本文主要讲解使用 [hexo next](https://theme-next.iissnan.com/) 主题。
 
@@ -89,10 +89,10 @@ hexo s
 
 2. 启用主题  
    打开根目录下的 _\_config.yml_ 文件，找到 `theme` 字段，将之修改为 `next` 即可  
-   ![启用 next 主题](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209181850.png)
+   ![启用 next 主题](https://img.rxliuli.com/20181209181850.png)
 
 3. 重新打开本地服务器测试一下  
-   ![next 主题首页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209182031.png)
+   ![next 主题首页](https://img.rxliuli.com/20181209182031.png)
 
 ## 将代码托管到 gitlab
 
@@ -113,10 +113,10 @@ git commit -a -m "Initial Commit"
 ```
 
 所以，在 [gitlab](https://gitlab.com) 创建一个私有仓库（最好与本地博客文件夹同名）。  
-![gitlab 创建私有仓库](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209182900.png)
+![gitlab 创建私有仓库](https://img.rxliuli.com/20181209182900.png)
 
 创建完成后会得到一个 git 远程仓库的地址  
-![git 远程仓库地址](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209183821.png)
+![git 远程仓库地址](https://img.rxliuli.com/20181209183821.png)
 
 将之设置为本地仓库的远程仓库
 
@@ -131,7 +131,7 @@ git push origin master
 ```
 
 提交完成后回到刚才创建的远程仓库的页面，会看到远程仓库中已经有文件了  
-![提交完之后](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209184200.png)
+![提交完之后](https://img.rxliuli.com/20181209184200.png)
 
 ## 托管网站
 
@@ -160,20 +160,20 @@ git push origin master
 1. 首先你需要一个 [netlify](https://netlify.com/) 的账号，只需要邮箱即可注册。
 
 2. 登录之后进入你的 [个人首页](https://app.netlify.com/)  
-   ![个人首页](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211213.png)
+   ![个人首页](https://img.rxliuli.com/20181209211213.png)
 
 3. 由于我们的远程仓库使用的是 GitLab，所以我们连接自己的 GitLab 账户  
-   ![连接到 GitLab](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211441.png)
+   ![连接到 GitLab](https://img.rxliuli.com/20181209211441.png)
 
 4. 接下来找到我们的远程仓库  
-   ![远程仓库](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211616.png)
+   ![远程仓库](https://img.rxliuli.com/20181209211616.png)
 
 5. 设定构建命令以及构建目录，没有意外的话 netlify 已经自动识别出这是 hexo 博客了
-   ![设定构建命令](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209211803.png)
+   ![设定构建命令](https://img.rxliuli.com/20181209211803.png)
 
 6. 部署站点  
    点击部署之后就会帮你自动部署，部署完成后就可以在线访问你的博客啦  
-   ![在线自动部署](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209212501.png)
+   ![在线自动部署](https://img.rxliuli.com/20181209212501.png)
 
 7. 自定义域名
 
@@ -185,7 +185,7 @@ git push origin master
    4. 点击 **Check DNS configuration** 检查 DNS 配置
    5. 查看其中的 CNAME DNS 记录，一会还要用
 
-   ![Gif 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190110234441.gif)
+   ![Gif 图解](https://img.rxliuli.com/20190110234441.gif)
 
 8. 在你的域名 DNS 记录中添加上面的 CNAME 记录
 
@@ -193,12 +193,12 @@ git push origin master
    2. 添加一条 CNAME 记录，Name 是我们自定义的二级域名前缀 [blog-demo](https://blog-demo.rxliuli.com/)，Domain name 是 netlify 为我们自动生成的二级域名 [confident-joliot-3c1548.netlify.com](https://confident-joliot-3c1548.netlify.com/)。
    3. 等待 DNS 刷新完成
 
-   ![Gif 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190110235636.gif)
+   ![Gif 图解](https://img.rxliuli.com/20190110235636.gif)
 
    > 这里吾辈再推荐一次 [cloudflare](https://www.cloudflare.com)，DNS 刷新时间不会超过 5 分钟，真的是有够快的了！
 
 9. 访问博客  
-   ![访问博客](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209212636.png)
+   ![访问博客](https://img.rxliuli.com/20181209212636.png)
 
 ## 修改博客设置
 
@@ -213,8 +213,8 @@ git push origin master
 
 配置效果对照图
 
-![VSCode](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209214854.png)  
-![浏览器](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209215051.png)
+![VSCode](https://img.rxliuli.com/20181209214854.png)  
+![浏览器](https://img.rxliuli.com/20181209215051.png)
 
 ## 写一个新的文章
 
@@ -224,13 +224,13 @@ git push origin master
 hexo new "[文章名]"
 ```
 
-![创建新的文章](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209215646.png)
+![创建新的文章](https://img.rxliuli.com/20181209215646.png)
 
 随便写点什么  
-![编辑 markdown 文件](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209215853.png)
+![编辑 markdown 文件](https://img.rxliuli.com/20181209215853.png)
 
 最后使用 git 将之提交到 GitLab 远程仓库，netlify 会监听并帮我们自动部署好一切的，再访问网站可以看到新的篇章了（如果内容很多可能要等一段时间）  
-![新的篇章](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181209220703.png)
+![新的篇章](https://img.rxliuli.com/20181209220703.png)
 
 这个示例 blog 被吾辈部署到 <https://hexo-next-blog-demo.rxliuli.com/>
 

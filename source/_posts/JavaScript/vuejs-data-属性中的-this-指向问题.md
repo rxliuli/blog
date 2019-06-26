@@ -128,17 +128,17 @@ console.log(table.user.birthdayFormatter)
 现在问题解决了，那么，为什么 `vuejs` 就能够在传入 `data` 函数时就能调用 `methods` 中的函数了呢？吾辈稍微 debug 进入源码看了一下
 
 1. 创建 `Table` 进入构造函数
-   ![构造函数](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085616.png)
+   ![构造函数](https://img.rxliuli.com/20190327085616.png)
 2. 因为继承了 Vue，所以进入 Vue 的构造函数中
-   ![进入 Vue 的构造函数中](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085734.png)
+   ![进入 Vue 的构造函数中](https://img.rxliuli.com/20190327085734.png)
 3. 因为当前实例属于 Vue，所以进入 `_init` 进行初始化
-   ![进入 _init 初始化](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327085948.png)
+   ![进入 _init 初始化](https://img.rxliuli.com/20190327085948.png)
 4. 跳转到 `initState(vm);` 处，该函数将对 data 属性进行初始化（至于为什么是 state 可能是因为最初就是模仿 react 写的？）
-   ![跳转到 initState()](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090323.png)
+   ![跳转到 initState()](https://img.rxliuli.com/20190327090323.png)
 5. 进入到 `initState()`，跳转到 `initData(vm);` 处
-   ![initData(vm) 处](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090559.png)
+   ![initData(vm) 处](https://img.rxliuli.com/20190327090559.png)
 6. 进入到 `initData()` 函数，看到了判断逻辑
-   ![判断逻辑](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327090946.png)
+   ![判断逻辑](https://img.rxliuli.com/20190327090946.png)
 
    ```js
    var data = vm.$options.data
@@ -148,7 +148,7 @@ console.log(table.user.birthdayFormatter)
    注意看，这里的 vue 内部判断了 data 是否为函数，如果是就去 `getData(data, vm)`
 
 7. 进入 `getData()` 函数看看，发现了关键代码
-   ![关键代码](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327091155.png)
+   ![关键代码](https://img.rxliuli.com/20190327091155.png)
 
    ```js
    return data.call(vm, vm)
@@ -165,7 +165,7 @@ console.log(table.user.birthdayFormatter)
    4. `computed`: 计算属性
    5. `watch`: 监听函数
 
-   ![初始化顺序](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190327091843.png)
+   ![初始化顺序](https://img.rxliuli.com/20190327091843.png)
 
 ## 总结
 

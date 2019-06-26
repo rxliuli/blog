@@ -65,7 +65,7 @@ updated: 2019-03-10
 
 图解如下
 
-![图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190226221826.png)
+![图解](https://img.rxliuli.com/20190226221826.png)
 
 ## 实现
 
@@ -74,10 +74,10 @@ updated: 2019-03-10
 ## FTP 使用
 
 FtpOperator API 图解  
-![FtpOperator API 图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190302115433.png)
+![FtpOperator API 图解](https://img.rxliuli.com/20190302115433.png)
 
 上传部分流程图解  
-![上传部分流程图解](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190302120512.png)
+![上传部分流程图解](https://img.rxliuli.com/20190302120512.png)
 
 ### 使用 FtpOperator 进行基本操作
 

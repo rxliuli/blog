@@ -15,11 +15,11 @@ updated: 2018-12-02 00:00:00
 
 使用 VSCode 写 Markdown 文档时，突然发现 VSCode 输入 `toc` 找不到生成文章目录的命令了。。。
 
-![输入 toc 创建文章目录](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201211046.png)
+![输入 toc 创建文章目录](https://img.rxliuli.com/20181201211046.png)
 
 然而输入 `markdown` 时发现仍然有创建文章目录的选项，说明这个功能还存在
 
-![输入 markdown 创建文章目录](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201211242.png)
+![输入 markdown 创建文章目录](https://img.rxliuli.com/20181201211242.png)
 
 那么，到底是为什么输入 `toc` 没有匹配到创建文章目录的命令了呢？
 
@@ -34,7 +34,7 @@ updated: 2018-12-02 00:00:00
 
 [Issues](https://github.com/neilsustc/vscode-markdown/issues/327) 中说是显示语言需要改成 `en`，然而吾辈并没有修改过 VSCode 的显示语言，所以这个解决方案对吾辈没有生效。。。
 
-![VSCode 显示语言](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201212334.png)
+![VSCode 显示语言](https://img.rxliuli.com/20181201212334.png)
 
 ## 解决
 
@@ -42,7 +42,7 @@ updated: 2018-12-02 00:00:00
 
 结果，233333，真的是这个原因呢！
 
-![安装了 VSCode 中文语言插件之后](https://raw.githubusercontent.com/rxliuli/img-bed/master/20181201212821.png)
+![安装了 VSCode 中文语言插件之后](https://img.rxliuli.com/20181201212821.png)
 
 这里吾辈的语言仍然为 `en`，仅仅只是安装了中文语言插件，命令由 **创建目录** 变成了 `Create Table of Contents`，插件是在中文系统下默认显示中文命令，在安装完中文语言插件后就变成了全英文（此时 VSCode 语言仍然设置为 `en`）。
 
