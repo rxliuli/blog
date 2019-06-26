@@ -5,6 +5,7 @@ abbrlink: fc1eb87f
 date: 2019-06-25 17:55:01
 tags:
   - JavaScript
+  - 教程
 ---
 
 # JavaScript 实现数组更多的高阶函数
@@ -22,11 +23,17 @@ tags:
 - `filterItems`: 过滤掉一些元素
 - `diffBy`: 差异
 - `groupBy`: 分组
+- 递归操作
 
-> 前言
-> 你至少需要了解 ES6 的 `Set, Map` 等特性
+> 前言:
+> 你至少需要了解 ES6 的一些特性你才能愉快的阅读
 
 ## `uniqueBy`: 去重
+
+相关问题
+
+- [javascript 怎么实现多种数据类型的数组去重？](https://segmentfault.com/q/1010000002674331)
+- [JS 有没有比较高效的数组去重的方法？](https://segmentfault.com/q/1010000010936175)
 
 ```js
 /**
@@ -56,6 +63,11 @@ console.log(uniqueBy([1, 2, 3, '1', '2'], i => i + '')) // [ 1, 2, 3 ]
 ```
 
 ## `sortBy`: 排序
+
+相关问题
+
+- [js 中如何对含有特殊字符的数组进行排序？](https://segmentfault.com/q/1010000014304039)
+- [以下数组怎么按名称排序](https://segmentfault.com/q/1010000017141566)
 
 ```js
 /**
@@ -117,6 +129,11 @@ console.log(sortBy([1, 3, 5, '2', '4'], i => -i)) // [ 5, '4', 3, '2', 1 ]
 
 ## `filterItems`: 过滤掉一些元素
 
+相关问题
+
+- [过滤数组子集](https://segmentfault.com/q/1010000009045163)
+- [对比两组对象数组 根据元素内某一属性是否相等过滤数组](https://segmentfault.com/q/1010000017464256)
+
 ```js
 /**
  * 从数组中移除指定的元素
@@ -139,6 +156,11 @@ console.log(filterItems([1, 2, 3, 4, 5], ['1', '2'], i => i + '')) // [ 3, 4, 5 
 ```
 
 ## `diffBy`: 差异
+
+相关问题
+
+- [JS 求两个对象数组的差集](https://segmentfault.com/q/1010000019019878)
+- [JavaScript 数组系列问题：数组差集](https://segmentfault.com/q/1010000008825206)
 
 ```js
 /**
@@ -171,6 +193,11 @@ console.log(diffBy([1, 2, 3], ['2', 3, 4], i => i + '')) // { left: [ 1 ], right
 ```
 
 ## `groupBy`: 分组
+
+相关问题
+
+- [求一个数组按属性分组的方法](https://segmentfault.com/q/1010000004944432)
+- [js 数组分组？](https://segmentfault.com/q/1010000008789413)
 
 ```js
 /**
@@ -223,4 +250,55 @@ console.log(
     () => new Set(),
   ),
 ) // Map { false => Set { 1, 5 }, true => Set { 2, 4, 6 } }
+```
+
+## 递归
+
+相关问题
+
+- [复杂数组去重](https://segmentfault.com/q/1010000018502694)
+- [JavaScript 数组中包含数组如何去重？](https://segmentfault.com/q/1010000000444289)
+
+以上种种操作皆是对一层数组进行操作，如果我们想对嵌套数组进行操作呢？例如上面这两个问题？其实问题是类似的，只是递归遍历数组而已。
+
+```js
+/**
+ * js 的数组递归去重方法
+ * @param arr 要进行去重的数组
+ * @param kFn 唯一标识元素的方法，默认使用 {@link returnItself}，只对非数组元素生效
+ * @returns 进行去重操作之后得到的新的数组 (原数组并未改变)
+ */
+function deepUniqueBy(arr, kFn = val => val) {
+  const set = new Set()
+  return arr.reduce((res, v, i, arr) => {
+    if (Array.isArray(v)) {
+      res.push(deepUniqueBy(v))
+      return res
+    }
+    const k = kFn(v, i, arr)
+    if (!set.has(k)) {
+      set.add(k)
+      res.push(v)
+    }
+    return res
+  }, [])
+}
+```
+
+使用
+
+```js
+const testArr = [
+  1,
+  1,
+  3,
+  'hello',
+  [3, 4, 4, 'hello', '5', [5, 5, ['a', 'r']]],
+  {
+    key: 'test',
+  },
+  4,
+  [3, 0, 2, 3],
+]
+console.log(deepUniqueBy(testArr)) // [ 1,  3,  'hello',  [ 3, 4, 'hello', '5', [ 5, [Object] ] ],  { key: 'test' },  4,  [ 3, 0, 2 ] ]
 ```
