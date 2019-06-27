@@ -8,13 +8,6 @@ updated: 2019-06-27
 
 # IDEA 使用技巧
 
-- [IDEA 使用技巧](#idea-使用技巧)
-  - [IDEA 全局默认配置](#idea-全局默认配置)
-  - [Alt-Enter 自动修复](#alt-enter-自动修复)
-  - [代码搜索/跳转/选择](#代码搜索跳转选择)
-  - [语言注入](#语言注入)
-  - [Live Template/Prosfix Template 模板](#live-templateprosfix-template-模板)
-
 ## IDEA 全局默认配置
 
 使用场景：  
