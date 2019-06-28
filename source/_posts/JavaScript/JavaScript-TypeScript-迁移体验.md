@@ -6,7 +6,7 @@ tags:
   - 记录
 abbrlink: eeb7bc5
 date: 2019-05-23 20:22:36
-updated: 2019-06-22
+updated: 2019-06-28
 ---
 
 # JavaScript => TypeScript 迁移体验
@@ -274,54 +274,52 @@ console.log(str.length)
 
 截至目前为止，吾辈已经着手使用 TypeScript 重构工具函数库 [rx-util](https://github.com/rxliuli/rx-util) 两周了，基本上打包配置，文档生成，类型定义基本上算是大致完成，感觉之后的公共项目大概都会用 TypeScript 实现了，毕竟前端主流开发工具 VSCode 对其的支持真的很好，而且 TypeScript 的接口这种概念真的太有用了！
 
----
+## 一些吐槽
 
 使用了有一段时间了，这里不得不再次声明一下，TypeScript 的类型系统复杂度超乎想象，如果你没有准备好在生产系统中使用，那就最好不要使用。缺少关于类型系统（尤其是原生类型，例如 `PromiseLike` 居然没有人讲过）的说明，使得 TypeScript 的类型系统很多时候看起来都只是为了**好玩**而已。而且稍微复杂一点的情况思考如何设计类型的时间将会超过具体的代码实现，使用它请务必再三慎重考虑！
-
----
 
 TypeScript 的类型系统为了兼容 JavaScript 缺陷实在太大了。
 
 > 参见某个知乎用户的话:
->
-> 1. ts 写不出一个合并对象的方法
->
->    下面是一个 js 合并对象的方法
->
->    ```js
->    function extend(dest, ...sources) {
->      return Object.assign(dest, ...sources)
->    }
->    ```
->
->    这么一个简单的方法，ts 写不出不丢失类型信息的实现。
->
->    下面贴的是 typescript 源码中对 Object.assign 的声明，我相信都能看出有多傻：
->
->    ```ts
->    assign<T, U>(target: T, source: U): T & U;
->    assign<T, U, V>(target: T, source1: U, source2: V): T & U & V;
->    assign<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
->    assign(target: object, ...sources: any[]): any;
->    ```
->
->    按这个实现，多于 4 个参数就直接丢掉类型信息了，建议 ts 至少把 A-Z 都作为泛型变量用上...
->
-> 2. 一些很明显的类型推断却推断不出来
->
->    用 assert 方法做参数检查是很常用的做法，一个简单的 assert 方法：
->
->    ```js
->    function assert(condition, msg) {
->      if (condition) throw new Error(msg)
->    }
->    ```
->
->    然后看这样一段代码：
->
->    ```ts
->    function foo(p: number | string) {
->      assert(typeof p === 'number', 'p is a number')
->      p.length // 这里报错，ts 竟然不知道到这一步 p 必定是 string 类型
->    }
->    ```
+
+1. ts 写不出一个合并对象的方法
+
+   下面是一个 js 合并对象的方法
+
+   ```js
+   function extend(dest, ...sources) {
+     return Object.assign(dest, ...sources)
+   }
+   ```
+
+   这么一个简单的方法，ts 写不出不丢失类型信息的实现。
+
+   下面贴的是 typescript 源码中对 Object.assign 的声明，我相信都能看出有多傻：
+
+   ```ts
+   assign<T, U>(target: T, source: U): T & U;
+   assign<T, U, V>(target: T, source1: U, source2: V): T & U & V;
+   assign<T, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & & W;
+   assign(target: object, ...sources: any[]): any;
+   ```
+
+   按这个实现，多于 4 个参数就直接丢掉类型信息了，建议 ts 至少把 A-Z 都作为泛型量用上...
+
+2. 一些很明显的类型推断却推断不出来
+
+   用 assert 方法做参数检查是很常用的做法，一个简单的 assert 方法：
+
+   ```js
+   function assert(condition, msg) {
+     if (condition) throw new Error(msg)
+   }
+   ```
+
+   然后看这样一段代码：
+
+   ```ts
+   function foo(p: number | string) {
+     assert(typeof p === 'number', 'p is a number')
+     p.length // 这里报错，ts 竟然不知道到这一步 p 必定是 string 类型
+   }
+   ```
