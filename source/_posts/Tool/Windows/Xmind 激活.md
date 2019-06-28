@@ -16,7 +16,7 @@ Xmind 不激活也是可以使用的，那么，你可能会问为什么还要�
 
 ## 使用激活补丁
 
-1. 下载 Xmind 激活补丁 [XMindCrack.jar](https://github.com/mounui/Xmind/tree/master/XMindCrack)
+1. 下载 Xmind 激活补丁 [XMindCrack.jar](https://raw.githubusercontent.com/rxliuli/blog_binary_file/master/XMindCrack.jar)
 2. 打开 Xmind 取消检查更新选项 (下面两步可以一起设置)
 
    > -> 编辑 -> 首选项 -> 常规 -> 启动 -> 启动时检查更新和消息：取消勾选 (最后确定)

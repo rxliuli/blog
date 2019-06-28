@@ -48,7 +48,7 @@ QQ 这种客户端是如何屏蔽粘贴功能的呢？很显然，QQ 不仅仅�
 #IfWinActive
 ```
 
-当然，如果不喜欢安装 Autohotkey 的话也没关系，吾辈转换了一个 [.exe 可执行文件](https://blog.rxliuli.com/uploads/QQForcedPaste.exe)，也可以直接下载使用啦
+当然，如果不喜欢安装 Autohotkey 的话也没关系，吾辈转换了一个 [.exe 可执行文件](https://raw.githubusercontent.com/rxliuli/blog_binary_file/master/QQForcedPaste.exe)，也可以直接下载使用啦
 
 ## 使用效果
 

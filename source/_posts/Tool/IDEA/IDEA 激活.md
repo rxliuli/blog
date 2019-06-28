@@ -8,7 +8,7 @@ updated: 2018-11-20 00:00:00
 
 # IDEA 激活
 
-## 使用本地注册码（不需要在线）的方式激活。
+## 使用本地注册码（不需要在线）的方式激活
 
 > 注: 此方法对 IDEA 2018.01-2018.02 版本无效，但对 IDEA 2018.03 EAP 是有效的
 
@@ -28,7 +28,7 @@ updated: 2018-11-20 00:00:00
 
 > 注：该方法适用于 IDEA 2018.01-2018.02，在 IDEA 2018.03 已经失效
 
-1. 下载破解 Jar：[JetbrainsCrack](https://github.com/rxliuli/rxliuli.github.io/blob/bd79a5d88b86ea8dffe86c9fa2b61f96257907fd/_posts/Tool/IDEA/IDEA%20%E6%BF%80%E6%B4%BB/JetbrainsCrack.jar)
+1. 下载破解 Jar：[JetbrainsCrack](https://raw.githubusercontent.com/rxliuli/blog_binary_file/master/JrebelBrainsLicenseServerforJava-1.0-SNAPSHOT-jar-with-dependencies.jar)
 
    然后放到一个合适的位置（你不会随意删除的位置，推荐直接放到 IDEA 的安装目录下）
 
@@ -37,7 +37,9 @@ updated: 2018-11-20 00:00:00
    然后在激活对话框中选 **Activation code** 随意输入然后点击 OK 即可。
 
 3. Pass：其实下面还有一步的，不过做不做都可以，运行上面的就已经完成激活了，不过激活信息显示的不是你的名字。当然，我们可以去变成自己的名字，如果我们在 **Activation code** 里填写合适的 `json` 信息的话。
+
    1. 首先运行刚才下载的 Jar，然后会得到一个激活信息的 `json` 字符串，大致是下面这样：
+
       ```json
       {
         "licenseId": "ThisCrackLicenseId",
@@ -68,6 +70,7 @@ updated: 2018-11-20 00:00:00
         "autoProlongated": false
       }
       ```
+
    2. 修改其中的 `licenseeName`, `assigneeName`, `assigneeEmail` 为你的名字和邮箱，然后将修改后的 `json` 字符串丢到 **Activation code** 里面就好啦
 
 ## IDEA 激活服务器
