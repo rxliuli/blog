@@ -1,15 +1,15 @@
 ---
 layout: post
-title: JavaScript 数组的高阶函数使用异步操作
+title: JavaScript 异步数组
 tags:
   - JavaScript
   - 教程
 abbrlink: 5ec57ccc
 date: 2019-06-21 12:56:21
-updated: 2019-06-23
+updated: 2019-07-02
 ---
 
-# JavaScript 数组的高阶函数使用异步操作
+# JavaScript 异步数组
 
 ## 场景
 
