@@ -16,7 +16,7 @@ updated: 2018-11-03 18:11:06
 
 ## 实现
 
-> 实现源码放到了 [GitHub](https://github.com/rxliuli/vue-scroll-to-top-component)，[Demo 演示](https://vue-scrollto-top-component.rxliuli.com/#/) 想直接看源码/效果的人可以直接去看，但最好看一下 [注意点](#注意点)
+> 实现源码放到了 [GitHub](https://github.com/rxliuli/vue-scroll-to-top-component)，[Demo 演示](https://vue-scroll-to-top-component.rxliuli.com) 想直接看源码/效果的人可以直接去看，但最好看一下 [注意点](#注意点)
 
 ### 思路
 
