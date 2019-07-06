@@ -252,6 +252,58 @@ console.log(
 ) // Map { false => Set { 1, 5 }, true => Set { 2, 4, 6 } }
 ```
 
+## `arrayToMap`: 转换为 Map
+
+相关问题
+
+- [js 怎么把数组下面的对象里面的两个字段取出来组成一个新的对象，key:value 形式](https://segmentfault.com/q/1010000019537004)
+
+```js
+/**
+ * 将数组映射为 Map
+ * @param arr 数组
+ * @param k 产生 Map 元素唯一标识的函数，或者对象元素中的一个属性名
+ * @param v 产生 Map 值的函数，默认为返回数组的元素，或者对象元素中的一个属性名
+ * @returns 映射产生的 map 集合
+ */
+export function arrayToMap(arr, k, v = val => val) {
+  const kFn = k instanceof Function ? k : item => Reflect.get(item, k)
+  const vFn = v instanceof Function ? v : item => Reflect.get(item, v)
+  return arr.reduce(
+    (res, item, index, arr) =>
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map(),
+  )
+}
+```
+
+使用
+
+```js
+const county_list = [
+  {
+    id: 1,
+    code: '110101',
+    name: '东城区',
+    citycode: '110100',
+  },
+  {
+    id: 2,
+    code: '110102',
+    name: '西城区',
+    citycode: '110100',
+  },
+  {
+    id: 3,
+    code: '110103',
+    name: '崇文区',
+    citycode: '110100',
+  },
+]
+console.log(arrayToMap(county_list, 'code', 'name')) // Map { '110101' => '东城区', '110102' => '西城区', '110103' => '崇文区' }
+console.log(arrayToMap(county_list, ({ code }) => code, ({ name }) => name)) // Map { '110101' => '东城区', '110102' => '西城区', '110103' => '崇文区' }
+```
+
 ## 递归
 
 相关问题
@@ -302,3 +354,16 @@ const testArr = [
 ]
 console.log(deepUniqueBy(testArr)) // [ 1,  3,  'hello',  [ 3, 4, 'hello', '5', [ 5, [Object] ] ],  { key: 'test' },  4,  [ 3, 0, 2 ] ]
 ```
+
+## 反例
+
+事实上，目前 SegmentFault 上存在着大量低质量且重复的问题及回答，关于这点确实比不上 StackOverflow。下面是两个例子，可以看一下能否发现什么问题
+
+- [js 怎么把数组下面的对象里面的两个字段取出来组成一个新的对象，key:value 形式](https://segmentfault.com/q/1010000019537004)
+- [JS 中处理 JSON 数据重复问题，取出里面 name 字段数值相同的作为一个数组；不相同的作为一个数组？](https://segmentfault.com/q/1010000017490985)
+
+事实上，不管是问题还是答案，都没有突出核心 -- **Array 映射为 Map/Array 分组**，而且这种问题和答案还层出不穷。如果对 [Array 的 API](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array) 都没有看过一遍就来询问的话，对于帮助者来说却是太失礼了！
+
+## 总结
+
+JavaScript 对函数式编程支持很好，所以习惯高阶函数于我们而言是一件好事，将问题的本质抽离出来，而不是每次都局限于某个具体的问题上。
