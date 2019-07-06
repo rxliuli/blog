@@ -1,20 +1,21 @@
 ---
 layout: post
-title: JavaScript 实现数组更多的高阶函数
+title: JavaScript 实现更多数组的高阶函数
 abbrlink: fc1eb87f
 date: 2019-06-25 17:55:01
+updated: 2019-07-06
 tags:
   - JavaScript
   - 教程
 ---
 
-# JavaScript 实现数组更多的高阶函数
+# JavaScript 实现更多数组的高阶函数
 
 ## 场景
 
 > 虽说人人平等，但有些人更加平等。
 
-为什么有了 Lodash 这种通用函数工具库，吾辈要写这篇文章呢？吾辈在 SegmentFault 上经常看到关于 JavaScript 数组的相关疑问，甚至于，相同类型的问题，只是数据变化了一些，就直接提出了一个新的问题（实际上，对自身并无帮助）。简单[搜索了一下 Array](https://segmentfault.com/search?q=Array&type=question)，居然有 2360+ 条的结果，足可见这类问题的频率之高。若是有一篇适合 JavaScript 萌新阅读的自己实现数组更多操作的文章，情况是否会发生变化呢？
+为什么有了 Lodash 这种通用函数工具库，吾辈要写这篇文章呢？吾辈在 SegmentFault 上经常看到关于 JavaScript 数组的相关疑问，甚至于，相同类型的问题，只是数据变化了一些，就直接提出了一个新的问题（实际上，对自身并无帮助）。简单[搜索了一下 Array](https://segmentfault.com/search?q=Array&type=question)，居然有 2360+ 条的结果，足可见这类问题的频率之高。若是有一篇适合 JavaScript 萌新阅读的自己实现数组更多操作的文章，情况或许会发生一些变化。
 
 下面吾辈便来实现以下几种常见的操作
 
@@ -23,6 +24,7 @@ tags:
 - `filterItems`: 过滤掉一些元素
 - `diffBy`: 差异
 - `groupBy`: 分组
+- `arrayToMap`: Array 转换为 Map
 - 递归操作
 
 > 前言:
