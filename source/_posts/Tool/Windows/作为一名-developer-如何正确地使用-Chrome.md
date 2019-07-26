@@ -7,7 +7,7 @@ tags:
   - 教程
 abbrlink: 161af8c3
 date: 2018-12-24 14:08:52
-updated: 2019-01-08 00:00:00
+updated: 2019-07-26
 ---
 
 # 作为一名 developer 如何正确地使用 Chrome
@@ -63,6 +63,12 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 
    ![Break on](https://img.rxliuli.com/20190104221816.png)
 
+3. DOM 元素强制指定状态
+   某个元素只有在指定状态下才会有某些效果，当你想让这个元素的状态一直维持不变以仔细观察时，就需要强制指定元素的状态了。
+   思考以下场景
+   下拉菜单只有在鼠标悬浮时才会展开，但鼠标移到 DOM 元素查看时却收起来了，感觉非常难受.JPG！幸好，浏览器为我们提供了这个功能。
+   ![Force state](https://img.rxliuli.com/20190726221706.png)
+
 ### Sources
 
 1. `Drawer Show Search`  
@@ -115,8 +121,8 @@ Chrome 的开发者工具可以说是目前最好的了，然而除了简单的�
 - [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp)：新标签页插件
 - [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)：使用自定义网站脚本的插件，可以使用各种 `user.js` 脚本，相当于小型的插件管理器了
 - [The Great Suspender](https://chrome.google.com/webstore/detail/the-great-suspender/klbibkeccnjlkjkiokjodocebajanakg)：自动休眠标签页，避免 Chrome 使用的内存太过庞大
-- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 Adblock 的名声好一些
-- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 Vuejs 选项卡，便于对 Vuejs 进行调试
+- [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：日常上网必须，屏蔽各种广告，比 ADBlock 的名声好一些
+- [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)：在 DevTool 中添加 VueJS 选项卡，便于对 VueJS 进行调试
 - [WebRTC Network Limiter](https://chrome.google.com/webstore/detail/webrtc-network-limiter/npeicpdbkakmehahjeeohfdhnlpdklia)：阻止浏览器通过 WebRTC 泄露 IP 地址
 - [WEB 前端助手(FeHelper)](https://chrome.google.com/webstore/detail/web%E5%89%8D%E7%AB%AF%E5%8A%A9%E6%89%8Bfehelper/pkgccpejnmalmdinmhkkfafefagiiiad)：貌似是百度的前端插件，但目前还没有什么流氓行为
 - [快翻译](https://chrome.google.com/webstore/detail/%E5%BF%AB%E7%BF%BB%E8%AF%91/chpeaiibggkmaongjphijmielpkokcdg)：这个翻译插件是真心不错，某种意义上讲比 Chrome 自带的翻译都要好（#大雾）
