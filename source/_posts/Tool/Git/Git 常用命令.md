@@ -1,11 +1,10 @@
 ---
 title: Git 常用命令
 tags:
-  - Tool
   - Git
 abbrlink: 5fddf106
 date: 2018-09-29 00:00:00
-updated: 2019-03-14
+updated: 2019-08-11
 ---
 
 # Git 常用命令
@@ -31,7 +30,8 @@ updated: 2019-03-14
 | clone    | `git clone [远程仓库地址]`            | 克隆一个远程仓库到本地，这里和 pull 不同点在于本地不存在要克隆的仓库           | `git clone https://github.com/rxliuli/rxliuli.github.io.git`             | 克隆吾辈的博客 github 仓库到本地                                     |
 | log      | `git log [选项]`                      | 查看 git 日志                                                                  | `git log`                                                                | 简单的查看 git commit 历史纪录                                       |
 | revert   | `git revert [提交记录 hash]`          | 撤销掉指定提交                                                                 | `git revert ab1c2d2`                                                     | 撤销一次提交内容，然后将撤销的内容作为修改提交一次，保留了所有的记录 |
-| reset    | `git reset [提交记录 hash]`           | 重置到某次提交上，和上面不一样的是不会添加新的提交记录，而是删除已有的提交记录 | `git reset ab1c2d2`                                                      | 回退提交到指定版本，不会在 log 中留下痕迹                            |
+| reset    | `git reset [提交记录 hash]`           | 重置到某次提交上，和上面不一样的是不会添加新的提交记录，而是删除已有的提交记录 | `git reset ab1c2d2`                                                      | 不会在 log 中留下痕迹                                                |
+|          | `git reset HEAD~[N 回退次数]`         | 回退最近几次的提交, N 为几就回退几次                                           | `git reset HEAD~1`                                                       | 回退最近一次的提交                                                   |
 | branch   | `git branch [分支]`                   | git 分支(强大而又复杂的功能)                                                   | `git branch dev`                                                         | 创建 dev 分支                                                        |
 |          |                                       |                                                                                | `git branch`                                                             | 列出所有分支                                                         |
 |          |                                       |                                                                                | `git branch dev -D`                                                      | 删除名为 dev 的分支                                                  |
@@ -49,14 +49,17 @@ updated: 2019-03-14
 
 ### 撤销掉本地所有的修改
 
-命令
+- 命令
 
-```git
-git add -A && git stash && git stash drop
-```
+  ```sh
+  git add -A && git stash && git stash drop
+  ```
 
-解释
+- 解释
 
-1. 添加所有更改到 git 追踪中（如果没有被忽略的话）
-2. 添加所有本地更改到暂存区域中
-3. 删除掉刚添加的最新暂存更改
+  1. 添加所有更改到 git 追踪中（如果没有被忽略的话）
+  2. 添加所有本地更改到暂存区域中
+  3. 删除掉刚添加的最新暂存更改
+
+- 应用场景
+  修改了一些文件但又没有提交，突然发现有问题，想把它们全删除了重来，或者全部回到上次提交，先把这些修改暂存起来（不加最后一条命令）
