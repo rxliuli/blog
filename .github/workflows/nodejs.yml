@@ -2,10 +2,18 @@ name: Node CI
 
 on: [push]
 
-steps:
-- uses: actions/checkout@master
-- uses: actions/setup-node@v1
-  with:
-    node-version: '10.x'
-- run: yarn install
-- run: yarn deploy
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        node: [ '10', '8' ]
+    name: Node ${{ matrix.node }} sample
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: yarn install
+      - run: yarn deploy
