@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node: [ '10' ]
+        node: ['10']
     name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@master
@@ -19,9 +19,9 @@ jobs:
           GH_ACTION_DEPLOY_KEY: ${{secrets.GH_ACTION_DEPLOY_KEY}}
       - run: |
           mkdir -p ~/.ssh/
-          echo "$GH_ACTION_DEPLOY_KEY" > ~/.ssh/id_rsa
+          echo "$GH_ACTION_DEPLOY_KEY" > ~/runner/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-keyscan github.com >> ~/runner/.ssh/known_hosts
           git config --global user.name 'rxliuli'
           git config --global user.email 'rxliuli@gmail.com'
       - run: yarn
