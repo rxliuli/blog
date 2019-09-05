@@ -1,24 +1,38 @@
-name: Node CI
+name: Main workflow
 
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: 10
-
+    runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install, deploy
-        run: |
-          npm install
-          npm run deploy
-        env:
-          CI: true
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+    uses: actions/setup-node@v1
+    with:
+        node-version: '10.x'
+    - name: prepare build env
+    env:
+        GH_ACTION_DEPLOY_KEY: ${{secrets.GH_ACTION_DEPLOY_KEY}}
+        # NEXT_VERSION: v7.3.0
+    run: |
+        mkdir -p ~/.ssh/
+        echo "$GH_ACTION_DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        git config --global user.name 'rxliuli'
+        git config --global user.email 'rxliuli@gmail.com'
+        npm i -g hexo-cli
+        npm i
+        # git clone --branch ${NEXT_VERSION} --depth=10  git@github.com:theme-next/hexo-theme-next.git themes/next
+        # git checkout -b ${NEXT_VERSION}
+        # git clone git@github.com:theme-next/theme-next-three --depth=1 themes/next/source/lib/three
+        # git clone git@github.com:theme-next/theme-next-reading-progress --depth=1 themes/next/source/lib/reading_progress
+        # git clone git@github.com:theme-next/theme-next-algolia-instant-search --depth=1 themes/next/source/lib/algolia-instant-search
+        # git clone git@github.com:theme-next/theme-next-fancybox3  --depth=1 themes/next/source/lib/fancybox
+        # git clone git@github.com:theme-next/theme-next-pace --depth=1 themes/next/source/lib/pace
+    - name: deploy to github
+    env:
+        HEXO_ALGOLIA_INDEXING_KEY: ${{secrets.HEXO_ALGOLIA_INDEXING_KEY}}
+    run: |
+        npm run deploy
