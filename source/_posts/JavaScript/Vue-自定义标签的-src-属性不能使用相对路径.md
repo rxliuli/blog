@@ -1,15 +1,15 @@
 ---
-title: Vue Vuetify 的 v-img 标签的 src 属性不能使用相对路径
+title: Vue 自定义标签的 src 属性不能使用相对路径
 tags:
   - JavaScript
   - VueJS
-  - Vuetify
+  - 记录
 abbrlink: 4bfec1fa
 date: 2018-11-01 10:13:19
-updated: 2018-11-01 10:13:19
+updated: 2019-09-16
 ---
 
-# Vue Vuetify 的 v-img 标签的 src 属性不能使用相对路径
+# Vue 自定义标签的 src 属性不能使用相对路径
 
 ## 场景
 
@@ -37,6 +37,41 @@ updated: 2018-11-01 10:13:19
 官方明确指出会将所有资源路径作为模块依赖，也就是后台 `vue-loader` 帮我们转换成 `require()` 的形式了。
 
 ## 解决方案
+
+### vue cli 3
+
+vue cli 3 的配置项 API 发生了改变，由 `transformToRequire` 改为 `transformAssetUrls`，而且配置方式也不再是直接修改 webpack 配置文件，而是修改 `vue.config.js` 这个经过包装后的文件。现在，最新的配置方式如下
+
+```js
+module.exports = {
+  chainWebpack: config => {
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .loader('vue-loader')
+      .tap(options => {
+        return {
+          ...options,
+          //修复静态资源引用的问题 vue cli 2 => vue cli 3 升级之后配置项由 transformToRequire 改为 transformAssetUrls
+          transformAssetUrls: {
+            video: ['src', 'poster'],
+            source: 'src',
+            img: 'src',
+            image: 'xlink:href',
+            // 在这里添加需要使用静态资源的自定义元素
+            'a-avatar': 'src',
+          },
+        }
+      })
+  },
+}
+```
+
+> 具体参考
+> [Vue Loader => 从 v14 迁移 => 废弃的选项](https://vue-loader.vuejs.org/zh/migrating.html#%E5%BA%9F%E5%BC%83%E7%9A%84%E9%80%89%E9%A1%B9)  
+> [Vue Cli 3 => webpack 相关 => 链式操作 (高级) => 修改 Loader 选项](https://cli.vuejs.org/zh/guide/webpack.html#%E7%AE%80%E5%8D%95%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F)
+
+### vue cli 2
 
 那么，Veutify 组件中的 `src` 不能使用相对路径的原因就很明确了。因为 `vue-loader` 并不知道我们要把 `v-img` 的 `src` 属性转换成 `require()` 依赖。我们找到 `vue-loader` 配置处，在 `options.transformToRequire` 中加上 `v-img` 即可
 
