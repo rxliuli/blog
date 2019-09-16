@@ -82,7 +82,31 @@ module.exports = {
 
 吾辈的配置文件在 _build > vue-loader.conf.js_
 
-![vue-loader 配置文件](https://img.rxliuli.com/20181101131408.png)
+```js
+'use strict'
+const utils = require('./utils')
+const config = require('../config')
+const isProduction = process.env.NODE_ENV === 'production'
+const sourceMapEnabled = isProduction
+  ? config.build.productionSourceMap
+  : config.dev.cssSourceMap
+
+module.exports = {
+  loaders: utils.cssLoaders({
+    sourceMap: sourceMapEnabled,
+    extract: isProduction,
+  }),
+  cssSourceMap: sourceMapEnabled,
+  cacheBusting: config.dev.cacheBusting,
+  transformToRequire: {
+    video: ['src', 'poster'],
+    source: 'src',
+    img: 'src',
+    image: 'xlink:href',
+    'v-img': 'src',
+  },
+}
+```
 
 > [vue-loader 官方文档参考](https://vue-loader-v14.vuejs.org/zh-cn/options.html#transformtorequire)
 
