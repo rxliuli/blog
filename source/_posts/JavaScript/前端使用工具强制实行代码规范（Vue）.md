@@ -148,7 +148,7 @@ npm run lint:js
 
 ## StyleLint
 
-StyleLint 是一个用来对 CSS 进行校验的工具。
+StyleLint 是一个用来对 CSS 进行校验/修复的工具，和 ESLint 类似，但却针对 CSS 方面。我们使用它用来避免一些不好的 CSS 写法，也能避免 code review 时被其他人吐槽。。。
 
 安装依赖
 
@@ -477,9 +477,9 @@ npm i -D prettier eslint-plugin-prettier eslint-config-prettier prettier-eslint-
 // .prettierrc.js
 module.exports = {
   // 缩进宽度
-  tabWidth: 2,
+  tabWidth: 4,
   // 单行最大宽度
-  printWidth: 80,
+  printWidth: 120,
   // 去掉代码结尾的分号
   semi: false,
   // 使用单引号替代双引号
@@ -543,6 +543,8 @@ npm run format
 
 ## husky 与 lint-staged
 
+强制使用 linter 检查代码，不通过检查则无法提交代码，以使 linter 真正得到有效执行。
+
 安装依赖
 
 ```sh
@@ -551,8 +553,8 @@ npm i -D husky lint-staged
 
 > 依赖解释
 >
-> - `husky`: 为项目添加 git 钩子
-> - `lint-staged`: 在使用 linter 工具时只针对 git 中修改后的文件
+> - `husky`: 在项目中添加 git 钩子，在 git 各个生命周期（姑且这样称呼吧）中执行一些自定义操作。我们这里主要是用在 git 提交之前执行 linter 操作，不通过则提交无效。
+> - `lint-staged`: 简而言之，就是只针对 git 提交的文件进行一些操作，而非整个项目的所有文件。我们这里主要是用在 git 提交之前进行 linter 时只针对提交的文件，以进行渐进式的重构。
 
 进行配置
 
@@ -591,3 +593,7 @@ module.exports = {
 ## 总结
 
 基本上，这些工具初次配置起来还是非常麻烦的，但这是一件一劳永逸的事情，所以还是值得花时间去做的。
+
+> 参考
+>
+> - [eslint+husky+prettier+lint-staged 提升前端应用质量](https://juejin.im/post/5c67fcaae51d457fcb4078c9)
