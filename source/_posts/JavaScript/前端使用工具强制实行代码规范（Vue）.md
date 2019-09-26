@@ -1,11 +1,12 @@
 ---
 layout: post
 title: 前端使用工具强制实行代码规范（Vue）
-date: 2019-09-23 17:30:31
-updated: 2019-09-26
 tags:
   - JavaScript
   - 教程
+abbrlink: ce3fba72
+date: 2019-09-23 17:30:31
+updated: 2019-09-26 00:00:00
 ---
 
 # 前端使用工具强制实行代码规范（Vue）
