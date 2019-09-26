@@ -2,7 +2,7 @@
 layout: post
 title: 前端使用工具强制实行代码规范（Vue）
 date: 2019-09-23 17:30:31
-updated: 2019-09-24
+updated: 2019-09-26
 tags:
   - JavaScript
   - 教程
@@ -56,6 +56,17 @@ module.exports = {
     'eslint:recommended',
   ],
   rules: {
+    /**
+     * 禁止不需要的括号，例如 const i = (1 + 1)，但该规则存在的问题是会认为类两侧的圆括号也是不合法的
+     * 例如: billId => (StringValidator.isBlank(billId) ? '否' : '是')
+     */
+    // 'no-extra-parens': 'error',
+    /**
+     * 禁止魔法值，该规则的主要问题是很多误报
+     * 例如: offset / size + (offset % size === 0 ? 0 : 1)
+     */
+    'no-magic-numbers': 'off',
+
     //禁止使用 var，强制要求使用 const/let
     'no-var': 'error',
     //不使用未定义的变量
@@ -66,17 +77,13 @@ module.exports = {
     'no-return-await': 'error',
     //不允许使用 console 对象，因为会打印到控制台上
     'no-console': 'error',
-    //禁止不需要的括号，例如 const i = (1 + 1)
-    'no-extra-parens': 'error',
     //使用 class 中的方法必须使用 this. 前缀
-    'class-methods-use-this': 'error',
-    //禁止使用 alert, confirm, prompt，该 API 会阻断所有其他操作
+    // 'class-methods-use-this': 'error',
+    //禁止使用 alert, confirm, prompt，该 API 会阻断所有其他操作，但该规则存在的问题是有可能需要之后用上方便统一调用呢？
     'no-alert': 'error',
     //禁止使用 eval，该操作是危险的
     'no-eval': 'error',
     'no-implied-eval': 'error',
-    //禁止魔法值
-    'no-magic-numbers': 'error',
     //禁止使用 new Function 创建函数
     'no-new-func': 'error',
     //禁止使用包装类 String, Number, Boolean
@@ -115,8 +122,8 @@ module.exports = {
 
 ```ignore
 // .eslintignore
-// 忽略掉 TypeScript 类型定义文件
-src/**/*.d.ts
+`// 忽略掉 TypeScript 类型定义文件
+*/**/*.d.ts`
 ```
 
 添加脚本
@@ -145,6 +152,10 @@ npm run lint:js
 
 - [ESLint 官网](https://eslint.org)
 - [vue eslint 整合包](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint)
+
+> WebStorm 配置 ESLint 即时检查:
+> ![WebStorm 使用 ESLint](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190926114439.png)
+> 参考: <https://stackoverflow.com/questions/28808857>
 
 ## StyleLint
 
@@ -202,13 +213,6 @@ module.exports = {
         '@extend',
         '@mixin',
         '@at-root',
-        //定位相关
-        'position',
-        'top',
-        'right',
-        'bottom',
-        'left',
-        'z-index',
         //盒模型相关
         'display',
         'flex',
@@ -263,6 +267,13 @@ module.exports = {
         'padding-right',
         'padding-bottom',
         'padding-left',
+        //定位相关
+        'position',
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'z-index',
         //边框
         'border',
         'border-color',
@@ -455,6 +466,15 @@ npm run lint:css
 - [StyleLint 官网](https://stylelint.io/)
 - [如何在 WebStorm 中使用 StyleLint 自动修复](https://stackoverflow.com/questions/54304313/stylelint-fix-in-webstorm)
 
+> WebStorm 使用
+> WebStorm 配置 StyleLint 即时检查:
+> ![WebStorm 配置即时检查](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190926113520.png)
+> 参考 <https://stackoverflow.com/questions/54304313/>
+>
+> 添加外部工具以进行快速修复
+> ![添加外部工具以进行快速修复](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190926113953.png)
+> 然后添加一个快捷键即可
+
 ## Prettier
 
 Prettier 是一个代码格式化工具，但并非针对一种语言，对 `HTML/CSS/JavaScript/Vue/SCSS` 都有效果。可以通过配置文件在不同项目间统一代码格式化，以修正不同编辑器/IDE 之间格式化不同的问题。
@@ -541,6 +561,10 @@ npm run format
 - [prettier 官网](https://prettier.io)
 - [WebStorm 使用 Prettier 官方文档](https://www.jetbrains.com/help/webstorm/prettier.html)
 
+> WebStorm 配置使用 Prettier 快速格式化:
+> ![WebStorm 配置使用 Prettier 快速格式化](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190926115309.png)
+> 建议修改为全局使用 Prettier 格式化，避免记忆两个格式化快捷键
+
 ## husky 与 lint-staged
 
 强制使用 linter 检查代码，不通过检查则无法提交代码，以使 linter 真正得到有效执行。
@@ -593,6 +617,14 @@ module.exports = {
 ## 总结
 
 基本上，这些工具初次配置起来还是非常麻烦的，但这是一件一劳永逸的事情，所以还是值得花时间去做的。
+
+> 注:
+> 目前还存在的问题是:
+> ESLint 检测出来的部分错误能使用 **A-Enter** 修复
+> Prettier 与 WebStorm 自身格式化不能共存（自动切换）
+> Prettier 在 WebStorm 中无法直接配置导致上面问题存在的必要性
+> StyleLint 不能使用 **A-Enter** 修复且不能与 WebStorm 共存
+> 可能的解决方案是找一下是否有一种方式能够让 WebStorm 一个快捷键执行多条命令，或者，写一个可用的插件。
 
 > 参考
 >
