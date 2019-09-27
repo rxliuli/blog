@@ -14,13 +14,13 @@ updated: 2019-09-27
 
 ## 场景
 
-目前公司仍然没有 CI 做持续集成，而是使用手动（脚本）方式部署项目。而有时候，已经修改了代码，而线上（测试环境）却还没有部署，导致测试人员认为问题仍然没有修复。那么，怎么确定线上部署的代码版本呢？难道是打开线上网站查看某个功能是否完成了么？有没有更高效的方法呢？
-吾辈找到的解决方案是 [git-rev-sync](https://www.npmjs.com/package/git-rev-sync)。
+目前公司仍然没有做 CI 持续集成，而是使用手动方式（脚本）部署项目。有时候，已经修改了代码，而线上（测试环境）却还没有部署，导致测试人员认为问题仍然没有修复。那么，怎么确定线上部署的代码版本呢？难道是打开线上网站查看某个功能是否完成了么？有没有更高效的方法呢？
+吾辈找到的解决方案便是 [git-rev-sync](https://www.npmjs.com/package/git-rev-sync)。
 
 ## 简介
 
 官网描述只有一句话: 同步获取当前的 git commit 哈希，标签，计数，分支或提交消息。从 [git-rev](https://github.com/tblobaum/git-rev) 分叉。
-实际上就是一个获取当前最新提交的 git commit 的一些信息，而我们可以将它挂载到 `window` 对象上，方便线上快速确定发布代码的版本。
+实际上就是一个同步获取当前 git commit 最新提交的一些信息，而我们可以将它挂载到 `window` 对象上，方便线上快速确定发布代码的版本。
 
 ## 步骤
 
@@ -32,10 +32,10 @@ yarn add -D git-rev-sync
 
 ### 在 vue 打包文件中读取 git 信息
 
-只有在打包时我们才能读取到 git 信息（本地 nodejs 运行），而我们读取完之后不能直接挂载到 window 对象上，因为打包时处于 nodejs 文件，window 对象并不存在。这时候就需要用到 Vue 提供的环境变量的功能了。
+只有在打包时我们才能读取到 git 信息（本地 nodejs 运行），而我们读取完之后不能直接挂载到 `window` 对象上，因为打包时处于 nodejs 环境，`window` 对象并不存在，这时候就需要用到 Vue 提供的环境变量功能了。
 
 > 引用
-> [在客户端侧代码中使用环境变量](https://cli.vuejs.org/zh/guide/mode-and-env.html#%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BE%A7%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F)
+> [Vue Cli 在客户端侧代码中使用环境变量](https://cli.vuejs.org/zh/guide/mode-and-env.html#%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BE%A7%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F)
 
 ```js
 // vue.config.js
