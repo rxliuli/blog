@@ -169,6 +169,7 @@ Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开
 [便携版], [部分开源], [跨平台]
 
 > [官网](https://www.jetbrains.com/idea/), [GitHub 社区版](https://github.com/JetBrains/intellij-community)
+> 强烈建议升级至 **2019.2.3**，官方终于把智障的重构字符串查找引用默认关闭了，可喜可贺，可喜可贺
 
 虽然说起最好的 IDE 什么的肯定是各种争论，但吾辈还是想说，在 Java 语言开发方面，IDEA 是目前最好的 IDE 了。
 
