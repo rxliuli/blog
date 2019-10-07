@@ -3,7 +3,7 @@ layout: post
 title: 优化 Google Chrome 的使用体验
 abbrlink: 54be2845
 date: 2019-05-27 18:29:11
-updated: 2019-05-31
+updated: 2019-10-07
 tags:
   - Chrome
 ---
@@ -131,7 +131,7 @@ input {
 
 ![冻结的标签页](https://img.rxliuli.com/20190531220652.png)
 
-## 下载拦截
+## 下载增强
 
 你使用 Chrome 下载过资料么？是否也对 Chrome 单线程下载并且在下载完成后强制检查资源安全性感到不满？那么 [FDM](https://www.freedownloadmanager.org/zh/) 应该是 Windows 上比较好的选择下载工具了，你可以下载并安装到 PC 上，然后安装 Chrome 插件 [Free Download Manager](https://chrome.google.com/webstore/detail/free-download-manager/ahmpjcflkgiildlgicmcieglgoilbfdp) 即可将所有 Chrome 中的下载请求交给 FDM，并且，它携带着 Cookie，所以即使是有权限校验的下载也能够胜任。
 
@@ -148,6 +148,22 @@ FDM 的优势
 所以，如果经常下载资料的话推荐入坑 FDM，这里放一张首页
 
 ![FDM 首页](https://img.rxliuli.com/20190531221709.png)
+
+## 快捷键
+
+使用浏览器，一些高频操作的快捷键也是必不可少的。
+
+- `CS-T`: 重新打开上一个关闭的标签页
+- `中键/C-左键`: 强制在新标签页打开链接
+- `中键(浏览器标签上)`: 关闭这个标签页
+- `A-左键`: 选择链接中的文字（不会触发拖动链接）
+- `空格`: 翻到下一页
+- `F12`: 开启/关闭开发者工具
+- `C-R`: 重新加载当前页面
+- `CS-R`: 硬性重新加载
+- `CS-N`: 打开隐私标签页
+- `C-T`: 打开新的标签页
+- `C-W`: 关闭当前标签页
 
 ## GitHub 优化
 
