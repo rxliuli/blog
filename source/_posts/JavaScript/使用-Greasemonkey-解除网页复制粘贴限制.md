@@ -6,10 +6,12 @@ tags:
   - Greasemonkey
 abbrlink: 4b2822b2
 date: 2018-12-23 15:10:04
-updated: 2018-12-28 00:00:00
+updated: 2019-10-16
 ---
 
 # 使用 Greasemonkey 解除网页复制粘贴限制
+
+> 吾辈发布了一个油猴脚本，可以直接安装 [解除网页限制](https://greasyfork.org/zh-CN/scripts/391193) 以获得更好的使用体验。
 
 ## 场景
 
@@ -33,7 +35,7 @@ document.oncopy = event => false
 
 ## 解决
 
-可以看出，一般都是使用 JavaScript 在相应事件中返回 false，来阻止对应事件。那么，既然事件都被阻止了，是否意味着我们就束手无策了呢？吾辈所能想到的大致有三种方向
+可以看出，一般都是使用 JavaScript 在相应事件中返回 false，来阻止对应事件。那么，既然事件都被阻止了，是否意味着我们就束手无策了呢？吾辈所能想到的解决方案大致有三种方向
 
 - 使用 JavaScript 监听事件并自行实现复制/剪切/粘贴功能
   - 优点：实现完成后不管是任何网站都能使用，并且不会影响到监听之外的事件，也不会删除监听的同类型事件，可以解除浏览器本身的限制（密码框禁止复制）
@@ -66,12 +68,12 @@ document.addEventListener(
   event => {
     event.clipboardData.setData(
       'text/plain',
-      document.getSelection().toString()
+      document.getSelection().toString(),
     )
     // 阻止默认的事件处理
     event.preventDefault()
   },
-  true
+  true,
 )
 ```
 
@@ -153,7 +155,7 @@ document.addEventListener(
   event => {
     event.clipboardData.setData(
       'text/plain',
-      document.getSelection().toString()
+      document.getSelection().toString(),
     )
     // 如果是可编辑元素还要进行删除
     if (isEditable(event.target)) {
@@ -161,7 +163,7 @@ document.addEventListener(
     }
     event.preventDefault()
   },
-  true
+  true,
 )
 ```
 
@@ -185,14 +187,14 @@ var getLastFocus = (lastFocusEl => {
     event => {
       lastFocusEl = event.target
     },
-    true
+    true,
   )
   document.addEventListener(
     'blur',
     event => {
       lastFocusEl = null
     },
-    true
+    true,
   )
   return () => lastFocusEl
 })(null)
@@ -290,7 +292,7 @@ document.addEventListener(
       event.preventDefault()
     }
   },
-  true
+  true,
 )
 ```
 
@@ -317,14 +319,14 @@ document.addEventListener(
       event => {
         lastFocusEl = event.target
       },
-      true
+      true,
     )
     document.addEventListener(
       'blur',
       event => {
         lastFocusEl = null
       },
-      true
+      true,
     )
     return () => lastFocusEl
   })(null)
@@ -418,11 +420,11 @@ document.addEventListener(
     event => {
       event.clipboardData.setData(
         'text/plain',
-        document.getSelection().toString()
+        document.getSelection().toString(),
       )
       event.preventDefault()
     },
-    true
+    true,
   )
 
   // 强制剪切
@@ -431,7 +433,7 @@ document.addEventListener(
     event => {
       event.clipboardData.setData(
         'text/plain',
-        document.getSelection().toString()
+        document.getSelection().toString(),
       )
       // 如果是可编辑元素还要进行删除
       if (isEditable(event.target)) {
@@ -439,7 +441,7 @@ document.addEventListener(
       }
       event.preventDefault()
     },
-    true
+    true,
   )
 
   // 强制粘贴
@@ -464,7 +466,7 @@ document.addEventListener(
         event.preventDefault()
       }
     },
-    true
+    true,
   )
 
   function selection() {
@@ -493,7 +495,7 @@ document.addEventListener(
 
 ```js
 // ==UserScript==
-// @name         force copy
+// @name         解除网页限制
 // @namespace    http://github.com/rxliuli
 // @version      1.0
 // @description  破解禁止复制/剪切/粘贴/选择/右键菜单的网站
@@ -571,7 +573,7 @@ document.addEventListener(
       'select',
       'contextmenu',
       'selectstart',
-      'dragstart'
+      'dragstart',
     ]
     document.querySelectorAll('*').forEach(el => {
       eventTypes.forEach(type => el.removeEventListenerByType(type))
