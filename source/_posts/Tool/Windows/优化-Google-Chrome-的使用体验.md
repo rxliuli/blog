@@ -3,7 +3,7 @@ layout: post
 title: 优化 Google Chrome 的使用体验
 abbrlink: 54be2845
 date: 2019-05-27 18:29:11
-updated: 2019-10-07
+updated: 2019-11-14
 tags:
   - Chrome
 ---
@@ -37,11 +37,11 @@ Windows 字体预览
 ```css
 /* 全局字体设置 */
 * {
-  font-family: 'Sarasa Mono CL';
+  font-family: "Sarasa Mono CL";
 }
 /* 强制指定 input 框中的字体 */
 input {
-  font-family: 'Sarasa Mono CL' !important;
+  font-family: "Sarasa Mono CL" !important;
 }
 ```
 
@@ -85,11 +85,13 @@ input {
 
 ## 自动翻页
 
-如果你也觉得搜索结果需要翻页好麻烦，那么 [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp) 可以一样可以帮到你！
+如果你也觉得搜索结果需要翻页好麻烦，那么 [uAutoPagerize](https://chrome.google.com/webstore/detail/uautopagerize/kdplapeciagkkjoignnkfpbfkebcfbpb) 可以一样可以帮到你！
 
-下面是使用了 AutoPagerize 后的 Google 搜索结果，会在滚动到接近底部时，自动获取下一页的内容并拼接到最后！
+> 相比于 [AutoPagerize](https://chrome.google.com/webstore/detail/autopagerize/igiofjhpmpihnifddepnpngfjhkfenbp) 万年不更新，uAutoPagerize 仍在积极维护中！
 
-![使用 AutoPagerize](https://img.rxliuli.com/20190531211313.png)
+下面是使用了 uAutoPagerize 后的 Google 搜索结果，会在滚动到接近底部时，自动获取下一页的内容并拼接到最后！
+
+![使用 uAutoPagerize](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191114123652.png)
 
 当然，它也支持百度哦
 
@@ -114,14 +116,6 @@ input {
 屏蔽后的搜索结果，CSDN Blog 那些垃圾博客不见了，心情大好！
 
 ![屏蔽后的结果](https://img.rxliuli.com/20190531214650.png)
-
-## 新标签页
-
-你是否也曾厌倦了 Chrome 浏览器千篇一律的新标签页，这里吾辈个人使用的是 [Tabliss](https://chrome.google.com/webstore/detail/tabliss-a-beautiful-new-t/hipekcciheckooncpjeljhnekcoolahp/related)。最早是在 Firefox 遇到的，后来作者将之移植到了 Chrome 上，开源免费，每次的新标签页都是不一样的风景。
-
-![新标签页](https://img.rxliuli.com/20190531215447.png)
-
-也能在每次打开新标签的时候放松心情，吾辈觉得是极好的。
 
 ## 冻结后台标签页
 
@@ -171,17 +165,11 @@ FDM 的优势
 
 ### 树结构浏览代码
 
-GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推荐 [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc) 这个插件。它能够为 GitHub 添加一个侧边栏，极大的方便了在线代码浏览。
+GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推荐 [Gitako](https://chrome.google.com/webstore/detail/gitako-github-file-tree/giljefjcheohhamkjphiebfjnlphnokk)   这个插件。它能够为 GitHub 添加一个侧边栏，极大的方便了在线代码浏览。
 
-![Octotree](https://img.rxliuli.com/20190531222359.png)
+> 相比于 [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)，Gitako 的性能更好，而且是完全免费的。
 
-嗯？好像有点配色不对？Octotree 默认使用亮色主题，而其他主题则需要 Pro 版本 -- 即收费版本。如果需要的话，可以去官网支持一下 <https://www.octotree.io/>。
-
-> Pass: 吾辈不需要 Pro 那么多的功能，只需要暗色主题 #笑
-
-不过我们也可以加个 UserCSS 补丁，使用上面的 Stylus 安装 [Octotree for GitHub Ice Dark](https://userstyles.org/styles/170999/) 这个主题，刷新一下 GitHub。
-
-![暗色 Octotree](https://img.rxliuli.com/20190531223206.png)
+![Gitako 侧边文件夹](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191114123238.png)
 
 ### 立体化 GitHub 用户活动
 
