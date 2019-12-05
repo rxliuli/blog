@@ -6,6 +6,7 @@ date: 2019-12-04 22:34:39
 updated: 2019-12-04 22:34:39
 tags:
   - Windows
+  - 笔记
 ---
 
 # Notion 使用体验
@@ -96,10 +97,10 @@ Notion 是一个基于 Web 的跨平台笔记工具，在了解过印象笔记�
     // 一个用于
     type PromiseDeconstruct<T extends Promise<any>> = T extends Promise<infer R>
       ? R
-      : never;
-    const res = Promise.resolve(1);
+      : never
+    const res = Promise.resolve(1)
     // 解构 Promsie 中的泛型类
-    const i: PromiseDeconstruct<typeof res> = 1;
+    const i: PromiseDeconstruct<typeof res> = 1
     ```
 
 ## 感受
