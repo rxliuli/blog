@@ -59,7 +59,7 @@ Alter-Enter 大概是 IDEA 最强大快捷键了，放在不同的位置有不�
 
 GIF 演示
 
-![GIF 演示](https://img.rxliuli.com/20190627110522.gif)
+![GIF 演示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190627110522.gif)
 
 ## 常用快捷键
 
@@ -143,7 +143,7 @@ GIF 演示
 
 我们也可以手动注入，例如为 Java 中的字符串注入 SQL 语言，这样在写 SQL 语句就不用跑到 SQL 编辑器那里写完 SQL 语句在粘贴过来了。
 
-## Live Template/Prosfix Template 模板
+## Live Template/Postfix Template 模板
 
 Live Template 模板就是那种在 Java 中输入 `sout` 就可以生成以下代码的模板功能，而这功能在 IDEA 还可以自定义。
 
@@ -185,3 +185,21 @@ Sysout.out.println("str");
 ```java
 final String $variableName$ = "str";$END$
 ```
+
+## 一些有用的配置项
+
+### soft wrap 强制换行
+
+IDEA 在一行过长时会出现横向滚动条，那我们不想要它出现以便于能直接使用键盘就能看完要怎么办呢？
+
+可以在 _Settings ⇒ Editor ⇒ General ⇒ Soft Wraps_ 中找到设置，将 **Soft-wrap files** 的值修改为 `*` 即可。
+
+![强制换行](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090747.png)
+
+### 根据源代码自动滚动项目
+
+可以在跳转文件时，使文件目录自动聚焦在当前编辑的文件上，这在很多时候是有利于查看目录/文件的。
+
+在 _Project ⇒ Tool ⇒ Autoscroll from Source_ 中可以找到这个配置，启用即在整个项目中启用了。
+
+![根据源代码自动滚动项目设置](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090627.png)

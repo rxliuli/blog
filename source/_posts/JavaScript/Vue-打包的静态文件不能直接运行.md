@@ -18,7 +18,7 @@ updated: 2018-10-29 00:00:00
 
 查看了一下打包后的 `index.html` 源码，终于发现了一个重要的点：
 
-![vue-cli 打包的项目 index.html 源码](https://img.rxliuli.com/20181029131219.png)
+![vue-cli 打包的项目 index.html 源码](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181029131219.png)
 
 _所有涉及到路径的地方全都是以 **/** 开头的_
 
@@ -53,8 +53,8 @@ dist:.
 ## 解决方案
 
 1. 修改文件 _/config/index.js_，将 `build.assetsPublicPath` 属性的值由 `/` 改为 `./`
-   ![/config/index.js](https://img.rxliuli.com/20181029133603.png)
+   ![/config/index.js](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181029133603.png)
 2. 修改文件 _/build/utils.js_，在插件 `ExtractTextPlugin` 中添加 `publicPath: '../../'`
-   ![/build/utils.js](https://img.rxliuli.com/20181029133636.png)
+   ![/build/utils.js](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181029133636.png)
 
 那么，使用 `npm run build` 重新打包后的静态文件应该就可以直接打开啦

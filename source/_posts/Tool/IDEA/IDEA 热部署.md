@@ -33,13 +33,13 @@ tags:
 ## 基本配置
 
 1. 在编辑运行配置窗口，配置 Tomcat（其他 Web 容器应该也类似）的页面。
-   ![配置 Tomcat](https://img.rxliuli.com/20181122210657.png)
+   ![配置 Tomcat](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210657.png)
 
 2. 点击 Deployment 选项卡，配置要运行的 war，必须要选择 **exploded** 进行部署。
-   ![Deployment 选项卡](https://img.rxliuli.com/20181122210737.png)
+   ![Deployment 选项卡](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210737.png)
 
 3. 回到 Server 选项卡，配置 IDEA 在发现代码/框架发生变化是执行的动作。
-   ![配置 IDEA 在发现代码](https://img.rxliuli.com/20181122210756.png)
+   ![配置 IDEA 在发现代码](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210756.png)
 
 然后，点击 OK 就可以了，接下来以 `Debug` 默认运行就可以自动帮你更新 Java 源码和 resources 资源文件以及 webapp 下的静态文件/模板文件了，愉快的玩耍吧！
 
@@ -55,26 +55,26 @@ tags:
    > 然后，如果你不愿意支持正版又不打算折腾破解的话，也可以不用看下面的内容了（关于破解方法可以参考 <https://blog.rxliuli.com/p/88d60541/>）  
    > [Google 上的相关内容](https://www.google.lk/search?q=IDEA+Jrebel+%E7%A0%B4%E8%A7%A3&oq=IDEA+Jrebel+%E7%A0%B4%E8%A7%A3)
 2. 在 `help > Jrebel > Activation` 下输入 License
-   ![20181122210822](https://img.rxliuli.com/20181122210822.png)  
-   ![20181122210839](https://img.rxliuli.com/20181122210839.png)  
-   ![20181122210910](https://img.rxliuli.com/20181122210910.png)
+   ![20181122210822](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210822.png)  
+   ![20181122210839](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210839.png)  
+   ![20181122210910](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210910.png)
 
 3. 接下来如上面那样配置 IDEA 的 Tomcat 运行选项之后（就是没装 Jrebel 的那种热部署方式），然后点击 `View > Tool Windows > JRebel`
 
-   ![20181122210932](https://img.rxliuli.com/20181122210932.png)
+   ![20181122210932](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210932.png)
 
    看到左侧弹出一个面板，选择你要热部署的模块，或者选择第一个以全选所有模块
 
-   ![20181122210941](https://img.rxliuli.com/20181122210941.png)
+   ![20181122210941](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210941.png)
 
    > 你或许发现了 `src/main/resources` 目录下多了一个奇怪的配置文件 `rebel.xml`，然而你并不需要在意，因为它是 Jrebel 的热部署配置文件。
 
-   ![Jrebel 的热部署配置文件](https://img.rxliuli.com/20181122210955.png)
+   ![Jrebel 的热部署配置文件](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122210955.png)
 
 4. 最后，点击 Jrebel 的 Debug 按钮即可  
-   ![Jrebel Debug](https://img.rxliuli.com/20181122211005.png)
+   ![Jrebel Debug](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122211005.png)
 5. 使用 Jrebel 调试项目即可  
-   ![Jrebel 调试项目](https://img.rxliuli.com/20190325101659.png)
+   ![Jrebel 调试项目](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190325101659.png)
 6. 现在，每当你的焦点离开 IDEA（切换到浏览器），Jrebel 就会自动检测变化的类和资源并帮你重新编译了（状态栏会有提示）
 
 > 附：这里提供吾辈自建的一个激活服务器，请勿滥用：<http://39.108.15.57:8181/947122a0-7e9a-4bea-814d-876525d3767f>  

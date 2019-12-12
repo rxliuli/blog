@@ -25,15 +25,15 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 
 首先我们去到 [官网](https://code.visualstudio.com/) 的 [下载页面](https://code.visualstudio.com/#alt-downloads)。这里吾辈推荐免安装的 `.zip` 包，因为它是真正开箱即用的！
 
-![VSCode 下载](https://img.rxliuli.com/20181201152415.png)
+![VSCode 下载](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181201152415.png)
 
 将文件解压到一个文件夹中，解压后的目录基本是这个样子
 
-![VSCode 解压目录](https://img.rxliuli.com/20181201152813.png)
+![VSCode 解压目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181201152813.png)
 
 点击其中的 **Code.exe** 运行 VSCode。
 
-![VSCode 首页](https://img.rxliuli.com/20181201161858.png)
+![VSCode 首页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181201161858.png)
 
 ## 安装插件
 
@@ -71,11 +71,11 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 常用操作只有三个：
 
 - 截图上传 `Ctrl-Alt-U`  
-  ![截图上传](https://img.rxliuli.com/20181205102050.gif)
+  ![截图上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102050.gif)
 - 文件管理器选择上传 `Ctrl-Alt-E`  
-  ![文件管理器选择上传](https://img.rxliuli.com/20181205102356.gif)
+  ![文件管理器选择上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102356.gif)
 - 输入文件路径上传 `Ctrl-Alt-O`  
-  ![输入文件路径上传](https://img.rxliuli.com/20181205102418.gif)
+  ![输入文件路径上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102418.gif)
 
 > PicGo 默认使用 [smms](https://sm.ms/) 图床，如果你不想使用这个图床，则可以配置 GitHub 或者其他的图床，具体参考 [官方文档](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)。
 
@@ -83,6 +83,6 @@ Markdown 是一种轻量级的标记语言（[Wiki](https://zh.wikipedia.org/zh-
 
 最后，配置完成的 VSCode 编辑器编辑 Mardkown 的效果图如下
 
-![编辑效果](https://img.rxliuli.com/20181201165338.png)
+![编辑效果](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181201165338.png)
 
 那么，接下来，便使用 VSCode 愉快的写作吧 ヾ（＠＾ ▽ ＾＠）ノ

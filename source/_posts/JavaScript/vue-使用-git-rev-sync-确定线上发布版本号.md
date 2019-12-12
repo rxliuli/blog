@@ -68,7 +68,7 @@ window.git = JSON.parse(process.env.VUE_APP_GIT)
 
 ### 效果
 
-![效果图](https://img.rxliuli.com/20190927082613.png)
+![效果图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190927082613.png)
 
 ## 总结
 

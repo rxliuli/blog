@@ -33,18 +33,18 @@ updated: 2018-11-26 22:31:18
 每逢长假都会有很多程序员跳槽，十一、过年是跳槽黄金时刻，尤其是过年。过年的时候年终奖到手，没有了多少牵挂，年终同学同事聚会比较多，沟通的就多，各种工作机会的消息也相应会多，所以跳槽的机会也就会多。跳槽就必不可少的要经过面试，那么作为一个 Java 程序员需要准备哪些面试知识呢？下面就给大家说说。
 
 1. 集合框架  
-    ![集合框架](https://img.rxliuli.com/20181126223446.png)  
+    ![集合框架](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181126223446.png)  
    从上图可以看到主要是 Collection 和 Map 的继承类和 Iterator 的实现类，重点掌握 ArrayList、LinkedList、Vector、Stack、PriorityQueue、HashSet、LinkedHashSet、TreeSet、HashMap、LinkedHashMap、TreeMap、WeakHashMap、EnumMap、TreeMap、HashTable 的特点和实现原理，还有多线程使用场景和插入多还是删除多的时候使用什么样的集合类效率会更高。
 
 2. IO 框架  
-   ![IO 框架](https://img.rxliuli.com/20181126223616.png)  
+   ![IO 框架](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181126223616.png)  
    主要掌握 Reader、Writer、InputStream、OutputStream 的继承类，重点掌握字节流 (FileInputStream、FileOutputSteam、BufferedInputStream、BufferedOutputStream、DataInputStream、DataOutputStream) 和字符流(FileReader、FileWriter、BufferedReader、BufferedWriter、InputStreamReader、OutputStreamWriter)，并熟练运用。还有就是 NIO 的工作原理要知道。
 
 3. String 相关  
    主要考察对 String 的处理，顺带考察多线程和算法，大公司就是喜欢考察字符串的算法，主要是字符串查找或者剔除，多线程打印字符串，超大字符串处理。
 
 4. 异常处理  
-   ![异常处理](https://img.rxliuli.com/20181126223820.png)  
+   ![异常处理](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181126223820.png)  
    掌握 Throwable 继承类，理解 Error 和 Exception 的区别，理解运行时异常和编译异常的区别，掌握异常的处理方法，掌握 try、catch、finally、throw、throws 关键字的意义，掌握 try-catch-finally 语句的执行顺序，掌握异常的工作原理，知道常见的异常有哪些。
 
 5. 多线程  
@@ -372,7 +372,7 @@ JXL 技术
 
 ### 63、软件工程, 项目管理
 
-![软件工程, 项目管理](https://img.rxliuli.com/20181126225820.png)
+![软件工程, 项目管理](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181126225820.png)
 
 1. 你需要精通面向对象分析与设计 (OOA/OOD)、涉及模式(GOF，J2EEDP) 以及综合模式。你应该十分了解 UML，尤其是 class，object，interaction 以及 statediagrams。
 2. 你需要学习 JAVA 语言的基础知识以及它的核心类库 (collections，serialization，streams，networking， multithreading，reflection，event，handling，NIO，localization，以及其他)。

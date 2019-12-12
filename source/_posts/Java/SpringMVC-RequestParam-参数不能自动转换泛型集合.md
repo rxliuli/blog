@@ -64,7 +64,7 @@ fetch('/testMap', {
 可以看到，Spring 告诉我们，不能转换 `String` 为 `Integer`。这是为什么呢？让我们来调试一下！
 
 可以看到，确实进入了方法，然而最后一步却报错了  
-![进入了方法](https://img.rxliuli.com/20190117180704.png)
+![进入了方法](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190117180704.png)
 
 报错原因
 

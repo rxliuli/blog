@@ -13,19 +13,19 @@ updated: 2018-11-13 01:11:23
 ## 起因
 
 最早，吾辈是在 [活动行](http://www.huodongxing.com/event/6459475264900) 上面看到这个活动的，然后果断报名参加了。
-![参与通知](https://img.rxliuli.com/20181113012304.png)
+![参与通知](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181113012304.png)
 
 即便，吾辈本身并不住在深圳，但还是选择坐高铁赶过去了。  
-![好吧，其实这张图是坐车回来的图片](https://img.rxliuli.com/20181113012102.png)
+![好吧，其实这张图是坐车回来的图片](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181113012102.png)
 
 ## 活动
 
 吾辈去的比较早，接近四点钟左右到了，但那个时候活动并没有开始，也没有看到活动标识。于是，吾辈和朋友便先去咖啡厅坐了一会，然后在大约六点钟的时候到达了活动现场。嗯，还拿到了一些小礼物。  
-![小礼物](https://img.rxliuli.com/20181113014204.png)
+![小礼物](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181113014204.png)
 
 > 产品全系列五折优惠真的很良心了！
 
-![会场演讲](https://img.rxliuli.com/20181113012612.png)
+![会场演讲](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181113012612.png)
 
 其实活动只有是三个主题
 
@@ -34,7 +34,7 @@ updated: 2018-11-13 01:11:23
 - [Kotlin](https://kotlinlang.org/) 语言特性讲解
 
 在讲完 TeamCity 之后其实有个茶歇时间的，这里吾辈拍了一张会场入口的活动海报  
-![幕间休息](https://img.rxliuli.com/20181113012530.png)
+![幕间休息](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181113012530.png)
 
 ## 感想
 

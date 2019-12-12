@@ -72,7 +72,7 @@ Notion 是一个基于 Web 的跨平台笔记工具，在了解过印象笔记�
 
 通过 `CS-L` 进行切换，也可以在 `Settings & Members` 中找到 `Dark Mode` 这个切换。
 
-![Notion 夜间模式](https://img.rxliuli.com/20191201224609.png)
+![Notion 夜间模式](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191201224609.png)
 
 ## 缺点
 

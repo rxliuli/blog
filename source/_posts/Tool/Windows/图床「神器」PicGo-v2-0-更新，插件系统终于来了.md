@@ -24,7 +24,7 @@ updated: 2019-01-18 21:20:14
 PicGo 的底层核心其实是 `PicGo-Core`。这个核心主要就是一个流程系统。(它支持在 Node.js 环境下全局安装，可以通过命令行上传图片文件、也可以接入 Node.js 项目中调用 api 实现上传。)
 
 `PicGo-Core` 的上传流程如下：  
-![PicGo-Core 上传流程](https://img.rxliuli.com/20190118212302.png)
+![PicGo-Core 上传流程](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212302.png)
 
 `Input` 一般是文件路径，经过 `Transformer` 读取信息，传入 `Uploader` 进行上传，最后通过 `Output` 输出结果。而插件可以接入三个生命周期（`beforeTransform`、`beforeUpload`、`afterUpload`）以及两种部件（`Transformer` 和 `Uploader`）。
 
@@ -35,20 +35,20 @@ PicGo 的底层核心其实是 `PicGo-Core`。这个核心主要就是一个流�
 PicGo 除了 `PicGo-Core` 提供的核心功能之外，额外给 GUI 插件给予一些自主控制权。
 
 比如插件可以拥有自己的菜单项：  
-![菜单](https://img.rxliuli.com/20190118212453.png)
+![菜单](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212453.png)
 
 因此 GUI 插件除了能够接管 `PicGo-Core` 给予的上传流程，还可以通过 PicGo 提供的 guiApi 等接口，在插件页面实现一些以前单纯通过 `上传区` 实现不了的功能：
 
 比如可以通过打开一个 `InputBox` 获取用户的输入：  
-![InputBox](https://img.rxliuli.com/20190118212549.png)
+![InputBox](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212549.png)
 
 可以通过打开一个路径来执行其他功能（而非只是上传文件）：  
-![打开一个路径来执行其他功能](https://img.rxliuli.com/20190118212808.gif)
+![打开一个路径来执行其他功能](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212808.gif)
 
 甚至还可以直接在插件面板通过调用 api 实现上传。
 
 另外插件可以监听相册里图片删除的事件：  
-![远端删除](https://img.rxliuli.com/20190118212628.png)
+![远端删除](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212628.png)
 
 这个功能就可以写一个插件来实现相册图片和远端存储里的同步删除了。
 
@@ -72,9 +72,9 @@ PicGo 除了 `PicGo-Core` 提供的核心功能之外，额外给 GUI 插件给�
 
 - 底层重构了之后，某些图床上传不通过 `base64` 值的将会提升不少速度。比如 `SM.MS` 图床等。而原本就通过 `base64` 上传的图床速度不变。
 - 增加一些配置项，比如打开配置文件（包括了上传的图片列表）、mini 窗口置顶、代理设置等。  
-  ![更多配置项](https://img.rxliuli.com/20190118212954.png)
+  ![更多配置项](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118212954.png)
 - 在相册页可以选择复制的链接格式，不用再跑去上传页改了。  
-  ![相册允许复制链接格式](https://img.rxliuli.com/20190118213134.png)
+  ![相册允许复制链接格式](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118213134.png)
 - 增加不同页面切换的淡入淡出动画。
 - macOS 版本配色小幅更新。（Windows 版本配色更新 Fluent Design 效果预计在 2.1 版本上线）
 - 更新 electron 版本从 1.8->4.0，启动速度更快了，性能也更好了。
@@ -91,11 +91,11 @@ PicGo 除了 `PicGo-Core` 提供的核心功能之外，额外给 GUI 插件给�
 在 PicGo-Core 发布不久，就有人根据 PicGo-Core 的 API 编写了 VSCode 版的 PicGo 插件。使用起来也非常方便：
 
 - 截图上传  
-  ![截图上传](https://img.rxliuli.com/20190118213411.gif)
+  ![截图上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118213411.gif)
 - 文件浏览器选择文件上传  
-  ![文件浏览器选择文件上传](https://img.rxliuli.com/20190118213514.gif)
+  ![文件浏览器选择文件上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118213514.gif)
 - 输入文件路径上传  
-  ![输入文件路径上传](https://img.rxliuli.com/20190118213547.gif)
+  ![输入文件路径上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190118213547.gif)
 
 配置项与 PicGo 的图床的配置项基本保持一致。在 VSCode 插件栏搜索 PicGo 即可下载安装与体验！
 
