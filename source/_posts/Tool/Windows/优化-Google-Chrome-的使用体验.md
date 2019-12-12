@@ -3,7 +3,7 @@ layout: post
 title: 优化 Google Chrome 的使用体验
 abbrlink: 54be2845
 date: 2019-05-27 18:29:11
-updated: 2019-11-14
+updated: 2019-12-09
 tags:
   - Chrome
 ---
@@ -37,11 +37,11 @@ Windows 字体预览
 ```css
 /* 全局字体设置 */
 * {
-  font-family: "Sarasa Mono CL";
+  font-family: 'Sarasa Mono CL';
 }
 /* 强制指定 input 框中的字体 */
 input {
-  font-family: "Sarasa Mono CL" !important;
+  font-family: 'Sarasa Mono CL' !important;
 }
 ```
 
@@ -91,7 +91,7 @@ input {
 
 下面是使用了 uAutoPagerize 后的 Google 搜索结果，会在滚动到接近底部时，自动获取下一页的内容并拼接到最后！
 
-![使用 uAutoPagerize](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191114123652.png)
+![使用 uAutoPagerize](https://img.rxliuli.com/20191114123652.png)
 
 当然，它也支持百度哦
 
@@ -151,6 +151,7 @@ FDM 的优势
 - `中键/C-左键`: 强制在新标签页打开链接
 - `中键(浏览器标签上)`: 关闭这个标签页
 - `A-左键`: 选择链接中的文字（不会触发拖动链接）
+- `S-滚轮`: 水平移动滚动条
 - `空格`: 翻到下一页
 - `F12`: 开启/关闭开发者工具
 - `C-R`: 重新加载当前页面
@@ -169,7 +170,7 @@ GitHub 浏览代码侧边栏没有一个文件栏实在难受，所以这里推�
 
 > 相比于 [Octotree](https://chrome.google.com/webstore/detail/octotree/bkhaagjahfmjljalopjnoealnfndnagc)，Gitako 的性能更好，而且是完全免费的。
 
-![Gitako 侧边文件夹](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191114123238.png)
+![Gitako 侧边文件夹](https://img.rxliuli.com/20191114123238.png)
 
 ### 立体化 GitHub 用户活动
 

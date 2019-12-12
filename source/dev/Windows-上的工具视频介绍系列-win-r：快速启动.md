@@ -20,10 +20,10 @@ tags:
 ## 步骤
 
 1. 创建一个目录。如下，吾辈在用户目录下创建了一个文件夹 _Shortcut_
-   ![Shortcut 文件夹](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191007171259.png)
+   ![Shortcut 文件夹](https://img.rxliuli.com/20191007171259.png)
 2. 将目录添加到环境变量中
-   ![将目录添加到环境变量中](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191007173016.gif)
+   ![将目录添加到环境变量中](https://img.rxliuli.com/20191007173016.gif)
 3. 将快捷方式并放到之前创建的目录下并重命名
-   ![将快捷方式并放到之前创建的目录下并重命名](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191007173630.gif)
+   ![将快捷方式并放到之前创建的目录下并重命名](https://img.rxliuli.com/20191007173630.gif)
 4. 使用 `win + r` 唤出运行，输入快捷方式的名字回车打开
-   ![使用 `win + r` 运行](https://raw.githubusercontent.com/rxliuli/img-bed/master/20191007174125.gif)
+   ![使用 `win + r` 运行](https://img.rxliuli.com/20191007174125.gif)

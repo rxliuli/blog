@@ -55,9 +55,9 @@ function assign<T>(target: T, ...objects: any[]): any {
 
 页面对比
 
-| TypeDoc                                                                                 | ESDoc                                                                                      |
-| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| ![TypeDoc](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190918123430.png) | ![ESDoc 截图](https://raw.githubusercontent.com/rxliuli/img-bed/master/20190918123929.png) |
+| TypeDoc                                                | ESDoc                                                     |
+| ------------------------------------------------------ | --------------------------------------------------------- |
+| ![TypeDoc](https://img.rxliuli.com/20190918123430.png) | ![ESDoc 截图](https://img.rxliuli.com/20190918123929.png) |
 
 > 注: 著名 ts 前端库 [rxjs](https://cn.rx.js.org/) 的文档生成工具使用的是 ESDoc。
 
