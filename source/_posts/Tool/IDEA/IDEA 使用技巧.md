@@ -3,7 +3,7 @@ title: IDEA 使用技巧
 tags: IDEA
 abbrlink: 2241d802
 date: 2018-07-31 00:00:00
-updated: 2019-12-23
+updated: 2019-12-24
 ---
 
 # IDEA 使用技巧
@@ -200,6 +200,14 @@ IDEA 在一行过长时会出现横向滚动条，那我们不想要它出现以
 ### 根据源代码自动滚动项目
 
 可以在跳转文件时，使文件目录自动聚焦在当前编辑的文件上，这在很多时候是有利于查看目录/文件的。
+
+2019.3 之后
+
+在 _Project ⇒ Always Select Opened File_ 中可以找到这个配置，启用即在整个项目中启用了。
+
+![根据源代码自动滚动项目设置](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191224100414.png)
+
+2019.3 之前
 
 在 _Project ⇒ Tool ⇒ Autoscroll from Source_ 中可以找到这个配置，启用即在整个项目中启用了。
 
