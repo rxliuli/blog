@@ -6,7 +6,7 @@ tags:
   - WebStorm
 abbrlink: 529086d7
 date: 2019-08-21 10:25:58
-updated: 2019-08-31
+updated: 2020-01-03
 ---
 
 # VSCode 与 WebStorm 横向对比
@@ -207,6 +207,18 @@ WebStorm
 WebStorm 确实很吃内存，尤其是项目刚刚打开的时候，索引会疯狂地吃 CPU/内存/硬盘，如果电脑性能不行的话这个过程所需时间可能泡面都够了。但基于 Chrome 内核的 VSCode 在使用各种插件打造成前端 IDE 之后吃的内存也并不少。吾辈打开了项目 [rx-util](https://github.com/rxliuli/rx-util)，可以看到 VSCode 每个插件确实都放在了单独的进程里（Chrome 系的习惯 #笑），相比之下 WebStorm 只有两个进程，其中一个还是启动的 nodejs，整体对比下来其实相差不大。
 
 ![任务管理器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831000118.png)
+
+## 东家
+
+VSCode 背后站着微软，俗成 **M\$**，开发了宇宙最强 IDE Visual Studio。而 WebStorm 则是基于 JetBrains 平台专门为前端进行特殊处理优化的 IDE，背后则是业界最智能的 IDE 的开发公司 JetBrains（捷克公司）。两者在 IDE/编辑的开发上都相当有经验，然而，有一点本质的不同：IDE 对于 JetBrains 而言几乎是全部，而 VSCode 对于 M\$ 则只是开发的一部分 -- 编辑器。
+
+`VSCode => VSCode Remote => GitHub => GitHub Actions => Azure`，从 M\$ 的一系列变化来看，这对开发者是真的相当上心，从本地开发、远程协作、版本控制、自动化流程控制 CI/CD 到部署到云端，完全是一站式的体验。相比于国内的云服务商，MS 显然更加开放、更加为开发者着想。
+而 JetBrains，虽然现在也有了编程语言 `Kotlin`、项目管理工具 `Space`（包含 CI/CD 工具 `TeamCity`），但本质上在其领域内，除了 IDE，其他的东西都没能形成特别大的优势（Kotlin 只能用于开发 Android 平台，而 Web 技术甚至能跨发全端；`TeamCity` 虽然很漂亮，但似乎人们更喜欢开源的 `Jenkins`）。
+未来 VSCode 一统天下似乎是必然之势，但目前而言，其尚且年幼，唯有 WebStorm 正值壮年。
+
+> 例如某只企鹅，开发的大多数云服务都是私有服务，使用上比开源的还难用而且还强制绑定到自家云服务上，是人不得不用全家桶（问题是体验又烂，文档死难找）
+> 附: 居然连 “文档和 Demo 有可能过期，但代码一定是最新的” 这种话都能说出来，与 MS 花大力气创造开源的 `VSCode` 简直是天壤之别。
+> 附: 没有对比就没有伤害！
 
 ## 总结
 
