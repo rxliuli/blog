@@ -3,12 +3,14 @@ layout: post
 title: 浅谈 Vue SPA 网站 URL 保存数据实践
 abbrlink: d5a45ac9
 date: 2020-01-04 23:53:22
-updated: 2020-01-05
+updated: 2020-01-12
 tags:
   - JavaScript
 ---
 
 ## 场景
+
+> 该功能吾辈已经封装成 NPM 库 [vue-url-persist](https://www.npmjs.com/package/vue-url-persist)
 
 在使用 Vue SPA 开发面向普通用户的网站时，吾辈也遇到了一些之前未被重视，但却实实在在存在的问题，这次便浅谈一下 SPA 网站将所有数据都存储到内存中导致数据很容易丢失以及吾辈思考并尝试的解决方案。
 
