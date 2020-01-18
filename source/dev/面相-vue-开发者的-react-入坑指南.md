@@ -1,11 +1,12 @@
 ---
 layout: post
 title: 面相 vue 开发者的 react 入坑指南
-date: 2020-01-16 08:43:17
 tags:
   - Vue
   - React
   - JavaScript
+abbrlink: b6a3c3df
+date: 2020-01-16 08:43:17
 ---
 
 ## 场景
@@ -44,7 +45,7 @@ export default HelloWorld
 
 ### 状态管理
 
-此处使用 mobx 对标，mobx 是一个状态管理库，以响应式、可变、简单方便为最大卖点。本质上可以认为提供了一个全局对象，并实现了 vue 中的 `computed` 和 `watch`，所以 vue 的作者说 vue 是更简单的 react + mobx 确实有些道理，实际上这两个加起来能做到的事情不比原生 vue 多多少。
+此处使用 mobx 对标，mobx 是一个状态管理库，以响应式、可变、简单方便为最大卖点。本质上可以认为为每个页面（页面内的所有组件）提供了一个全局对象，并实现了 vue 中的 `computed` 和 `watch`，所以 vue 的作者说 vue 是更简单的 react + mobx 确实有些道理，实际上这两个加起来能做到的事情不比原生 vue 多多少。
 
 但它们之间也有几点不同
 
@@ -63,6 +64,52 @@ export default HelloWorld
 - 获取当前路由：useMatch()
 - 使用编程式的路由导航:withRouter()
   - 注意 props 的类型
+
+异步组件和 vue 稍微有点差别，虽然也是需要 `import()` 语法，但却需要使用高阶组件。
+
+```tsx
+import React from 'react'
+
+function AsyncRoute(
+  importComponent: () => PromiseLike<{ default: any }> | { default: any },
+) {
+  class AsyncComponent extends React.Component<any, any> {
+    constructor(props: any) {
+      super(props)
+      this.state = {
+        component: null,
+      }
+    }
+
+    async componentDidMount() {
+      const { default: component } = await importComponent()
+      this.setState({
+        component: component,
+      })
+    }
+
+    render() {
+      const C = this.state.component
+      return C ? <C {...this.props} /> : null
+    }
+  }
+
+  return AsyncComponent
+}
+
+export default AsyncRoute
+```
+
+然后使用高阶组件包装即可
+
+```tsx
+<Route
+  path={'/system/task'}
+  component={AsyncRoute(() => import('../../index/HelloWorld'))}
+/>
+```
+
+> 注：高阶组件和高阶函数类似，指的是接收一个组件/返回一个组件的组件。
 
 ## CSS 样式隔离
 
@@ -90,16 +137,75 @@ export default function HelloWorld() {
 }
 ```
 
-注：此处的 `import styles from '*.module.css'` 不支持命名导入
+注：
+
+- 此处的 `import styles from '*.module.css'` 不支持命名导入
+- 此处实现的逻辑和 Vue 是一致的，只要使用了其中一个样式 `class`，则整个文件都会引入
+- CSS 只要被引入了，就不会被删除，即便组件被销毁了亦然，所以页面内的 CSS 只会增加，不会减少
+
+如何添加多个，默认使用 cra 创建的项目支持使用模板字符串
+
+```tsx
+className={`${styles.className1} ${styles.className2}`}
+```
+
+看起来很丑？可以试试 [classnames](https://github.com/JedWatson/classnames)
+
+```tsx
+import classNames from 'classnames'
+
+className={classNames(globalStyles.global, globalStyles.margin)}
+```
+
+但仍然很丑，正如 Sindre Sorhus 所说：[React 把简单的事情变复杂，复杂的事情变简单](https://twitter.com/sindresorhus/status/1001355913930858502)
+
+另一种个 API 是 `classNames.bind`
+
+```tsx
+import classNames from 'classnames'
+const cx={classNames.bind(globalStyles)}
+className={cx('global', 'margin')}
+```
+
+但这会让 WebStorm 损失所有的 CSS 关联，影响了包括代码提示/跳转/重构等功能，考虑到维护成本实在得不偿失。
+
+还有人提出了 typed css module，为所有的 `.module.css` 生成 `.d.ts` 类型定义，但这会和 css in js 一样丧失 css 预处理器的优势 ---- 并且，所有的工具链都需要重新支持这种关联，将之认为是 css。
 
 > 参考
 >
 > - [添加 CSS 模块样式表](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 > - [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)
 
-### 问题
+### slot
 
-使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 `className, style` 两个属性。
+两种方案
+
+1. 使用 `{props.children}`，和 vue 的 `slot:default` 几乎一样，只是不能通过子组件传递参数。
+2. 如果需要传递多个命名 `slot`，则可以直接为 `props` 属性赋值为组件。例如 `title={<div>hello world</div>}`
+3. 如果需要使用子组件传参的话需要使用函数式组件的形式。例如 `title={value => <div>{value}</div>}`
+
+> 吐槽：函数式已经是政治正确了。
+
+使用函数式的 `slot` 时必须检查函数是否存在，如果不存在则不要调用，不像是 vue 中的 `slot` 是自动处理这一步的。
+
+```tsx
+{
+  this.props.tableOperate && this.props.tableOperate(this.state.innerValue)
+}
+```
+
+## watch 监听 props
+
+```tsx
+componentDidUpdate(prevProps: PropsType) {
+  // 典型用法（不要忘记比较 props）：
+  if (this.props.value !== prevProps.value) {
+    this.setState({
+      innerValue: this.props.value,
+    })
+  }
+}
+```
 
 ## 代码组织
 
@@ -131,3 +237,5 @@ export default function HelloWorld() {
 - vue 在组件创建/销毁时会自动初始化/销毁状态及监听器，而 mobx 会一直保留需要手动初始化/清理
   - 注: 这点还未找到解决方案
 - 注：使用 yarn 并上传 `yarn.lock` 文件，避免线上 npm/yarn 自动更新小版本（所谓的语义版本号就是坑）
+- 使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 `className, style` 两个属性。
+- react 会在开发阶段报错比较多，主要是一些低级错误，尤其是加上 ts 之后尤其如此
