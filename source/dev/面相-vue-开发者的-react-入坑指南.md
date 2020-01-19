@@ -13,7 +13,7 @@ date: 2020-01-16 08:43:17
 
 ## 工程
 
-以下皆基于 `cra(create-react-app)` `ts + react + mobx + react-router + immer` 进行说明，虽然完全不了解以上内容亦可，但最好了解一下它们是做什么的，下面第一次提及时也会简单说明一下。
+以下皆基于 `cra(create-react-app)` 创建的 `ts + react + mobx + react-router + immer` 技术栈进行说明，虽然完全不了解以上内容亦可，但最好了解一下它们是做什么的，下面第一次提及时也会简单说明一下。
 
 ### 创建项目
 
