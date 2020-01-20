@@ -208,7 +208,7 @@ WebStorm 确实很吃内存，尤其是项目刚刚打开的时候，索引会�
 
 ![任务管理器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831000118.png)
 
-## 东家
+### 东家
 
 VSCode 背后站着微软，俗成 **M\$**，开发了宇宙最强 IDE Visual Studio。而 WebStorm 则是基于 JetBrains 平台专门为前端进行特殊处理优化的 IDE，背后则是业界最智能的 IDE 的开发公司 JetBrains（捷克公司）。两者在 IDE/编辑的开发上都相当有经验，然而，有一点本质的不同：IDE 对于 JetBrains 而言几乎是全部，而 VSCode 对于 M\$ 则只是开发的一部分 -- 编辑器。
 
