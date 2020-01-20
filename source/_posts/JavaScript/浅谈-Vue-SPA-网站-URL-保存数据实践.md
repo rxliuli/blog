@@ -3,7 +3,7 @@ layout: post
 title: 浅谈 Vue SPA 网站 URL 保存数据实践
 abbrlink: d5a45ac9
 date: 2020-01-04 23:53:22
-updated: 2020-01-12
+updated: 2020-01-20
 tags:
   - JavaScript
 ---
@@ -15,6 +15,10 @@ tags:
 在使用 Vue SPA 开发面向普通用户的网站时，吾辈也遇到了一些之前未被重视，但却实实在在存在的问题，这次便浅谈一下 SPA 网站将所有数据都存储到内存中导致数据很容易丢失以及吾辈思考并尝试的解决方案。
 
 > 参考：SPA 全称 `single page application`，意为 [单页应用](https://zh.wikipedia.org/wiki/%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8)，不是泥萌想的那样！#笑哭
+
+思维导图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:245px;" src="https://www.processon.com/embed/5e1e5d93e4b0c3908f881d64"></iframe>
 
 首先列出为什么遇到这个问题，具体场景及解决的问题是什么？
 
