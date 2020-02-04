@@ -53,7 +53,7 @@ date: 2020-02-02
 
 异步组件和 vue 稍微有点差别，虽然也是需要 `import()` 语法，但却需要使用高阶组件。
 
-```tsx
+```jsx
 import React from 'react'
 
 function AsyncRoute(
@@ -88,7 +88,7 @@ export default AsyncRoute
 
 然后使用高阶组件包装即可
 
-```tsx
+```jsx
 <Route
   path={'/system/task'}
   component={AsyncRoute(() => import('../../index/HelloWorld'))}
@@ -136,7 +136,7 @@ export default AsyncRoute
 
 在 `class` 中使用箭头函数以直接绑定当前组件的实例，尽量不要使用 `function`，否则 `this` 可能是不明确的。
 
-```tsx
+```jsx
 import React, { Component } from 'react'
 
 class HelloWorld extends Component {
@@ -174,7 +174,7 @@ cra 创建的项目默认支持 css module，是 react 项目流行的一种 CSS
 }
 ```
 
-```tsx
+```jsx
 import styles from 'HelloWorld.module.css'
 
 export default function HelloWorld() {
@@ -190,13 +190,13 @@ export default function HelloWorld() {
 
 如何添加多个，默认使用 cra 创建的项目支持使用模板字符串
 
-```tsx
+```jsx
 className={`${styles.className1} ${styles.className2}`}
 ```
 
 看起来很丑？可以试试 [classnames](https://github.com/JedWatson/classnames)
 
-```tsx
+```jsx
 import classNames from 'classnames'
 
 className={classNames(globalStyles.global, globalStyles.margin)}
@@ -206,7 +206,7 @@ className={classNames(globalStyles.global, globalStyles.margin)}
 
 另一种个 API 是 `classNames.bind`
 
-```tsx
+```jsx
 import classNames from 'classnames'
 const cx={classNames.bind(globalStyles)}
 className={cx('global', 'margin')}
@@ -233,7 +233,7 @@ className={cx('global', 'margin')}
 
 使用函数式的 `slot` 时必须检查函数是否存在，如果不存在则不要调用，不像是 vue 中的 `slot` 是自动处理这一步的。
 
-```tsx
+```jsx
 {
   this.props.tableOperate && this.props.tableOperate(this.state.innerValue)
 }
@@ -241,7 +241,7 @@ className={cx('global', 'margin')}
 
 ### watch 监听 props
 
-```tsx
+```jsx
 componentDidUpdate(prevProps: PropsType) {
   // 典型用法（不要忘记比较 props）：
   if (this.props.value !== prevProps.value) {
@@ -330,7 +330,7 @@ this.setState(produce(this.state, draft => {
 }
 ```
 
-```tsx
+```jsx
 // ComponentLoading.tsx
 import React from 'react'
 import { Spin } from 'antd'
