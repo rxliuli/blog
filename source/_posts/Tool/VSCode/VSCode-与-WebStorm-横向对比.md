@@ -7,6 +7,7 @@ tags:
 abbrlink: 529086d7
 date: 2019-08-21 10:25:58
 updated: 2020-01-19
+cover: true
 ---
 
 # VSCode 与 WebStorm 横向对比
