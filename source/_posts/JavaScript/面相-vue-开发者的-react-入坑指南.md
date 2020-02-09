@@ -7,6 +7,7 @@ tags:
   - JavaScript
 abbrlink: b6a3c3df
 date: 2020-02-02
+updated: 2020-02-09
 ---
 
 ## 场景
@@ -302,6 +303,82 @@ this.setState(produce(this.state, draft => {
 
 代码变得很简单了，虽然看起来是直接赋值，不过 immer 使用了 `Proxy` 和 `Object.freeze` 实现了对使用者友好的不可变数据修改，具体参考 。
 
+### React Hooks
+
+React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，很多人又是吹的天花乱坠。老实说最开始 React Hooks 流行并且在各个地方大肆宣传时，吾辈非常讨厌它，因为它又向函数式靠近了一步----函数式政治正确真的很讨厌！所以，自正式学习 React 以来，吾辈都没有接触过 React Hooks，都是用 Class Component 实现组件。
+但现在，架不住好奇心和一些朋友的推荐，吾辈稍微看了一下这个新特性。
+
+它提供了两个主要的 API：
+
+- `useState`：声明一些可变状态
+- `useEffect`：声明一些副作用代码
+
+使用看起来很简单
+
+```tsx
+import React, { useEffect, useRef, useState } from 'react'
+
+const HelloHooks: React.FC = function() {
+  //region 计数器
+
+  const [count, setCount] = useState(1)
+  const [list, setList] = useState<string[]>([])
+  const countAdd = () => setCount(count + 1)
+  useEffect(() => {
+    console.log('count changed: ', count)
+    setList(
+      Array(count)
+        .fill(0)
+        .map((_, i) => `第 ${i + 1} 个元素`),
+    )
+    //监听 count 变化
+  }, [count])
+
+  //endregion
+
+  //region 自动聚焦输入框
+
+  const inputRef = useRef<HTMLInputElement>(null as any)
+  useEffect(() => {
+    inputRef.current.focus()
+    //不监听任何值变化，只在第一次渲染运行
+  }, [])
+
+  //endregion
+
+  return (
+    <div>
+      <div>
+        <input
+          ref={inputRef}
+          value={count}
+          type="number"
+          onChange={e => setCount(parseInt(e.target.value))}
+        />
+        <button onClick={countAdd}>增加</button>
+      </div>
+      <ul>
+        {list.map((v, i) => (
+          <li key={i}>{v}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default HelloHooks
+```
+
+可以看到，上面用 `useState/useEffect` 两个函数实现了一些常见的功能：`state, componentDidMount, componentDidUpdate`，`useEffect` 甚至默认支持类似 vue `watch` 的使用方式。
+
+然而，Hooks 终究不是万能。
+
+- 使用 Hooks 封装控制 DOM 相关的代码做不到，例如使用高阶组件实现的根据某些条件控制组件是否加载。
+- 使用 Hooks 无法实现全部的生命周期，例如 `shouldComponentUpdate` 函数。
+- 使用 Hooks 会让函数变得很大，对开发人员的要求比之前更高（与 vue 3 的函数式 API 一样，都是由开发者自己完全控制代码块的分割）
+
+> 更多有关 React Hooks 的介绍，请参考：<https://zh-hans.reactjs.org/docs/hooks-intro.html>
+
 ## 常见问题
 
 ### 怎么在没有 `created` 生命周期的情况下初始化数据并保证用户看不到默认空数据
@@ -367,3 +444,18 @@ const ComponentLoading: React.FC<PropsType> = function(props) {
 
 export default ComponentLoading
 ```
+
+### React 和 vue 3 的对比
+
+vue 3 新增了 `Function-base` 的组件，看起来很像 React Hooks，但目前仍然无法在生产中实用。
+
+目前看来有以下缺点
+
+1. IDE 支持不好
+2. TS 不能解决 Vue 中的一些问题，尤其是对于模板层面简直无能为力
+3. Vue 3 函数式组件没有覆盖之前所有的功能
+4. 周边生态目前没有早期支持的迹象
+
+关于第二和第三点，吾辈认为这是 Vue 使用模板带来的一些天然的问题，几乎不可能解决。
+
+而 React 和 TS 结合比 Vue 要完善很多，包括类型校验完全使用 TS 而非自定义运行时校验机制。
