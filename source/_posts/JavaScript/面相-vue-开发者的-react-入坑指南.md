@@ -315,7 +315,7 @@ React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，�
 
 使用看起来很简单
 
-```tsx
+```jsx
 import React, { useEffect, useRef, useState } from 'react'
 
 const HelloHooks: React.FC = function() {
@@ -374,10 +374,11 @@ export default HelloHooks
 然而，Hooks 终究不是万能。
 
 - 使用 Hooks 封装控制 DOM 相关的代码做不到，例如使用高阶组件实现的根据某些条件控制组件是否加载。
-- 使用 Hooks 无法实现全部的生命周期，例如 `shouldComponentUpdate` 函数。
+- 使用 Hooks 无法实现全部的生命周期，例如 `shouldComponentUpdate`。
+- Hooks `useEffect` 中调用的外部函数，无法即时获取到所有最新的 `state`，即便它们与 `useEffect` 同级
 - 使用 Hooks 会让函数变得很大，对开发人员的要求比之前更高（与 vue 3 的函数式 API 一样，都是由开发者自己完全控制代码块的分割）
 
-> 更多有关 React Hooks 的介绍，请参考：<https://zh-hans.reactjs.org/docs/hooks-intro.html>
+> 更多有关 React Hooks 的介绍，请参考：<https://zh-hans.reactjs.org/docs/hooks-intro.html> 以及 [Vue Composition API 与 React Hooks 的对比](https://vue-composition-api-rfc.netlify.com/#comparison-with-react-hooks)。
 
 ## 常见问题
 
