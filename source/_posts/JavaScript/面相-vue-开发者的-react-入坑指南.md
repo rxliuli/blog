@@ -222,6 +222,30 @@ className={cx('global', 'margin')}
 > - [添加 CSS 模块样式表](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 > - [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)
 
+### 引入图片
+
+在任何一个项目中，都少不了引入图片的需求。而 React 中，并未像 Vue 对 `img, audio, video` 这些标签进行特殊处理，以支持直接使用路径即可将对应的媒体文件打包进来，React 需要使用 `import img from '*'` 的**原始**形式让 webpack **知道**这是一个需要打包的资源。
+
+例如
+
+```jsx
+import img from 'img.png'
+
+function render() {
+  reutrn(<img src={img} alt="img" />)
+}
+```
+
+而对于 SVG 类型的图片，React 支持使用组件的形式引入。
+
+```jsx
+import { ReactComponent as IconAudio } from '../../assets/icon/icon-audio.svg'
+
+function render() {
+  reutrn(<IconAudio />)
+}
+```
+
 ### slot
 
 两种方案

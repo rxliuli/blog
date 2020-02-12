@@ -9,11 +9,11 @@ tags:
 
 # 为什么吾辈不喜欢 TypeScript
 
-## 场景
-
 ## 使用只是为了支持 VSCode
 
 众所周知，VSCode 基于 TypeScript 实现的代码提示，所以很多 js 库都有写 `.d.ts` 以支持它。甚至于，该需求强烈到人们创建了一个 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 项目，用以专门维护那些流行 js 库的类型。当然，本质上该项目是为了让 ts 使用者在安装 js 库之后写代码时仍然能够正确的访问类型，但 VSCode 却将之绑定了起来。
+
+> 本质上 MS 这样做的原因一方面是为了推广 TS，但同时也对库的开发人员要求更高。这其实是一件好事，因为 NPM 的生态是在太大也太糟糕了－－虚幻的繁荣！
 
 ## 类型系统过于复杂
 
@@ -47,6 +47,8 @@ function assign<T>(target: T, ...objects: any[]): any {
 }
 ```
 
+> 注：此处的复杂性主要会在你做写基建的时候出现，如果平时只是写点业务代码，那么是无法体会到 ts 的类型复杂性的。
+
 ## 周边生态不是很好
 
 ### API 文档工具
@@ -73,3 +75,39 @@ ts 目前最流行的 linter 工具是 [tslint](https://palantir.github.io/tslin
 ## 强制要求所有的库都必须使用 ts
 
 在使用 ts 时，项目中如果需要引入什么包，那么这个包必须是 ts 写的，或者有 types 定义，完全放弃了分析 js 进行代码提示。
+
+> 现在稍微大型的包 DefinitelyTyped 都有定义好的 types，甚至有些库迁移到了 ts 实现（`vuejs, immerjs`），如果没有的话写一个简单的类型定义也并不困难。
+
+## 仍存在一些非常讨厌的地方
+
+### 不提供 `excludeTypes` 选项
+
+这导致项目依赖中错误包含 `node` 的 types 之后无法排除，只能选择忽略或使用 `types` 包含所有需要类型定义的库。
+
+```json
+{
+  "compilerOptions": {
+    "types": ["typescript", "jest", "jest-extended"]
+  }
+}
+```
+
+### 自定义 types 很麻烦
+
+当遇到没有提供 types 的库时，如果在 @types 项目找不到，那么只能自己手动定义了，但如何让类型定义正确生效并不是一件简单的事情。
+
+- 必须在 `@types` 目录下
+- 使用 `declare module * {}` 这种形式定义包，并且 `*` 需要与需要类型的包同名
+
+下面是一个例子
+
+```ts
+// jquery.d.ts
+declare module 'jquery' {
+  interface $ {
+    function(selector: string): JQueryStatic
+    function(func: Function): void
+    ajax: (config: object) => void
+  }
+}
+```
