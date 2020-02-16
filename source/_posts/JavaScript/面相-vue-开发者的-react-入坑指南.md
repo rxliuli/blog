@@ -7,7 +7,7 @@ tags:
   - JavaScript
 abbrlink: b6a3c3df
 date: 2020-02-02
-updated: 2020-02-09
+updated: 2020-02-13
 ---
 
 ## 场景
@@ -17,7 +17,7 @@ updated: 2020-02-09
   前者让需求实现变得更加简单，例如目前使用 Vue 做的后台管理系统使用了 Ant Design Vue 这个 UI 库，而它的上游 Ant Design 实际上官方维护的是 React 版本，而 Vue 并不是 **亲儿子**，导致一些问题并不像官方那么快解决。
   后者强大的类型系统能降低维护成本，虽然开发时代码添加类型会稍加工作量，但可以降低维护成本，便于后续的修改、重构，同时 IDE 对其支持是 JavaScript 无法相提并论的。
 - 问：那 React 相比于 Vue 而言有什么区别？
-- 答：更强大、复杂、酷，对于没有开发经验的人而言可能非常困难，但一旦熟悉，则会非常喜欢它。组件化（`React Component/JSX`）、函数式（`React Hooks`）、不可变（`immutable`）都是非常有趣的思想，理解之后确实都能发现具体使用场景。
+- 答：更强大、复杂、酷，对于没有现代前端开发经验的人而言可能非常困难，但一旦熟悉，则会非常喜欢它。组件化（`React Component/JSX`）、函数式（`React Hooks`）、不可变（`immutable`）都是非常有趣的思想，理解之后确实都能发现具体使用场景。
   > Vue 作者说 **React + Mobx 就是更复杂的 Vue**，这句话确实有道理，下面在 [状态管理](#状态管理) 那里也进行了说明，但同时，相比于 `Vue + Vuex`，避免引入 Redux 的 `React + Mobx` 将是更简单的。
 - 问：有大公司在用么？
 - 答：作为能够支撑 Facebook 这种级别公司的 Web 产品的基础，显然它拥有相当多的生产环境实践。
@@ -121,15 +121,33 @@ export default AsyncRoute
   - 页面级 css 必须与组件名保持一致，例如 `Login` 组件对应的即为 `Login.module.css`
   - 非 css module 的代码必须使用 `""` 而非 `{''}`
 
-### 问题
+### 修改默认配置
 
-- CSS module 很多方案，但没有一统天下的
-- CSS 没有局部化处理，没有像 vue 那样用 `[data-has]` 属性做组件隔离
-- vue 在组件创建/销毁时会自动初始化/销毁状态及监听器，而 mobx 会一直保留需要手动初始化/清理
-  - 注: 这点还未找到解决方案
-- 注：使用 yarn 并上传 `yarn.lock` 文件，避免线上 npm/yarn 自动更新小版本（所谓的语义版本号就是坑）
-- 使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 `className, style` 两个属性。
-- react 会在开发阶段报错比较多，主要是一些低级错误，尤其是加上 ts 之后尤其如此
+cra 默认提供了脚本命令 `reject`，用于将 cra 封装的配置全部解压出来 -- 当然，此操作是不可逆的！但除了这种破坏性的方式之外，也有人找到了和 vue-cli 中类似的方式，不过需要第三方包 `react-app-rewired` 的支持。
+
+并在根目录添加配置文件 `config-overrides.js`，里面暴露出一个函数，即可修改 cra 的默认配置了。
+
+下面是一个简单的示例
+
+```js
+const WorkerPlugin = require('worker-plugin')
+
+/* config-overrides.js */
+module.exports = function override(config, env) {
+  //region WebWorker 配置
+
+  //do stuff with the webpack config...
+  config.output.globalObject = 'this'
+  if (!config.plugins) {
+    config.plugins = []
+  }
+  config.plugins.push(new WorkerPlugin())
+
+  //endregion
+
+  return config
+}
+```
 
 ## 重点
 
@@ -219,6 +237,7 @@ className={cx('global', 'margin')}
 
 > 参考
 >
+> - [Css Modules by Example](https://www.javascriptstuff.com/css-modules-by-example/)
 > - [添加 CSS 模块样式表](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
 > - [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)
 
@@ -404,7 +423,27 @@ export default HelloHooks
 
 > 更多有关 React Hooks 的介绍，请参考：<https://zh-hans.reactjs.org/docs/hooks-intro.html> 以及 [Vue Composition API 与 React Hooks 的对比](https://vue-composition-api-rfc.netlify.com/#comparison-with-react-hooks)。
 
+<!-- ### React Props
+
+React props 基本上能传递任何东西，所以承担了 vue 中的多个特性。
+
+- `props` 传递参数
+- `$emit` 传递事件
+- `slot` 传递组件
+
+从这点来看，React 真是 **少即是多** 的范例。 -->
+
 ## 常见问题
+
+### React 有什么缺点
+
+- CSS module 很多方案，但没有一统天下的
+- CSS 没有局部化处理，没有像 vue 那样用 `[data-has]` 属性做组件隔离
+- vue 在组件创建/销毁时会自动初始化/销毁状态及监听器，而 mobx 会一直保留需要手动初始化/清理
+  - 注: 这点还未找到解决方案
+- 注：使用 yarn 并上传 `yarn.lock` 文件，避免线上 npm/yarn 自动更新小版本（所谓的语义版本号就是坑）
+- 使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 `className, style` 两个属性。
+- react 会在开发阶段报错比较多，主要是一些低级错误，尤其是加上 ts 之后尤其如此
 
 ### 怎么在没有 `created` 生命周期的情况下初始化数据并保证用户看不到默认空数据
 
@@ -484,3 +523,39 @@ vue 3 新增了 `Function-base` 的组件，看起来很像 React Hooks，但目
 关于第二和第三点，吾辈认为这是 Vue 使用模板带来的一些天然的问题，几乎不可能解决。
 
 而 React 和 TS 结合比 Vue 要完善很多，包括类型校验完全使用 TS 而非自定义运行时校验机制。
+
+### 开发环境代理
+
+开发环境配置代理几乎是必用功能，相比于 vue-cli 将全部配置统一在 `vue.config.js` 中，cra 看起来仍是分散式的。
+
+步骤
+
+1. 安装中间件 `yarn add -D http-proxy-middleware`
+2. 创建文件 `src/setupProxy.js`
+3. 编写配置
+
+   ```js
+   const proxy = require('http-proxy-middleware')
+
+   /**
+    * 开发环境代理
+    * @param app
+    * @return {string|*}
+    */
+   module.exports = function(app) {
+     const proxyConfig = {
+       target: 'https://dev.***.com',
+       changeOrigin: true,
+       secure: false,
+       ws: true,
+     }
+
+     app.use(proxy('/api', proxyConfig))
+   }
+   ```
+
+> 参考：
+>
+> - [Proxying API Requests in Development](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
+> - [http-proxy-middleware](https://github.com/chimurai/http-proxy-middleware)
+> - [一篇读懂 http-proxy-middleware](https://juejin.im/post/5bd13c5ce51d457a203cebf4)
