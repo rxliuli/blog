@@ -6,18 +6,20 @@ tags:
   - 记录
 abbrlink: c30dd206
 date: 2019-01-24 12:43:57
-updated: 2019-01-24 12:43:57
+updated: 2020-02-23
 ---
 
 # 使用 rollup 打包 JavaScript SDK
 
+> 吾辈已经写了一个 TypeScript/JavaScript Cli 工具 [liuli-cli](https://www.npmjs.com/package/liuli-cli)，如有需要可以使用这个 Cli 直接生成一个开箱即用 SDK 项目，然后就可以直接开始写自己的代码，不需要太过关心下面的内容了 -- 因为，它们都已然集成了。
+
 ## 场景
 
-### 为什么要使用打包工具？
+### 为什么要使用打包工具
 
 如果我们想要写一个 `JavaScript SDK`，那么就不太可能将所有的代码都写到同一个 js 文件中。当然了，想做的话的确可以做到，但随着 `JavaScript SDK` 内容的增加，一个 js 文件容易造成开发冲突，以及测试上的困难，这也是现代前端基本上都依赖于打包工具的原因。
 
-### 为什么打包工具是 rollup？
+### 为什么打包工具是 rollup
 
 现今最流行的打包工具是 [webpack](https://webpack.js.org/)，然而事实上对于单纯的打包 JavaScript SDK 而言 webpack 显得有些太重了。webpack 终究是用来整合多种类型的资源而产生的（`ReactJS/VueJS/Babel/TypeScript/Stylus`），对于纯 JavaScript 库而言其实并没有必要使用如此 **强大** 的工具。而 rollup 就显得小巧精致，少许配置就能立刻打包了。
 
@@ -118,7 +120,7 @@ class FetchLimiting {
       console.log(
         `执行 execCount: ${this.execCount}, waitArr length: ${
           this.waitArr.length
-        }, index: ${JSON.stringify(this.waitArr[0])}`
+        }, index: ${JSON.stringify(this.waitArr[0])}`,
       )
       this.execCount++
       const args = this.waitArr.shift(0)
@@ -158,8 +160,8 @@ export default {
     // 打包的文件
     file: 'dist/bundle.js',
     // 打包的格式，umd 支持 commonjs/amd/life 三种方式
-    format: 'umd'
-  }
+    format: 'umd',
+  },
 }
 ```
 
@@ -198,9 +200,9 @@ export default {
   plugins: [
     // 引入 babel 插件
     babel({
-      exclude: 'node_modules/**'
-    })
-  ]
+      exclude: 'node_modules/**',
+    }),
+  ],
 }
 ```
 
@@ -241,8 +243,8 @@ import { uglify } from 'rollup-plugin-uglify'
 export default {
   plugins: [
     // js 压缩插件，需要在最后引入
-    uglify()
-  ]
+    uglify(),
+  ],
 }
 ```
 
@@ -281,8 +283,8 @@ module.exports = {
   extends: 'standard',
   // 添加了运行环境设定，设置 browser 为 true
   env: {
-    browser: true
-  }
+    browser: true,
+  },
 }
 ```
 
@@ -307,8 +309,8 @@ import { eslint } from 'rollup-plugin-eslint'
 export default {
   plugins: [
     // 引入 eslint 插件
-    eslint()
-  ]
+    eslint(),
+  ],
 }
 ```
 
@@ -332,8 +334,8 @@ export default {
 export default {
   output: {
     // 启用代码映射，便于调试之用
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 }
 ```
 
@@ -373,12 +375,12 @@ export default {
     // 打包的格式，umd 支持 commonjs/amd/life 三种方式
     format: 'umd',
     // 启用代码映射，便于调试之用
-    sourcemap: true
+    sourcemap: true,
   },
   plugins: [
     // 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码
-    eslint()
-  ]
+    eslint(),
+  ],
 }
 ```
 
@@ -403,19 +405,19 @@ export default [
       // 打包的文件
       file: calcPath(`../dist/${name}.min.js`),
       // 打包的格式，umd 支持 commonjs/amd/life 三种方式
-      format: 'umd'
+      format: 'umd',
     },
     plugins: [
       // 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码
       eslint(),
       // 引入 babel 插件
       babel({
-        exclude: calcPath('../node_modules/**')
+        exclude: calcPath('../node_modules/**'),
       }),
       // js 压缩插件，需要在最后引入
-      uglify()
-    ]
-  }
+      uglify(),
+    ],
+  },
 ]
 ```
 
@@ -425,7 +427,7 @@ import dev from './rollup.config.dev'
 import prod from './rollup.config.prod'
 
 // 如果当前环境时 production，则使用 prod 配置，否则使用 dev 配置
-export default (process.env.NODE_ENV === 'production' ? prod : dev)
+export default process.env.NODE_ENV === 'production' ? prod : dev
 ```
 
 修改 npm 脚本
