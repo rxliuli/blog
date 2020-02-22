@@ -234,7 +234,7 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 > [GitHub](https://github.com/shadowsocksr-backup)
 
-为了正常浏览网络折腾与支付一些代价都是微不足道的，貌似比 `Shadowscoks` 要稳定一点，不过据传闻作者最初并未打算将其开源。
+为了正常浏览网络折腾与支付一些代价都是微不足道的，貌似比 `ShadowScoks` 要稳定一点，不过据传闻作者最初并未打算将其开源。
 
 ### MacType：字体美化
 
