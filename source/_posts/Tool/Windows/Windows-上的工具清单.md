@@ -4,66 +4,13 @@ tags:
   - Windows
 abbrlink: c453742
 date: 2018-08-21 00:00:00
-updated: 2019-09-16
+updated: 2020-02-21
 cover: true
 ---
 
 # Windows 上的工具清单
 
 > 但弄雕虫之技，尘芥草莽，于泥泞自勉……
-
-- [Windows 上的工具清单](#windows-上的工具清单)
-  - [开发](#开发)
-    - [MS VSCode：前端标准 IDE](#ms-vscode前端标准-ide)
-    - [Google Chrome：最好的浏览器](#google-chrome最好的浏览器)
-    - [IDEA：最好的 Java IDE](#idea最好的-java-ide)
-    - [Cmder：Windows 上模拟 Linux 终端](#cmderwindows-上模拟-linux-终端)
-    - [Git：Git 版本控制系统](#gitgit-版本控制系统)
-    - [MobaXterm：非常强大的远程连接工具](#mobaxterm非常强大的远程连接工具)
-    - [HeidiSQL：SQL 客户端](#heidisqlsql-客户端)
-    - [freeFTPd：免费的 FTP/SFTP 服务端](#freeftpd免费的-ftpsftp-服务端)
-  - [日常](#日常)
-    - [Win + R：快速启动](#win--r快速启动)
-    - [SSR：正常上网必须](#ssr正常上网必须)
-    - [MacType：字体美化](#mactype字体美化)
-    - [FDM：免费的多线程下载器](#fdm免费的多线程下载器)
-    - [Bandizip：压缩/解压缩](#bandizip压缩解压缩)
-    - [Ditto：剪切板增强](#ditto剪切板增强)
-    - [imageview：图片浏览](#imageview图片浏览)
-    - [Everything：文件快速搜索](#everything文件快速搜索)
-    - [Snipaste：截图/贴图](#snipaste截图贴图)
-    - [PicGo：图床上传](#picgo图床上传)
-    - [ScreenToGif：录制 GIF 动态图](#screentogif录制-gif-动态图)
-    - [QuickLook：文件管理器预览增强](#quicklook文件管理器预览增强)
-    - [MS Office：文档管理](#ms-office文档管理)
-    - [Google 文档：在线文档管理](#google-文档在线文档管理)
-    - [Calibre：电子书管理](#calibre电子书管理)
-    - [Steam：国外的游戏平台](#steam国外的游戏平台)
-    - [Mozilla FireFox：抱有期待的浏览器](#mozilla-firefox抱有期待的浏览器)
-    - [AIMP：本地音乐播放器](#aimp本地音乐播放器)
-    - [PotPlayer：视频播放器](#potplayer视频播放器)
-    - [qBittorrent：BT 下载](#qbittorrentbt-下载)
-    - [Dism++：Windows 的一个集中式的系统管理工具](#dismwindows-的一个集中式的系统管理工具)
-    - [TreeSizeFree：以树状视图查看文件夹](#treesizefree以树状视图查看文件夹)
-    - [renamer：文件/文件夹重命名](#renamer文件文件夹重命名)
-    - [waifu2x-caffe：图片清晰化](#waifu2x-caffe图片清晰化)
-    - [Bandicam：视频录制](#bandicam视频录制)
-    - [LockHunter：解除文件占用](#lockhunter解除文件占用)
-    - [rufus：USB 启动盘制作工具](#rufususb-启动盘制作工具)
-    - [Geek Uninstaller：深度卸载](#geek-uninstaller深度卸载)
-    - [PanDownload：百度网盘下载](#pandownload百度网盘下载)
-    - [KeyTweak：全局按键映射](#keytweak全局按键映射)
-    - [Loseless Audio Validator：音频校验](#loseless-audio-validator音频校验)
-    - [ApowerMirror: 手机投屏](#apowermirror-手机投屏)
-  - [国内流氓](#国内流氓)
-    - [QQ：国内不得不用的流氓 IM](#qq国内不得不用的流氓-im)
-    - [有道词典：国内算是很好用的词典了](#有道词典国内算是很好用的词典了)
-  - [名词解释](#名词解释)
-    - [便携版](#便携版)
-    - [开源](#开源)
-    - [部分开源](#部分开源)
-    - [跨平台](#跨平台)
-    - [免费](#免费)
 
 ## 开发
 
@@ -243,15 +190,15 @@ Cmder 是一个在 Windows 上模拟 Linux Bash 的终端模拟器，其实对�
 
 最初由 Linus 开发的一个分布式的版本控制系统，现在已经是最流行的版本控制系统之一了。说到 Git 不得不提 GitHub，GitHub 为 Git 实现了一个在线代码（或者其他）托管平台，相当好用而且托管开源项目是免费的。其实对于吾辈而言 Git 只是一个用于在本地操作 GitHub 的客户端罢了（很少有添加到 Git 而没有提交到 GitHub 的代码）。正是因为 GitHub 对 Git 的支持之好，所以吾辈才喜欢使用 Git 的。。。（#因果颠倒）
 
-### MobaXterm：非常强大的远程连接工具
+### Termius：简单漂亮的 SSH 连接工具
 
-[便携版]
+[跨平台]
 
-> [官网](https://mobaxterm.mobatek.net/)
+> [官网](https://www.termius.com/)
 
-虽然是一个收费的远程连接工具，但免费家庭版本的功能已然够用了。同时支持 SSH/SFTP 这两点真心不错（集中化管理）。当然，页面上就比较复古一点（Win7 时代的风格），这个却是不用在意啦
+非常漂亮的一个远程连接工具，免费版本仅支持 SSH 连接，而 SFTP 则是收费版本的功能，吾辈作为前端感觉算是足够了。
 
-> 页面优雅并且跨平台：[Termius](https://www.termius.com/)，但免费功能不支持 SFTP 功能
+> 更强大的远程连接工具：[Mobaxterm](https://mobaxterm.mobatek.net/)，功能非常强大但界面复古（Win7 时代的风格）。
 
 ### HeidiSQL：SQL 客户端
 
