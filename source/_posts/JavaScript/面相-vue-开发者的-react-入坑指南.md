@@ -48,9 +48,10 @@ updated: 2020-02-13
 ### 路由
 
 - 递归菜单栏
-- 获取当前路由：useMatch()
-- 使用编程式的路由导航:withRouter()
-  - 注意 props 的类型
+- 使用高阶组件包装路由组件 `withRouter()`
+- 获取当前路由信息：`this.props.match`
+- 使用编程式的路由导航：`this.props.history`
+  - 注意 props 的类型变化
 
 异步组件和 vue 稍微有点差别，虽然也是需要 `import()` 语法，但却需要使用高阶组件。
 
