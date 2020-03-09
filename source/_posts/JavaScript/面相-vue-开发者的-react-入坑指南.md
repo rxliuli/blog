@@ -416,6 +416,11 @@ export default HelloHooks
 
 可以看到，上面用 `useState/useEffect` 两个函数实现了一些常见的功能：`state, componentDidMount, componentDidUpdate`，`useEffect` 甚至默认支持类似 vue `watch` 的使用方式。
 
+同时，使用 Hooks 可以轻易地封装出 `useModel`, vue 中的 `watch/computed` 甚至原生自带了！
+
+- `useMemo`：当依赖变化时计算属性
+- `useCallback`：当依赖变化时执行回调
+
 然而，Hooks 终究不是万能。
 
 - 使用 Hooks 封装控制 DOM 相关的代码做不到，例如使用高阶组件实现的根据某些条件控制组件是否加载。
@@ -439,11 +444,10 @@ React props 基本上能传递任何东西，所以承担了 vue 中的多个特
 
 ### React 有什么缺点
 
-- CSS module 很多方案，但没有一统天下的
-- CSS 没有局部化处理，没有像 vue 那样用 `[data-has]` 属性做组件隔离
+- CSS 局部化有很多方案，但没有一统天下的
 - vue 在组件创建/销毁时会自动初始化/销毁状态及监听器，而 mobx 会一直保留需要手动初始化/清理
   - 注: 这点还未找到解决方案
-- 注：使用 yarn 并上传 `yarn.lock` 文件，避免线上 npm/yarn 自动更新小版本（所谓的语义版本号就是坑）
+  - 更新：可以使用 context 部分解决这个问题
 - 使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 `className, style` 两个属性。
 - react 会在开发阶段报错比较多，主要是一些低级错误，尤其是加上 ts 之后尤其如此
 
@@ -526,30 +530,48 @@ vue 3 新增了 `Function-base` 的组件，看起来很像 React Hooks，但目
 
 而 React 和 TS 结合比 Vue 要完善很多，包括类型校验完全使用 TS 而非自定义运行时校验机制。
 
+> 参考：
+>
+> - [Vue composition api comparison with React Hooks](https://vue-composition-api-rfc.netlify.com/#comparison-with-react-hooks)
+> - [谁能大致说下 vue 和 react 的最大区别之处？](https://aweiu.com/%E8%B0%81%E8%83%BD%E5%A4%A7%E8%87%B4%E8%AF%B4%E4%B8%8Bvue%E5%92%8Creact%E7%9A%84%E6%9C%80%E5%A4%A7%E5%8C%BA%E5%88%AB%E4%B9%8B%E5%A4%84%EF%BC%9F/)
+
 ### 开发环境代理
 
 开发环境配置代理几乎是必用功能，相比于 vue-cli 将全部配置统一在 `vue.config.js` 中，cra 看起来仍是分散式的。
 
 步骤
 
-1. 安装中间件 `yarn add -D http-proxy-middleware`
-2. 创建文件 `src/setupProxy.js`
+1. 安装中间件 `yarn add -D http-proxy-middleware @types/`
+2. 创建文件 `src/setupProxy.ts`
 3. 编写配置
 
-   ```js
-   const proxy = require('http-proxy-middleware')
+   ```ts
+   import proxy from 'http-proxy-middleware'
+   const fs = require('fs-extra')
+   const path = require('path')
 
    /**
     * 开发环境代理
     * @param app
     * @return {string|*}
     */
-   module.exports = function(app) {
-     const proxyConfig = {
-       target: 'https://dev.***.com',
+   module.exports = function(app: any) {
+     const proxyConfig: proxy.Config = {
+       target: 'https://localhost:8000',
        changeOrigin: true,
        secure: false,
        ws: true,
+       pathRewrite(api: string) {
+         const mockApiList = fs.readJSONSync(
+           path.resolve(__dirname, './config/mockApiList.json'),
+         )
+         return (
+           api +
+           (mockApiList.some((mockApi: string) => api.includes(mockApi))
+             ? '?mock=default&errCode=200'
+             : '')
+         )
+       },
      }
 
      app.use(proxy('/api', proxyConfig))
