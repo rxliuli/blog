@@ -7,7 +7,7 @@ tags:
   - JavaScript
 abbrlink: b6a3c3df
 date: 2020-02-02
-updated: 2020-02-13
+updated: 2020-03-14
 ---
 
 ## 场景
@@ -350,7 +350,7 @@ this.setState(produce(this.state, draft => {
 
 ### React Hooks
 
-React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，很多人又是吹的天花乱坠。老实说最开始 React Hooks 流行并且在各个地方大肆宣传时，吾辈非常讨厌它，因为它又向函数式靠近了一步----函数式政治正确真的很讨厌！所以，自正式学习 React 以来，吾辈都没有接触过 React Hooks，都是用 Class Component 实现组件。
+React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，很多人又是吹的天花乱坠。老实说最开始 React Hooks 流行并且在各个社群被大肆宣传时，吾辈非常讨厌它，因为它又向函数式靠近了一步----函数式政治正确真的很讨厌！所以，自正式学习 React 以来，吾辈都没有接触过 React Hooks，都是用 Class Component 实现组件。
 但现在，架不住好奇心和一些朋友的推荐，吾辈稍微看了一下这个新特性。
 
 它提供了两个主要的 API：
@@ -425,10 +425,14 @@ export default HelloHooks
 
 - 使用 Hooks 封装控制 DOM 相关的代码做不到，例如使用高阶组件实现的根据某些条件控制组件是否加载。
 - 使用 Hooks 无法实现全部的生命周期，例如 `shouldComponentUpdate`。
-- Hooks `useEffect` 中调用的外部函数，无法即时获取到所有最新的 `state`，即便它们与 `useEffect` 同级
+- Hooks `useEffect` 中调用的外部函数，无法即时获取到所有最新的 `state`，即便它们与 `useEffect` 同级，必须在 `useEffect` 声明正确的依赖才行，即便调用的函数在外部依赖的亦然如此（老实说这点并不简单）。示例：
+- Hooks 中 `useState/useReducer` 修改并不能即时反应出来。例如 `const [count, setCount] = useState(0)` 声明一个状态，使用 `setCount(count + 1)` 之后立刻取 `count` 的值仍然是 0，需要等到下次渲染才会生效。而 `useRef` 声明的可变状态，虽然是即时修改的，但组件却不会因为它的变化重新渲染。示例：<https://codesandbox.io/s/react-hooks-usestate-async-change-5hlz0>
 - 使用 Hooks 会让函数变得很大，对开发人员的要求比之前更高（与 vue 3 的函数式 API 一样，都是由开发者自己完全控制代码块的分割）
 
-> 更多有关 React Hooks 的介绍，请参考：<https://zh-hans.reactjs.org/docs/hooks-intro.html> 以及 [Vue Composition API 与 React Hooks 的对比](https://vue-composition-api-rfc.netlify.com/#comparison-with-react-hooks)。
+> 更多有关 React Hooks 的介绍，请参考：
+>
+> - [Hooks 简介](https://zh-hans.reactjs.org/docs/hooks-intro.html)
+> - [在依赖列表中省略函数是否安全？](https://zh-hans.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)
 
 <!-- ### React Props
 
@@ -526,9 +530,11 @@ vue 3 新增了 `Function-base` 的组件，看起来很像 React Hooks，但目
 3. Vue 3 函数式组件没有覆盖之前所有的功能
 4. 周边生态目前没有早期支持的迹象
 
-关于第二和第三点，吾辈认为这是 Vue 使用模板带来的一些天然的问题，几乎不可能解决。
+关于第二和第三点，吾辈认为这是 Vue 使用模板带来的一些天然的问题，几乎不可能解决。而 React 和 TS 结合比 Vue 要完善很多，包括类型校验完全使用 TS 而非自定义运行时校验机制。
 
-而 React 和 TS 结合比 Vue 要完善很多，包括类型校验完全使用 TS 而非自定义运行时校验机制。
+下面是 vue 作者谈及 vue 3 与其他框架的对比
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bOdfo5SmQc8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 > 参考：
 >
