@@ -4,7 +4,7 @@ tags:
   - Windows
 abbrlink: c453742
 date: 2018-08-21 00:00:00
-updated: 2020-02-21
+updated: 2020-04-08
 cover: true
 ---
 
@@ -170,6 +170,17 @@ Chrome 虽然已经很完美了，但 Google 却并非如此，最近 Chrome 开
 
 > 入门推荐教程（简体中文）：<https://github.com/judasn/IntelliJ-IDEA-Tutorial>
 
+### drawio：开源免费的画图工具
+
+[便携版], [开源], [免费]，[跨平台]
+
+> [官网](https://app.diagrams.net/), [GitHub](https://github.com/jgraph/drawio)
+
+目前能找到的最好的免费开源的画图解决方案，能够制作流程图、UML 图、组织结构图、泳道图等绘图。允许导出为图片/HTML/PDF 等各种格式，全平台免费可用的解决方案。
+
+> ProcessOn 是一个更加本地化的解决方案，并且添加了思维导图支持，只允许在线编辑导致了数据的最终权力不在自己手上，强制收费则让（小）团队使用成为一件可望而不可及的事情。
+> 注：此处不是故意黑 ProcessOn，因为吾辈也是它的付费用户，但在团队内推广使用确实会存在一些问题。
+
 ### Cmder：Windows 上模拟 Linux 终端
 
 [便携版], [开源], [免费]
@@ -247,6 +258,32 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 > 附: MacType 配置推荐 **注册表加载 + Iof => XHei => Default**
 > 附：字体个人推荐 [Sarasa-Gothic](https://github.com/be5invis/Sarasa-Gothic)，中文名是更纱黑体，包含 **英/简中/繁中/日** 四种语言
 
+### Joplin：适合开发者的笔记工具
+
+[便携版], [开源], [跨平台], [免费]
+
+> [官网](https://joplinapp.org/), [GitHub](https://github.com/laurent22/joplin)
+
+一个开源跨平台的笔记工具，使用的模式是本地程序 + 第三方服务同步的方式，编辑功能算是比较弱的，同步也不算是最好的，甚至于客户端也不算是最漂亮的。但是，它有一些非常显著的优点，甚至足以压倒以上的缺点。
+
+主要优点：
+
+1. 搜索很快，非常快
+2. 可以使用外部编辑器打开
+3. 数据都在自己手里，提供一次性导出全部的功能
+4. 使用标准的 md，可以直接复制到其他平台
+5. 可以基于它进行二次开发
+
+主要缺点：
+
+1. ui/ux 有点简陋
+2. 没有 vsc 插件导致使用外部编辑器也并不是非常方便
+
+> 之前吾辈使用过 OneNote 和 Notion，两者都是非常好的笔记工具，但两者存在的一些缺点导致吾辈在使用一段时间后选择了放弃。
+>
+> - OneNote：主要问题是需要自己调整文本格式，不支持 markdown，以及富文本带来的分享问题。
+> - Notion：主要问题是编辑体验不好，搜索非常慢，以及非标准 markdown 导致的分享问题。可以参考 [Notion 使用体验](https://blog.rxliuli.com/p/fecb9995/)
+
 ### FDM：免费的多线程下载器
 
 [免费]
@@ -286,13 +323,22 @@ Windows 上的字体就是会出现锯齿（所谓的点阵字体真是坑），
 
 Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。即使一个功能 Windows 本身支持的不好，然而总有其他的工具对其增强就是了。[善用佳软评测](https://xbeta.info/ditto.htm) 对其的介绍很全面，这里也就无需赘述了，吾辈需要的只是它的剪切板历史功能。
 
-### imageview：图片浏览
+### JPEGView：图片浏览
 
-[免费]
+[便携版], [免费]
 
-> [官网](https://www.kantuwang.wang/)
+> [官网](https://sourceforge.net/projects/jpegview/)
 
-中文名是 **快眼看图王**，嗯，有点俗。不过软件本身还是不错的，作为 Windows 上纯粹看图的软件却是极好的了，鼠标按下就可以拖动图片，可以浏览同一文件夹下的其他图片，快捷键 `Ctrl + C` 就可以直接复制图片。
+简单而且好用的图片查看器，相比于吾辈之前使用的 ImageView（中文名是 **快眼看图王**）更快，相比于 HoneyView 更见简洁和易操作。
+
+主要优点如下：
+
+- 操作简单：滚轮缩放，按住移动，ESC 关闭，Left/Right 查看上/下张图片
+- 性能很高：实测打开速度比 imageview/honeyview 都要更快
+
+借用[知乎](https://www.zhihu.com/question/21305023)网友理想中的图片查看器需求图
+
+![理想中的图片查看器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200408210706.png)
 
 ### Everything：文件快速搜索
 
@@ -344,30 +390,6 @@ Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。
 > [官网](https://pooi.moe/QuickLook/), [GitHub](https://github.com/xupefei/QuickLook)
 
 Windows Explorer 预览功能增强，支持很多种格式的文件/文件夹进行预览，包括但不限于文本、图像、视频、音频、压缩包、文件夹等。在按下空格时，就弹出一个预览窗口，感觉还是不错的。
-
-### MS Office：文档管理
-
-> [官网](https://products.office.com)
-
-MS 的办公套件全家桶，讲真吾辈更喜欢用 `Markdown`，然而工作中其他人却只会使用 Word,Excel,PPT 也没办法不是。虽然不是国内流氓，然而还是不得不装的软件。
-
-### Google 文档：在线文档管理
-
-[免费], [跨平台]
-
-> [官网](https://www.google.com/intl/zh-CN/docs/about/), [Chrome 插件](https://chrome.google.com/webstore/detail/gbkeegbaiigmenfmjfclcdgdpimamgkj)
-
-MS Office 实在太重了，所以一般吾辈都是用 Google Doc 去浏览/修改文档的，加上 Chrome 插件之后可以直接使用 **Chrome 浏览器** 打开文档，修改的话也能自动保存，感觉还是很方便的。
-
-### Calibre：电子书管理
-
-[便携版], [免费]
-
-> [官网](https://calibre-ebook.com), [GitHub](https://github.com/kovidgoyal/calibre)
-
-相比于 SumatraPDF，Calibre 不但界面美观，功能也更为强大！而且是 PC 上少有的 Epub 阅读器，对一些自定义阅读设置也十分友好的提供了可视化设置（同样能以 CSS 配置），对电子书的管理、编辑、格式转换，书籍共享也支持的相当好。
-
-> 虽然 Calibre 不支持 PDF，但现代浏览器基本上都能直接打开 PDF 文档（Chrome/Firefox）
 
 ### Steam：国外的游戏平台
 
@@ -519,13 +541,13 @@ FireFox 是一个将 IE 拉下神坛的浏览器，一个开源的注重隐私�
 垃圾 QQ，毁我人生！  
 好了，以上纯属吐槽不用在意。QQ 是腾讯的社交 IM，由于国内使用人数极其庞大，所以吾辈也不得不用的软件。一个软件居然会向系统添加驱动服务，而且禁用了还不让使用，真是厉害了呀。。。
 
-### 有道词典：国内算是很好用的词典了
+### 百度网盘：国内事实上的垄断网盘
 
 [跨平台], [免费]
 
-> [官网](https://dict.youdao.com/)
+> [官网](https://pan.baidu.com/)
 
-原本吾辈是使用 [欧陆词典](https://www.eudic.net/) 的，但 PC 版欧陆词典无法连接到网络（询问过客服至今原因不明），Mobile 版本丢失过吾辈的单词本（更新之后），忍无可忍之下直接换回了国内的有道。。。
+国内事实上的大文件共享服务，目前对普通用户的限制非常大，逼得人不得不开通 [SVip](https://pan.baidu.com/buy/checkoutcounter?from=homepage&svip=1) 才能使用，但同时也不能得到满速下载，在下载量较大后，之后的下载就会在服务端限速，同时百度网盘的客户端非常讨厌，即便是 SVip 也会看到广告。
 
 ---
 
