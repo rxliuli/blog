@@ -165,6 +165,8 @@ class HelloClassWorkerImpl implements HelloClassWorker {
 expose(HelloClassWorkerImpl)
 ```
 
+> 关于此处 `implements class` 的问题，吾辈偶然一试之下没报错也很奇怪，所以找到了相关问题 [Typescript: How to extend two classes?](https://stackoverflow.com/a/26961710)，官方文档也同样说明了这个特性 [Mixins](https://www.typescriptlang.org/docs/handbook/mixins.html)。
+
 在 _main.ts_ 中使用
 
 ```ts
