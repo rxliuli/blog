@@ -3,6 +3,7 @@ layout: post
 title: 在现代前端项目中使用 Worker
 abbrlink: c757d1d9
 date: 2020-04-18 22:19:57
+updated: 2020-04-18 22:19:57
 tags:
   - TypeScript
   - WebWorker
