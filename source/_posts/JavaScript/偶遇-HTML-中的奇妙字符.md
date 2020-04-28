@@ -3,6 +3,7 @@ layout: post
 title: 偶遇 HTML 中的奇妙字符
 abbrlink: 33cb7cbf
 date: 2020-04-28 23:48:27
+updated: 2020-04-28 23:48:27
 tags:
   - HTML
   - CSS
@@ -26,10 +27,10 @@ _下班回家 => 想要看动画 => 去动漫花园下载 BT 种子 => 动漫花
 
 ![uBlock 屏蔽的脚本](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200429010547.png)
 
-既然无法使用 uBlock 的元素屏蔽了，那么吾辈便需要使用一个新的方式去组织广告了，幸运的是吾辈安装了 Stylus 和 Tampermonkey 插件。
+既然无法使用 uBlock 的元素屏蔽了，那么吾辈便需要使用一个新的方式去阻止广告了，幸运的是吾辈安装了 Stylus 和 Tampermonkey 插件。
 
-> Stylus 能够使用被称为 user.css 的技术，能够在本地修改任意网站的样式 -- 即 UI 显示。
-> 而 Tampermonkey 则更强大，支持 user.js -- 可以在本地打开任意网站时载入自定义的 JavaScript 脚本，不再局限于修改 UI，几乎与插件无异（事实上它也确实被认为是更轻量的插件）。
+> Stylus 能够使用被称为 `user.css` 的技术，能够在本地修改任意网站的样式 -- 即自定义 UI 显示。
+> 而 Tampermonkey 则更强大，支持 `user.js` -- 可以在本地打开任意网站时载入自定义的 JavaScript 脚本，不再局限于修改 UI，几乎与插件无异（事实上它也确实被认为是更轻量的插件）。
 
 原以为就几句 css 的事情，找到了广告的 id，于是吾辈写下了下面这些 css
 
@@ -47,13 +48,13 @@ _下班回家 => 想要看动画 => 去动漫花园下载 BT 种子 => 动漫花
 
 ![屏蔽一半](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200429010717.png)
 
-可以看到，上面第一个广告确实被屏蔽了，但下面两个却并没有，而且控制台吾辈直接使用 `document.querySelector('#1280_adv')` 也获取会抛出错误 `SyntaxError: Document.querySelector: '#1280_adv' is not a valid selector`。吾辈是直接复制的 id，**理论上**来说不会有错才是。
+可以看到，上面两个广告确实被隐藏了，但下面一个却并没有，而且吾辈在控制台直接使用 `document.querySelector('#1280_adv')` 也获取 dom 会抛出错误 `SyntaxError: Document.querySelector: '#1280_adv' is not a valid selector`。吾辈是直接复制的 id，**理论上**来说不会有错才是。
 
 仔细想想，吾辈或许是漏掉了什么。。。于是，吾辈使用 **Copy => Copy Selector** 功能，有趣的东西出现了，复制出来的内容竟然是 `'\31 280_adv'`，wtf？
 
 嗯，或许吾辈需要冷静一下，尝试使用 `document.querySelector("#\\31 280_adv")` 获取一下
 
-> 注意：这里 JS 里面去查询 DOM Selector 又进行了转义。
+> 注意：这里 JS 里面去查询 DOM Selector 的字符串又进行了转义。
 
 ![Console 获取](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200429010811.png)
 
@@ -85,9 +86,11 @@ div[id='bebiv3_ad'] {
 }
 ```
 
+使用后效果如下
+
 ![屏蔽后干净的网页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200429010852.png)
 
-现在，初始目的达成了，吾辈开始有点好奇它是怎么实现这个功能，于是下载了它的源码，但 id 那里并未发现什么奇怪的东西，而且吾辈都无法复现一个 demo 出来！
+现在，初始目的达成了，吾辈开始有点好奇它是怎么实现这个功能，于是下载了它的源码，id 那里并未发现什么奇怪的东西，但吾辈却也无法复现一个 demo！
 
 ```html
 <!DOCTYPE html>
@@ -106,7 +109,7 @@ div[id='bebiv3_ad'] {
 </html>
 ```
 
-页面效果
+demo 效果
 
 ![demo 效果](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200429011004.png)
 
