@@ -92,7 +92,9 @@ UC 国际版，这是一个比较有趣的版本，没有国内版那么多花�
 
 虽然这些微型浏览器理念很好：**少即是多，简单就是美！**，但实际上，这些没有内核的浏览器很多地方，尤其是性能方面，仍然受限于系统默认浏览器。大多数自带的插件系统，往往只是实现了一套加载 `*.user.js` 的机制罢了，而且生态之小与 Chrome/FireFox 这些主流其相比往往是天壤之别。
 
-## Kiwi browser 推荐的插件
+## Kiwi browser 相关
+
+### Kiwi browser 推荐的插件
 
 - [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)：广告过滤
 - [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)：为所有网站加上黑色主题，大部分情况下都还不错
@@ -101,3 +103,7 @@ UC 国际版，这是一个比较有趣的版本，没有国内版那么多花�
 - [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=zh-CN)：油猴脚本管理器
 
 > 桌面的 Chrome 使用建议可以参考：[优化 Google Chrome 的使用体验](https://blog.rxliuli.com/p/54be2845/)
+
+### 二维码扫描
+
+有时候需要使用二维码扫描使用手机去打开某个网站，而 Kiwi 并没有自带这个功能，所以需要配合 App [二维码扫描](https://play.google.com/store/apps/details?id=mark.qrcode) 食用。
