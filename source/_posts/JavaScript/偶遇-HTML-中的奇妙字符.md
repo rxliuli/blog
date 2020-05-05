@@ -3,7 +3,7 @@ layout: post
 title: 偶遇 HTML 中的奇妙字符
 abbrlink: 33cb7cbf
 date: 2020-04-28 23:48:27
-updated: 2020-04-28 23:48:27
+updated: 2020-05-05
 tags:
   - HTML
   - CSS
@@ -116,3 +116,15 @@ demo 效果
 如果有人知道原因的话，请务必不吝赐教！
 
 > 参考：[ASCII Wiki](https://zh.wikipedia.org/wiki/ASCII)
+
+---
+
+> 后续，万能的网友 [NiaMori](https://disqus.com/by/niamori/) 又来说明啦，实际上是 id 以数字开头的原因，具体问题参考：
+> 是 id 以数字开头的原因，简单的 `<div id="1">test<div>` 就能复现这个效果。
+> `document.getElementById('1')` 能够选中，但 `document.querySelector('#1')` 不能，因为 HTML5 允许 id 以数字开头而 CSS 不允许
+> 0x31 是 '1' 的 Unicode 编码值，Copy selector 的时候 Chrome 做了一个智能的 escape
+> 参考：
+>
+> - [Using querySelector with IDs that are numbers](https://disq.us/url?url=https%3A%2F%2Fstackoverflow.com%2Fquestions%2F20306204%2Fusing-queryselector-with-ids-that-are-numbers%3Aywx_Ldt8DYLp36vWCEZDC-CT6pM&cuid=5534903)
+> - [Css Spec](https://disq.us/url?url=https%3A%2F%2Fwww.w3.org%2FTR%2FCSS21%2Fsyndata.html%23characters%3AYR69gjoR28vxgXneZXGYH3k8gFM&cuid=5534903)
+> - [CSS.escape](https://disq.us/url?url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FAPI%2FCSS%2Fescape%3A5uLuEmiEmKi4BAwjvTU8OFFY6OQ&cuid=5534903)
