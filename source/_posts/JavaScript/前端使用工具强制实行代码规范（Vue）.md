@@ -155,7 +155,7 @@ npm run lint:js
 - [vue eslint 整合包](https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint)
 
 > WebStorm 配置 ESLint 即时检查:
-> ![WebStorm 使用 ESLint](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190926114439.png)
+> ![WebStorm 使用 ESLint](https://img.rxliuli.com/20190926114439.png)
 > 参考: <https://stackoverflow.com/questions/28808857>
 
 ## StyleLint
@@ -469,11 +469,11 @@ npm run lint:css
 
 > WebStorm 使用
 > WebStorm 配置 StyleLint 即时检查:
-> ![WebStorm 配置即时检查](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190926113520.png)
+> ![WebStorm 配置即时检查](https://img.rxliuli.com/20190926113520.png)
 > 参考 <https://stackoverflow.com/questions/54304313/>
 >
 > 添加外部工具以进行快速修复
-> ![添加外部工具以进行快速修复](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190926113953.png)
+> ![添加外部工具以进行快速修复](https://img.rxliuli.com/20190926113953.png)
 > 然后添加一个快捷键即可
 
 ## Prettier
@@ -563,7 +563,7 @@ npm run format
 - [WebStorm 使用 Prettier 官方文档](https://www.jetbrains.com/help/webstorm/prettier.html)
 
 > WebStorm 配置使用 Prettier 快速格式化:
-> ![WebStorm 配置使用 Prettier 快速格式化](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190926115309.png)
+> ![WebStorm 配置使用 Prettier 快速格式化](https://img.rxliuli.com/20190926115309.png)
 > 建议修改为全局使用 Prettier 格式化，避免记忆两个格式化快捷键
 
 ## husky 与 lint-staged

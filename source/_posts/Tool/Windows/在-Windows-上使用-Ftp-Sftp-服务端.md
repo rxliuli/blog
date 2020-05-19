@@ -33,13 +33,13 @@ updated: 2019-02-19 00:00:00
 
 1. 打开程序  
    可以看到默认在 `Status` 标签，显示者 FTP 和 SFTP 服务都是关闭状态。
-   ![首页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217213152.png)
+   ![首页](https://img.rxliuli.com/20190217213152.png)
 2. 添加用户  
    首先，我们需要添加一个用户，可以连接 FTP/SFTP 服务端的用户。
    1. 点击 Users 标签，然后点击 Add 添加用户  
-      ![Users 标签](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217213700.png)
+      ![Users 标签](https://img.rxliuli.com/20190217213700.png)
    2. 设置用户信息  
-      ![添加用户信息](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217214421.png)  
+      ![添加用户信息](https://img.rxliuli.com/20190217214421.png)  
       依次
       1. 输入用户名
       2. 选择使用密码认证
@@ -48,11 +48,11 @@ updated: 2019-02-19 00:00:00
       5. 同时选择允许 FTP/SFTP 连接（默认选中）
       6. 点击 Apply 完成添加
 3. 启动 FTP 服务端  
-   ![启动 FTP](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217214719.png)
+   ![启动 FTP](https://img.rxliuli.com/20190217214719.png)
 4. 启动 SFTP 服务端  
-   ![启动 SFTP](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217214843.png)
+   ![启动 SFTP](https://img.rxliuli.com/20190217214843.png)
 5. 查看 Status 状态页  
-   ![Status 选项页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217214951.png)
+   ![Status 选项页](https://img.rxliuli.com/20190217214951.png)
 
 ## 测试 FTP/SFTP
 
@@ -61,20 +61,20 @@ updated: 2019-02-19 00:00:00
 在 [下载页面](https://mobaxterm.mobatek.net/download-home-edition.html) 选择 **MobaXterm Home Edition v11.1 (Portable edition)** 下载免费便携版。下载完成得到一个压缩包，解压之，点击 **MobaXterm_Personal_11.1.exe** 运行程序。
 
 MobaXterm 首页  
-![MobaXterm 首页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217220138.png)
+![MobaXterm 首页](https://img.rxliuli.com/20190217220138.png)
 
 1. 点击 **Session** 添加会话  
-   ![连接 FTP](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217220648.png)
+   ![连接 FTP](https://img.rxliuli.com/20190217220648.png)
 2. 设置用户认证信息  
-   ![设置用户认证信息](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217220940.png)
+   ![设置用户认证信息](https://img.rxliuli.com/20190217220940.png)
 3. 选择用户认证信息  
-   ![选择用户认证信息](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217221138.png)
+   ![选择用户认证信息](https://img.rxliuli.com/20190217221138.png)
 4. 连接 FTP 成功  
-   ![连接 FTP 成功](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217221321.png)
+   ![连接 FTP 成功](https://img.rxliuli.com/20190217221321.png)
 5. 同理添加 SFTP 连接  
-   ![同理添加 SFTP 连接](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217221633.png)
+   ![同理添加 SFTP 连接](https://img.rxliuli.com/20190217221633.png)
 6. 连接 SFTP 成功  
-   ![连接 SFTP 成功](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190217221801.png)
+   ![连接 SFTP 成功](https://img.rxliuli.com/20190217221801.png)
 
 ---
 

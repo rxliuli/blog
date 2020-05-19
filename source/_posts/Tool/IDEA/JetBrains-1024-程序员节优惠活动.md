@@ -26,10 +26,10 @@ tags:
 ![image.png](https://i.loli.net/2019/10/24/gAKEG28p5erO4iM.png)
 
 然后，果然手动化操作忙不过来了 23333
-![官方邮件](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191026114627.png)
+![官方邮件](https://img.rxliuli.com/20191026114627.png)
 
 重要的是，这个优惠码貌似可以针对任意产品，包括全家桶那个 \$249 的那个也能免费 0 折一年！官方也太实诚了吧 emmmmm
-![优惠码使用](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191026115028.png)
+![优惠码使用](https://img.rxliuli.com/20191026115028.png)
 
 ## 链接
 

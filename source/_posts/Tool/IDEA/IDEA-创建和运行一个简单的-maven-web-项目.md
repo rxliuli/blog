@@ -21,7 +21,7 @@ updated: 2018-12-04 18:11:33
 ## 创建
 
 首先打开 IDEA，进入到了 IDEA 欢迎页，点击 **Create New Project**  
-![IDEA 欢迎页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204181531.png)
+![IDEA 欢迎页](https://img.rxliuli.com/20181204181531.png)
 
 来到项目创建面板
 
@@ -30,7 +30,7 @@ updated: 2018-12-04 18:11:33
 3. 选择 `org.apche.maven.archetypes:maven-archetype-webapp` 原型
    > 这里可以输入 webapp，就可以通过 Top/Bottom 键来快速找到原型了
 
-![创建面板](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204182057.png)
+![创建面板](https://img.rxliuli.com/20181204182057.png)
 
 接下来设定一下 Maven 的基本配置
 
@@ -39,20 +39,20 @@ updated: 2018-12-04 18:11:33
 - ArtifactId：实际的工件名称。例如 `idea-maven-webapp-example` 就指明了该项目就是一个 idea 创建的 maven webapp 案例项目
 - Version：该项目的版本号，没什么好说的。
 
-![Maven 基本配置](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204183441.png)
+![Maven 基本配置](https://img.rxliuli.com/20181204183441.png)
 
 然后是使用的 Maven 程序，IDEA 内置了 Maven，所以如果你不怎么了解 Maven 可以直接 Next 过去  
-![使用的 Maven 程序](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204183409.png)
+![使用的 Maven 程序](https://img.rxliuli.com/20181204183409.png)
 
 最后一步是创建 IDEA 项目，基本上不需要修改什么，直接 FINISH 即可  
-![创建 IDEA 项目](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204183707.png)
+![创建 IDEA 项目](https://img.rxliuli.com/20181204183707.png)
 
 ## 配置项目
 
 ### 项目初始配置
 
 创建完成后会提示是否选择自动引入依赖，这里选择 **Enable Auto import**。当然，另一个要我们去配置 Web 框架的提示就不用管了，IDEA 已经自动完成了这一切。  
-![创建完成提示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204184028.png)
+![创建完成提示](https://img.rxliuli.com/20181204184028.png)
 
 ### 配置 Tomcat 容器
 
@@ -61,23 +61,23 @@ updated: 2018-12-04 18:11:33
 1. 使用快捷键 `CS-A` 打开 IDEA 结构化设置搜索
 2. 输入 `edit config`，找到 `edit configurations...` 项
 3. 回车打开 IDEA 运行配置面板  
-   ![IDEA 结构化设置搜索](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204185414.png)
+   ![IDEA 结构化设置搜索](https://img.rxliuli.com/20181204185414.png)
 4. 添加一个新的 Tomcat 容器运行配置项  
-   ![Tomcat 容器运行配置](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204185728.png)
+   ![Tomcat 容器运行配置](https://img.rxliuli.com/20181204185728.png)
 5. 配置 Application server，点击 CONFIGURETION 按钮  
-   ![配置 Application server](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204190023.png)
+   ![配置 Application server](https://img.rxliuli.com/20181204190023.png)
 6. 选择本地 Tomcat 的目录并确定  
-   ![选择本地 Tomcat 的目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204190127.png)
+   ![选择本地 Tomcat 的目录](https://img.rxliuli.com/20181204190127.png)
 7. 选择要运行的 war 包  
    配置完成会发现下面多了一条警告 `Warning:No artifacts marked for deployment`，意思是没有 jar/war 包需要被部署，这里我们只要点一下 Fix，并且选择 `war exploded`，之后 IDEA 会自动完成剩余的事  
-   ![部署 war 项目](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204190459.png)
+   ![部署 war 项目](https://img.rxliuli.com/20181204190459.png)
    > 注：有人觉得每次都要配置 Tomcat 真的挺麻烦的，这里吾辈坚决声明这是误解，只有第一次才需要配置各种环境，后面 IDEA 是能够**记住**的。
 8. 最后，修改一下运行配置的名字，然后点击 OK 按钮  
-   ![修改运行配置的名字](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204191042.png)
+   ![修改运行配置的名字](https://img.rxliuli.com/20181204191042.png)
 9. 在右上角的运行配置里应该已经显示出刚才添加的运行配置项 Tomcat 了，这是点击右边的 Debug 按钮，一切就开始了  
-   ![Debug 开始](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204191242.png)
+   ![Debug 开始](https://img.rxliuli.com/20181204191242.png)
 10. 运行完成后会自动打开浏览器 <http://localhost:8080/>，显示出这个项目的首页了呢  
-    ![浏览器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204200454.png)
+    ![浏览器](https://img.rxliuli.com/20181204200454.png)
 
 至此，我们已经使用 IDEA 运行起来了一个基本的 Web 项目了呢！
 
@@ -91,16 +91,16 @@ updated: 2018-12-04 18:11:33
 - `web.xml`：Web 项目所需要的一个配置文件。主要用来配置 `Servlet`, `Filter`, `Listene`。
 - `index.jsp`：Maven webapp 原型自带的一个初始的 jsp 首页
 
-![项目文件结构](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204184248.png)
+![项目文件结构](https://img.rxliuli.com/20181204184248.png)
 
 ### 配置 java/resources 目录
 
 现在，我们已经可以写 jsp 了，那么 `Servlet` 之类的 java 文件应该写到哪里呢？
 
 1. 在 _src/main_ 新建 _java_ 和 _resources_ 目录  
-   ![新建 java/resources 目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204194615.png)
+   ![新建 java/resources 目录](https://img.rxliuli.com/20181204194615.png)
 2. 点击 _File > Project Structure_ 打开项目结构配置面板（或者使用快捷键 `CSA-S`）  
-   ![Project Structure](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204194742.png)
+   ![Project Structure](https://img.rxliuli.com/20181204194742.png)
 3. 标识目录
 
    1. 点击 Module 项
@@ -111,7 +111,7 @@ updated: 2018-12-04 18:11:33
    6. 点击 Resources 使 resources 目录变为紫色
    7. 完成后点击下方的 OK
 
-   ![标识目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204195327.png)
+   ![标识目录](https://img.rxliuli.com/20181204195327.png)
 
 ### 修改 web.xml 的 servlet 版本为 3.1
 
@@ -194,7 +194,7 @@ public class HomeServlet extends HttpServlet {
 ```
 
 最后，再次点击 Debug 按钮重新运行项目，在浏览器中访问 <http://localhost:8080/home>，可以看到我们的 Servlet 已经生效了呢  
-![访问 home Servlet](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181204202042.png)
+![访问 home Servlet](https://img.rxliuli.com/20181204202042.png)
 
 ## 总结
 

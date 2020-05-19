@@ -120,7 +120,7 @@ updated: 2018-12-21 00:00:00
 })()
 ```
 
-![Greasemonkey API 显示 undefined](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181219225309.png)
+![Greasemonkey API 显示 undefined](https://img.rxliuli.com/20181219225309.png)
 
 测试环境如下：
 
@@ -173,15 +173,15 @@ updated: 2018-12-21 00:00:00
 
 问题解决了，现在，所有的 API 都有值了。
 
-![GM API 都有值了](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181219225919.png)
+![GM API 都有值了](https://img.rxliuli.com/20181219225919.png)
 
 ## 内存爆炸
 
 场景
 
 使用了 `GM.setValue()/GM.getValue()` 两个 API，结果内存分分钟爆炸。吾辈安装 Chrome 以来第一次碰到加载网页能把内存耗尽的情况，果然 GM 的限制不是没有道理的呢  
-![内存爆炸](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181220002112.png)  
-![浏览器崩溃](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181220013001.png)
+![内存爆炸](https://img.rxliuli.com/20181220002112.png)  
+![浏览器崩溃](https://img.rxliuli.com/20181220013001.png)
 
 ```js
 // ==UserScript==

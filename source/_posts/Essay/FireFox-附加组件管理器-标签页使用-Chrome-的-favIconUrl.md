@@ -32,7 +32,7 @@ arr.find(
 )
 ```
 
-![查询到的 tab](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200508234243.png)
+![查询到的 tab](https://img.rxliuli.com/20200508234243.png)
 
 为什么 Firefox 的**附加组件管理器**标签页会使用 Chrome 的图标啊？难道是 Firefox 的开发团队复制 Chrome 源码的时候忘记替换了么？
 抱着好玩的想法，吾辈将这个错误分享到了某个 Telegram 前端群中，有人提出了完全不同的解释：这是 Firefox 历史的遗产 -- 遠古的 XUL 留下來的 scheme，甚至在 Chrome 浏览器出现之前就已经存在了。
@@ -52,7 +52,7 @@ graph TB;
 打开附加组件管理器 --> 调试附加组件 --> 选择一个扩展点击检查按钮 --> 输入上面的代码
 ```
 
-![流程示意图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200509001909.gif)
+![流程示意图](https://img.rxliuli.com/20200509001909.gif)
 
 ## 总结
 

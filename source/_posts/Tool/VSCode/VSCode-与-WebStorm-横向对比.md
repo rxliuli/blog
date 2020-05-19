@@ -25,24 +25,24 @@ cover: true
 VSCode 的生态无疑非常好，基于 Web 技术构建的编辑器同样可以使用 Web 技术开发插件，而 Web 开发人员的数量也确实非常庞大。且由于其轻量跨平台的特性，受到很多开发者的喜爱，将之作为主力文件编辑器或者将其打造成 IDE 使用。它们的插件市场首页分别如下
 
 VSCode
-![VSCode 插件市场](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830232931.png)
+![VSCode 插件市场](https://img.rxliuli.com/20190830232931.png)
 
 WebStorm
-![WebStorm 插件市场](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830232701.png)
+![WebStorm 插件市场](https://img.rxliuli.com/20190830232701.png)
 
 WebStorm 官方给出的插件总数是 1607，而 VSCode 吾辈并未找到插件的总数量，但显而易见，VSCode 的插件数量应该远远高于这个数字。而且你可以看到 WebStorm 下载量第一的插件仅仅只下载过 **5,558,762** 次，而 VSCode 的热门插件的下载数量是以 M 来计算的。我们来搜索一下前端流行打包工具 `webpack`，对比一下结果。
 
 VSCode
-![webpack for vscode](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830233610.png)
+![webpack for vscode](https://img.rxliuli.com/20190830233610.png)
 
 WebStorm
-![webpack for WebStorm](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830233724.png)
+![webpack for WebStorm](https://img.rxliuli.com/20190830233724.png)
 
 是的，VSCode 搜索到了 16 个插件，而 WebStorm 的搜索结果是。。。**0**？不了解 WebStorm 的小伙伴可能会有疑问，难道 WebStorm 不支持 webpack 嘛？那要它何用，还是拉出去砍了吧！
 泥萌先别急着掀桌子，个中缘由且听吾辈细细说来。之所以出现这种情况，主要是因为二者的策略不同造成的。WebStorm 的目标是让用户拥有开箱即用的生产力工具，下载安装完成后就可以立即进行项目开发了，所以它将很多功能内置了 IDE 之中，或者是由官方开发插件出来，然后直接集成到 IDE 中，给个人开发者开发插件的机会不多。
 而 VSCode 由于官方的开发团队没那么强大，而且又是免费的开源产品，所以理所当然只能发动广大人民群众的力量了，所以有很多插件就只能交给第三方开发者进行开发和维护。而这点也造成了安装完 VSCode 之后并不能立即使用，还需要下载插件、进行配置等一系列操作。
 以上两种模式的孰优孰劣早有人分析过，这里吾辈只说自己的使用体验。WebStorm 的开箱即用做的确实比 VSCode 更好，但问题在于如果官方不支持的话就会很难受，因为其实并没有太多人同时精通前端和 Java（是的，必须使用 Java 开发插件）。这也是吾辈目前仍然使用 VSCode 作为主力文本编辑器编辑配置文件，以及使用它写 Markdown 文章的原因，包括这篇文章亦是通过 VSCode 写出来的。
-![Markdown 写作截图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830235425.png)
+![Markdown 写作截图](https://img.rxliuli.com/20190830235425.png)
 
 > 附: VSCode 可以通过一些插件的同步功能避免每次安装都需要配置的问题，但插件的同步还存在一些小问题。而且这种操作本身也是一个问题。
 > 附: 插件开放让第三方实现与官方自己实现并集成的优劣之分参考知乎的一篇文章: [Visual Studio Code 有哪些工程方面的亮点](https://zhuanlan.zhihu.com/p/35303567)。
@@ -57,10 +57,10 @@ WebStorm
 作为写代码的工具，代码提示已经司空见惯了。但是，就算同样是代码提示，有的代码提示只是简单的代码片段（`snippets`），而有的却是基于代码语法树分析进行的，甚至于编辑器会学习使用者的习惯，将最常用的提示放在最前面。WebStorm 从始至终一直都是第三种，而 VSCode 最近官方才开发了基于 AI 自动学习的智能提示插件 [Visual Studio IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode)。
 
 VSCode
-![VSCode 智能提示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831030339.gif)
+![VSCode 智能提示](https://img.rxliuli.com/20190831030339.gif)
 
 WebStorm
-![WebStorm 智能提示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831030506.gif)
+![WebStorm 智能提示](https://img.rxliuli.com/20190831030506.gif)
 
 ### 自动修复
 
@@ -102,7 +102,7 @@ WebStorm
 |          | 自执行函数前面必须加分号                     | 不支持 | 不支持   |
 
 下面是一张 WebStorm 官方使用自动修复的动图
-![WebStorm 自动修复](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831030641.gif)
+![WebStorm 自动修复](https://img.rxliuli.com/20190831030641.gif)
 
 ### 重构
 
@@ -122,7 +122,7 @@ WebStorm
 |        | 提取函数到新文件 | 支持     | 支持     |
 
 WebStorm 重命名文件
-![WebStorm 重命名文件](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831031020.gif)
+![WebStorm 重命名文件](https://img.rxliuli.com/20190831031020.gif)
 
 ### Git/GitHub 集成
 
@@ -148,10 +148,10 @@ VSCode 的 Git 支持一直不太行，就算加了插件 [GitLens](https://mark
 放两张图对比一下
 
 VSCode GitLens
-![GitLens](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831022549.png)
+![GitLens](https://img.rxliuli.com/20190831022549.png)
 
 WebStorm
-![WebStorm Git](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831022643.png)
+![WebStorm Git](https://img.rxliuli.com/20190831022643.png)
 
 ### 前端支持
 
@@ -160,10 +160,10 @@ WebStorm
 先来测试前端三剑客: `HTML/CSS/JavaScript`。
 
 VSCode
-![VSCode](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831004550.gif)
+![VSCode](https://img.rxliuli.com/20190831004550.gif)
 
 WebStorm
-![WebStorm](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831003352.gif)
+![WebStorm](https://img.rxliuli.com/20190831003352.gif)
 
 可以看到，对于 HTML/CSS 之间的代码提示、跳转这些基本功能，VSCode 其实并没有做好。现代前端说是不再写 HTML 了，但实际上终究还是要写（即便是 JSX 还是要符合写 HTML 的直觉的），VSCode 代码提示在这里明显不太够看。还有一点也很有趣，VSCode 在打完 `document.querySelector('#hello')` 之后彻底没了动静，而 WebStorm 在 `style` 输入完成之后，立刻就有了各种 CSS 属性提示了。
 
@@ -177,10 +177,10 @@ WebStorm
 不知你是否曾遇到过，正在编辑着一个文件，突然断电，或者是因为其他什么原因，导致文件内容被清空了。或者是误删了代码之后之前的代码还没提交，又不能撤回那么多次，导致代码重写的经历呢？吾辈就曾经经历过，所以对本地历史记录这个功能相当重视，然而很遗憾，VSCode 依旧需要第三方插件 [Local History](https://marketplace.visualstudio.com/items?itemName=xyz.local-history) 才能支持。
 
 VSCode Local History
-![VSCode Local History](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831024208.png)
+![VSCode Local History](https://img.rxliuli.com/20190831024208.png)
 
 WebStorm
-![WebStorm](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831024420.png)
+![WebStorm](https://img.rxliuli.com/20190831024420.png)
 
 两者相比主要有以下不同
 
@@ -196,10 +196,10 @@ WebStorm
 两者都支持黑暗主题，而且都是默认设置，也同样支持使用插件定制界面。下面是两者的截图
 
 VSCode
-![VSCode 主界面](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830231558.png)
+![VSCode 主界面](https://img.rxliuli.com/20190830231558.png)
 
 WebStorm
-![WebStorm 主界面](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190830231815.png)
+![WebStorm 主界面](https://img.rxliuli.com/20190830231815.png)
 
 事实上，上面两者都使用了主题。VSCode 是 Monokai，WebStorm 是 Material。但其实 WebStorm 的 [Material 主题](https://plugins.jetbrains.com/plugin/8006) 还是存在一些 Bug 的，例如有些地方图标莫名的错位之类，VSCode 目前吾辈还未曾遇到过这类问题。
 
@@ -207,7 +207,7 @@ WebStorm
 
 WebStorm 确实很吃内存，尤其是项目刚刚打开的时候，索引会疯狂地吃 CPU/内存/硬盘，如果电脑性能不行的话这个过程所需时间可能泡面都够了。但基于 Chrome 内核的 VSCode 在使用各种插件打造成前端 IDE 之后吃的内存也并不少。吾辈打开了项目 [rx-util](https://github.com/rxliuli/rx-util)，可以看到 VSCode 每个插件确实都放在了单独的进程里（Chrome 系的习惯 #笑），相比之下 WebStorm 只有两个进程，其中一个还是启动的 nodejs，整体对比下来其实相差不大。
 
-![任务管理器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831000118.png)
+![任务管理器](https://img.rxliuli.com/20190831000118.png)
 
 ### 东家
 

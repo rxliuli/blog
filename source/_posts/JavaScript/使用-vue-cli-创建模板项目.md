@@ -35,7 +35,7 @@ npm install -g @vue/cli
 
 安装完成后在命令行输入 `vue` 应该会有类似于以下的输出
 
-![vue-cli 安装完成验证](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181108140401.png)
+![vue-cli 安装完成验证](https://img.rxliuli.com/20181108140401.png)
 
 ### 第二步：使用模板初始化一个项目
 
@@ -48,23 +48,23 @@ vue init [option] <template> <app-name>
 
 例如我们使用 `vue init webpack vue-webpack-example` 初始化一个 `webpack` 模板的项目，大部分组件我们暂时还不需要，所以选择 `vue-router` 以及使用 `npm` 进行构建。
 
-![vue-cli 初始化 webpack 模板项目](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181108141449.png)
+![vue-cli 初始化 webpack 模板项目](https://img.rxliuli.com/20181108141449.png)
 
 初始化完成后我们在命令行进入文件夹 _vue-webpack-example_ 中，现在我们可以通过 `npm run dev` 启动开发服务器模式和 `npm run build` 打包项目为静态文件
 
 尝试使用 `npm run dev` 运行项目，最后应该会得到如下输出
 
-![vue 项目运行输出](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181108184122.png)
+![vue 项目运行输出](https://img.rxliuli.com/20181108184122.png)
 
 在浏览器打开链接 <http://localhost:8080>
 
-![vue 项目模板](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181108184257.png)
+![vue 项目模板](https://img.rxliuli.com/20181108184257.png)
 
 ### 第三步：初始化模板的一些坑
 
 当你使用 `npm run build` 打包好静态文件在 _dist_ 目录后，从文件管理器直接运行，却发现浏览器只有一片空白。
 
-![vue 打包出来的文件在浏览器显示的空白页面](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181108185531.png)
+![vue 打包出来的文件在浏览器显示的空白页面](https://img.rxliuli.com/20181108185531.png)
 
 这是 `vue-cli` 默认模板的问题，具体原因与解决方案请参考 [Vue 打包的静态文件不能直接运行](https://blog.rxliuli.com/p/7d805fde/)
 

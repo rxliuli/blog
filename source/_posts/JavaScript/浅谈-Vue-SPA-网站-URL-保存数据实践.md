@@ -53,14 +53,14 @@ tags:
 1. 在组件创建时，从 URL 获取数据并为需要的数据进行初始化
 2. 在这些数据变化时，及时将数据序列化到 URL 上
 
-![思路图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012847.png)
+![思路图](https://img.rxliuli.com/20200105012847.png)
 
 然后，再次出现了一个分歧点，到底要不要绑定 Vue？
 
 1. 不绑定 vue 手动监听对象变化并将对象的变化响应到 URL 上
-   ![不绑定 vue](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012848.png)
+   ![不绑定 vue](https://img.rxliuli.com/20200105012848.png)
 2. 绑定 vue 并使用它的生命周期 `created, beforeRouteUpdate` 与监听器 `watch`
-   ![绑定 vue](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012846.png)
+   ![绑定 vue](https://img.rxliuli.com/20200105012846.png)
 
 那么，两者有什么区别呢？
 

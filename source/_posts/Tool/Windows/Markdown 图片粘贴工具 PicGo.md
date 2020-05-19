@@ -22,7 +22,7 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 
 > [官网](https://molunerfinn.com/PicGo/), [GitHub](https://github.com/rxliuli/PicGo)
 
-![官网首页截图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181016231008.png)
+![官网首页截图](https://img.rxliuli.com/20181016231008.png)
 
 ## 基本使用
 
@@ -31,10 +31,10 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 > 注：上传图床默认是 [smms](https://sm.ms/)，速度很快，也很稳定
 
 启动之后会看到一个上传页，将图片拖到这里就可以自动上传，并在完成之后自动将链接复制到剪切板上。  
-![图片上传页](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190205233313.png)
+![图片上传页](https://img.rxliuli.com/20190205233313.png)
 
 在相册里可以对图片进行管理，方便浏览，复制 `URL`，删除本地记录等操作！  
-![上传图片管理](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190205233906.png)
+![上传图片管理](https://img.rxliuli.com/20190205233906.png)
 
 ## GitHub 设置
 
@@ -50,7 +50,7 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 
 吾辈的配置
 
-![PicGo 配置](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181016232104.png)
+![PicGo 配置](https://img.rxliuli.com/20181016232104.png)
 
 ## VSCode 插件
 
@@ -63,11 +63,11 @@ PicGo 对于吾辈而言主要解决了下面的问题：
 常用操作只有三个：
 
 - 截图上传 `Ctrl-Alt-U`  
-  ![截图上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102050.gif)
+  ![截图上传](https://img.rxliuli.com/20181205102050.gif)
 - 文件管理器选择上传 `Ctrl-Alt-E`  
-  ![文件管理器选择上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102356.gif)
+  ![文件管理器选择上传](https://img.rxliuli.com/20181205102356.gif)
 - 输入文件路径上传 `Ctrl-Alt-O`  
-  ![输入文件路径上传](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181205102418.gif)
+  ![输入文件路径上传](https://img.rxliuli.com/20181205102418.gif)
 
 > 如果你不想使用 SMMS 图床，也可以配置 GitHub 或者其他的图床，具体参考 [官方文档](https://marketplace.visualstudio.com/items?itemName=Spades.vs-picgo)。
 

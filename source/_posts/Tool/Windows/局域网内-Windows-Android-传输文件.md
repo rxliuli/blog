@@ -22,7 +22,7 @@ Windows 在 _文件管理器 => 在文件夹上右键 => 属性_ 中可以看到
 2. 选择共享的用户
 3. 确认共享
 
-![GIF 示意图](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191229233129.gif)
+![GIF 示意图](https://img.rxliuli.com/20191229233129.gif)
 
 ## 手机上访问局域网
 
@@ -30,12 +30,12 @@ Windows 在 _文件管理器 => 在文件夹上右键 => 属性_ 中可以看到
 
 1. 找到 _网络 => 局域网_
 2. 点击 **扫描**
-   ![扫描到的目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191229232158.png)
+   ![扫描到的目录](https://img.rxliuli.com/20191229232158.png)
 3. 点击扫描到的共享计算机
 4. 输入上面选择的共享用户的 `Username/Password`
 5. 然后就能看到共享文件夹，并且能够复制/粘贴文件了
-   ![目录](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191229232200.png)
-   ![粘贴](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191229232159.png)
+   ![目录](https://img.rxliuli.com/20191229232200.png)
+   ![粘贴](https://img.rxliuli.com/20191229232159.png)
 
 ## 总结
 

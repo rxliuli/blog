@@ -338,7 +338,7 @@ Windows 剪切板增强工具，不得不说 Windows 上的工具确实很多。
 
 借用[知乎](https://www.zhihu.com/question/21305023)网友理想中的图片查看器需求图
 
-![理想中的图片查看器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200408210706.png)
+![理想中的图片查看器](https://img.rxliuli.com/20200408210706.png)
 
 ### Everything：文件快速搜索
 

@@ -36,7 +36,7 @@ function fn1(type: TypeEnum, obj: A | B) {}
 
 上面是一个简单的重载函数，吾辈希望在输入第一个参数 `type` 之后，ts 就能匹配到正确的参数，然而事实上，ts 并没能完全做到。
 
-![ts 类型提示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402140820.png)
+![ts 类型提示](https://img.rxliuli.com/20200402140820.png)
 
 当然，如果真的这样写 ts 的类型检查仍然能正确地抛出错误消息，然而未能推导终究是有点问题的。
 
@@ -75,7 +75,7 @@ fn2({
 
 很遗憾的是，这是行不通的，即便是下面的这种变体，仍然是不可行的。
 
-![继承](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145908.png)
+![继承](https://img.rxliuli.com/20200402145908.png)
 
 ```ts
 interface Base<T extends TypeEnum> {
@@ -96,7 +96,7 @@ function fn2(arg: IA | IB) {}
 
 事实上，使用泛型确实可以做到让 ts 的类型更加 **正确**。
 
-![泛型](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145745.png)
+![泛型](https://img.rxliuli.com/20200402145745.png)
 
 缺点：
 
@@ -125,7 +125,7 @@ fn3(TypeEnum.A, {
 
 最后，高阶函数可以简单的解决这个问题，它将一次调用更改为两次调用，第一次调用返回的函数便已经确认了类型。
 
-![高阶函数](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145633.png)
+![高阶函数](https://img.rxliuli.com/20200402145633.png)
 
 缺点：
 

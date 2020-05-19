@@ -18,7 +18,7 @@ Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用
 λ powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 ```
 
-![安装图示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122211812.png)
+![安装图示](https://img.rxliuli.com/20181122211812.png)
 
 > 此处千万注意三点：
 
@@ -30,7 +30,7 @@ Chocolatey 是一个 Windows 下的软件包管理系统，追求一切皆可用
    如果提示 _使用“1”个参数调用“DownloadString”时发生异常:“不支持给定路径的格式。”_ 的话一般都是下载路径那里多了个空格之类，仔细找找吧
 
 安装完成之后输入 `choco` 验证一下，得到如下输出即为成功！
-![成功的响应](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181122211828.png)
+![成功的响应](https://img.rxliuli.com/20181122211828.png)
 Chocolatey 常用的命令如下：
 
 ```bash

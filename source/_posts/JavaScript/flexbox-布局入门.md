@@ -29,7 +29,7 @@ updated: 2019-09-16
 
 使用 `flex` 可以轻而易举地实现栅格系统，这里的最下面还实现了一个常见的侧边菜单两栏布局。
 
-![栅格系统](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190916121534.png)
+![栅格系统](https://img.rxliuli.com/20190916121534.png)
 
 实现代码
 
@@ -161,7 +161,7 @@ updated: 2019-09-16
 
 在此 flex 出现之前，想要盒子水平垂直居中是一件比较困难的一件事，但至此之后，便再也不足为道了。
 
-![水平垂直居中](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190916121734.png)
+![水平垂直居中](https://img.rxliuli.com/20190916121734.png)
 
 实现代码
 
@@ -218,7 +218,7 @@ updated: 2019-09-16
 
 下面实现一个标签列表，以此便可以看出 Flex 的强大功用
 
-![标签列表](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190916122712.png)
+![标签列表](https://img.rxliuli.com/20190916122712.png)
 
 ```html
 <!DOCTYPE html>

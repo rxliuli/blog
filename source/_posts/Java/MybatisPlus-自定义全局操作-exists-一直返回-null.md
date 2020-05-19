@@ -108,7 +108,7 @@ public class UserDaoTest extends BaseDaoAndServiceTest<UserDao> {
 
 结果
 
-![测试结果](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181211202332.png)
+![测试结果](https://img.rxliuli.com/20181211202332.png)
 
 然而，当我把全局注入的 sql 操作放到 xml 文件时
 
@@ -143,7 +143,7 @@ public interface UserDao extends BaseDao<User> {
 
 现在，一切又能正常运行了，这其中到底发生了什么呢？
 
-![测试正常运行](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181211202834.png)
+![测试正常运行](https://img.rxliuli.com/20181211202834.png)
 
 > 目前该问题已经在 [官方 GitHub](https://github.com/baomidou/mybatis-plus) 上提出了一个 [issue](https://github.com/baomidou/mybatis-plus/issues/694)
 
