@@ -9,6 +9,8 @@ tags:
 
 # 为什么吾辈不喜欢 TypeScript
 
+> 注：吾辈现在很喜欢 TypeScript，所有能上 TypeScript 的项目都上了 TypeScript！
+
 ## 使用只是为了支持 VSCode
 
 众所周知，VSCode 基于 TypeScript 实现的代码提示，所以很多 js 库都有写 `.d.ts` 以支持它。甚至于，该需求强烈到人们创建了一个 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) 项目，用以专门维护那些流行 js 库的类型。当然，本质上该项目是为了让 ts 使用者在安装 js 库之后写代码时仍然能够正确的访问类型，但 VSCode 却将之绑定了起来。
@@ -62,6 +64,7 @@ function assign<T>(target: T, ...objects: any[]): any {
 | ![TypeDoc](https://img.rxliuli.com/20190918123430.png) | ![ESDoc 截图](https://img.rxliuli.com/20190918123929.png) |
 
 > 注: 著名 ts 前端库 [rxjs](https://cn.rx.js.org/) 的文档生成工具使用的是 ESDoc。
+> ESDoc 太过复杂的话可以考虑使用 TypeDoc + eleDoc 主题，生成的文档虽然细节之处仍有些许不足，不过已然足够使用了。
 
 ### Linter 工具
 
@@ -92,6 +95,8 @@ ts 目前最流行的 linter 工具是 [tslint](https://palantir.github.io/tslin
 }
 ```
 
+> 这点没有太好的解决方案。。。
+
 ### 自定义 types 很麻烦
 
 当遇到没有提供 types 的库时，如果在 @types 项目找不到，那么只能自己手动定义了，但如何让类型定义正确生效并不是一件简单的事情。
@@ -111,3 +116,5 @@ declare module 'jquery' {
   }
 }
 ```
+
+> 定义 types 还好吧，本质上就是复制粘贴函数定义，然后添加类型即可
