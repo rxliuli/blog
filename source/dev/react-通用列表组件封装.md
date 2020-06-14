@@ -11,7 +11,7 @@ tags:
 
 > [GitHub 源码](https://github.com/rxliuli/example/tree/master/basic_list)
 
-解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过它进行生成。
+解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过它进行生成列表页面。
 
 ## 理念
 
@@ -26,11 +26,11 @@ tags:
     - `FilterSlot`：自定义过滤器
   - `ListTable`：列表封装组件
 
-## 使用步骤
+## 使用示例
 
 ### 使用基本 API
 
-> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/user/BasicListExample.tsx)
+> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/BasicListExample.tsx)
 
 如下所示，我们想要构造下面这样一个简单的列表页面，包含一个面包屑导航列表、搜索框、过滤条件选择器和一个表格。
 
@@ -107,12 +107,12 @@ export default BasicListExample
 
 ### 使用自定义过滤器组件
 
-> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/user/CustomFilterListExample.tsx)
+> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/CustomFilterListExample.tsx)
 
 事实上，总有各种奇怪的过滤器无法满足，这时候就需要添加一个自定义的过滤器了。
 例如下面这个过滤器，包含了年龄的值和单位，是不是感觉很奇怪
 
-关键代码如下
+关键代码配置如下
 
 ```tsx
 const config: Config = {
@@ -144,7 +144,60 @@ const config: Config = {
 
 ### 添加表格的额外操作
 
+> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/TableOperationListExample.tsx)
+
+有时候，我们需要添加一个额外的表格操作，例如导出/导入数据/删除选中数据。
+
+关键代码如下
+
+```tsx
+async function handleBatchDelete({
+  selectedRowKeys,
+  setSelectedRowKeys,
+  searchPage,
+}: ListTableOperateParam) {
+  if (selectedRowKeys.length === 0) {
+    return
+  }
+  await userApi.batchDelete(selectedRowKeys)
+  setSelectedRowKeys([])
+  await searchPage()
+}
+
+const config = useMemo<Config>(
+  () => ({
+    tableOperate: (params) => (
+      <Button onClick={() => handleBatchDelete(params)}>删除选中</Button>
+    ),
+  }),
+  [],
+)
+```
+
 ### 过滤器的下拉框数据来源是异步的
+
+> [GitHub 代码示例](https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/AsyncSelectOptionsListExample.tsx)
+
+很多时候，我们的数据来源并不是由前端写死，而是从后台获取的，这就要求我们传入的值是 react 的一个 State 而非一个固定值。
+
+关键代码如下
+
+```tsx
+const testOptionList = useAsyncMemo([], dictApi.list)
+const config = useMemo<Config>(
+  () => ({
+    filters: [
+      {
+        type: FilterFieldTypeEnum.Select,
+        label: '测试字段',
+        field: 'test',
+        options: testOptionList,
+      },
+    ],
+  }),
+  [testOptionList],
+)
+```
 
 ## API
 
