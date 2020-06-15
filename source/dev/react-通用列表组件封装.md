@@ -11,11 +11,11 @@ tags:
 
 > [GitHub 源码](https://github.com/rxliuli/example/tree/master/basic_list)
 
-解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过它进行生成列表页面。
+在后台项目中，需要解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过它生成列表页面。
 
 ## 理念
 
-使用逐级递进的方式进行封装，使用者可以根据需求停留在一个合适的封装层次。
+使用逐级递进的方式进行封装，使用者可以根据需求停留在一个合适的封装层次，使用不同封装层次的组件。
 
 - `BasicList`：高层列表封装组件
   - `ListHeader`：列表页顶部工具栏组件
@@ -25,6 +25,49 @@ tags:
     - `FilterTimeRange`：时间区间过滤器
     - `FilterSlot`：自定义过滤器
   - `ListTable`：列表封装组件
+
+BasicList 使用步骤
+
+```mermaid
+graph TB
+A[添加 api class 实现 BasicListApi] --> B[添加配置项] --> C
+C{是否需要动态修改}
+C --> |是| C1[使用 useMemo 声明]
+C --> |否| C2[将之抽离到组件外部声明为常量]
+C1 --> D
+C2 --> D
+D{是否有非通用 Filter}
+D --> |是| D1[自定义 slot filter]
+D --> |否| D2[使用 select/time filter]
+D1 --> E
+D2 --> E
+E{是否需要自定义表格相关功能}
+E --> |是| E1[使用 filterOperate 配置]
+E --> |否| E2[不声明 filter 配置]
+E1 --> F
+E2 --> F
+F[列表渲染]
+```
+
+BasicList 渲染流程
+
+```mermaid
+graph TB
+A[从 props 拿到配置项列表] --> B{header 是否为 ReactElement}
+B --> |是| B1[直接渲染]
+B --> |否| B2[使用 ListHeader 渲染 header 配置项]
+B1 --> C
+B2 --> C
+C{filters 是否存在}
+C --> |是| C1{filters 是否为 ReactElement}
+  C1 --> |是| C1A[直接渲染]
+  C1 --> |否| C1B[使用 ListFilter 渲染 filters 配置项] --> C1C[监听 initialParams 变化, 以随时修改 form]
+C --> |否| C2[不渲染]
+C1A --> D
+C1B --> D
+C2 --> D
+D[渲染列表]
+```
 
 ## 使用示例
 
@@ -199,81 +242,118 @@ const config = useMemo<Config>(
 )
 ```
 
-## API
+## 组件 API
 
 ### BasicList
 
 参考 _src/components/common/table/js/BasicListOptions.d.ts_
 
-| `prop`           | 类型                     | 说明           |
-| ---------------- | ------------------------ | -------------- |
-| `header`         | `BasicList.Header`       | 标题栏相关配置 |
-| `[filters]`      | `BaseFilterField[]`      | 过滤器列表     |
-| `[params]`       | `BasicList.Params`       | 查询参数       |
-| `columns`        | `TableColumn[]`          | 列字段列表     |
-| `api`            | `BaseListApi`            | api 对象       |
-| `[tableOptions]` | `BasicList.TableOptions` | 一些其他选项   |
+| `prop`           | 说明           | 类型                                                               |
+| ---------------- | -------------- | ------------------------------------------------------------------ |
+| `header`         | 标题栏相关配置 | `BasicList.Header`                                                 |
+| `[filters]`      | 过滤器列表     | `BaseFilterField[]`                                                |
+|                  |                | `((params: any, onChange: (params: any) => void) => ReactElement)` |
+| `[params]`       | 查询参数       | `Params`                                                           |
+| `columns`        | 列字段列表     | `TableColumn[]`                                                    |
+| `api`            | api 对象       | `BaseListApi`                                                      |
+| `[tableOptions]` | 一些其他选项   | `TableOptions`                                                     |
+| `[tableOperate]` | 一些其他操作   | `ListTableOperate`                                                 |
 
 ### ListFilter
 
-| `prop`    | 类型                | 说明       |
-| --------- | ------------------- | ---------- |
-| `[value]` | `BasicList.Params`  | 查询参数   |
-| `filters` | `BaseFilterField[]` | 过滤器列表 |
+| `prop`           | 类型                                                          | 说明                     |
+| ---------------- | ------------------------------------------------------------- | ------------------------ |
+| `[initialValue]` | `any`                                                         | 查询参数                 |
+| `filters`        | `(FilterSelectType | FilterTimeRangeType | FilterSlotType)[]` | 过滤器列表               |
+| `onChange`       | `(value: T) => void`                                          | 当过滤器的参数发生改变时 |
 
 ### ListTable
 
-| `prop`      | 类型                     | 说明         |
-| ----------- | ------------------------ | ------------ |
-| `columns`   | `TableColumn[]`          | 列字段列表   |
-| `api`       | `BaseListApi`            | api 对象     |
-| `params`    | `BasicList.Params`       | 查询参数     |
-| `[options]` | `BasicList.TableOptions` | 一些其他选项 |
+| `prop`           | 类型               | 说明         |
+| ---------------- | ------------------ | ------------ |
+| `columns`        | `TableColumn[]`    | 列字段列表   |
+| `api`            | `BaseListApi`      | api 对象     |
+| `params`         | `Params`           | 查询参数     |
+| `[tableOptions]` | `TableOptions`     | 一些其他选项 |
+| `[tableOperate]` | `ListTableOperate` | 一些其他选项 |
 
-### 类型定义
+## 其他类型定义
 
 下面是类型定义，所有的类型定义都有对应的 `.d.ts` 文件，请使用 `C-N` 搜索 `class`。
 
-| `CommonHeaderNavItem` | 类型      | 说明                      |
-| --------------------- | --------- | ------------------------- |
-| `name`                | `string`  | 导航的名字                |
-| `isRoute`             | `boolean` | 默认会赋值                |
-| `[link]`              | `string`  | 如果是 route 的话必须有值 |
+| `HeaderNavItem` | 类型     | 说明                      |
+| --------------- | -------- | ------------------------- |
+| `string`        |          | 导航的名字                |
+| `name`          | `string` | 导航的名字                |
+| `[link]`        | `string` | 如果是 route 的话必须有值 |
 
-| `BasicList.Header` | 类型                    | 说明             |
-| ------------------ | ----------------------- | ---------------- |
-| `list`             | `CommonHeaderNavItem[]` | 导航元素列表     |
-| `placeholder`      | `string`                | 搜索框的提示文本 |
-| `title`            | `string`                | 标题             |
+| `Header`      | 类型              | 说明             |
+| ------------- | ----------------- | ---------------- |
+| `list`        | `HeaderNavItem[]` | 导航元素列表     |
+| `placeholder` | `string`          | 搜索框的提示文本 |
 
-| `filterFieldType` | 类型 | 说明           |
-| ----------------- | ---- | -------------- |
-| `slot`            | `1`  | 自定义 slot    |
-| `select`          | `2`  | 普通选择框     |
-| `timeRange`       | `3`  | 日期区间选择器 |
+### 过滤器相关
 
-| `BaseFilterField` | 类型              | 说明           |
-| ----------------- | ----------------- | -------------- |
-| `type`            | `filterFieldType` | 过滤器元素类型 |
-| `title`           | `string`          | 过滤器的标题   |
+| `FilterFieldTypeEnum` | 类型 | 说明           |
+| --------------------- | ---- | -------------- |
+| `Slot`                | `1`  | 自定义 slot    |
+| `Select`              | `2`  | 普通选择框     |
+| `TimeRange`           | `3`  | 日期区间选择器 |
 
-| `BasicList.Params` | 类型     | 说明         |
-| ------------------ | -------- | ------------ |
-| `keyword`          | `string` | 查询关键字   |
-| `...args`          | `any[]`  | 其他查询参数 |
+| `FilterFieldBase` | 类型                  | 说明           |
+| ----------------- | --------------------- | -------------- |
+| `type`            | `FilterFieldTypeEnum` | 过滤器元素类型 |
+| `label`           | `string`              | 显示的标题     |
 
-| `TableColumn` | 类型                              | 说明                            |
-| ------------- | --------------------------------- | ------------------------------- |
-| `field`       | `string`                          | 在数据项中对应的字段名          |
-| `title`       | `string`                          | 列标题                          |
-| `[formatter]` | `(v: any, record: any) =&gt; any` | 自定义字段格式化函数            |
-| `slot`        | `boolean`                         | 是否使用 slot，如果是，则值为？ |
+| `FilterSelectType` | 类型              | 说明               |
+| ------------------ | ----------------- | ------------------ |
+| `extends`          | `FilterFieldBase` | 继承基本过滤器配置 |
+| `field`            | `string`          | 字段名             |
+| `options`          | `LabeledValue[]`  | 值列表             |
 
-| `BaseListApi` | 类型                                                 | 说明                                       |
-| ------------- | ---------------------------------------------------- | ------------------------------------------ |
-| `pageList`    | `(params: any) =&gt; Promise&lt;Page&lt;any&gt;&gt;` | 所有 ListTable 中的 api 对象必须实现该类型 |
+| `FilterTimeRangeType` | 类型              | 说明               |
+| --------------------- | ----------------- | ------------------ |
+| `extends`             | `FilterFieldBase` | 继承基本过滤器配置 |
+| `field`               | `string`          | 字段名             |
+
+| `FilterSlotType` | 类型                                                            | 说明                 |
+| ---------------- | --------------------------------------------------------------- | -------------------- |
+| `extends`        | `FilterFieldBase`                                               | 继承基本过滤器配置   |
+| `field`          | `string`                                                        | 字段名               |
+| `children`       | `ReactElement`                                                  | `Form.Item` 的子元素 |
+| `[computed]`     | `(res: Record<string, any>, value: any) => Record<string, any>` | 自定义计算方法       |
+
+| `Params`  | 类型     | 说明         |
+| --------- | -------- | ------------ |
+| `keyword` | `string` | 查询关键字   |
+| `...args` | `any[]`  | 其他查询参数 |
+
+### 表格相关
+
+| `TableColumn` | 类型                                                             | 说明                   |
+| ------------- | ---------------------------------------------------------------- | ---------------------- |
+| `field`       | `string`                                                         | 在数据项中对应的字段名 |
+| `title`       | `string`                                                         | 列标题                 |
+| `[formatter]` | `(v: any, record: any) => any`                                   | 自定义字段格式化函数   |
+| `[slot]`      | `(param: { text: string; record: any; i: number }) => ReactNode` | 自定义 `slot`          |
+
+| `BaseListApi` | 类型                                     | 说明                                       |
+| ------------- | ---------------------------------------- | ------------------------------------------ |
+| `pageList`    | `(params: any) => Promise<PageRes<any>>` | 所有 ListTable 中的 api 对象必须实现该类型 |
+
+| `ListTableOperateParam` | 类型                                  | 说明                 |
+| ----------------------- | ------------------------------------- | -------------------- |
+| `searchPage`            | `(page?: PageParam) => Promise<void>` | 导航元素列表         |
+| `selectedRowKeys`       | `string[]`                            | 当前选中行的主键     |
+| `setSelectedRowKeys`    | `(selectedRowKeys: string[]) => void` | 设置当前选中行的主键 |
+| `page`                  | `PageData<any>`                       | 分页数据信息         |
+| `params`                | `Params`                              | 过滤器及搜索参数     |
 
 | `TableOptions` | 类型      | 说明                   |
 | -------------- | --------- | ---------------------- |
-| `isSelect`     | `boolean` | 是否可选，默认为 false |
-| `rowKey`       | `string`  | 行的唯一键，默认为 id  |
+| `[isSelect]`   | `boolean` | 是否可选，默认为 false |
+| `[rowKey]`     | `string`  | 行的唯一键，默认为 id  |
+
+## 总结
+
+相比于之前吾辈 [vue 的初版 List 封装](https://blog.rxliuli.com/p/aa3fd9e1/)，嗯，差距非常明显！
