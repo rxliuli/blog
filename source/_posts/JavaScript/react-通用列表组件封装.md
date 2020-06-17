@@ -3,6 +3,7 @@ layout: post
 title: react 通用列表组件封装
 abbrlink: '4e033209'
 date: 2020-06-13 23:36:55
+updated: 2020-06-15 23:36:55
 tags:
   - react
 ---
@@ -11,7 +12,7 @@ tags:
 
 > [GitHub 源码](https://github.com/rxliuli/example/tree/master/basic_list)
 
-在后台项目中，需要解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过它生成列表页面。
+在后台项目中，即便使用了 antd，仍然存在太多太多的列表页面。这些列表页面大多数又是非常相似的，所以吾辈需要解决重复的简单列表的编写，避免每次都手动控制过滤器/分页之类的东西，将之抽象成配置项，然后通过配置生成列表页面。或许已经有很多人做过了这件事情，但于吾辈而言，这仍然是全新的体验，所以也便于此记录，并供之以他人参考。
 
 ## 理念
 
@@ -29,9 +30,9 @@ tags:
 BasicList 使用步骤
 
 ```mermaid
-graph TB
-A[添加 api class 实现 BasicListApi] --> B[添加配置项] --> C
-C{是否需要动态修改}
+graph TD;
+A[添加 api class 实现 BasicListApi] --> B[添加配置项]
+B --> C{是否需要动态修改};
 C --> |是| C1[使用 useMemo 声明]
 C --> |否| C2[将之抽离到组件外部声明为常量]
 C1 --> D
@@ -77,7 +78,7 @@ D[渲染列表]
 
 如下所示，我们想要构造下面这样一个简单的列表页面，包含一个面包屑导航列表、搜索框、过滤条件选择器和一个表格。
 
-```tsx
+```jsx
 import * as React from 'react'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
@@ -157,7 +158,7 @@ export default BasicListExample
 
 关键代码配置如下
 
-```tsx
+```jsx
 const config: Config = {
   filters: [
     {
@@ -193,7 +194,7 @@ const config: Config = {
 
 关键代码如下
 
-```tsx
+```jsx
 async function handleBatchDelete({
   selectedRowKeys,
   setSelectedRowKeys,
@@ -225,7 +226,7 @@ const config = useMemo<Config>(
 
 关键代码如下
 
-```tsx
+```jsx
 const testOptionList = useAsyncMemo([], dictApi.list)
 const config = useMemo<Config>(
   () => ({
@@ -248,16 +249,16 @@ const config = useMemo<Config>(
 
 参考 _src/components/common/table/js/BasicListOptions.d.ts_
 
-| `prop`           | 说明           | 类型                                                               |
-| ---------------- | -------------- | ------------------------------------------------------------------ |
-| `header`         | 标题栏相关配置 | `BasicList.Header`                                                 |
-| `[filters]`      | 过滤器列表     | `BaseFilterField[]`                                                |
-|                  |                | `((params: any, onChange: (params: any) => void) => ReactElement)` |
-| `[params]`       | 查询参数       | `Params`                                                           |
-| `columns`        | 列字段列表     | `TableColumn[]`                                                    |
-| `api`            | api 对象       | `BaseListApi`                                                      |
-| `[tableOptions]` | 一些其他选项   | `TableOptions`                                                     |
-| `[tableOperate]` | 一些其他操作   | `ListTableOperate`                                                 |
+| `prop`           | 类型                                                               | 说明           |
+| ---------------- | ------------------------------------------------------------------ | -------------- |
+| `header`         | `BasicList.Header`                                                 | 标题栏相关配置 |
+| `[filters]`      | `BaseFilterField[]`                                                | 过滤器列表     |
+|                  | `((params: any, onChange: (params: any) => void) => ReactElement)` |                |
+| `[params]`       | `Params`                                                           | 查询参数       |
+| `columns`        | `TableColumn[]`                                                    | 列字段列表     |
+| `api`            | `BaseListApi`                                                      | api 对象       |
+| `[tableOptions]` | `TableOptions`                                                     | 一些其他选项   |
+| `[tableOperate]` | `ListTableOperate`                                                 | 一些其他操作   |
 
 ### ListFilter
 
