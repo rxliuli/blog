@@ -10,4 +10,4 @@ layout: friends
 - 用户名：rxliuli
 - 站点介绍：这里是吾辈的博客，主要记录一些技术相关的东西呢 ヾ(＠^∇^＠)ノ
 - 网站 URL：<https://blog.rxliuli.com>
-- 头像 URL：<https://blog.rxliuli.com/uploads/avatar.jpg>
+- 头像 URL：<https://blog.rxliuli.com/medias/avatar.jpg>
