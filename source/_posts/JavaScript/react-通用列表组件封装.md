@@ -6,6 +6,7 @@ date: 2020-06-13 23:36:55
 updated: 2020-06-15 23:36:55
 tags:
   - react
+mermaid: true
 ---
 
 ## 场景
