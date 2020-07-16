@@ -79,7 +79,7 @@ D[渲染列表]
 
 如下所示，我们想要构造下面这样一个简单的列表页面，包含一个面包屑导航列表、搜索框、过滤条件选择器和一个表格。
 
-```jsx
+```tsx
 import * as React from 'react'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
