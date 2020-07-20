@@ -13,11 +13,12 @@ layout: about
 
 ### 关于
 
-- **工作 :** Web 开发 :iphone:
-- **学习 :** Full-Stack :zap: | Open-Source :fire:
-- **兴趣 :** Books :books: 预备 Kiger 😄
-- **帮助 :** 如果遇到任何 `TypeScript/Windows 工具` 的问题可以问吾辈！:v:
-- **代称 :** rxliuli/琉璃 :innocent:
+- **工作**: Web 开发 📱
+- **学习**: Full-Stack ⚡ | Open-Source 🔥
+- **兴趣**: Books 📚 预备 Kiger 😄
+- **帮助**: 如果遇到任何 TypeScript/Windows 工具 的问题可以问吾辈！✌️
+- **代称**: rxliuli / 琉璃 😇
+
 
 ---
 
