@@ -125,7 +125,7 @@ export default AsyncRoute
 
 ### 修改默认配置
 
-cra 默认提供了脚本命令 `reject`，用于将 cra 封装的配置全部解压出来 -- 当然，此操作是不可逆的！但除了这种破坏性的方式之外，也有人找到了和 vue-cli 中类似的方式，不过需要第三方包 `react-app-rewired` 的支持。
+cra 默认提供了脚本命令 `eject`，用于将 cra 封装的配置全部解压出来 -- 当然，此操作是不可逆的！但除了这种破坏性的方式之外，也有人找到了和 vue-cli 中类似的方式，不过需要第三方包 `react-app-rewired` 的支持。
 
 并在根目录添加配置文件 `config-overrides.js`，里面暴露出一个函数，即可修改 cra 的默认配置了。
 
@@ -561,7 +561,7 @@ vue 3 新增了 `Function-base` 的组件，看起来很像 React Hooks，但目
     * @param app
     * @return {string|*}
     */
-   module.exports = function(app: any) {
+   module.exports = function (app: any) {
      const proxyConfig: proxy.Config = {
        target: 'https://localhost:8000',
        changeOrigin: true,
