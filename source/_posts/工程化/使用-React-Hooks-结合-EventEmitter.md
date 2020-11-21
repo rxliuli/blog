@@ -1,16 +1,16 @@
 ---
 layout: post
-title: 使用 React Hooks 结合 EventEmitter
+title: 使用 React Context 结合 EventEmitter
 abbrlink: '4358e813'
 date: 2020-08-02 19:45:05
-updated: 2020-08-02 19:45:05
+updated: 2020-11-21
 tags:
   - React
   - Hooks
   - EventEmitter
 ---
 
-# 使用 React Hooks 结合 EventEmitter
+# 使用 React Context 结合 EventEmitter
 
 ## 场景
 
@@ -18,7 +18,7 @@ EventEmitter 很适合在不修改组件状态结构的情况下进行组件通�
 
 ## 目的
 
-所以使用 react hooks 结合 event emitter 的目的便是
+所以使用 react context 结合 event emitter 的目的便是
 
 - 添加高阶组件，通过 react context 为所有子组件注入 em 对象
 - 添加自定义 hooks，从 react context 获取 emitter 对象，并暴露出合适的函数。
@@ -112,40 +112,44 @@ export class EventEmitter<Events extends BaseEvents> {
 
 ```tsx
 import * as React from 'react'
-import { createContext } from 'react'
-import { EventEmitter } from './util/EventEmitter'
+import { createContext, PropsWithChildren } from 'react'
+import { BaseEvents, EventEmitter } from './util/EventEmitter'
 
-type PropsType = {}
+export const EventEmitterContext = createContext<EventEmitter<any>>(null as any)
 
-export const EventEmitterRCContext = createContext<EventEmitter<any>>(
-  null as any,
-)
-
-const EventEmitterRC: React.FC<PropsType> = (props) => {
+export function EventEmitterRC<T extends BaseEvents>(
+  props: PropsWithChildren<{ value: EventEmitter<T> }>,
+) {
   return (
-    <EventEmitterRCContext.Provider value={new EventEmitter()}>
+    <EventEmitterContext.Provider value={props.value}>
       {props.children}
-    </EventEmitterRCContext.Provider>
+    </EventEmitterContext.Provider>
   )
 }
-
-export default EventEmitterRC
 ```
 
 ### 使用 hooks 暴露 emitter api
 
-我们主要需要暴露的 API 只有两个
+我们主要需要暴露的 API 只有三个
 
 - `useListener`: 添加监听器，使用 hooks 是为了能在组件卸载时自动清理监听函数
 - `emit`: 触发监听器，直接调用即可
+- `emitter`: 在当前组件树生效的 emitter 对象
 
 ```ts
-import { DependencyList, useCallback, useContext, useEffect } from 'react'
-import { EventEmitterRCContext } from '../EventEmitterRC'
-import { BaseEvents } from '../util/EventEmitter'
+import {
+  DependencyList,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react'
+import { EventEmitterContext } from '../EventEmitterRC'
+// noinspection ES6PreferShortImport
+import { BaseEvents, EventEmitter } from '../util/EventEmitter'
 
 function useEmit<Events extends BaseEvents>() {
-  const em = useContext(EventEmitterRCContext)
+  const em = useContext(EventEmitterContext)
   return useCallback(
     <E extends keyof Events>(type: E, ...args: Events[E]) => {
       console.log('emitter emit: ', type, args)
@@ -156,25 +160,28 @@ function useEmit<Events extends BaseEvents>() {
 }
 
 export function useEventEmitter<Events extends BaseEvents>() {
-  const emit = useEmit()
+  const emit = useEmit<Events>()
+  // 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次
+  const emitter = useMemo(() => new EventEmitter<Events>(), [])
   return {
     useListener: <E extends keyof Events>(
       type: E,
       listener: (...args: Events[E]) => void,
       deps: DependencyList = [],
     ) => {
-      const em = useContext(EventEmitterRCContext)
+      const em = useContext(EventEmitterContext)
       useEffect(() => {
-        console.log('emitter add: ', type, listener)
+        console.log('emitter add: ', type, listener.name)
         em.add(type, listener)
         return () => {
-          console.log('emitter remove: ', type, listener)
+          console.log('emitter remove: ', type, listener.name)
           em.remove(type, listener)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [listener, type, ...deps])
     },
     emit,
+    emitter,
   }
 }
 ```
@@ -200,8 +207,9 @@ Todo 父组件，使用 `EventEmitterRC` 包裹子组件
 
 ```tsx
 const Todo: React.FC<PropsType> = () => {
+  const { emitter } = useEventEmitter()
   return (
-    <EventEmitterRC>
+    <EventEmitterRC value={emitter}>
       <TodoForm />
       <TodoList />
     </EventEmitterRC>
@@ -281,7 +289,7 @@ import { BaseEvents } from '../../../components/emitter'
 import { TodoEntity } from './TodoEntity'
 
 export interface TodoEvents extends BaseEvents {
-  addTodo: [TodoEntity]
+  addTodo: [entity: TodoEntity]
 }
 ```
 
