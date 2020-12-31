@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "局域网内 Windows/Android 传输文件\r"
+title: 局域网内 Windows/Android 传输文件
 abbrlink: ee83dbaec0af4e23a75f0492afed3c1a
 date: 2020-02-02 10:15:38
 updated: 2020-12-30 12:41:32
