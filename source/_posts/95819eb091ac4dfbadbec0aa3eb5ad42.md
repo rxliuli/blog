@@ -2,10 +2,10 @@
 layout: post
 title: JavaScript 规范整理
 abbrlink: 95819eb091ac4dfbadbec0aa3eb5ad42
-date: 2020-02-02 10:15:37
-updated: 2020-09-29 10:15:46
 tags:
   - 工程化
+date: 1580652937876
+updated: 1601345746560
 sticky: null
 ---
 

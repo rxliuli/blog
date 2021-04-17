@@ -2,10 +2,10 @@
 layout: post
 title: VSCode 在 markdown 文档中存在表格时不能格式化文档
 abbrlink: 8adbedea5b52412b9ed010ad71d6cfbf
-date: 2020-02-02 10:15:38
-updated: 2020-12-30 08:25:40
 tags:
   - vscode
+date: 1580652938014
+updated: 1609331140709
 sticky: null
 ---
 

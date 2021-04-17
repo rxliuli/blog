@@ -2,11 +2,11 @@
 layout: post
 title: 如何编写无法维护的代码
 abbrlink: dc16ebcc6afe4f0aaed0f9a40b59f73d
-date: 2020-02-02 10:15:37
-updated: 2020-12-25 07:00:15
 tags:
   - 杂谈
   - 转载
+date: 1580652937720
+updated: 1608894015132
 sticky: null
 ---
 
