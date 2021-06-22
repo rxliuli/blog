@@ -8,7 +8,7 @@ tags:
   - 工具
   - wiki
 date: 1580652938013
-updated: 1621631875287
+updated: 1624263648623
 sticky: null
 ---
 
@@ -63,7 +63,7 @@ WebStorm
 
 ### 自动修复
 
-我们在日常开发中经常会遇到一些低级问题，而编辑器其实是有可能帮我们自动修复的。这里便对吾辈了解的一些问题进行对比，问题详细信息请参考文章 [JavaScript 规范整理](https://blog.rxliuli.com/p/6e442bc3/)
+我们在日常开发中经常会遇到一些低级问题，而编辑器其实是有可能帮我们自动修复的。这里便对吾辈了解的一些问题进行对比，问题详细信息请参考文章 [JavaScript 规范整理](/p/69eedef48bf54c3ca692b43a115a118f)
 
 > 注: VSCode 没有原生的自动修复功能，必须使用插件才行。
 
@@ -103,7 +103,7 @@ WebStorm
 
 ### 重构
 
-说起重构的话，VSCode 可以简单的说是做的太**少**，而 WebStorm 则是相反做的太**多**，下面继续以表格的形式进行对比。
+说起重构的话，VSCode 可以简单的说是做的**太少**，而 WebStorm 则是相反做的**太多**，下面继续以表格的形式进行对比。
 
 > WebStorm 较新版本已经修复了 2018.02 重命名会自动索引字符串的问题（变成可选项了）。
 
@@ -152,6 +152,8 @@ VSCode GitLens
 WebStorm
 ![WebStorm Git](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831022643.png)
 
+> 新版的 GitLens 好用很多，不仅仅追求功能丰富，更对开发者体验非常关心。
+
 ### 前端支持
 
 前面提过，VSCode 生态很好，基本上很多语言/框架都有支持，而且官方也有一些非常优秀的插件。但是，有一些地方很重要，VSCode 对于 HTML/CSS/JavaScript 这些 Web 基本元素的支持相比于 WebStorm 确实可以说的上是糟糕。
@@ -169,7 +171,7 @@ WebStorm
 > 附: VSCode 中通过输入 `h1.hello#hello` Tab 之后就得到代码是一种前端 HTML 代码编写方式，被称为 [Zen Coding](https://www.qianduan.net/zen-coding-a-new-way-to-write-html-code/)。但实际上，这种编写方式在代码提示方面存在劣势，所以使用 WebStorm 时并未演示。
 > 附: VSCode 引用文件路径提示需要插件 [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
 
-对于库的开发者而言最难受的地方是 VSCode 实质上依赖于 TypeScript 才能做到代码提示，如果你也像吾辈是一位 JavaScript SDK 的开发者，那么也会遇到这件令人郁闷的事情: 如果想要使用你的 JavaScript SDK 的 VSCode 用户有正常的代码提示的话，你就必须接触 TypeScript。要么使用 TypeScript 重构整个 SDK，要么写 _.d.ts_ 专门为 VSCode 维护一份注释文档，详情可以参考文章 [JavaScript => TypeScript 迁移体验](https://blog.rxliuli.com/p/eeb7bc5/)。
+对于库的开发者而言最难受的地方是 VSCode 实质上依赖于 TypeScript 才能做到代码提示，如果你也像吾辈是一位 JavaScript SDK 的开发者，那么也会遇到这件令人郁闷的事情: 如果想要使用你的 JavaScript SDK 的 VSCode 用户有正常的代码提示的话，你就必须接触 TypeScript。要么使用 TypeScript 重构整个 SDK，要么写 _.d.ts_ 专门为 VSCode 维护一份注释文档，详情可以参考文章 [JavaScript => TypeScript 迁移体验](/p/03ee7047ae3c4203b0c4c4ebfd6d7bd9)。
 
 ### 历史记录
 
@@ -189,6 +191,9 @@ WebStorm
 | 是否可以添加标签       | 否     | 是                             |
 | 是否可以对比           | 是     | 是                             |
 | 是否可以合并           | 否     | 是                             |
+| 是否支持目录历史       | 否     | 是                             |
+
+> WebStorm 的支持目录的历史记录非常强大，相当于实时保存和提交的 git
 
 ### 主题配色
 
@@ -208,11 +213,8 @@ WebStorm 确实很吃内存，尤其是项目刚刚打开的时候，索引会�
 
 ![任务管理器](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831000118.png)
 
----
-
-不得不承认的是，WebStorm 吃的性能终究还是要比 VSCode 多。但是，能用钱堆硬件解决的问题，能算问题么？
-
-![1613744562293](/resource/6996b9a2e3f54a919287c7ea7d0027f7.png)
+> 不得不承认的是，WebStorm 吃的性能终究还是要比 VSCode 多。但是，能用钱堆硬件解决的问题，能算问题么？
+> ![1613744562293](/resource/6996b9a2e3f54a919287c7ea7d0027f7.png)
 
 ### 工具集成
 
@@ -230,23 +232,25 @@ JetBrains IDE 深度集成工具链，倾向于一切都以可视化界面点击
 
 ### 远程/协作编辑
 
-VSCode 通过 [live-share](https://github.com/MicrosoftDocs/live-share) 实现了远程开发，但 WebStorm 至今为止仍然 [未能完全支持](https://blog.jetbrains.com/tag/codewithme/)。
+VSCode 通过 [live-share](https://github.com/MicrosoftDocs/live-share) 实现了远程开发，但 WebStorm 也通过官方插件 [Code With Me](https://www.jetbrains.com/code-with-me/) 和 [Projector](https://lp.jetbrains.com/projector/) 进行了支持。
 
-| 比较项   | VSCode | WebStorm |
-| -------- | ------ | -------- |
-| 协同编辑 | 是     | EAP 阶段 |
-| WSL 支持 | 是     | 否       |
-| 远程项目 | 是     | 否       |
-| 画板支持 | 是     | 否       |
-| 聊天     | 是     | 否       |
-| 语音     | 是     | 否       |
-| 免费     | 是     | EAP 免费 |
+| 比较项   | VSCode | WebStorm  |
+| -------- | ------ | --------- |
+| 协同编辑 | 是     | 是        |
+| WSL 支持 | 是     | 是        |
+| 远程项目 | 是     | 是        |
+| 画板支持 | 是     | 否        |
+| 聊天     | 是     | 是        |
+| 语音     | 是     | 是        |
+| 免费     | 是     | IDEA 免费 |
+
+> 就吾辈实际使用而言，感觉这是个噱头功能，和许多云 IDE 差不多。
 
 ### 东家
 
 VSCode 背后站着微软，俗成 **M$**，开发了宇宙最强 IDE Visual Studio。而 WebStorm 则是基于 JetBrains 平台专门为前端进行特殊处理优化的 IDE，背后则是业界最智能的 IDE 的开发公司 JetBrains（捷克公司）。两者在 IDE/编辑的开发上都相当有经验，然而，有一点本质的不同：IDE 对于 JetBrains 而言几乎是全部，而 VSCode 对于 M$ 则只是开发的一部分 -- 编辑器。
 
-`VSCode => VSCode Remote => GitHub => GitHub Actions => Azure`，从 M$ 的一系列变化来看，这对开发者是真的相当上心，从本地开发、远程协作、版本控制、自动化流程控制 CI/CD 到部署到云端，完全是一站式的体验。相比于国内的云服务商，MS 显然更加开放、更加为开发者着想。
+`VSCode => VSCode Remote => GitHub => GitHub Actions => Azure`，从 MS 的一系列变化来看，这对开发者是真的相当上心，从本地开发、远程协作、版本控制、自动化流程控制 CI/CD 到部署到云端，完全是一站式的体验。相比于国内的云服务商，MS 显然更加开放、更加为开发者着想。
 而 JetBrains，虽然现在也有了编程语言 `Kotlin`、项目管理工具 `Space`（包含 CI/CD 工具 `TeamCity`），但本质上在其领域内，除了 IDE，其他的东西都没能形成特别大的优势（Kotlin 只能用于开发 Android 平台，而 Web 技术甚至能开发全端；`TeamCity` 虽然很漂亮，但似乎人们更喜欢开源的 `Jenkins`）。
 未来 VSCode 一统天下似乎是必然之势，但目前而言，其尚且年幼，唯有 WebStorm 正值壮年。
 
