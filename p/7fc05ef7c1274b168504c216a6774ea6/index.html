@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      659 字
+      983 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      12
        分钟
     </span>
   
@@ -229,7 +229,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年6月21日 早上
+                  本文最后更新于：2021年7月16日 下午
                 
               </p>
             
@@ -239,12 +239,21 @@
 <p><a target="_blank" rel="noopener" href="https://liuli-tools.rxliuli.com/tools/i18next-dts-gen/">English</a>, <a target="_blank" rel="noopener" href="https://liuli-tools.rxliuli.com/zh/tools/i18next-dts-gen/">简体中文</a></p>
 </blockquote>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>i18next 的 typescript 类型定义生成器，可以从多个语言翻译 json 文件中生成类型定义，支持嵌套对象与参数。</p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
+<h2 id="生成类型定义"><a href="#生成类型定义" class="headerlink" title="生成类型定义"></a>生成类型定义</h2><blockquote>
 <p>这个 cli 本身国际化配置的类型定义生成也是由 cli 完成的（自举）</p>
 </blockquote>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">yarn add -D @liuli-util/i18next-dts-gen<br>i18next-dts-gen --input src/i18n # 扫描这个目录下的 json 文件并生成 index.d.ts 类型定义<br></code></pre></td></tr></table></figure>
 <p>详情</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> i18next-dts-gen -h</span><br>Usage: bin [options]<br><br>根据 json 生成 .d.ts 类型定义<br><br>Options:<br>  -i, --input &lt;input...&gt;  包含一或多个翻译文件的目录<br>  -w, --watch             是否使用监视模式<br>  -h, --help              display help for command<br></code></pre></td></tr></table></figure>
+<h2 id="在代码中使用"><a href="#在代码中使用" class="headerlink" title="在代码中使用"></a>在代码中使用</h2><blockquote>
+<p>建议配合 <a target="_blank" rel="noopener" href="https://liuli-tools.rxliuli.com/zh/tools/i18next-util/">i18next-util</a> 一起使用</p>
+</blockquote>
+<p>下面是在 nodejs 中使用</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/util/I18n.ts</span><br><span class="hljs-keyword">import</span> i18next <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;i18next&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-built_in">enum</span> LanguageEnum &#123;<br>  En = <span class="hljs-string">&quot;en&quot;</span>,<br>  ZhCN = <span class="hljs-string">&quot;zhCN&quot;</span>,<br>&#125;<br><br>export class I18n&lt;T extends any[]&gt; &#123;<br>  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> &#123;&#125;<br><br>  <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">changeLang</span>(<span class="hljs-params">lang: LanguageEnum</span>)</span> &#123;<br>    <span class="hljs-keyword">await</span> i18next.changeLanguage(lang);<br>  &#125;<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 加载国际化</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">init</span>(<span class="hljs-params">resources: Record&lt;LanguageEnum, <span class="hljs-built_in">object</span>&gt;, language: LanguageEnum</span>)</span> &#123;<br>    <span class="hljs-keyword">await</span> i18next.init(&#123;<br>      lng: language,<br>      resources: <span class="hljs-built_in">Object</span>.entries(resources).reduce(<span class="hljs-function">(<span class="hljs-params">res, [k, v]</span>) =&gt;</span> &#123;<br>        <span class="hljs-built_in">Reflect</span>.set(res, k, &#123;<br>          translation: v,<br>        &#125;);<br>        <span class="hljs-keyword">return</span> res;<br>      &#125;, &#123;&#125;),<br>    &#125;);<br>  &#125;<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 根据 key 获取翻译的文本</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param <span class="hljs-variable">args</span></span></span><br><span class="hljs-comment">   */</span><br>  t(...args: T): <span class="hljs-built_in">string</span> &#123;<br>    <span class="hljs-comment">// @ts-ignore</span><br>    <span class="hljs-keyword">return</span> i18next.t(args[<span class="hljs-number">0</span>], args[<span class="hljs-number">1</span>]);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/bin.ts</span><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLanguage</span>(<span class="hljs-params"></span>) </span>&#123;<br>  <span class="hljs-keyword">const</span> language = <span class="hljs-keyword">await</span> osLocale();<br>  <span class="hljs-keyword">const</span> map: Record&lt;<span class="hljs-built_in">string</span>, LanguageEnum&gt; = &#123;<br>    <span class="hljs-string">&quot;zh-CN&quot;</span>: LanguageEnum.ZhCN,<br>    <span class="hljs-string">&quot;en-US&quot;</span>: LanguageEnum.EnUS,<br>  &#125;;<br>  <span class="hljs-keyword">return</span> map[language] || LanguageEnum.EnUS;<br>&#125;<br><br><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">main</span>(<span class="hljs-params"></span>) </span>&#123;<br>  <span class="hljs-keyword">await</span> i18n.load(<span class="hljs-keyword">await</span> getLanguage());<br>  <span class="hljs-built_in">console</span>.log(i18n.t(<span class="hljs-string">&quot;hello&quot;</span>, &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;liuli&quot;</span> &#125;));<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>或者在浏览器中</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// App.tsx</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getLanguage</span>(<span class="hljs-params"></span>) </span>&#123;<br>  <span class="hljs-keyword">return</span> navigator.language.startsWith(<span class="hljs-string">&quot;zh&quot;</span>)<br>    ? LanguageEnum.ZhCN<br>    : LanguageEnum.En;<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> App: React.FC&lt;AppProps&gt; = <span class="hljs-function">() =&gt;</span> &#123;<br>  useMount(<span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">await</span> i18n.init(&#123; en, zhCN &#125;, getLanguage());<br>    <span class="hljs-comment">// 然后再做其它的事情</span><br>  &#125;);<br><br>  <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> /&gt;</span></span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>当然，如果你需要在其他环境中使用，应该仅需需要 <code>getLanguage</code> 函数即可。</p>
 <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>为什么已经有了很多第三方的类型定义生成器，甚至最新版 i18next 官方已经推出了 typescript 解决方案，吾辈还要写这个呢？</p>
 <p>简而言之，都不完善。</p>
 <p>先从 i18next 官方的解决方案说起，它是将 json 文件替换为 ts 文件，但不能支持参数和嵌套对象。</p>
@@ -268,7 +277,7 @@
 <li><input checked="" disabled="" type="checkbox"> 支持嵌套的 key</li>
 <li><input disabled="" type="checkbox"> 不支持配置命名空间、嵌套的分割字符串，我们认为约定大于配置</li>
 <li><input disabled="" type="checkbox"> 不支持 json 之外的配置文件，我们认为 json 文件对于非开发者都更友好，而且在需要时开发者更容易处理</li>
-<li><input disabled="" type="checkbox"> 不支持 i18next 命名空间，即将翻译文件分割</li>
+<li><input disabled="" type="checkbox"> 不支持 i18next 命名空间，即将翻译文件分割 – 我们认为在翻译文件没有大于某个临界点之前分隔是得不偿失的</li>
 </ul>
 
             </div>
@@ -292,6 +301,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/p/d4305821fd2a4dfc827811c17ca85fe6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">个人与开源</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

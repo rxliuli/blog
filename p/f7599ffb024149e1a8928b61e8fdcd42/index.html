@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.9k 字
+      4.7k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      62
+      60
        分钟
     </span>
   
@@ -229,7 +229,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年5月2日 下午
+                  本文最后更新于：2021年7月8日 下午
                 
               </p>
             
@@ -245,8 +245,8 @@
 <li>问：有大公司在用么？</li>
 <li>答：作为能够支撑 Facebook 这种级别公司的 Web 产品的基础，显然它拥有相当多的生产环境实践。</li>
 </ul>
-<h2 id="工程与周边生态"><a href="#工程与周边生态" class="headerlink" title="工程与周边生态"></a>工程与周边生态</h2><p>以下皆基于 <code>cra(create-react-app)</code> 创建的 <code>ts + react + mobx + react-router + immer</code> 技术栈进行说明，虽然完全不了解以上内容亦可，但最好了解一下它们是做什么的，下面第一次提及时也会简单说明一下。</p>
-<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>使用 create-react-app 创建 react 项目，但和 vue-cli 有一点明显区别：不提供很多配置，只是简单的项目生成。</p>
+<h2 id="工程与周边生态"><a href="#工程与周边生态" class="headerlink" title="工程与周边生态"></a>工程与周边生态</h2><p>以下皆基于 <code>vite</code> 创建的脚手架项目，并包含 <code>ts/mobx/react-router/immer</code> 等周边项目，虽然完全不了解以上内容亦可，但最好了解一下它们是做什么的，下面第一次提及时也会简单说明一下。</p>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>使用 vite 创建 react-ts 项目，相比于 create-react-app，它更快而且对开发者更加友好，虽然它对 vue 是第一优先级支持。</p>
 <h3 id="状态管理"><a href="#状态管理" class="headerlink" title="状态管理"></a>状态管理</h3><p>此处使用 mobx 对标，mobx 是一个状态管理库，以响应式、可变、简单方便为最大卖点。本质上可以认为为每个页面（页面内的所有组件）提供了一个全局对象，并实现了 vue 中的 <code>computed</code> 和 <code>watch</code>，所以 vue 的作者说 vue 是更简单的 react + mobx 确实有些道理，实际上这两个加起来能做到的事情不比原生 vue 多多少。</p>
 <p>但它们之间也有几点不同</p>
 <ul>
@@ -260,7 +260,9 @@
 <li>是：高阶函数</li>
 <li>否：装饰器</li>
 </ul>
-<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><ul>
+<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><!-- react-router 自 v4 之后不再直接提供集中式的路由配置，但可以通过 [react-router-config](https://www.npmjs.com/package/react-router-config) 来使用配置式的路由。 -->
+
+<ul>
 <li>递归菜单栏</li>
 <li>使用高阶组件包装路由组件 <code>withRouter()</code></li>
 <li>获取当前路由信息：<code>this.props.match</code></li>
@@ -311,11 +313,6 @@
 <p>并在根目录添加配置文件 <code>config-overrides.js</code>，里面暴露出一个函数，即可修改 cra 的默认配置了。</p>
 <p>下面是一个简单的示例</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> WorkerPlugin = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;worker-plugin&quot;</span>);<br><br><span class="hljs-comment">/* config-overrides.js */</span><br><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">override</span>(<span class="hljs-params">config, env</span>) </span>&#123;<br>  <span class="hljs-comment">//region WebWorker 配置</span><br><br>  <span class="hljs-comment">//do stuff with the webpack config...</span><br>  config.output.globalObject = <span class="hljs-string">&quot;this&quot;</span>;<br>  <span class="hljs-keyword">if</span> (!config.plugins) &#123;<br>    config.plugins = [];<br>  &#125;<br>  config.plugins.push(<span class="hljs-keyword">new</span> WorkerPlugin());<br><br>  <span class="hljs-comment">//endregion</span><br><br>  <span class="hljs-keyword">return</span> config;<br>&#125;;<br></code></pre></td></tr></table></figure>
-<h3 id="使用-parcel-js-进行项目打包"><a href="#使用-parcel-js-进行项目打包" class="headerlink" title="使用 parcel.js 进行项目打包"></a>使用 parcel.js 进行项目打包</h3><p>parcel 是一个新的打包工具，目的是提供开箱即用的零配置打包方案，和 webpack 大不相同的一点就是其不需要接触很多的概念，通过直接指定 html 文件为入口即可引入其他资源，包括但不限于 <code>vue/react/typescript/less</code> 之类的第三方资源，从逻辑上来讲对用户更加友好。</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://parceljs.org/">官网</a>, <a target="_blank" rel="noopener" href="https://github.com/parcel-bundler/parcel">GitHub</a></p>
-</blockquote>
-<p>使用 parcel 打包和启动多入口项目非常简单，这是一个基本的多入口打包 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/tree/master/antd_reactive_example">demo</a> 项目，允许将 App/Web 上类似的功能放在同一个项目中，并且支持集成其他有趣的功能。</p>
 <h2 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h2><h3 id="this-的值"><a href="#this-的值" class="headerlink" title="this 的值"></a>this 的值</h3><p>在 <code>class</code> 中使用箭头函数以直接绑定当前组件的实例，尽量不要使用 <code>function</code>，否则 <code>this</code> 可能是不明确的。</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> React, &#123; Component &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HelloWorld</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>&#123;<br>  logMsg = <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;msg&quot;</span>);<br>  &#125;;<br>  <span class="hljs-function"><span class="hljs-title">render</span>(<span class="hljs-params"></span>)</span> &#123;<br>    <span class="hljs-keyword">return</span> (<br>      &lt;div&gt;<br>        &lt;h1&gt;hello world&lt;/h1&gt;<br>        &lt;button onClick=&#123;<span class="hljs-built_in">this</span>.logMsg&#125;&gt;打印&lt;/button&gt;<br>      &lt;/div&gt;<br>    );<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> HelloWorld;<br></code></pre></td></tr></table></figure>
 <h3 id="CSS-样式隔离"><a href="#CSS-样式隔离" class="headerlink" title="CSS 样式隔离"></a>CSS 样式隔离</h3><p>cra 创建的项目默认支持 css module，是 react 项目流行的一种 CSS 隔离方案。</p>
@@ -429,16 +426,41 @@ React props 基本上能传递任何东西，所以承担了 vue 中的多个特
 
 从这点来看，React 真是 **少即是多** 的范例。 -->
 
-<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="React-有什么缺点"><a href="#React-有什么缺点" class="headerlink" title="React 有什么缺点"></a>React 有什么缺点</h3><ul>
-<li>CSS 局部化有很多方案，但没有一统天下的</li>
-<li>vue 在组件创建/销毁时会自动初始化/销毁状态及监听器，而 mobx 会一直保留需要手动初始化/清理<ul>
-<li>注: 这点还未找到解决方案</li>
-<li>更新：可以使用 context 部分解决这个问题</li>
-</ul>
-</li>
-<li>使用 AntD 时可能遇到样式覆盖不了的问题，需要混合使用 <code>className, style</code> 两个属性。</li>
-<li>react 会在开发阶段报错比较多，主要是一些低级错误，尤其是加上 ts 之后尤其如此</li>
-</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="React-有什么缺点"><a href="#React-有什么缺点" class="headerlink" title="React 有什么缺点"></a>React 有什么缺点</h3><p>核心缺点是官方对开发者体验不上心，许多周边项目或功能都没有 vue 的对等项友好。</p>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>react</th>
+<th>vue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脚手架</td>
+<td>create-react-app</td>
+<td>vite/vue-cli</td>
+</tr>
+<tr>
+<td>文档生成工具</td>
+<td>docusaurus</td>
+<td>vuepress</td>
+</tr>
+<tr>
+<td>路由</td>
+<td>react router</td>
+<td>vue router</td>
+</tr>
+<tr>
+<td>css 局部作用域</td>
+<td>css module/css in js</td>
+<td>内置完整的 css 作用域支持</td>
+</tr>
+<tr>
+<td>函数式</td>
+<td>react hooks</td>
+<td>vue composition</td>
+</tr>
+</tbody></table>
 <h3 id="怎么在没有-created-生命周期的情况下初始化数据并保证用户看不到默认空数据"><a href="#怎么在没有-created-生命周期的情况下初始化数据并保证用户看不到默认空数据" class="headerlink" title="怎么在没有 created 生命周期的情况下初始化数据并保证用户看不到默认空数据"></a>怎么在没有 <code>created</code> 生命周期的情况下初始化数据并保证用户看不到默认空数据</h3><p>在 vue 中，吾辈经常在 created 生命周期中加载数据，避免用户看到默认的空数据，然而，React 中却没有这个生命周期，所以需要额外的处理。</p>
 <blockquote>
 <p>注：其实 vue 中用户也有可能看到空数据，但因为 Ajax 请求数据的速度也比较快，所以默认可以不用处理。</p>
@@ -509,6 +531,8 @@ React props 基本上能传递任何东西，所以承担了 vue 中的多个特
                 
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%BE%85%E6%9B%B4%E6%96%B0/">待更新</a>
                     
                       <a class="hover-with-bg" href="/tags/vue/">vue</a>
                     

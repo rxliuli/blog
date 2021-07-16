@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      1.6k 字
     </span>
   
 
@@ -229,7 +229,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年5月17日 晚上
+                  本文最后更新于：2021年7月15日 晚上
                 
               </p>
             
@@ -474,13 +474,13 @@
 <p>主要用于忽略一些本地修改的文件但又不希望提交，同时也不希望添加到 .gitignore 中将之从云端排除的方式。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git update-index --assume-unchanged [file-pattern]<br></code></pre></td></tr></table></figure>
 <h3 id="git-删除远程-tag"><a href="#git-删除远程-tag" class="headerlink" title="git 删除远程 tag"></a>git 删除远程 tag</h3><p>显示本地 tag</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs null">git tag<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git tag<br></code></pre></td></tr></table></figure>
 <p>删除本地 tag</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs null">git tag -d Remote_Systems_Operation &#96;&#96;&#96;<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git tag -d Remote_Systems_Operation<br></code></pre></td></tr></table></figure>
 <p>用 push, 删除远程 tag</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs null">git push origin :refs&#x2F;tags&#x2F;Remote_Systems_Operation&#96;&#96;&#96;<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">git push origin :refs/tags/Remote_Systems_Operation<br></code></pre></td></tr></table></figure>
 <p>删除远程分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs null">git branch -r -d origin&#x2F;branch-name<br>git push origin :branch-name<br></code></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">git branch -r -d origin/branch-name<br>git push origin :branch-name<br></code></pre></td></tr></table></figure>
 <h3 id="两个-git-仓库合并"><a href="#两个-git-仓库合并" class="headerlink" title="两个 git 仓库合并"></a>两个 git 仓库合并</h3><p>现在有两个仓库 <a target="_blank" rel="noopener" href="https://github.com/kktjs/kkt.git">kktjs/kkt</a> 和 <a target="_blank" rel="noopener" href="https://github.com/kktjs/kkt-next.git">kktjs/kkt-next</a> 我们需要将 <code>kkt-next</code> 仓库合并到 <code>kkt</code> 并保留 <code>kkt-next</code> 的所有提交内容。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 1. 克隆主仓库代码</span><br>git <span class="hljs-built_in">clone</span> git@github.com:kktjs/kkt.git<br><br><span class="hljs-comment"># 2. 将 kkt-next 作为远程仓库，添加到 kkt 中，设置别名为 other</span><br>git remote add other git@github.com:kktjs/kkt-next.git<br><br><span class="hljs-comment"># 3. 从 kkt-next 仓库中拉取数据到本仓库</span><br>git fetch other<br><br><span class="hljs-comment"># 4. 将 kkt-next 仓库拉取的 master 分支作为新分支 checkout 到本地，新分支名设定为 dev</span><br>git checkout -b dev other/master<br><br><span class="hljs-comment"># 5. 切换回 kkt 的 master 分支</span><br>git checkout master<br><br><span class="hljs-comment"># 6. 将 dev 合并入 kkt 的 master 分支</span><br>git merge dev<br><br><span class="hljs-comment"># 如果第 6 步报错 `fatal: refusing to merge unrelated histories`</span><br><span class="hljs-comment"># 请执行下面命令 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓</span><br>git merge dev --allow-unrelated-histories<br></code></pre></td></tr></table></figure>
 <blockquote>

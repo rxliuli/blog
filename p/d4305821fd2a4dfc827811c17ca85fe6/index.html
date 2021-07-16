@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
-  <title>使用 gh-pages 发布前端项目 - rxliuli blog</title>
+  <title>个人与开源 - rxliuli blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="使用 gh-pages 发布前端项目">
+            <span class="h2" id="subtitle" title="个人与开源">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-09-25 10:03" pubdate>
-        2020年9月25日 上午
+      <time datetime="2021-06-26 09:05" pubdate>
+        2021年6月26日 上午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      728 字
+      1.3k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      13
        分钟
     </span>
   
@@ -225,59 +225,72 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">使用 gh-pages 发布前端项目</h1>
+            <h1 style="display: none">个人与开源</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年1月20日 凌晨
+                  本文最后更新于：2021年7月1日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gh-pages">gh-pages</a></p>
-</blockquote>
-<p>之前就有在使用 gh-pages 这个库，但由于名字并未想到它如此强大，甚至支持发布代码到任意 git 仓库。换言之，它可以将任意本地文件发布到远端 git 仓库，而不需要自己处理各种乱七八糟的问题。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>首先说一下我们之前前后端分离项目的发布流程</p>
-<ol>
-<li> 修改打包的 webpack 脚本以支持引用 cdn 上的资源（本质上是修改路径）</li>
-<li> 打包静态资源文件</li>
-<li> 找到前端静态资源发布项目，切换到指定分支</li>
-<li> 复制静态资源到特定目录</li>
-<li> <code>git commit &amp;&amp; git push</code></li>
-<li> 如果要发布 cdn 则再次对 cdn 仓库同样如此操作</li>
-<li> 通知后端发布生产环境，进行验证</li>
-</ol>
-<p>这其中涉及到几个重要痛点</p>
-<ol>
-<li> 修改 webpack 配置，它极高的复杂度甚至产生了 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/267908710">webpack 配置工程师</a> 这一职业岗位。</li>
-<li> 处理文件复制提交 git 信息，有可能操作错误，每次发布生产都是一次心理上的考验</li>
-<li> 发布失败难以快速解决，重新发布又需要手动再走一遍流程，所以有了我之前说过的发布一次要半个钟的事实</li>
-</ol>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>不难看出，这本质上还是因为发布没有自动化带来的问题。但是，在 DevOps 还不存在的情况下，gh-pages 能够自动化下面的两步，同时，像 <code>create-react-app/vue-cli</code> 这种基于 webpack 进行高层次封装的工具提供了 <code>PUBLIC_PATH</code> 的概念，能够通过环境变量指定 <code>index.html</code> 入口引用的其他静态资源的基本路径，即便不去碰 webpack 也可以处理第一个问题了。</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://create-react-app.dev/docs/using-the-public-folder/">react</a>, <a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/config/#publicpath">vue</a></p>
-</blockquote>
-<p>大致过程如下</p>
-<ol>
-<li><p> 在项目中添加依赖 <code>yarn add -D env-cmd gh-pages</code></p>
-</li>
-<li><p> 在打包生产环境的资源时指定环境变量 <code>PUBLIC_URL=[cdn 发布后的远端基本路径]</code></p>
-</li>
-<li><p>添加发布 script 命令</p>
- <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;deploy&quot;</span>: <span class="hljs-string">&quot;yarn build:prod &amp;&amp; yarn deploy:cdn &amp;&amp; yarn deploy:publish&quot;</span>,<br>  <span class="hljs-attr">&quot;deploy:publish&quot;</span>: <span class="hljs-string">&quot;gh-pages -d [本地目录] -e [远端 git 目录] -r [远端 git 地址] -b [远端 git 分支]&quot;</span>,<br>  <span class="hljs-attr">&quot;deploy:cdn&quot;</span>: <span class="hljs-string">&quot;gh-pages -d [本地目录] -e [远端 git 目录] -r [远端 git 地址] -b [远端 git 分支]&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
-<p>现在，发布生产环境只需要两个步骤</p>
-</li>
-<li><p> 运行 <code>deploy</code> 命令</p>
-</li>
-<li><p> 通知后端发布 cdn/静态资源目录</p>
-</li>
-</ol>
-<p>虽然仍未能解决前后端不分离的项目，但，至少解决了所有新项目的发布问题了，不是么？</p>
-<blockquote>
-<p>这里有一个项目已经如此实现，可以进行参考：<a target="_blank" rel="noopener" href="https://git.code.tencent.com/bingli_front/website-static">website-static</a></p>
-</blockquote>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>还是需要擅用工具，如果能够掌握更好的工具，效率的提高和自己的痛苦程度都能有极大的改善！</p>
+              <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>昨天，吾辈的 GitHub 提交已经超过了去年一整年。就在前几天，有人从 GitHub 上找到了吾辈，所以想谈一些吾辈关于开源的认识。</p>
+<p>2020</p>
+<p><img src="/resource/4d3552ea84da470f94be5a4265cb37b4.png" srcset="/img/loading.gif" alt="1624672304685"></p>
+<p>2021</p>
+<p><img src="/resource/e6d42dad38404bb98f6b44003be4d0b6.png" srcset="/img/loading.gif" alt="1624672317484"></p>
+<h2 id="为什么要做开源项目"><a href="#为什么要做开源项目" class="headerlink" title="为什么要做开源项目"></a>为什么要做开源项目</h2><p>最初的想法是觉得开源很酷，许多厉害的人都创造了许多有趣的开源工具，典型的就是 Linux。后面工作之后坚持下来的原因更多是公司的项目很一般，所以只能通过开源项目来提高技术能力，并希望做出一点有用的东西。</p>
+<p>收益</p>
+<ul>
+<li>学习开源项目的架构和设计</li>
+<li>实践自己的想法、尝试新的技术</li>
+<li>证明自己的技术能力</li>
+<li>认识一些志同道合的人</li>
+<li>做自己使用的工具总是可以做的更好</li>
+</ul>
+<p>成本</p>
+<ul>
+<li>花费额外的时间和精力，对于工作的人来说这两个的重要程度不言而喻</li>
+<li>几乎无法得到经济上的回报</li>
+<li>前期可能没什么人会在意你，会有一段时间的孤独（不仅仅是做开源项目，任何创作型的行为皆然）</li>
+</ul>
+<h2 id="两个方向"><a href="#两个方向" class="headerlink" title="两个方向"></a>两个方向</h2><p>就如同所有事情一样，做开源项目也有不同的选择，吾辈正在做的主要有两个方向：</p>
+<ul>
+<li>面向开发者的工具</li>
+<li>面向一般用户的工具</li>
+</ul>
+<h3 id="面向开发者的工具"><a href="#面向开发者的工具" class="headerlink" title="面向开发者的工具"></a>面向开发者的工具</h3><p>正如其名，是做面向开发者使用的工具，从 UX 角度包括各种函数类库、CLI 命令行工具以及可视化开发工具等等。</p>
+<ul>
+<li>函数类库：lodash、moment 之类，对于开发者最灵活的方式</li>
+<li>CLI 命令行工具：create-react-app、vite 之类，一般是为了解决某一类问题创建</li>
+<li>可视化开发工具：例如 @vue/cli-service、VSCode、JetBrains 插件之类，一般是为了提供更加直观的使用方式，但也最不灵活和难以集成</li>
+</ul>
+<p>怎么说呢，由开发者创建的开发者工具总是更容易的，尤其是当自己也使用时，更容易理解和优化功能。吾辈在工作之后创造了一些工具</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-util">@liuli-util/*</a> 系列函数库：主要是希望减小工具库的 API 面积（lodash 许多函数吾辈很少用到）</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/cli">@liuli-util/cli</a>：主要是为了解决上面一系列工具库打包的问题，做到零配置打包的能力，类似 microbundle（preact 作者创建的工具）</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/i18next-dts-gen">i18next-dts-gen</a>: 为 i18next 的 json 配置文件产生类型定义的方法，主要是应用在下面的一系列面向一般用户的工具中</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/16897">vite-jetbrains-plugin</a>: 将 vite 集成到 jetbrains ide 的插件</li>
+</ul>
+<p>但同样的，这种选择也有自身的缺陷：主要是开发者本质上也只是用户的一个小部分群体，相当于放弃了开发者之外的庞大用户。而且开发者总是吐槽别人家的文档写的很烂，但同时又觉得写文档是一个麻烦的事情，所以使用体验一般不怎么样，许多名不见经传的工具往往只有作者能在 5 分钟内开始使用它。</p>
+<h3 id="面向一般用户的工具"><a href="#面向一般用户的工具" class="headerlink" title="面向一般用户的工具"></a>面向一般用户的工具</h3><p>相比于面向开发者，面向一般用户首先就天然拥有更多的受众，像每周基本上都会出现在 GitHub 热点中的 hexo 主题便是如此。但同时，想要创造一个对一般用户友好的工具并不简单，一般用户对各种麻烦的容忍程度不比开发者，否则也不会有产品经理、UI/UX 这种岗位了。</p>
+<ul>
+<li>没有文档：不容易或找不到正确使用的方法，一般就会不用了</li>
+<li>出现错误：我才不管是谁的锅，你让我用的不爽，我就不会用你。</li>
+<li>使用命令行：虽然现在命令行已经比较友好了，但对于一般用户而言仍然很难使用，更何况这是个很多人只用手机的时代。</li>
+<li>有外部依赖：依赖于 nodejs、python 等运行时对于一般用户而言都很麻烦</li>
+</ul>
+<p>吾辈主要在做的是 joplin 相关的一系列工具</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=rxliuli.joplin-vscode-plugin&ssr=false#overview">joplin-vscode-plugin <img src="https://img.shields.io/visual-studio-marketplace/i/rxliuli.joplin-vscode-plugin" srcset="/img/loading.gif" alt="install"></a>: joplin 的 vscode 插件</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/joplin-blog">joplin-blog</a>: 将 Joplin 作为数据源导出 blog/wiki</li>
+<li><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/joplin-search-integration/mcjkdcifkhjenpfjacnbhpdcnjknjkhj">joplin-search-integration</a>: 在 Google/Bing/Baidu 搜索中集成 joplin 笔记的搜索结果</li>
+<li><a target="_blank" rel="noopener" href="https://joplin-utils.rxliuli.com/joplin-batch-web/">joplin-batch-web</a>: 处理一些 Joplin 本身不支持的批量操作，以可视化界面的形式展现出来。</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/joplin-api">joplin-api</a>: Joplin 的 api 封装，适用于 web/nodejs，也是以上成果的基础</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rxliuli/userjs">userjs</a>: 一些自用的油猴脚本，主要用来改善网页浏览体验。</li>
+</ul>
+<p>事实上，能够做面向一般用户的工具（吾辈也是一般用户），也是吾辈从后端转向前端的理由之一。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>无论如何，现在的世界都已经筑基于开源项目之上，吾辈也会坚持一直做下去。</p>
 
             </div>
             <hr>
@@ -288,11 +301,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/wiki/">wiki</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">工程化</a>
-                    
-                      <a class="hover-with-bg" href="/tags/react/">react</a>
+                      <a class="hover-with-bg" href="/tags/%E6%9D%82%E8%B0%88/">杂谈</a>
                     
                   </div>
                 
@@ -305,18 +314,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/p/1d714f3ebd97461aa3d488f9a133a7c3/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">吾辈的工作</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/p/62804424f22d417ebfcee5ad5e04b754/">
-                        <span class="hidden-mobile">使用 vscode + draw.io 轻松绘制流程图</span>
+                      <a href="/p/7fc05ef7c1274b168504c216a6774ea6/">
+                        <span class="hidden-mobile">为 i18next json 配置文件生成 dts 类型定义</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -335,8 +338,8 @@
     <div id="disqus_thread"></div>
     <script type="text/javascript">
       var disqus_config = function() {
-        this.page.url = 'https://blog.rxliuli.com/p/7b0fe35b00b345618a9323977a2e552a/';
-        this.page.identifier = '/p/7b0fe35b00b345618a9323977a2e552a/';
+        this.page.url = 'https://blog.rxliuli.com/p/d4305821fd2a4dfc827811c17ca85fe6/';
+        this.page.identifier = '/p/d4305821fd2a4dfc827811c17ca85fe6/';
       };
       Fluid.utils.waitElementVisible('disqus_thread', function () {
         var d = document, s = d.createElement('script');

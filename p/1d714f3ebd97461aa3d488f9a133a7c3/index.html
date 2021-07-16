@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
-  <title>使用 gh-pages 发布前端项目 - rxliuli blog</title>
+  <title>吾辈的工作 - rxliuli blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="使用 gh-pages 发布前端项目">
+            <span class="h2" id="subtitle" title="吾辈的工作">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-09-25 10:03" pubdate>
-        2020年9月25日 上午
+      <time datetime="2020-10-06 09:31" pubdate>
+        2020年10月6日 上午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      728 字
+      1.3k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      12
        分钟
     </span>
   
@@ -225,59 +225,78 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">使用 gh-pages 发布前端项目</h1>
+            <h1 style="display: none">吾辈的工作</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年1月20日 凌晨
+                  本文最后更新于：2021年7月10日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gh-pages">gh-pages</a></p>
+              <blockquote>
+<p>去年国庆节时写的，忘记发了 xd</p>
 </blockquote>
-<p>之前就有在使用 gh-pages 这个库，但由于名字并未想到它如此强大，甚至支持发布代码到任意 git 仓库。换言之，它可以将任意本地文件发布到远端 git 仓库，而不需要自己处理各种乱七八糟的问题。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>首先说一下我们之前前后端分离项目的发布流程</p>
-<ol>
-<li> 修改打包的 webpack 脚本以支持引用 cdn 上的资源（本质上是修改路径）</li>
-<li> 打包静态资源文件</li>
-<li> 找到前端静态资源发布项目，切换到指定分支</li>
-<li> 复制静态资源到特定目录</li>
-<li> <code>git commit &amp;&amp; git push</code></li>
-<li> 如果要发布 cdn 则再次对 cdn 仓库同样如此操作</li>
-<li> 通知后端发布生产环境，进行验证</li>
-</ol>
-<p>这其中涉及到几个重要痛点</p>
-<ol>
-<li> 修改 webpack 配置，它极高的复杂度甚至产生了 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/267908710">webpack 配置工程师</a> 这一职业岗位。</li>
-<li> 处理文件复制提交 git 信息，有可能操作错误，每次发布生产都是一次心理上的考验</li>
-<li> 发布失败难以快速解决，重新发布又需要手动再走一遍流程，所以有了我之前说过的发布一次要半个钟的事实</li>
-</ol>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>不难看出，这本质上还是因为发布没有自动化带来的问题。但是，在 DevOps 还不存在的情况下，gh-pages 能够自动化下面的两步，同时，像 <code>create-react-app/vue-cli</code> 这种基于 webpack 进行高层次封装的工具提供了 <code>PUBLIC_PATH</code> 的概念，能够通过环境变量指定 <code>index.html</code> 入口引用的其他静态资源的基本路径，即便不去碰 webpack 也可以处理第一个问题了。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>国庆回老家散心，和家人交流了一些事情之后，想起了自己的工作，便想于此浅谈一番。</p>
 <blockquote>
-<p><a target="_blank" rel="noopener" href="https://create-react-app.dev/docs/using-the-public-folder/">react</a>, <a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/config/#publicpath">vue</a></p>
+<p>好吧就是一个表妹需要写作业，但看着吾辈不写作业便缠着让吾辈写一篇关于工作的文章而已。</p>
 </blockquote>
-<p>大致过程如下</p>
-<ol>
-<li><p> 在项目中添加依赖 <code>yarn add -D env-cmd gh-pages</code></p>
-</li>
-<li><p> 在打包生产环境的资源时指定环境变量 <code>PUBLIC_URL=[cdn 发布后的远端基本路径]</code></p>
-</li>
-<li><p>添加发布 script 命令</p>
- <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>  <span class="hljs-attr">&quot;deploy&quot;</span>: <span class="hljs-string">&quot;yarn build:prod &amp;&amp; yarn deploy:cdn &amp;&amp; yarn deploy:publish&quot;</span>,<br>  <span class="hljs-attr">&quot;deploy:publish&quot;</span>: <span class="hljs-string">&quot;gh-pages -d [本地目录] -e [远端 git 目录] -r [远端 git 地址] -b [远端 git 分支]&quot;</span>,<br>  <span class="hljs-attr">&quot;deploy:cdn&quot;</span>: <span class="hljs-string">&quot;gh-pages -d [本地目录] -e [远端 git 目录] -r [远端 git 地址] -b [远端 git 分支]&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
-<p>现在，发布生产环境只需要两个步骤</p>
-</li>
-<li><p> 运行 <code>deploy</code> 命令</p>
-</li>
-<li><p> 通知后端发布 cdn/静态资源目录</p>
-</li>
-</ol>
-<p>虽然仍未能解决前后端不分离的项目，但，至少解决了所有新项目的发布问题了，不是么？</p>
-<blockquote>
-<p>这里有一个项目已经如此实现，可以进行参考：<a target="_blank" rel="noopener" href="https://git.code.tencent.com/bingli_front/website-static">website-static</a></p>
+<h2 id="家人"><a href="#家人" class="headerlink" title="家人"></a>家人</h2><blockquote>
+<p>当其他标准都不存在，金钱便成为唯一的标准。</p>
 </blockquote>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>还是需要擅用工具，如果能够掌握更好的工具，效率的提高和自己的痛苦程度都能有极大的改善！</p>
+<p>在老家的人看来，吾辈的工作算是非常好的了，而且大概率，他们也会希望自己的孩子进入这个行业吧。其实本质上，核心原因只有一条：<strong>这个行业的工作工资都比较高</strong>。从现在幼儿计算机教育行业的兴起也可见一斑，为人父母都希望自己的孩子能过得更好，而目前在国内过得更好的唯一方法是：<strong>挣更多的钱</strong>，也不外乎很多父母这样做了。</p>
+<p>但是，这个行业仍然不可避免的存在许多问题，当你和他们说到这些的时候</p>
+<ul>
+<li>住房问题</li>
+<li>交通问题</li>
+<li>加班问题</li>
+<li>吃饭问题（由以上问题衍生）</li>
+<li>自由问题</li>
+</ul>
+<p>他们总是视而不见，或心知肚明但仍然反驳道</p>
+<ul>
+<li>你们现在过的比我们好多了</li>
+<li>在大城市不就应该是这样么？</li>
+<li>打工的你还想要怎样？</li>
+</ul>
+<h2 id="工作"><a href="#工作" class="headerlink" title="工作"></a>工作</h2><blockquote>
+<p>按照吾辈公司某个人的说法：<strong>“这些年我待过这么多公司，从来没有哪一家公司的工作是让我感到开心的”</strong>。</p>
+</blockquote>
+<p>对于吾辈而已，工作似乎在逐渐变成维系生存的一种手段，而非吾辈最初希望进入这个行业的理由：<strong>做更有创造性的事情</strong>。</p>
+<p>或许对于一些在大城市的程序员也同样适用的工作生活</p>
+<ul>
+<li>6.30 早晨起床，洗漱之后</li>
+<li>7.00 出门，坐地铁，大概 40min 左右</li>
+<li>到达公司，吃点早餐</li>
+<li>距离上班还有一点时间，开始看一些自己想看的技术相关的书籍、rss，邮件订阅等</li>
+<li>开始上班</li>
+<li>中午吃饭，吃完回到公司，玩会手机或电脑，然后午休</li>
+<li>下午上班、下班</li>
+<li>7.30 开始回家</li>
+<li>8.00+ 到家</li>
+<li>路上买了点饭，吃饭，洗澡</li>
+<li>大概接近 9.00 时没什么其他事情了</li>
+<li>一般会看一些感兴趣的书，但如果遇到有趣的小说、电影之类，则可能根本不会去碰</li>
+</ul>
+<p>每天重复这样的生活，甚至不知道自己技术的下一个转折点在哪里，浑浑噩噩，不知所谓。有时候痛恨自己不够努力，明知道自己的弱项在哪里但就是不去弥补，但有时候又觉得这一切都无所谓，只要能简单的活着就好。</p>
+<p>996 真的存在么？毫无疑问是真的，虽然吾辈没有切实经历过，但也经历过一段时间的 995。</p>
+<h2 id="35-岁的魔咒"><a href="#35-岁的魔咒" class="headerlink" title="35 岁的魔咒"></a>35 岁的魔咒</h2><p>两条“公理”</p>
+<ul>
+<li>人不能没有好奇心，失去好奇心就丧失了学习的源泉。</li>
+<li>如果终身学习是工作的唯一出路，那么对于大部分人来说，就是没有出路。</li>
+</ul>
+<p>是的，世界上普通人是如此之多，28 定律清楚的阐述这一切。那么，为什么国内互联网这个行业偏偏有 35 岁就不能继续工作的魔咒呢？其他行业为什么没有？</p>
+<ul>
+<li>这个行业的表层技术发展的太快，十年前应用层使用的技术和现如今的完全不一样，很多人跟不上这个发展，仍然希望能用十年前的技术完成现在的工作。</li>
+<li>国内对于弱者不友好，一旦有更低的成本，就会抛弃掉现有的方式。</li>
+<li>教育行业无疑是失败的，填鸭式教育让一群没有自己思想的人出现，现如今吾辈还在上小学的表妹教育的方式和十年前没什么变化，<strong>抄小字</strong>，熟悉而又陌生的字眼。</li>
+</ul>
+<p>其他行业为什么没有这个问题呢？甚至有些行业是越老越吃香的（例如医生）。</p>
+<ul>
+<li>其它行业的发展没那么快，十年前的知识到现在仍然是基本有效的，像是司机，十年前开车用到的技能和现在的几乎没什么不同。</li>
+</ul>
+<p>目前吾辈仍然是愿意花很多时间在技术方面，甚至放弃了很多本应是生活的时间，吾辈愿意为了以后更好的生活而忍受暂时的苦难，就像深水成美的励志歌曲唱的那样：“只要不服输，最后还是有指望…”，但是我们最后真正能够得到什么就不好说了…</p>
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>或许，对于这个行业的人来说，出国才是唯一也是最好的选择吧！</p>
 
             </div>
             <hr>
@@ -288,11 +307,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/wiki/">wiki</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">工程化</a>
-                    
-                      <a class="hover-with-bg" href="/tags/react/">react</a>
+                      <a class="hover-with-bg" href="/tags/%E4%B8%AA%E4%BA%BA/">个人</a>
                     
                   </div>
                 
@@ -305,9 +320,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/p/1d714f3ebd97461aa3d488f9a133a7c3/">
+                      <a href="/p/1cc0a366faf84858b7de600f56da7cb5/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">吾辈的工作</span>
+                        <span class="hidden-mobile">为什么有那么多笔记工具</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -315,8 +330,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/p/62804424f22d417ebfcee5ad5e04b754/">
-                        <span class="hidden-mobile">使用 vscode + draw.io 轻松绘制流程图</span>
+                      <a href="/p/7b0fe35b00b345618a9323977a2e552a/">
+                        <span class="hidden-mobile">使用 gh-pages 发布前端项目</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -335,8 +350,8 @@
     <div id="disqus_thread"></div>
     <script type="text/javascript">
       var disqus_config = function() {
-        this.page.url = 'https://blog.rxliuli.com/p/7b0fe35b00b345618a9323977a2e552a/';
-        this.page.identifier = '/p/7b0fe35b00b345618a9323977a2e552a/';
+        this.page.url = 'https://blog.rxliuli.com/p/1d714f3ebd97461aa3d488f9a133a7c3/';
+        this.page.identifier = '/p/1d714f3ebd97461aa3d488f9a133a7c3/';
       };
       Fluid.utils.waitElementVisible('disqus_thread', function () {
         var d = document, s = d.createElement('script');
