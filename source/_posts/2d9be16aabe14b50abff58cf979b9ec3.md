@@ -107,9 +107,10 @@ function fn2(arg: IA | IB) {}
 ```ts
 //region 泛型
 
-type EnumTypeMapGen<T extends string[], M extends { [P in TypeEnum]: any }> = [
-
-];
+type EnumTypeMapGen<
+  T extends string[],
+  M extends { [P in TypeEnum]: any }
+> = [];
 type TypeMap = {
   [TypeEnum.A]: A;
   [TypeEnum.B]: B;
