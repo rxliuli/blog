@@ -8,7 +8,7 @@ tags:
   - 工具
   - wiki
 date: 1580652938013
-updated: 1627789102357
+updated: 1642779972577
 sticky: null
 ---
 
@@ -60,6 +60,10 @@ VSCode
 
 WebStorm
 ![WebStorm 智能提示](https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190831030506.gif)
+
+---
+
+更新，大型前端 monorepo 项目中，vscode 的表现几乎不能看。相比于 webstorm 无法自动添加 import 导入语句，vscode 则完全不可用，必须手写且 ts server 时有卡死，导航以及重构也存在更多的问题。
 
 ### 自动修复
 
