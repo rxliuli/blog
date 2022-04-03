@@ -152,11 +152,11 @@ dependencies {
 
 注意，我们在页面中引入的顺序是
 
-1.  `common-header`: 公共头部
-1.  页面自定义 HTML 内容
-1.  `common-footer`: 公共底部
-1.  `common-lib-js`: 公共 JavaScript 依赖
-1.  页面自定义 JavaScript 脚本
+1. `common-header`: 公共头部
+2. 页面自定义 HTML 内容
+3. `common-footer`: 公共底部
+4. `common-lib-js`: 公共 JavaScript 依赖
+5. 页面自定义 JavaScript 脚本
 
 主要遵循下面几个原则
 
