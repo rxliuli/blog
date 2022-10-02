@@ -7,7 +7,6 @@ tags:
   - windows
 date: 1587219249414
 updated: 1609305544293
-sticky: null
 ---
 
 > [官网](https://www.mongodb.org/)
@@ -16,7 +15,7 @@ sticky: null
 
 > [下载位置](https://www.mongodb.org/dl/win32/x86_64-2008plus-ssl)
 
-选择一个便携版本下载（`.zip` 结尾），例如吾辈选择的就是 [win32/mongodb-win32-x86_64-2008plus-ssl-4.0.1.zip](http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-4.0.1.zip)
+选择一个便携版本下载（`.zip` 结尾），例如吾辈选择的就是 [win32/mongodb-win32-x86\_64-2008plus-ssl-4.0.1.zip](http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-4.0.1.zip)
 
 ## 配置环境变量
 
@@ -40,10 +39,10 @@ MongoDB shell version v4.0.1
 
 目录列表如下：
 
-- mongodb_data
-  - log
-    - mongodb.log
-  - data
+*   mongodb\_data
+    *   log
+        *   mongodb.log
+    *   data
 
 指定日志文件的位置
 

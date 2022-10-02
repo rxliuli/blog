@@ -6,7 +6,6 @@ tags:
   - typescript
 date: 1585791059335
 updated: 1585810857420
-sticky: null
 ---
 
 ## 问题
@@ -20,16 +19,16 @@ enum TypeEnum {
 }
 
 type A = {
-  a: string;
-};
+  a: string
+}
 type B = {
-  b: number;
-};
+  b: number
+}
 
 //region 普通参数
 
-function fn1(type: TypeEnum.A, obj: A): void;
-function fn1(type: TypeEnum.B, obj: B): void;
+function fn1(type: TypeEnum.A, obj: A): void
+function fn1(type: TypeEnum.B, obj: B): void
 function fn1(type: TypeEnum, obj: A | B) {}
 
 //endregion
@@ -44,9 +43,9 @@ function fn1(type: TypeEnum, obj: A | B) {}
 ```ts
 // TS2769: No overload matches this call.   Overload 1 of 2, '(type: TypeEnum.A, obj: A): void', gave the following error.     Argument of type '{ a: string; b: number; }' is not assignable to parameter of type 'A'.       Object literal may only specify known properties, and 'b' does not exist in type 'A'.   Overload 2 of 2, '(type: TypeEnum.B, obj: B): void', gave the following error.     Argument of type 'TypeEnum.A' is not assignable to parameter of type 'TypeEnum.B'
 fn1(TypeEnum.A, {
-  a: "",
+  a: '',
   b: 1,
-});
+})
 ```
 
 然后，吾辈想到了几种方式可以尝试解决。
@@ -60,16 +59,16 @@ fn1(TypeEnum.A, {
 ```ts
 //region 对象参数
 
-function fn2(arg: { type: TypeEnum.A; obj: A }): void;
-function fn2(arg: { type: TypeEnum.B; obj: B }): void;
+function fn2(arg: { type: TypeEnum.A; obj: A }): void
+function fn2(arg: { type: TypeEnum.B; obj: B }): void
 function fn2(arg: { type: TypeEnum; obj: A | B }) {}
 
 fn2({
   type: TypeEnum.A,
   obj: {
-    a: "",
+    a: '',
   },
-});
+})
 
 //endregion
 ```
@@ -80,14 +79,14 @@ fn2({
 
 ```ts
 interface Base<T extends TypeEnum> {
-  type: T;
+  type: T
 }
 
 interface IA extends Base<TypeEnum.A> {
-  obj: A;
+  obj: A
 }
 interface IB extends Base<TypeEnum.B> {
-  obj: B;
+  obj: B
 }
 
 function fn2(arg: IA | IB) {}
@@ -101,26 +100,23 @@ function fn2(arg: IA | IB) {}
 
 缺点：
 
-- 不能使用 ts 的重载
-- 需要函数的作者改变思维
+*   不能使用 ts 的重载
+*   需要函数的作者改变思维
 
 ```ts
 //region 泛型
 
-type EnumTypeMapGen<
-  T extends string[],
-  M extends { [P in TypeEnum]: any }
-> = [];
+type EnumTypeMapGen<T extends string[], M extends { [P in TypeEnum]: any }> = []
 type TypeMap = {
-  [TypeEnum.A]: A;
-  [TypeEnum.B]: B;
-};
+  [TypeEnum.A]: A
+  [TypeEnum.B]: B
+}
 
 function fn3<T extends TypeEnum, Arg extends TypeMap[T]>(type: T, obj: Arg) {}
 
 fn3(TypeEnum.A, {
-  a: "",
-});
+  a: '',
+})
 
 //endregion
 ```
@@ -133,18 +129,18 @@ fn3(TypeEnum.A, {
 
 缺点：
 
-- 需要使用者接收这种 **函数式** 的调用方式
+*   需要使用者接收这种 **函数式** 的调用方式
 
 ```ts
 //region 高阶函数
 
-function fn4(type: TypeEnum.A): (obj: A) => void;
-function fn4(type: TypeEnum.B): (obj: B) => void;
+function fn4(type: TypeEnum.A): (obj: A) => void
+function fn4(type: TypeEnum.B): (obj: B) => void
 function fn4(type: TypeEnum): any {}
 
 fn4(TypeEnum.A)({
-  a: "",
-});
+  a: '',
+})
 
 //endregion
 ```

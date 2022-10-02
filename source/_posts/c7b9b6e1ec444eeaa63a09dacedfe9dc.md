@@ -6,7 +6,6 @@ tags:
   - java
 date: 1587219249396
 updated: 1609304971065
-sticky: null
 ---
 
 ## 场景
@@ -46,7 +45,7 @@ dependencies {
 
 ### 添加公共 js 依赖管理
 
-公共 `JavaScript` 依赖: _templates/common/common-lib-js.html_
+公共 `JavaScript` 依赖: *templates/common/common-lib-js.html*
 
 ```html
 <!DOCTYPE html>
@@ -61,7 +60,7 @@ dependencies {
 
 ### 添加公共顶部
 
-公共的顶部: _templates/common/common-header.html_
+公共的顶部: *templates/common/common-header.html*
 
 ```html
 <!DOCTYPE html>
@@ -86,7 +85,7 @@ dependencies {
 
 ### 添加公共底部
 
-公共的底部: _templates/common/common-footer.html_
+公共的底部: *templates/common/common-footer.html*
 
 ```html
 <!DOCTYPE html>
@@ -138,7 +137,7 @@ dependencies {
     <div th:replace="common/common-footer::common-footer"></div>
     <div th:replace="common/common-lib-js::common-lib-js"></div>
     <script>
-      console.log($);
+      console.log($)
     </script>
   </body>
 </html>
@@ -152,16 +151,16 @@ dependencies {
 
 注意，我们在页面中引入的顺序是
 
-1. `common-header`: 公共头部
-2. 页面自定义 HTML 内容
-3. `common-footer`: 公共底部
-4. `common-lib-js`: 公共 JavaScript 依赖
-5. 页面自定义 JavaScript 脚本
+1.  `common-header`: 公共头部
+2.  页面自定义 HTML 内容
+3.  `common-footer`: 公共底部
+4.  `common-lib-js`: 公共 JavaScript 依赖
+5.  页面自定义 JavaScript 脚本
 
 主要遵循下面几个原则
 
-- JavaScript 必须在 HTML body 结尾处引入，避免加载的速度问题
-- 自定义的 JavaScript 必须在公共的 JavaScript 之后引入，避免依赖找不到
+*   JavaScript 必须在 HTML body 结尾处引入，避免加载的速度问题
+*   自定义的 JavaScript 必须在公共的 JavaScript 之后引入，避免依赖找不到
 
 ## 更进一步
 
@@ -234,7 +233,7 @@ implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
       <p class="text-center">这里是页面单独的内容部分</p>
     </main>
     <script layout:fragment="js">
-      console.log($);
+      console.log($)
     </script>
   </body>
 </html>

@@ -5,8 +5,10 @@ import {
   BlogHexoIntegratedConfig,
   GeneratorEvents,
   ProcessInfo,
+  CommonNote,
+  CommonTag,
+  CommonResource,
 } from 'joplin-blog'
-import { CommonNote, CommonTag, CommonResource } from 'joplin-blog/dist/model/CommonNote'
 import _config from './.joplin-blog.json'
 
 class GeneratorEventsImpl implements GeneratorEvents {
