@@ -1,11 +1,12 @@
 import simpleGit from 'simple-git'
-import { DateTime } from 'luxon'
+import dayjs from 'dayjs'
 
 async function commit() {
   const git = simpleGit()
   await git.add('.')
-  await git.commit(`更新 ${DateTime.local().toFormat('yyyy-MM-dd HH:mm:ss')}`)
+  await git.commit(`更新 ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`)
   await git.push()
 }
 
 commit()
+
