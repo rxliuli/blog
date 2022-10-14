@@ -4,5 +4,6 @@ import { joplinInput } from '@mami/plugin-joplin-input'
 import json from './.joplin-blog.json'
 
 export default defineConfig({
-  plugins: [joplinInput(json), hexoOutput()],
+  input: [joplinInput(json), ],
+  output:[hexoOutput()]
 })
