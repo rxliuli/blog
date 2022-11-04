@@ -1,9 +1,9 @@
 import { defineConfig } from '@mami/cli'
-import { hexoOutput } from '@mami/plugin-hexo-output'
-import { joplinInput } from '@mami/plugin-joplin-input'
+import * as hexo from '@mami/plugin-hexo'
+import * as joplin from '@mami/plugin-joplin'
 import json from './.joplin-blog.json'
 
 export default defineConfig({
-  input: [joplinInput(json), ],
-  output:[hexoOutput()]
+  input: [joplin.input(json), ],
+  output:[hexo.output()]
 })
