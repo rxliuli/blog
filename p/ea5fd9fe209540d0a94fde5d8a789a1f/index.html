@@ -1,0 +1,1291 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="这篇现在来看感觉是用 react 组件用疯了，好孩子不要学。  场景吾辈在做 electron 应用的时候遇到了这种布局，顶部是 header，然后是页面中的 toolbar，紧接着右边有一个侧边栏列表，左侧的内容又分为了两块区域。这种布局在中后台系统中应该很常见，但之前并未特别留意过布局通用化。   使用 css calc() 计算高度 基于 css calc() 封装 Col&#x2F;Row 组件，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 react 中优雅的使用 grid 实现页面布局">
+<meta property="og:url" content="https://blog.rxliuli.com/p/ea5fd9fe209540d0a94fde5d8a789a1f/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="这篇现在来看感觉是用 react 组件用疯了，好孩子不要学。  场景吾辈在做 electron 应用的时候遇到了这种布局，顶部是 header，然后是页面中的 toolbar，紧接着右边有一个侧边栏列表，左侧的内容又分为了两块区域。这种布局在中后台系统中应该很常见，但之前并未特别留意过布局通用化。   使用 css calc() 计算高度 基于 css calc() 封装 Col&#x2F;Row 组件，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/d61642e05753427d98ad17a468eea52e.svg">
+<meta property="article:published_time" content="2020-12-02T00:45:30.585Z">
+<meta property="article:modified_time" content="2021-08-30T07:10:07.698Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="css">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="grid">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/d61642e05753427d98ad17a468eea52e.svg">
+  
+  
+  
+  <title>在 react 中优雅的使用 grid 实现页面布局 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="在 react 中优雅的使用 grid 实现页面布局"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-12-02 08:45" pubdate>
+          2020年12月2日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          9.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          77 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">在 react 中优雅的使用 grid 实现页面布局</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>这篇现在来看感觉是用 react 组件用疯了，好孩子不要学。</p>
+</blockquote>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>吾辈在做 electron 应用的时候遇到了这种布局，顶部是 header，然后是页面中的 toolbar，紧接着右边有一个侧边栏列表，左侧的内容又分为了两块区域。这种布局在中后台系统中应该很常见，但之前并未特别留意过布局通用化。</p>
+<p><img src="/resources/d61642e05753427d98ad17a468eea52e.svg" srcset="/img/loading.gif" lazyload alt="布局.drawio.svg"></p>
+<ul>
+<li>使用 <code>css calc()</code> 计算高度</li>
+<li>基于 <code>css calc()</code> 封装 <code>Col/Row</code> 组件，然后使用组件进行布局（主要模仿 antd grid）</li>
+<li>使用 <code>css grid</code> 自适应布局</li>
+<li>使用 <code>css grid</code> 封装组件</li>
+</ul>
+<h2 id="使用-css-calc-计算高度"><a href="#使用-css-calc-计算高度" class="headerlink" title="使用 css calc() 计算高度"></a>使用 <code>css calc()</code> 计算高度</h2><p>最初，吾辈使用 <code>css calc()</code> 计算剩余高度，以占满全部高度。但这样实现存在的一个明显问题是，每当吾辈需要在纵向添加一行时，都要修改 <code>calc()</code> 重新计算高度。如果存在嵌套内容时，甚至会导致层层声明 <code>height: calc(100% - *px)</code>，而且难以复用，这是很难接受的。</p>
+<p>下面是一个实现上面那种布局的方法</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1.0<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>grid test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
+      <span class="token selector">*</span> <span class="token punctuation">{</span>
+        <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+        <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">html,
+      body,
+      .container</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.header</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 64px<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.main</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 64px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 64px<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.content</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 64px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.main-content</span> <span class="token punctuation">{</span>
+        <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span>
+        <span class="token property">width</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 300px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.sider</span> <span class="token punctuation">{</span>
+        <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span>
+        <span class="token property">width</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.form</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.list</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 300px<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.header,
+      .main,
+      .toolbar,
+      .content,
+      .sider,
+      .form,
+      .list</span> <span class="token punctuation">{</span>
+        <span class="token property">border</span><span class="token punctuation">:</span> solid 1px red<span class="token punctuation">;</span>
+        <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+        <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>header<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>main<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>toolbar<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>toolbar<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>main-content<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>form<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>list<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sider<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>sider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，不仅 html 部分嵌套众多，css 部分也需要反复计算宽高，这实在不是一件令人愉快的代码。</p>
+<h2 id="基于-css-calc-封装-Col-Row-组件布局"><a href="#基于-css-calc-封装-Col-Row-组件布局" class="headerlink" title="基于 css calc() 封装 Col/Row 组件布局"></a>基于 <code>css calc()</code> 封装 <code>Col/Row</code> 组件布局</h2><p>由于不希望每次都去写类似下面的代码，因而吾辈产生了封装组件的想法。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.container</span> <span class="token punctuation">{</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>初次尝试</p>
+<blockquote>
+<p>基本思路来源于 antd 的 <a target="_blank" rel="noopener" href="https://ant.design/components/grid-cn">Grid 布局</a>，之所以没有使用 antd grid 的原因是它并不支持纵向的布局，即便是 Layout 布局组件也不是那么好用。</p>
+</blockquote>
+<ul>
+<li><code>FullHeight</code>: 让子组件占满父组件的全部高度</li>
+<li><code>VerticalCol</code>: 占全高的一列</li>
+<li><code>VerticalRow</code>: 可控制占比列中的一行</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">type FullHeightProps = {
+  children: ReactElement
+}
+
+/**
+ * 让子组件占满父组件的全部高度
+ */
+const FullHeight: React.FC&lt;FullHeightProps&gt; = (props) =&gt; {
+  return cloneElement(props.children, {
+    ...props.children.props,
+    style: {
+      height: '100%',
+      overflowY: 'auto',
+      ...props.children.props.style,
+    },
+  })
+}
+
+// 垂直布局的上下文
+
+export type VerticalColContextType = {
+  //分割的份数
+  gutter: number
+}
+
+/**
+ * 垂直布局的上下文环境
+ */
+export const VerticalColContext = createContext&lt;VerticalColContextType&gt;({
+  gutter: 24,
+})
+
+type VerticalColProps = {
+  children: ReactElement&lt;VerticalRowProps&gt; | ReactElement&lt;VerticalRowProps&gt;[]
+  style?: CSSProperties
+}
+
+/**
+ * 垂直布局的一列
+ * 默认占父容器的全部高度
+ */
+const VerticalCol = React.forwardRef&lt;HTMLDivElement, VerticalColProps&gt;(
+  (props, ref) =&gt; (
+    &lt;VerticalColContext.Provider
+      value={{
+        gutter: 24,
+      }}
+    &gt;
+      &lt;FullHeight&gt;
+        &lt;div style={props.style} ref={ref}&gt;
+          {props.children}
+        &lt;/div&gt;
+      &lt;/FullHeight&gt;
+    &lt;/VerticalColContext.Provider&gt;
+  ),
+)
+
+export type VerticalRowProps = {
+  span?: number
+  style?: CSSProperties
+}
+
+/**
+ * 用来控制每一行占比的元素
+ */
+const VerticalRow: React.FC&lt;VerticalRowProps&gt; = (props) =&gt; {
+  const { gutter } = useContext(VerticalColContext)
+  return (
+    &lt;div
+      style={{
+        height: `calc(100% / ${gutter} * ${props.span})`,
+        overflowY: 'auto',
+        ...props.style,
+      }}
+    &gt;
+      {props.children}
+    &lt;/div&gt;
+  )
+}
+
+VerticalRow.defaultProps = {
+  span: 0,
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>基本使用大概长这样</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;VerticalCol
+  style={{
+    height: '100%',
+  }}
+&gt;
+  &lt;VerticalRow span={2} style={{ backgroundColor: 'red' }}&gt;
+    内容块 1
+  &lt;/VerticalRow&gt;
+  &lt;VerticalRow span={22} style={{ backgroundColor: 'green' }}&gt;
+    内容块 2
+  &lt;/VerticalRow&gt;
+&lt;/VerticalCol&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来还不错，简单的使用组件就可以按比例分割页面了。但一旦在复杂的实际页面使用时，麻烦就接踵而来了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;VerticalCol
+  style={{
+    height: 800,
+  }}
+&gt;
+  &lt;VerticalRow span={2} style={{ backgroundColor: 'red' }}&gt;
+    &lt;header&gt;
+      &lt;h1&gt;标题&lt;/h1&gt;
+    &lt;/header&gt;
+  &lt;/VerticalRow&gt;
+  &lt;VerticalRow span={22} style={{ backgroundColor: 'green' }}&gt;
+    &lt;FullHeight&gt;
+      &lt;Row&gt;
+        &lt;FullHeight&gt;
+          &lt;Col
+            span={18}
+            style={{
+              backgroundColor: 'aqua',
+            }}
+          &gt;
+            内容区域
+          &lt;/Col&gt;
+        &lt;/FullHeight&gt;
+        &lt;FullHeight&gt;
+          &lt;Col
+            span={6}
+            style={{
+              backgroundColor: 'blue',
+            }}
+          &gt;
+            {Array(100)
+              .fill(0)
+              .map((_, i) =&gt; (
+                &lt;h2
+                  style={{
+                    color: 'white',
+                  }}
+                &gt;
+                  {i}
+                &lt;/h2&gt;
+              ))}
+          &lt;/Col&gt;
+        &lt;/FullHeight&gt;
+      &lt;/Row&gt;
+    &lt;/FullHeight&gt;
+  &lt;/VerticalRow&gt;
+&lt;/VerticalCol&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，这里仅仅是使用 Component 代替了 css class 而已，并未减少页面布局的复杂性，而且由于使用组件进行布局，导致组件的结构变得更深了。</p>
+<h2 id="使用-css-grid-自适应布局"><a href="#使用-css-grid-自适应布局" class="headerlink" title="使用 css grid 自适应布局"></a>使用 <code>css grid</code> 自适应布局</h2><p>css grid 确实强大无比，尤其是 <code>grid-template-areas</code> 功能，直接改变了传统网页的布局方式。现在，自适应布局变得异常简单。</p>
+<p>下面是使用 grid 的方式实现布局的代码，可以看到最复杂的部分其实是在 <code>grid-template-areas</code>，它确定了不同元素占有的区块。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1.0<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>grid test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
+      <span class="token selector">html,
+      body,
+      .grid-container</span> <span class="token punctuation">{</span>
+        <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+        <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+
+      <span class="token selector">.grid-container</span> <span class="token punctuation">{</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+        <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
+        <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 1fr 300px<span class="token punctuation">;</span>
+        <span class="token property">grid-template-rows</span><span class="token punctuation">:</span> 64px 64px 430px 1fr<span class="token punctuation">;</span>
+        <span class="token property">grid-template-areas</span><span class="token punctuation">:</span>
+          <span class="token string">'header header'</span>
+          <span class="token string">'toolbar toolbar'</span>
+          <span class="token string">'form sider'</span>
+          <span class="token string">'list sider'</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.header</span> <span class="token punctuation">{</span>
+        <span class="token property">grid-area</span><span class="token punctuation">:</span> header<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
+        <span class="token property">grid-area</span><span class="token punctuation">:</span> toolbar<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.sider</span> <span class="token punctuation">{</span>
+        <span class="token property">grid-area</span><span class="token punctuation">:</span> sider<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.form</span> <span class="token punctuation">{</span>
+        <span class="token property">grid-area</span><span class="token punctuation">:</span> form<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.list</span> <span class="token punctuation">{</span>
+        <span class="token property">grid-area</span><span class="token punctuation">:</span> list<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token selector">.header,
+      .toolbar,
+      .sider,
+      .form,
+      .list</span> <span class="token punctuation">{</span>
+        <span class="token property">border</span><span class="token punctuation">:</span> 1px solid red<span class="token punctuation">;</span>
+        <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>grid-container<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>toolbar<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sider<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>但 grid 也并非尽善尽美，它仅对直接子组件生效，而孙子及其子节点则不在 <code>grid</code> 的布局范围，这导致为子组件编写 grid 布局样式时，仍然存在一些样板代码。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/* 下面是典型的样板代码 */</span>
+<span class="token selector">.grid-container</span> <span class="token punctuation">{</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.header</span> <span class="token punctuation">{</span>
+  <span class="token property">grid-area</span><span class="token punctuation">:</span> header<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
+  <span class="token property">grid-area</span><span class="token punctuation">:</span> toolbar<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.sider</span> <span class="token punctuation">{</span>
+  <span class="token property">grid-area</span><span class="token punctuation">:</span> sider<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.form</span> <span class="token punctuation">{</span>
+  <span class="token property">grid-area</span><span class="token punctuation">:</span> form<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.list</span> <span class="token punctuation">{</span>
+  <span class="token property">grid-area</span><span class="token punctuation">:</span> list<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.header,
+.toolbar,
+.sider,
+.form,
+.list</span> <span class="token punctuation">{</span>
+  <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="使用-css-grid-封装组件"><a href="#使用-css-grid-封装组件" class="headerlink" title="使用 css grid 封装组件"></a>使用 <code>css grid</code> 封装组件</h2><p>事实上，吾辈确实找到了一个现有的基于 grid 的 react 布局组件库 <a target="_blank" rel="noopener" href="https://github.com/STRML/react-grid-layout">react-grid-layout</a>，而且非常强大，但很遗憾的是它并 <a target="_blank" rel="noopener" href="https://github.com/STRML/react-grid-layout/issues/1329">不支持 react 17</a>。但其 api 及封装方式确实有参考意义，所以吾辈也尝试封装一个 <code>Grid</code> 组件。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">type Unit = `${number}${'px' | 'fr'}`
+
+type GridProps&lt;
+  T extends string,
+  R extends Unit[] = Unit[],
+  C extends Unit[] = Unit[],
+  A extends { [P in keyof R]: { [P in keyof C]: T } } = {
+    [P in keyof R]: { [P in keyof C]: T }
+  },
+&gt; = {
+  rows: R
+  cols: C
+  areas: A
+  children: ReactElement[]
+} &amp; CommonStyleProps
+
+/**
+ * 使用 grid 进行布局的容器组件
+ */
+function Grid&lt;T extends string&gt;(props: GridProps&lt;T&gt;) {
+  return (
+    &lt;div
+      className={props.className}
+      style={
+        {
+          height: '100%',
+          display: 'grid',
+          gridTemplateColumns: props.cols.join(' '),
+          gridTemplateRows: props.rows.join(' '),
+          gridTemplateAreas: props.areas
+            .map((row) =&gt; '"' + row.join(' ') + '"')
+            .join(' '),
+          ...props.style,
+        } as CSSProperties
+      }
+    &gt;
+      {props.children.map((child) =&gt; {
+        console.log('child key: ', child.key)
+        return cloneElement(child, {
+          ...child.props,
+          style: {
+            gridArea: child.key,
+            border: 'solid 1px red',
+          } as CSSProperties,
+        })
+      })}
+    &lt;/div&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用起来比较简单，唯一残念的是子元素中的 key 无法使用 ts 自动推导或强制约束。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;Grid&lt;AreaItemName&gt;
+  style={{
+    height: 'calc(100vh - 48px)',
+  }}
+  rows={['48px', '48px', '300px', '1fr']}
+  cols={['1fr', '300px']}
+  areas={[
+    ['header', 'header'],
+    ['toolbar', 'toolbar'],
+    ['form', 'sider'],
+    ['list', 'sider'],
+  ]}
+&gt;
+  &lt;header key={'header' as AreaItemName}&gt;header&lt;/header&gt;
+  &lt;section key={'toolbar' as AreaItemName}&gt;toolbar&lt;/section&gt;
+  &lt;section key={'sider' as AreaItemName}&gt;sider&lt;/section&gt;
+  &lt;section key={'form' as AreaItemName}&gt;form&lt;/section&gt;
+  &lt;section key={'list' as AreaItemName}&gt;list&lt;/section&gt;
+&lt;/Grid&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来不错，然而实际上这还是有缺陷的。</p>
+<ol>
+<li>子组件必须处理了 <code>props.style</code>，因为 <code>cloneElement</code> 仅仅为原组件注入了属性（默认的 react html 元素均已处理）<ol>
+<li>当布局的子组件需要监听滚动时，由于外层使用 div 在自定义组件外部，实际上并不能取到 ref，需要在业务组件再设置一次滚动。</li>
+</ol>
+</li>
+<li>类型约束未能完全生效，例如子元素的 key，就没办法做到类型自动推导限定</li>
+<li>子组件内容过多时仍然会导致父元素出现滚动条</li>
+</ol>
+<p>接下来一个个解决</p>
+<h3 id="1-子组件必须处理了-props-style，因为-cloneElement-仅仅为原组件注入了属性（默认的-react-html-元素均已处理）"><a href="#1-子组件必须处理了-props-style，因为-cloneElement-仅仅为原组件注入了属性（默认的-react-html-元素均已处理）" class="headerlink" title="1. 子组件必须处理了 props.style，因为 cloneElement 仅仅为原组件注入了属性（默认的 react html 元素均已处理）"></a>1. 子组件必须处理了 <code>props.style</code>，因为 <code>cloneElement</code> 仅仅为原组件注入了属性（默认的 react html 元素均已处理）</h3><p>当需要为自定义的业务组件布局时，有两种思路</p>
+<ol>
+<li>在外层套 <code>div</code></li>
+<li>由组件处理 <code>props.style</code></li>
+</ol>
+<p>但这两种方式各有优劣</p>
+<p>前者父组件的布局不会受到子组件影响，意味着子组件更容易被复用。后者在子组件内部需要使用 ref 时，不需要再额外声明 css 以使之成为可滚动元素。</p>
+<p>下面是一个混合使用两者的的例子</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const style: CSSProperties = { border: 'solid 1px red' }
+type AreaItemName = 'header' | 'content' | 'sider'
+
+function Header() {
+  return &lt;header style={style}&gt;header&lt;/header&gt;
+}
+
+function Content() {
+  return &lt;main style={style}&gt;content&lt;/main&gt;
+}
+
+function Sider(props: CommonStyleProps) {
+  const $ref = useRef&lt;HTMLElement&gt;(null)
+  return wrapper(
+    &lt;section style={style} ref={$ref}&gt;
+      &lt;ul&gt;
+        {Array(100)
+          .fill(0)
+          .map((_, i) =&gt; (
+            &lt;li key={i}&gt;{i}&lt;/li&gt;
+          ))}
+      &lt;/ul&gt;
+      &lt;BackTop target={() =&gt; $ref.current!}&gt;
+        &lt;ToTopOutlined
+          style={
+            {
+              fontSize: 24,
+              padding: 8,
+              borderRadius: '50%',
+              color: '#ffffff',
+              backgroundColor: '#8ECAFE',
+            } as CSSProperties
+          }
+        /&gt;
+      &lt;/BackTop&gt;
+    &lt;/section&gt;,
+    props,
+  )
+}
+
+return (
+  &lt;Grid&lt;AreaItemName&gt;
+    style={{
+      height: 'calc(100vh - 48px)',
+    }}
+    rows={['48px', '1fr']}
+    cols={['1fr', '300px']}
+    areas={[['header', 'header']]}
+  &gt;
+    &lt;div key={'header' as AreaItemName}&gt;
+      &lt;Header /&gt;
+    &lt;/div&gt;
+    &lt;Content /&gt;
+    &lt;Sider /&gt;
+  &lt;/Grid&gt;
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="2-类型约束未能完全生效，例如子元素的-key，就没办法做到类型自动推导限定"><a href="#2-类型约束未能完全生效，例如子元素的-key，就没办法做到类型自动推导限定" class="headerlink" title="2. 类型约束未能完全生效，例如子元素的 key，就没办法做到类型自动推导限定"></a>2. 类型约束未能完全生效，例如子元素的 key，就没办法做到类型自动推导限定</h3><p>目前很难处理 <code>ReactElement</code> 类型，导致相关的类型自动推导特别麻烦，so…暂时没有好的办法。</p>
+<h3 id="3-子组件内容过多时仍然会导致父元素出现滚动条"><a href="#3-子组件内容过多时仍然会导致父元素出现滚动条" class="headerlink" title="3. 子组件内容过多时仍然会导致父元素出现滚动条"></a>3. 子组件内容过多时仍然会导致父元素出现滚动条</h3><p>为子组件设置默认 <code>height/overflowY</code> 即可</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">function Grid&lt;T extends string&gt;(props: GridProps&lt;T&gt;) {
+  const { cols = [], rows = [], areas = [], children } = props
+  return (
+    &lt;div
+      className={props.className}
+      style={
+        {
+          height: '100%',
+          overflowY: 'auto',
+          display: 'grid',
+          gridTemplateColumns: cols.join(' '),
+          gridTemplateRows: rows.join(' '),
+          gridTemplateAreas: areas
+            .map((row) =&gt; '"' + row.join(' ') + '"')
+            .join(' '),
+          ...props.style,
+        } as CSSProperties
+      }
+    &gt;
+      {children.map((child) =&gt; {
+        return cloneElement(child, {
+          ...child.props,
+          style: {
+            // 这里是关键
+            height: '100%',
+            overflowY: 'auto',
+            gridArea: child.key,
+            ...child.props.style,
+          } as CSSProperties,
+        })
+      })}
+    &lt;/div&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>老实说吾辈对现代前端的生态乱象表示很讨厌，尤其是 react 生态的 css 处理方案，仅 css-in-js 就有几十种可选方案，而官方又没有作为，导致没有统一的方式（vue 在这点上好很多）处理它们，所以吾辈才选择了 ui 组件 + css module 的方式。乍一看似乎回到了 HTML 标签控制样式的情况，但相比之下<strong>组件</strong>比 HTML 标签灵活得多，而且更容易扩展和组合（如果使用了 css 预处理器就是另外一回事了）。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/css/">#css</a>
+      
+        <a href="/tags/react/">#react</a>
+      
+        <a href="/tags/grid/">#grid</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>在 react 中优雅的使用 grid 实现页面布局</div>
+      <div>https://blog.rxliuli.com/p/ea5fd9fe209540d0a94fde5d8a789a1f/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年12月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/51b60e96b1d542fda593fed9ae3bd9a3/" title="CSS Grid 页面布局">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSS Grid 页面布局</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/664f86d038744a01894699e368cc2708/" title="前端资源管理">
+                        <span class="hidden-mobile">前端资源管理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

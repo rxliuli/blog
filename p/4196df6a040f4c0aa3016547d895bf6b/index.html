@@ -1,0 +1,959 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="WebStorm 全局默认配置使用场景：使用 WebStorm 经常会遇到一种情况，在这个项目自顶了一些设置（Settings 而非 Project Structure，例如 自定义的 Maven，项目字符编码等等），到了新的项目全部恢复了默认值又要重新设定。 解决方案：通过 WebStorm 的默认设置（File &gt; Other Settings &gt; Default Settings">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebStorm 使用技巧">
+<meta property="og:url" content="https://blog.rxliuli.com/p/4196df6a040f4c0aa3016547d895bf6b/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="WebStorm 全局默认配置使用场景：使用 WebStorm 经常会遇到一种情况，在这个项目自顶了一些设置（Settings 而非 Project Structure，例如 自定义的 Maven，项目字符编码等等），到了新的项目全部恢复了默认值又要重新设定。 解决方案：通过 WebStorm 的默认设置（File &gt; Other Settings &gt; Default Settings">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190627110522.gif">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/49e8605f93954313a6f95621d977785b.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090747.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191224100414.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090627.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/2bceea193e1945aeac57b5342eed3fcc.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/96fd64b1eae1494698b5aa092574b1e2.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/b3561ab309a6462386c726372f30aeb2.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/837c6b07d00449dc9f61b083087b516d.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200430145423.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/468e71461fca48fa9ae306f2da89fc48.png">
+<meta property="article:published_time" content="2020-02-02T14:15:37.994Z">
+<meta property="article:modified_time" content="2021-09-28T08:26:28.769Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="wiki">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="webstorm">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190627110522.gif">
+  
+  
+  
+  <title>WebStorm 使用技巧 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="WebStorm 使用技巧"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-02-02 22:15" pubdate>
+          2020年2月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">WebStorm 使用技巧</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年9月28日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="WebStorm-全局默认配置"><a href="#WebStorm-全局默认配置" class="headerlink" title="WebStorm 全局默认配置"></a>WebStorm 全局默认配置</h2><p>使用场景：<br>使用 WebStorm 经常会遇到一种情况，在这个项目自顶了一些设置（<strong>Settings</strong> 而非 <strong>Project Structure</strong>，例如 自定义的 Maven，项目字符编码等等），到了新的项目全部恢复了默认值又要重新设定。</p>
+<p>解决方案：<br>通过 WebStorm 的默认设置（<strong>File &gt; Other Settings &gt; Default Settings</strong>）就可以设定全局的 <strong>Settings</strong>，而不需要在每个项目中重新设定一次。</p>
+<blockquote>
+<p>默认设定按吾辈的理解应该是用于设定那些可以使项目级别的设置，例如 <strong>代码检查</strong>，<strong>代码样式</strong> 等。毕竟大部分的设置都是全局的嘛</p>
+</blockquote>
+<h2 id="Alt-Enter-操作提示"><a href="#Alt-Enter-操作提示" class="headerlink" title="Alt-Enter 操作提示"></a>Alt-Enter 操作提示</h2><p>Alter-Enter 大概是 WebStorm 最强大快捷键了，放在不同的位置有不同的功能。</p>
+<ul>
+<li>警告（代码下面有黄色波浪线），会自动帮我们修复警告。<br>代码重复，代码冗余（1/0 之类），多余的变量（声明完就立刻返回/声明完最多只使用了一次）</li>
+<li>错误（代码下面有红色波浪线），一般会提出合适的修复建议。<br>代码缺少注解，具体子类有未实现的方法</li>
+<li>接口名（接口的名字），一般会提示可以生成实现类或者跳转到实现类</li>
+<li>自动修复变量名的问题（不符合驼峰）</li>
+<li>普通类名，一般会提示创建测试类，没有 JavaDoc 注释还会提示生成注释</li>
+<li>字符串里面，会提示使用 <a href="#%E8%AF%AD%E8%A8%80%E6%B3%A8%E5%85%A5">语言注入</a></li>
+<li>跳转到注入语言的编辑面板</li>
+</ul>
+<h2 id="Double-Shift-任意搜索"><a href="#Double-Shift-任意搜索" class="headerlink" title="Double Shift 任意搜索"></a>Double Shift 任意搜索</h2><p>这个功能其实是集成了多个搜索，但有时候真的很好用，集成的功能包括</p>
+<ul>
+<li>搜索 <code>Settings</code>（<code>CS-A</code>）：搜索 WebStorm 的设置</li>
+<li>搜索 <code>class</code>（<code>C-N</code>）：搜索代码里的 class 类</li>
+<li>搜索 <code>File</code>（<code>CS-N</code>）：搜索任何文件</li>
+<li>搜索 <code>symbol</code>（<code>CSA-N</code>）：搜索符号，主要用于搜索 Spring MVC 路径</li>
+<li>搜索 <code>Tool Windows</code>（<code>C-Tab</code>）：搜索工具窗口</li>
+<li>搜索 <code>Run configuration</code>（<code>SA-F9/F10</code>）：搜索运行的配置项</li>
+<li>搜索 <code>Action</code>（<code>Alt-Enter</code>）：搜索当前位置的代码可执行操作</li>
+</ul>
+<p>如果你知道需要搜索的类型，请尽量使用单独的搜索选项，毕竟速度上会有一些优势</p>
+<h2 id="列编辑"><a href="#列编辑" class="headerlink" title="列编辑"></a>列编辑</h2><p>列编辑是一个非常有趣的功能，可以让你同时编辑多行文本。</p>
+<p>共有下面几种方式触发</p>
+<ul>
+<li>使用鼠标中键下拉或上拉选中多行</li>
+<li>使用 <code>A-J</code> 依次选择相同的代码片段，并使用 <code>SA-J</code> 取消选择</li>
+<li>使用 <code>CSA-J</code> 选中当前文件所有匹配的代码片段</li>
+<li>使用 <code>CA-Top/Bottom</code> 向上或向下选择多行（需要添加快捷键 <code>Editor Actions =&gt; Clone Caret Above/Clone Caret Below</code>）</li>
+</ul>
+<p>GIF 演示</p>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190627110522.gif" srcset="/img/loading.gif" lazyload alt="GIF 演示"></p>
+<h2 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h2><blockquote>
+<p>快捷键想要熟练没有什么好的办法，却是只能多加使用了。如果你还不熟悉 WebStorm 的快捷键，可以使用 <a target="_blank" rel="noopener" href="https://github.com/halirutan/IntelliJ-Key-Promoter-X">Key Promoter X</a> 插件来提示你使用快捷键操作。</p>
+</blockquote>
+<ul>
+<li>搜索<ul>
+<li><code>C-N</code> ：搜索类</li>
+<li><code>CS-N</code> ：搜索文件</li>
+<li><code>CSA-N</code> ：搜索字段名(包含数据库字段)/方法名</li>
+<li><code>SS</code> ：搜索接口路径，类名，文件名，字段名/方法名</li>
+<li><code>CS-F</code>：全局搜索代码（该快捷键与 Windows10 的默认输入法冲突，可以修改快捷键，或者换用其他输入法）</li>
+</ul>
+</li>
+<li>面板操作<ul>
+<li><code>ESC</code>：返回到编辑器中</li>
+<li><code>C-E</code> ：列出最近操作的文件历史以及可操作面板列表，然后可以通过输入单词跳转到对应的面板</li>
+<li><code>C-Tab -&gt; *</code>：列出最近操作的文件历史以及可操作面板，并能通过单个字母导航到对应的操作面板（需要一直按住 <code>Ctrl</code>）</li>
+<li><code>A-Top/Bottom/Left/Right</code> ：左右是切换标签页，上下是切换方法</li>
+<li><code>F12</code> ：跳转到最后一个使用的面板</li>
+<li><code>CS-F12</code> ：收起/显示所有面板</li>
+<li><code>C-F12</code> ：在一个悬浮面板上列出所有字段/方法</li>
+<li><code>A-F11</code>: 列出可以快速运行的任务，支持 <code>npm/gulp</code></li>
+</ul>
+</li>
+<li>选择<ul>
+<li><code>C-W/CS-W</code> ：扩大/缩小选择区域范围</li>
+<li><code>CS-[/]</code>：选择至当前区域的开始/结束</li>
+<li><code>A/SA-J</code> ：选中/反选相同的单词进行列编辑（一个个的选中）</li>
+<li><code>CSA-J</code> ：选中多个相同的单词（当前文件全部选中）</li>
+</ul>
+</li>
+<li>代码跳转<ul>
+<li><code>CA-Left/Right</code> ：跳转到上一个/下一个浏览的位置</li>
+<li><code>CS-Backspace</code> ：回退到上一个编辑的位置</li>
+<li><code>C-Top/Bottom/Left/Right</code>：左右是跳转到上一个/下一个单词，上下是移动屏幕（非移动光标）</li>
+<li><code>C-;</code> ：屏幕内任意跳转（需要安装 <strong>Ace Jumper</strong> 插件）</li>
+<li><code>Home</code> ：跳转到行首/编辑器的最左侧</li>
+<li><code>End</code> ：跳转到行尾</li>
+<li><code>C-Home/End</code> ：跳转到文件的开始/结尾</li>
+<li><code>C-Page Up/Page Down</code> ：跳转到当前屏幕的第一行/最后一行</li>
+<li><code>F2/S-F2</code> ：跳转到下一个/上一个错误/警告的位置</li>
+<li><code>C-Left/C-Right</code> ：跳转到上一个/下一个单词的位置</li>
+<li><code>C-B</code> ：跳转到变量/方法的声明处</li>
+<li><code>CS-B</code> ：跳转到变量/方法的具体实现处，如果不止一处就会列出下拉框<blockquote>
+<p>注：这里吾辈修改了快捷键，毕竟 <code>CA-B</code> 单手按起来还真有点麻烦</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注：在 WebStorm 看来左侧字母上面的数字键和右侧小键盘的数字键是不同的！<br>注: <code>Shift</code> 一般用于 <strong>增强/取反</strong> 功能。例如 <code>C-F</code> 搜索当前文件，<code>CS-F</code> 搜索所有文件，<code>F2</code> 跳转到下一个错误，<code>S-F2</code> 跳转到上一个错误。</p>
+</blockquote>
+<h2 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/4441-jrebel-for-intellij">JRebel for IntelliJ</a>：做 Java Web 开发时真心免不了的 Plugin，能够有效解决 Web 容器（例如 Apache Tomcat）启动速度慢的问题（因为几乎所有的资源都能够热加载，热部署）</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7007-liveedit">LiveEdit</a>：提供了 HTML/CSS/JavaScript 的实时预览和刷新功能</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/10119-mybatisx">MybatisX</a>：Mybatis 的一个辅助开发插件，能够比较愉快的使用 Mybatis 框架了</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/10046-alibaba-java-coding-guidelines">Alibaba Java Coding Guidelines</a>：Alibaba 出品的一个 Java 规范检查插件，能够规避一些不好的代码</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/8579-translation">Translation</a>：目前使用感觉最好的翻译插件，能够提供比较长的内容进行翻译（某些翻译插件只能翻译很短的内容）</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/2162-string-manipulation">String Manipulation</a>：字符串操作工具，可以方便对变量名或其他字符串修改为其他风格，例如将变量从 <strong>驼峰命名</strong>（Java 标准命名） 修改为 <strong>下划线命名</strong>（SQL 标准命名）或者 <strong>中缀线命名</strong>（HTML/CSS 标准命名）。<blockquote>
+<p>其实这么多命名规范真心坑。。。</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/9792-key-promoter-x">Key Promoter X</a>：使用鼠标操作时提示对应的快捷键</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/9862-custom-postfix-templates">Custom Postfix Templates</a>：提供自定义的后缀模板</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7896-markdown-navigator">Markdown Navigator</a>：WebStorm 平台的 Markdown 写作插件，比自带的 Markdown Support 要好很多，主要在需要写的 Markdown 内容中含有代码时比较方便</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7179-maven-helper">Maven Helper</a>：一个 Apache Maven 的辅助操作插件</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7275-codeglance">CodeGlance</a>：在编辑器右侧显示一块代码缩略图，主要为了方便使用滑块进行上下滑动</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7125-grep-console">Grep Console</a>：自定义控制台的输出颜色</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7495--ignore">.ignore</a>：在使用版本控制时，快速忽略某些文件/文件夹，目前支持广泛</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/5834-cmd-support">CMD support</a>：Cmd 支持，主要是方便在 WebStorm 中直接运行 bat 脚本</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/6098-nodejs">NodeJS</a>：集成了 NodeJS，可以直接在 WebStorm 中运行 NodeJS</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/9442-vue-js">Vue.js</a>：集成 Vue.js 框架</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7494-eslint">ESLint</a>：前端代码规范</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/10456-prettier">Prettier</a>：根据上面 ESLint 的规范自动格式化代码</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/8000-properties-to-yaml-converter">Properties to YAML Converter</a>：将 <code>Properties</code> 文件快速转换为 <code>YAML</code> 格式的配置文件</li>
+<li><a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/7425-wakatime">WakaTime</a>：统计使用的编程语言，不同 IDE 的记录</li>
+</ul>
+<h2 id="语言注入"><a href="#语言注入" class="headerlink" title="语言注入"></a>语言注入</h2><p>为某一段区域的注入其他语言，WebStorm 最常见的就是在 JavaScript 的字符串中注入了 HTML/CSS/JavaScript，使得在字符串内也有代码提示可用。</p>
+<blockquote>
+<p>此功能常用于 JavaScript 字符串拼接 HTML 代码，当然目前这个需求在 ES6 中由 <code>模板字符串</code> 原生实现了。</p>
+</blockquote>
+<p>我们也可以手动注入，例如为 Java 中的字符串注入 SQL 语言，这样在写 SQL 语句就不用跑到 SQL 编辑器那里写完 SQL 语句在粘贴过来了。</p>
+<p>我们也可以自定义语言注入的规则，例如让 <code>vm.evalCode</code> 中的字符串默认为 js 代码。</p>
+<p><img src="/resources/49e8605f93954313a6f95621d977785b.png" srcset="/img/loading.gif" lazyload alt="1632817508056"></p>
+<blockquote>
+<p>参考: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules">https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules</a></p>
+</blockquote>
+<h2 id="Live-Template-x2F-Postfix-Template-模板"><a href="#Live-Template-x2F-Postfix-Template-模板" class="headerlink" title="Live Template/Postfix Template 模板"></a>Live Template/Postfix Template 模板</h2><p>Live Template 模板就是那种在 Java 中输入 <code>sout</code> 就可以生成以下代码的模板功能，而这功能在 WebStorm 还可以自定义。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">System.out.println($END$);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>例如吾辈就定义了 <code>autowired</code> 用于生成</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Autowired private $BeanClass$ $BeanName$;
+$END$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>或者 <code>thread</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">new Thread(() -&gt; {
+    $END$
+}).start();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>此功能使用得当甚至能大量减少重复编码。不过相比之下另外一个代码生成功能吾辈更加喜欢，但 WebStorm 在 2018.2 版本之前并不支持自定义，所以功能上来说就显得稍弱一些，当然吾辈也使用插件（Custom Postfix Templates <a target="_blank" rel="noopener" href="https://github.com/xylo/intellij-postfix-templates#download">GitHub</a>）实现了自定义的需求。最新版本 WebStorm 原生支持了自定义功能（<a target="_blank" rel="noopener" href="https://blog.jetbrains.com/idea/2014/03/postfix-completion/">WebStorm 官方介绍</a>），但实现尚不完善。</p>
+<p>此功能可以做到另外一种形式的模板字符串，例如输入 <code>"str".var</code> 然后回车会得到</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>或者 <code>"str".sout</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Sysout.out.println("str");<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>吾辈也自定义一些，例如输入了 <code>"str".val</code>，会生成</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h2 id="一些有用的配置项"><a href="#一些有用的配置项" class="headerlink" title="一些有用的配置项"></a>一些有用的配置项</h2><h3 id="soft-wrap-强制换行"><a href="#soft-wrap-强制换行" class="headerlink" title="soft wrap 强制换行"></a>soft wrap 强制换行</h3><p>WebStorm 在一行过长时会出现横向滚动条，那我们不想要它出现以便于能直接使用键盘就能看完要怎么办呢？</p>
+<p>可以在 <em>Settings ⇒ Editor ⇒ General ⇒ Soft Wraps</em> 中找到设置，将 <strong>Soft-wrap files</strong> 的值修改为 <code>*</code> 即可。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090747.png" srcset="/img/loading.gif" lazyload alt="强制换行"></p>
+<h3 id="根据源代码自动滚动项目"><a href="#根据源代码自动滚动项目" class="headerlink" title="根据源代码自动滚动项目"></a>根据源代码自动滚动项目</h3><p>可以在跳转文件时，使文件目录自动聚焦在当前编辑的文件上，这在很多时候是有利于查看目录/文件的。</p>
+<p>2019.3 之后</p>
+<p>在 <em>Project ⇒ Always Select Opened File</em> 中可以找到这个配置，启用即在整个项目中启用了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191224100414.png" srcset="/img/loading.gif" lazyload alt="根据源代码自动滚动项目设置"></p>
+<p>2019.3 之前</p>
+<p>在 <em>Project ⇒ Tool ⇒ Autoscroll from Source</em> 中可以找到这个配置，启用即在整个项目中启用了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20191212090627.png" srcset="/img/loading.gif" lazyload alt="根据源代码自动滚动项目设置"></p>
+<h3 id="项目外部依赖"><a href="#项目外部依赖" class="headerlink" title="项目外部依赖"></a>项目外部依赖</h3><p>在传统 web 项目中，会有需要让 IDE 索引通过 script 标签引入的依赖，但现代前端绝大多数时候不应该让 IDE 处理。</p>
+<p><img src="/resources/2bceea193e1945aeac57b5342eed3fcc.png" srcset="/img/loading.gif" lazyload alt="1619968206663"></p>
+<p>你需要在设置 <em>File | Settings | Languages &amp; Frameworks | JavaScript | Libraries</em> 中取消不需要索引的依赖项。</p>
+<p><img src="/resources/96fd64b1eae1494698b5aa092574b1e2.png" srcset="/img/loading.gif" lazyload alt="1619968548104"></p>
+<h3 id="在-TypeScript-项目中使用强类型提示"><a href="#在-TypeScript-项目中使用强类型提示" class="headerlink" title="在 TypeScript 项目中使用强类型提示"></a>在 TypeScript 项目中使用强类型提示</h3><p>在 TypeScript 项目中，我们的代码提示应该基于 TypeScript 而非 WebStorm 的索引，因为前者要精确的多。</p>
+<p><img src="/resources/b3561ab309a6462386c726372f30aeb2.png" srcset="/img/loading.gif" lazyload alt="1619969180589"></p>
+<p>涉及到以下几个选项</p>
+<ul>
+<li><em>File | Settings | Editor | General | Code Completion =&gt; Only type-based completion</em></li>
+</ul>
+<h3 id="typescript-项目中禁用-WebStorm-的索引"><a href="#typescript-项目中禁用-WebStorm-的索引" class="headerlink" title="typescript 项目中禁用 WebStorm 的索引"></a>typescript 项目中禁用 WebStorm 的索引</h3><h3 id="设置背景图片"><a href="#设置背景图片" class="headerlink" title="设置背景图片"></a>设置背景图片</h3><p>最新的 WebStorm 支持设置背景图片，具体设置在 <em>File | Settings | Appearance &amp; Behavior | Appearance</em>，效果如下</p>
+<p><img src="/resources/837c6b07d00449dc9f61b083087b516d.png" srcset="/img/loading.gif" lazyload alt="1623482286209"></p>
+<h2 id="复制-WebStorm-提示的报错"><a href="#复制-WebStorm-提示的报错" class="headerlink" title="复制 WebStorm 提示的报错"></a>复制 WebStorm 提示的报错</h2><blockquote>
+<p>这个技巧的发现来源于一个同事</p>
+</blockquote>
+<p>有时候 WebStorm 提示我们错误，当我们把鼠标放在上面时会有一个 <code>Tooltip</code>。但当我们想要复制这个错误时，却发现选择时 <code>Tooltip</code> 很容易消失，即便在较新版本中进行了改进，但想要复制仍然是非常痛苦的一件事，那么如何更加简单的复制错误呢？<br>实际上，当我们将光标移动到错误上面时，左下角的状态栏中会有该错误并且可以右键复制！</p>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200430145423.png" srcset="/img/loading.gif" lazyload alt="复制 WebStorm ToolTip 提示"></p>
+<blockquote>
+<p>相关问题参考：<a target="_blank" rel="noopener" href="https://youtrack.jetbrains.com/issue/WebStorm-70943">https://youtrack.jetbrains.com/issue/WebStorm-70943</a>，这是一个相当古老（2011 年）的问题，但 JetBrains 的开发者一开始甚至不认为这是一个问题，直到最近才着手修复它。<br>附：或许 JetBrains 的开发人员并不需要面向 Google 编程？#笑</p>
+</blockquote>
+<h2 id="浏览器报错在-WebStorm-打开相应文件"><a href="#浏览器报错在-WebStorm-打开相应文件" class="headerlink" title="浏览器报错在 WebStorm 打开相应文件"></a>浏览器报错在 WebStorm 打开相应文件</h2><blockquote>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/6844903967206408206">React 调试的时候如何打开指定的编辑器 /webstorm</a></li>
+</ul>
+</blockquote>
+<p>react 项目下其实就是添加环境变量 <code>REACT_EDITOR</code> 而已，可以使用 <code>.env.local</code> 进行配置</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-env" data-language="env"><code class="language-env">REACT_EDITOR=[WebStorm 的路径]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h2 id="设定默认-jest-运行单元测试"><a href="#设定默认-jest-运行单元测试" class="headerlink" title="设定默认 jest 运行单元测试"></a>设定默认 jest 运行单元测试</h2><p>在包含 react-scripts 依赖的项目中，WebStorm 会默认使用 react-scripts 运行测试，这在单体项目中当然很好，但如果是 monorepo，则会出现一些问题。react-scripts 运行时会强制修改 <code>tsconfig.json/react-app-env.d.ts</code>，这在一些 node 子模块中会出现问题，而 react-scripts 目前还不能关闭这个功能。所以只能修改 WebStorm 的测试运行工具了，可以在 <code>Edit configuration</code> 中修改 <code>Jest =&gt; Jest Package</code> 字段值为 <code>jest</code>，更推荐设置 <code>Templates =&gt; Jest =&gt; Jest Package</code> 字段，因为它可以一劳永逸。</p>
+<p><img src="/resources/468e71461fca48fa9ae306f2da89fc48.png" srcset="/img/loading.gif" lazyload alt="1615086542056"></p>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53794875">How to configure react-script so that it doesn’t override tsconfig.json on ‘start’</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/wiki/">#wiki</a>
+      
+        <a href="/tags/%E5%B7%A5%E5%85%B7/">#工具</a>
+      
+        <a href="/tags/webstorm/">#webstorm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>WebStorm 使用技巧</div>
+      <div>https://blog.rxliuli.com/p/4196df6a040f4c0aa3016547d895bf6b/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年2月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/a0b9c67c7c9c460ea59c12603f390f2d/" title="IDEA 激活">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">IDEA 激活</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/e653734db29e4b1e8a77f4d18183a3d6/" title="Windows 下 Git 中文乱码">
+                        <span class="hidden-mobile">Windows 下 Git 中文乱码</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

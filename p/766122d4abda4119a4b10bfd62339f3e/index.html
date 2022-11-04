@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言最近想在家里搭个本地服务器玩，于是便买了个树莓派 4。现在，吾辈已经让它在纸盒里默默吃灰了。  为什么吾辈搭建服务器？ 为什么吾辈要选择树莓派？ 以及为何最终它还是吃灰了？  上面这些问题吾辈会在下面一一解答。 为什么吾辈搭建服务器搭建本地服务器的原因当然是想让一些服务持续 24 小时运行了，而吾辈最初的需求便是 PT&#x2F;BT 做种。BT 或许很多人听说过，PT 又是什么呢？  PT，全程 Pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派入坑体会">
+<meta property="og:url" content="https://blog.rxliuli.com/p/766122d4abda4119a4b10bfd62339f3e/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言最近想在家里搭个本地服务器玩，于是便买了个树莓派 4。现在，吾辈已经让它在纸盒里默默吃灰了。  为什么吾辈搭建服务器？ 为什么吾辈要选择树莓派？ 以及为何最终它还是吃灰了？  上面这些问题吾辈会在下面一一解答。 为什么吾辈搭建服务器搭建本地服务器的原因当然是想让一些服务持续 24 小时运行了，而吾辈最初的需求便是 PT&#x2F;BT 做种。BT 或许很多人听说过，PT 又是什么呢？  PT，全程 Pr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.rxliuli.com/20190903081607.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190903143806.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190903081924.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190903150304.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190903150520.gif">
+<meta property="article:published_time" content="2020-12-30T04:48:15.361Z">
+<meta property="article:modified_time" content="2020-12-30T04:48:45.079Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="杂谈">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.rxliuli.com/20190903081607.png">
+  
+  
+  
+  <title>树莓派入坑体会 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="树莓派入坑体会"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-12-30 12:48" pubdate>
+          2020年12月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">树莓派入坑体会</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近想在家里搭个本地服务器玩，于是便买了个树莓派 4。现在，吾辈已经让它在纸盒里默默吃灰了。</p>
+<ul>
+<li>为什么吾辈搭建服务器？</li>
+<li>为什么吾辈要选择树莓派？</li>
+<li>以及为何最终它还是吃灰了？</li>
+</ul>
+<p>上面这些问题吾辈会在下面一一解答。</p>
+<h2 id="为什么吾辈搭建服务器"><a href="#为什么吾辈搭建服务器" class="headerlink" title="为什么吾辈搭建服务器"></a>为什么吾辈搭建服务器</h2><p>搭建本地服务器的原因当然是想让一些服务持续 24 小时运行了，而吾辈最初的需求便是 <strong>PT/BT 做种</strong>。BT 或许很多人听说过，PT 又是什么呢？</p>
+<p><img src="https://img.rxliuli.com/20190903081607.png" srcset="/img/loading.gif" lazyload alt="PT 下载"></p>
+<p>PT，全程 Private Tracker，是一种私有的 BT 服务。整个 BT 网络将不再是完全公开并且可供任何人下载的了，每个用户都会被计算上传量/下载量，如果这个比率过低就会被 ban。这种下载方式本意是为了解决 BT 中很多用户喜欢只下载而不进行上传的行为，强制所有人必须<strong>殚精竭虑</strong>地计算分享率，注意自己的下载量，考虑下载热门资源而赚取积分（事实证明这条路注定也不会走的太顺利，分享是一个长期收益的行为，最终下载的人短期内实际上并不多，而计算分享率却是实时的）。<br>吾辈需要的便是 24h 不间断的挂着 PT/BT 服务，以在闲暇时刻消耗家里的网络带宽，顺便做一波公益行为。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh/PT%E4%B8%8B%E8%BC%89">PT 下载 Wiki</a></p>
+</blockquote>
+<h2 id="为什么吾辈要选择树莓派"><a href="#为什么吾辈要选择树莓派" class="headerlink" title="为什么吾辈要选择树莓派"></a>为什么吾辈要选择树莓派</h2><p>一言以蔽之：树莓派宣传的很厉害。</p>
+<p><img src="https://img.rxliuli.com/20190903143806.png" srcset="/img/loading.gif" lazyload alt="树莓派官方图"></p>
+<p>让我们看看网络上对树莓派的相关内容</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.iplaysoft.com/raspberrypi.html">异次元软件: 树莓派 4 代 - 全球最流行的 Linux 小型迷你电脑，性能大幅飙升！(支持 4K / USB3.0)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20859055">知乎: 「树莓派」是什么以及普通人怎么玩？</a></li>
+</ul>
+<p>树莓派<a target="_blank" rel="noopener" href="https://www.raspberrypi.org/">官网</a>也自称是小型、双显示器的台式电脑，而且提供了一个树莓派专用的 Linux Debian 的定制发行版。</p>
+<p>下面放一张吾辈买的树莓派 4 的照片，体积之小可见一斑。<br><img src="https://img.rxliuli.com/20190903081924.png" srcset="/img/loading.gif" lazyload alt="树莓派"></p>
+<p>讲真第一次看到这么小的时候吾辈真的被惊艳到了，从来没想过一个电脑能这么小，而且居然还能安装可视化的操作系统。</p>
+<h2 id="以及为何最终它还是吃灰了"><a href="#以及为何最终它还是吃灰了" class="headerlink" title="以及为何最终它还是吃灰了"></a>以及为何最终它还是吃灰了</h2><p>之后吾辈便开始安装了官方的操作系统，首先，官方提供了两个选项</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.raspberrypi.org/downloads/noobs/">NOOBS</a>: 全新开箱即用的软件 - 适合初学者的操作系统安装引导程序。</li>
+<li><a target="_blank" rel="noopener" href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a>: 官方支持的树莓派操作系统 - 基于 Debian Buster。</li>
+</ul>
+<p>然而事实上，两者皆有不足之处。首先，前者需要屏幕、键盘和鼠标进行安装，对于吾辈这种只是想把它作为本地服务器的用户而言，这是不可接受的。而使用官方的烧录工具将 Raspbian 刻录到 SD 卡之后，启动命令行倒是没有什么问题，但在启动桌面时却遇到的 bug – <a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000020144913">树莓派 4 VNC 远程连接桌面错误</a>。当时似乎互联网上并没有多少人遇到这个问题，而吾辈恰好遇到了，所以费了一番功夫之后才成功开启了桌面。<br>进入桌面之后，又是换源又是更新，之后才在命令行安装了 qBittorrent（是的，即使已经有了桌面仍然需要从命令行安装程序）。嘛，不谈遇到了多少麻烦，qBittorrent 终于启动了 BT 服务，吾辈把 RSS 挂上了之后使其自动更新和下载最新种子，也便是大功告成了。</p>
+<p><img src="https://img.rxliuli.com/20190903150304.png" srcset="/img/loading.gif" lazyload alt="qBittorrent"></p>
+<p>然后发现种子的 RSS 服务器有时会更新失败，吾辈猜想是没有代理的问题，于是便去网络上找到了一个 Linux 下的 SSR 可视化客户端 – <a target="_blank" rel="noopener" href="https://github.com/shadowsocksrr/electron-ssr">electron-ssr</a>，然而下载完之后安装直接提示安装错误。</p>
+<blockquote>
+<p>注: electron-ssr 项目作者已经被请喝茶了，真真是风声鹤唳。</p>
+</blockquote>
+<p>然后向他人询问的时候甚至说出了 <strong>“咱也回答你了 ，需要找 arm 的 debian 包”</strong>，我的天，难道 Linux 下安装程序这么麻烦的么？不仅发行版要区分，现在连 CPU 架构也要区分了？用户体验老实说糟糕透顶，吾辈最终直接使用了本地的 SSR 局域网代理，笔记本开着的时候有代理，关了就没了，也便只能是暂且用着。</p>
+<p>后来吾辈在几次偶尔使用 VNC 连接时发现 qBittorrent 关了，吾辈以为是 Linux 会默认杀掉不活跃的程序，没有在意，就手动重启了。直到昨天，吾辈在启动 qBittorrent 后直接闪退了。。。在观察了任务管理器之后，吾辈发现是启动时 CPU 的使用率暴增，然后就 GG 了。</p>
+<p><img src="https://img.rxliuli.com/20190903150520.gif" srcset="/img/loading.gif" lazyload alt="GIF 动图"></p>
+<p>好了，还是放它在角落里吃灰吧。既然吾辈这个唯一的需求都无法实现，那留它何用，拉出去斩了吧！这或许是 qBittorrent 的问题，或许是 Raspbian 的问题，但吾辈已然不想关心，深究之下终究就得不偿失。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>目前就吾辈使用的体验而言，树莓派不可能真正的普及开来，只能作为一个极客的玩具罢了 – 没错，就是玩具，而非工具。<br>这时候一定会有人反对吾辈说 <strong>“永远不要（把自己遇到的问题）归因于（他人的）恶意，这恰恰说明了（你自己的）无能”</strong>，这点 Linux 桌面的社区也有很多开发者喜欢这样说，然而现在的结果是 Linux 无法在桌面领域立足，究其原因还是对用户不友好，难道开发者就不算是用户了？记得有人说过 <strong>“我是开发者，但同时也是用户。你的产品因为各种原因让我不爽，我就不会选你，我才不会管究竟是谁的锅”</strong>，用户中心论在这里可以说是体现的淋漓尽致。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9D%82%E8%B0%88/">#杂谈</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>树莓派入坑体会</div>
+      <div>https://blog.rxliuli.com/p/766122d4abda4119a4b10bfd62339f3e/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年12月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/d576cb4ea0ae4997aac7f137306203a4/" title="JavaScript 中的 ES6 Proxy">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JavaScript 中的 ES6 Proxy</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/0171bcd51b1343d6a9ad54557d567c46/" title="在现代前端项目中使用 Worker">
+                        <span class="hidden-mobile">在现代前端项目中使用 Worker</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

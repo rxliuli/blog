@@ -1,0 +1,1152 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Java 微信公众号开发 场景 注册微信公众号 基本配置 使用测试账号 服务端编码 初始化项目 内网穿透 微信服务器认证 消息处理 创建菜单      场景公司需要做一个微信的公众号，以前没有玩过结果踩了一堆坑，也是无奈了，便在这里记录一下 注册微信公众号首先在 微信公众平台 注册一个账号，这里选择了 订阅号，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 微信公众号开发">
+<meta property="og:url" content="https://blog.rxliuli.com/p/0a924f166b48497e9d1d19048967e880/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="Java 微信公众号开发 场景 注册微信公众号 基本配置 使用测试账号 服务端编码 初始化项目 内网穿透 微信服务器认证 消息处理 创建菜单      场景公司需要做一个微信的公众号，以前没有玩过结果踩了一堆坑，也是无奈了，便在这里记录一下 注册微信公众号首先在 微信公众平台 注册一个账号，这里选择了 订阅号，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T14:14:09.393Z">
+<meta property="article:modified_time" content="2021-06-21T11:44:38.284Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Java 微信公众号开发 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java 微信公众号开发"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          8.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          72 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java 微信公众号开发</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年6月21日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li><a href="#java-%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E5%BC%80%E5%8F%91">Java 微信公众号开发</a><ul>
+<li><a href="#%E5%9C%BA%E6%99%AF">场景</a></li>
+<li><a href="#%E6%B3%A8%E5%86%8C%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7">注册微信公众号</a></li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE">基本配置</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%B5%8B%E8%AF%95%E8%B4%A6%E5%8F%B7">使用测试账号</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%BC%96%E7%A0%81">服务端编码</a><ul>
+<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">初始化项目</a></li>
+<li><a href="#%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F">内网穿透</a></li>
+<li><a href="#%E5%BE%AE%E4%BF%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AE%A4%E8%AF%81">微信服务器认证</a></li>
+<li><a href="#%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86">消息处理</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%8F%9C%E5%8D%95">创建菜单</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>公司需要做一个微信的公众号，以前没有玩过结果踩了一堆坑，也是无奈了，便在这里记录一下</p>
+<h2 id="注册微信公众号"><a href="#注册微信公众号" class="headerlink" title="注册微信公众号"></a>注册微信公众号</h2><p>首先在 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/">微信公众平台</a> 注册一个账号，这里选择了 <em>订阅号</em>，填写一堆乱七八糟的信息后就得到了一个微信公众号（订阅号）了。之后登录的话却是要进行扫码操作（反人类操作）。</p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>在【开发 &gt; 基本配置】中设定好相关的信息，主要有</p>
+<ul>
+<li>开发者 ID(AppID)：自动生成</li>
+<li>开发者密码(AppSecret)：修改完之后记录下来，一会还要用到</li>
+<li>IP 白名单：可以公网访问的服务器 IP 地址（没有也行，后面会说到 <strong>内网穿透</strong>）</li>
+<li>服务器地址(URL)：用于给微信校验的服务器地址，没有公网服务器也行</li>
+<li>令牌(Token)：自定义，随机字符串即可，可以在 <a target="_blank" rel="noopener" href="https://www.lastpass.com/zh/password-generator">LastPass</a> 生成一个</li>
+<li>消息加解密密钥(EncodingAESKey)：点击随机生成即可</li>
+<li>消息加解密方式：目前选择明文模式</li>
+</ul>
+<blockquote>
+<p>配置服务器地址时会报错，先不管了就行，后面会再回来配置的。</p>
+</blockquote>
+<h2 id="使用测试账号"><a href="#使用测试账号" class="headerlink" title="使用测试账号"></a>使用测试账号</h2><p>有了自己的微信公众号当然很好，但不可能每次都直接修改真正的公众号吧，修改挂了怎么办？所以就有了测试公众号，而且测试公众号的权限是要高于普通的未认证订阅号的。</p>
+<p>在【开发 &gt; 公众平台测试帐号 &gt; 公众平台测试帐号】中申请一个测试账号，如 <a href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE">基本配置</a> 所述中配置一下。</p>
+<blockquote>
+<p>安全域名设置：如果你有的自己的域名和服务器的话就配置，否则就先不管。</p>
+</blockquote>
+<h2 id="服务端编码"><a href="#服务端编码" class="headerlink" title="服务端编码"></a>服务端编码</h2><h3 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h3><p>为了简化配置这里使用 SpringBoot Web 项目作为例子（注意勾上 web 模块依赖）</p>
+<h3 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h3><p>使用内网穿透工具 serveo 实现将本地内网服务映射到外网的 80 端口上</p>
+<blockquote>
+<p>下面的命令要求系统已经安装了 SSH 客户端，Linux 已经默认安装了，如果是 Windows 可以使用 Cmder 或 Git For Windows 之类的。</p>
+</blockquote>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh -o ServerAliveInterval=60 -R rx:80:localhost:8080 serveo.net<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>具体可以参考 <a target="_blank" rel="noopener" href="https://serveo.net/">官网</a> 或 <a href="/p/baff72b44ada421e8a5c28f1d4102110">使用 Serveo 进行内网穿透</a></p>
+</blockquote>
+<p>现在，访问 <a target="_blank" rel="noopener" href="https://rx.serveo.net/">https://rx.serveo.net/</a>，是不是已经可以啦（出现的 <code>Whitelabel Error Page</code> 不用管，因为我们本来也没有处理 <code>/</code> 路径的访问）</p>
+<h3 id="微信服务器认证"><a href="#微信服务器认证" class="headerlink" title="微信服务器认证"></a>微信服务器认证</h3><p>引入额外的依赖（SpringBoot Web 项目默认引入 <code>spring-boot-starter</code>，<code>spring-boot-starter-web</code> 和 <code>spring-boot-starter-test</code> 模块）</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!--微信的公众号依赖--&gt;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.github.binarywang<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>weixin-java-mp<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>3.1.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>添加配置文件 <code>application.yml</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"># 非必需，但这里还是设定一下端口，方便后面写启动脚本
+server:
+  port: 8080
+custom:
+  wx:
+    mp:
+      # 基本上都是微信公众号那边的设置（这里是测试的）
+      appId: appId
+      secret: secret
+      token: token
+      aesKey: aesKey<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>将配置读取到 Java Bean 对象上方便在程序中使用 <code>WxMpPropertiesConfig</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信公众号属性配置
+ *
+ * @author rxliuli
+ */
+@ConfigurationProperties(prefix = "custom.wx.mp")
+public class WxMpPropertiesConfig {
+    private String appId;
+    private String secret;
+    private String token;
+    private String aesKey;
+    // getter() and setter()
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>添加微信相关的主配置类 <code>WxMpMainConfig</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信公众号主要的配置类
+ *
+ * @author rxliuli
+ */
+@Configuration
+@EnableConfigurationProperties(WxMpPropertiesConfig.class)
+public class WxMpMainConfig {
+    private final WxMpPropertiesConfig wxMpPropertiesConfig;
+
+    /**
+     * 微信公众号的服务对象
+     * 用户调用微信的各种 API, 例如获取 access_token
+     */
+    private WxMpService wxMpService;
+
+    @Autowired
+    public WxMpMainConfig(WxMpPropertiesConfig wxMpPropertiesConfig) {
+        this.wxMpPropertiesConfig = wxMpPropertiesConfig;
+    }
+
+    /**
+     * 初始化路由列表和微信服务 api 对象
+     */
+    @PostConstruct
+    public void init() {
+        //配置微信 api 对象的策略（目前在内存中）
+        final WxMpInMemoryConfigStorage storage = new WxMpInMemoryConfigStorage();
+        storage.setAppId(wxMpPropertiesConfig.getAppId());
+        storage.setSecret(wxMpPropertiesConfig.getSecret());
+        storage.setAesKey(wxMpPropertiesConfig.getAesKey());
+        storage.setToken(wxMpPropertiesConfig.getToken());
+        //设置策略到服务对象中
+        wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(storage);
+    }
+
+    @Bean
+    public WxMpService wxMpService() {
+        return wxMpService;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>添加一个窗口 api 用于给微信调用 <code>WxMpPortalApi</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信服务窗口 api
+ *
+ * @author rxliuli
+ */
+@RestController
+@RequestMapping("/wx/portal")
+public class WxMpPortalApi {
+    private final WxMpService wxMpService;
+
+    @Autowired
+    public WxMpPortalApi(WxMpService wxMpService) {
+        this.wxMpService = wxMpService;
+    }
+
+    /**
+     * 微信认证当前服务可用
+     *
+     * @param signature 微信加密签名，signature 结合了开发者填写的 token 参数和请求中的 timestamp 参数、nonce 参数
+     * @param timestamp 时间戳
+     * @param nonce     随机数
+     * @param echostr   成功后回传的随机字符串
+     * @return {@code echostr}
+     */
+    @GetMapping
+    public String authGet(
+            String signature,
+            String timestamp,
+            String nonce,
+            String echostr
+    ) {
+        if (StringUtils.isAnyEmpty(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求非法参数!");
+        }
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+        return "非法请求";
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>重启项目，将 <a target="_blank" rel="noopener" href="https://rx.serveo.net/wx/portal">https://rx.serveo.net/wx/portal</a> 填到服务器配置中的 url 里面，点击 <strong>提交</strong>，应该可以看到 [修改成功] 的提示了。</p>
+<h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><p>很显然，如果我们只让微信认证我们的服务器的话是做不了什么的，所以我们需要监听并处理用户在微信公众号中的操作并返回结果。</p>
+<p>修改微信服务窗口 api <code>WxMpPortalApi</code>，添加对 <code>post</code> 请求的处理</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信服务窗口 api
+ *
+ * @author rxliuli
+ */
+@RestController
+@RequestMapping("/wx/portal")
+public class WxMpPortalApi {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    private final WxMpService wxMpService;
+    private final WxMpMessageRouter router;
+
+    @Autowired
+    public WxMpPortalApi(WxMpService wxMpService, WxMpMessageRouter router) {
+        this.wxMpService = wxMpService;
+        this.router = router;
+    }
+
+    /**
+     * 微信认证当前服务可用
+     *
+     * @param signature 微信加密签名，signature 结合了开发者填写的 token 参数和请求中的 timestamp 参数、nonce 参数
+     * @param timestamp 时间戳
+     * @param nonce     随机数
+     * @param echostr   成功后回传的随机字符串
+     * @return {@code echostr}
+     */
+    @GetMapping
+    public String authGet(
+            String signature,
+            String timestamp,
+            String nonce,
+            String echostr
+    ) {
+        if (StringUtils.isAnyEmpty(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求非法参数!");
+        }
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+        return "非法请求";
+    }
+
+    /**
+     * 对所有来自微信服务器的消息进行预处理
+     *
+     * @param requestBody 请求体（xml 格式）
+     * @return 明文消息
+     */
+    @PostMapping
+    public String authPost(
+            @RequestBody String requestBody,
+            @RequestParam("signature") String signature,
+            @RequestParam("timestamp") String timestamp,
+            @RequestParam("nonce") String nonce,
+            @RequestParam(name = "encrypt_type", required = false) String encType,
+            @RequestParam(name = "msg_signature", required = false) String msgSignature
+    ) throws JsonProcessingException {
+        if (!wxMpService.checkSignature(timestamp, nonce, signature)) {
+            throw new IllegalArgumentException("非法请求, 并非微信发来的");
+        }
+
+        WxMpXmlMessage inMessage = null;
+        if (encType == null) {
+            //明文传输
+            inMessage = WxMpXmlMessage.fromXml(requestBody);
+        } else if ("aes".equals(encType)) {
+            //aes 加密
+            inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxMpService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
+        }
+        WxMpXmlOutMessage outMessage = router.route(inMessage);
+        log.info("客户端发送的消息: {}", new ObjectMapper().writeValueAsString(outMessage));
+        return outMessage == null ? "" : outMessage.toXml();
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>添加一个用户消息处理器</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 基础微信消息处理器
+ *
+ * @author rxliuli
+ */
+public abstract class BaseHandler implements WxMpMessageHandler {
+    final Logger log = LoggerFactory.getLogger(getClass());
+
+    /**
+     * 默认空实现
+     *
+     * @param wxMessage      微信的消息
+     * @param context        上下文环境(用于在 handler 中传递信息)
+     * @param wxMpService    微信 api 服务
+     * @param sessionManager 会话管理
+     * @return xml 格式的消息, 异步可返回 null
+     */
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage, Map&lt;String, Object&gt; context, WxMpService wxMpService, WxSessionManager sessionManager) {
+        return null;
+    }
+}
+
+/**
+ * 用户发送消息的处理器
+ *
+ * @author rxliuli
+ */
+@Component
+public class MsgHandler extends BaseHandler {
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage, Map&lt;String, Object&gt; context, WxMpService wxMpService, WxSessionManager sessionManager) {
+        log.info("接收到消息: {}", wxMessage.getMsg());
+        final String content = "您发送的消息为: " + wxMessage.getContent();
+        return WxMpXmlOutMessage.TEXT().content(content)
+                .fromUser(wxMessage.getToUser())
+                .toUser(wxMessage.getFromUser())
+                .build();
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>修改微信公众号主要的配置类 <code>WxMpMainConfig</code>，添加路由管理器</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信公众号主要的配置类
+ *
+ * @author rxliuli
+ */
+@Configuration
+@EnableConfigurationProperties(WxMpPropertiesConfig.class)
+public class WxMpMainConfig {
+    private final WxMpPropertiesConfig wxMpPropertiesConfig;
+    private final MsgHandler msgHandler;
+    /**
+     * 微信公众号监听管理路由映射表
+     * 其实就是监听用户在公众号的操作罢了, 比如点击了某个菜单, 发送了一些消息
+     */
+    private WxMpMessageRouter wxMpMessageRouter;
+    /**
+     * 微信公众号的服务对象
+     * 用户调用微信的各种 API, 例如获取 access_token
+     */
+    private WxMpService wxMpService;
+
+    @Autowired
+    public WxMpMainConfig(WxMpPropertiesConfig wxMpPropertiesConfig, MsgHandler msgHandler) {
+        this.wxMpPropertiesConfig = wxMpPropertiesConfig;
+        this.msgHandler = msgHandler;
+    }
+
+    /**
+     * 初始化路由列表和微信服务 api 对象
+     */
+    @PostConstruct
+    public void init() {
+        //配置微信 api 对象的策略（目前在内存中）
+        final WxMpInMemoryConfigStorage storage = new WxMpInMemoryConfigStorage();
+        storage.setAppId(wxMpPropertiesConfig.getAppId());
+        storage.setSecret(wxMpPropertiesConfig.getSecret());
+        storage.setAesKey(wxMpPropertiesConfig.getAesKey());
+        storage.setToken(wxMpPropertiesConfig.getToken());
+        //设置策略到服务对象中
+        wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(storage);
+        //添加路由
+        wxMpMessageRouter = this.newRouter(wxMpService);
+    }
+
+    /**
+     * 根据微信 api 服务对象创建一个微信监听路由
+     *
+     * @param wxMpService 微信 api 服务
+     * @return 微信监听路由对象
+     */
+    private WxMpMessageRouter newRouter(WxMpService wxMpService) {
+        WxMpMessageRouter router = new WxMpMessageRouter(wxMpService);
+        //发送消息(默认)
+        router.rule().async(false).handler(this.msgHandler).end();
+        return router;
+    }
+
+    @Bean
+    public WxMpService wxMpService() {
+        return wxMpService;
+    }
+
+    @Bean
+    public WxMpMessageRouter wxMpMessageRouter() {
+        return wxMpMessageRouter;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在向公众号发送消息，就可以得到回复了（简单的）。还有日志，菜单，关注，取消关注等处理器这里就不赘述了</p>
+<h3 id="创建菜单"><a href="#创建菜单" class="headerlink" title="创建菜单"></a>创建菜单</h3><p>创建一个简单的公众号菜单 Api 对象</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+ * 微信公众号菜单
+ *
+ * @author rxliuli
+ */
+@RestController
+@RequestMapping("/wx/menu/")
+public class WxMpMenuApi extends WxMpBaseApi {
+    /**
+     * 创建一个默认的菜单
+     *
+     * @return 菜单 id
+     */
+    @GetMapping("create")
+    public String createDefault() throws WxErrorException {
+        final WxMenu wxMenu = new WxMenu();
+        final WxMenuButton buttonLeft = new WxMenuButton();
+        buttonLeft.setType(WxConsts.MenuButtonType.CLICK);
+        buttonLeft.setName("点击");
+        buttonLeft.setKey(IdWorker.getIdStr());
+
+        final WxMenuButton buttonRight = new WxMenuButton();
+        buttonRight.setType(WxConsts.MenuButtonType.VIEW);
+        buttonRight.setName("链接");
+        buttonRight.setUrl("https://blog.rxliuli.com");
+        buttonRight.setKey(IdWorker.getIdStr());
+        wxMenu.getButtons().add(buttonLeft);
+        wxMenu.getButtons().add(buttonRight);
+        return wxMpService.getMenuService().menuCreate(wxMenu);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>访问 <a target="_blank" rel="noopener" href="https://rx.serveo.net/wx/menu/create">https://rx.serveo.net/wx/menu/create</a> 就可以为微信公众号创建一个简单的菜单了。点击左边的“点击”按钮会回复文字说点击了什么，右边的链接则会跳转到一个网页。</p>
+<blockquote>
+<p>其他的功能就放到后面再实现吧，更多公众号开发相关的内容可以参考 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki">微信官方文档</a> 和 <a target="_blank" rel="noopener" href="https://github.com/Wechat-Group/weixin-java-tools">微信开发工具包</a>。当然，所有的示例代码吾辈都已经放到了 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/wx-mp-example">GitHub</a>，却是可以参考一下的呢</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java 微信公众号开发</div>
+      <div>https://blog.rxliuli.com/p/0a924f166b48497e9d1d19048967e880/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/c3b0f31116a54d93ad13f48dd4bdd9b2/" title="MybatisPlus 自定义全局操作 exists 一直返回 null">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MybatisPlus 自定义全局操作 exists 一直返回 null</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/33de2f98ebaf4f23af2942274589a800/" title="Java 使用 FTP/SFTP">
+                        <span class="hidden-mobile">Java 使用 FTP/SFTP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

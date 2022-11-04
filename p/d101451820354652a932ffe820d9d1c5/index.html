@@ -1,0 +1,1037 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言 TypeScript 改变了吾辈对于类型系统的认知，它强大的类型系统使得类型本身也是可编程的。  最近 TypeScript 更新了一个大版本 v4，新增了一些非常强大的特性，让之前难以做到的事情也能够实现了。  模板字符串类型 递归类型  简介 参考：TypeScript 4.1  模板字符串类型尤其适合在 CSS Properties 相关的类型定义中使用，例如 css 的 width，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 类型编程">
+<meta property="og:url" content="https://blog.rxliuli.com/p/d101451820354652a932ffe820d9d1c5/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言 TypeScript 改变了吾辈对于类型系统的认知，它强大的类型系统使得类型本身也是可编程的。  最近 TypeScript 更新了一个大版本 v4，新增了一些非常强大的特性，让之前难以做到的事情也能够实现了。  模板字符串类型 递归类型  简介 参考：TypeScript 4.1  模板字符串类型尤其适合在 CSS Properties 相关的类型定义中使用，例如 css 的 width，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-28T01:48:38.636Z">
+<meta property="article:modified_time" content="2020-12-29T05:36:12.775Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="wiki">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>TypeScript 类型编程 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="TypeScript 类型编程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-12-28 09:48" pubdate>
+          2020年12月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          54 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">TypeScript 类型编程</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月29日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>TypeScript 改变了吾辈对于类型系统的认知，它强大的类型系统使得类型本身也是可编程的。</p>
+</blockquote>
+<p>最近 TypeScript 更新了一个大版本 v4，新增了一些非常强大的特性，让之前难以做到的事情也能够实现了。</p>
+<ul>
+<li>模板字符串类型</li>
+<li>递归类型</li>
+</ul>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html">TypeScript 4.1</a></p>
+</blockquote>
+<h3 id="模板字符串类型"><a href="#模板字符串类型" class="headerlink" title="模板字符串类型"></a>模板字符串类型</h3><p>尤其适合在 CSS Properties 相关的类型定义中使用，例如 css 的 <code>width</code>，就可以使用模板字符串进行检查避免低级错误。</p>
+<p>之前</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Width = number | string
+const i: Width = '1px'
+const i2: Width = '1px2' // 不会报错<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Unit = 'px' | '%' | 'em' | 'rem'
+type Width = number | `${number}${Unit}`
+const i: Width = '1px'
+const i2: Width = '1px2' // TS2322: Type '"1px2"' is not assignable to type 'Width'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>该特性在 Grid 组件进行了实用，能够避免一些低级错误。</p>
+</blockquote>
+<h3 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h3><p>事实上，递归类型的需求由来已久。例如典型的 <code>Array.prototype.flat</code> 函数的类型定义，或是函数式中部分应用函数的类型定义。</p>
+<p>下面是一个将嵌套数组亚平的函数的类型定义示例（来自 TypeScript 官网）</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ElementType&lt;T&gt; = T extends ReadonlyArray&lt;infer U&gt; ? ElementType&lt;U&gt; : T
+
+function deepFlatten&lt;T extends readonly unknown[]&gt;(x: T): ElementType&lt;T&gt;[] {
+  throw 'not implemented'
+}
+
+// All of these return the type 'number[]':
+deepFlatten([1, 2, 3])
+deepFlatten([[1], [2, 3]])
+deepFlatten([[1], [[2]], [[[3]]]])<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="实际的使用场景"><a href="#实际的使用场景" class="headerlink" title="实际的使用场景"></a>实际的使用场景</h2><h3 id="在-i18next-中根据-key-获取翻译字符串"><a href="#在-i18next-中根据-key-获取翻译字符串" class="headerlink" title="在 i18next 中根据 key 获取翻译字符串"></a>在 i18next 中根据 key 获取翻译字符串</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/a/58308279/8409380">i18next 的类型定义</a></p>
+</blockquote>
+<p>最近遇到了通过 i18n 框架获取翻译文本的需求，其中翻译文本通过一个对象的形式定义，所以吾辈就需要一种能够根据 key 获取到类型的方法。</p>
+<p>需要支持以下情况</p>
+<ul>
+<li>根据 key 获取对应的文本</li>
+<li>根据 key 深层获取文本</li>
+<li>根据 key 获取文本并进行参数注入</li>
+</ul>
+<p>下面是吾辈对 i18next 的封装</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import zhCN from '../i18n/zhCN'
+import en from '../i18n/en'
+import i18next, { TOptions } from 'i18next'
+
+//region 类型定义
+
+// returns the same string literal T, if props match, else never
+type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
+    : never
+  : T extends keyof O
+  ? T
+  : never
+
+// returns the property value from object O given property path T
+type GetDictValue&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? GetDictValue&lt;B, O[A]&gt;
+    : never
+  : T extends keyof O
+  ? O[T]
+  : never
+
+// retrieves all variable placeholder names as tuple
+type Keys&lt;S extends string&gt; = S extends ''
+  ? []
+  : S extends `${infer _}{{${infer B}}}${infer C}`
+  ? [B, ...Keys&lt;C&gt;]
+  : never
+
+// substitutes placeholder variables with input values
+type Interpolate&lt;
+  S extends string,
+  I extends Record&lt;Keys&lt;S&gt;[number], string&gt;
+&gt; = S extends ''
+  ? ''
+  : S extends `${infer A}{{${infer B}}}${infer C}`
+  ? `${A}${I[Extract&lt;B, keyof I&gt;]}${Interpolate&lt;C, I&gt;}`
+  : never
+
+//endregion
+
+type Dict = typeof zhCN | typeof en
+
+export enum LanguageEnum {
+  ZhCN = 'zhCN',
+  En = 'en',
+}
+
+export class I18nLoader {
+  constructor() {}
+
+  /**
+   * 加载国际化
+   */
+
+  async load(language: LanguageEnum) {
+    await i18next.init({
+      lng: language,
+      resources: {
+        en: {
+          translation: en,
+        },
+        zhCN: {
+          translation: zhCN,
+        },
+      },
+    })
+  }
+
+  /**
+   * 根据 key 获取翻译的文本
+   * @param key
+   */
+  getText&lt;K extends string&gt;(
+    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
+  ): GetDictValue&lt;K, Dict&gt;
+  getText&lt;
+    D extends Dict &amp; Record&lt;string, string&gt;,
+    K extends keyof D,
+    I extends Record&lt;Keys&lt;D[K]&gt;[number], string&gt;
+  &gt;(k: K, args: I): Interpolate&lt;D[K], I&gt;
+  getText&lt;K extends string&gt;(
+    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
+    args?: TOptions,
+  ): GetDictValue&lt;K, Dict&gt; {
+    return i18next.t(key, args)
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用起来很简单</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const i18nLoader = new I18nLoader()
+await i18nLoader.load(LanguageEnum.ZhCN)
+console.log(i18nLoader.getText('hello')) // 你好<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>接下来，我们分析以下 <code>CheckDictString</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
+    : never
+  : T extends keyof O
+  ? T
+  : never<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<ol>
+<li>传入泛型参数 <code>T</code> 和 <code>O</code>，<code>T</code> 必须继承自 <code>string</code></li>
+<li>判断 <code>T</code> 是否继承自 <code>${infer A}.${infer B}</code>，即判断 <code>T</code> 是否包含 <code>.</code>，并解构得到 <code>A</code>（第一个 <code>.</code> 之前）,<code>B</code>（第一个 <code>.</code> 之后，可能还包含 <code>.</code>）<ol>
+<li>如果是，则继续判断 <code>A</code> 是否为传入对象的字段<ol>
+<li>如果是，则继续递归检查 <code>B</code> 是否为 <code>O[A]</code> 的一个字段</li>
+<li>否则，返回 <code>never</code></li>
+</ol>
+</li>
+<li>否则，则判断 <code>T</code> 是否是 <code>O</code> 的字段<ol>
+<li>如果是，则返回 <code>T</code></li>
+<li>否则，返回 <code>never</code></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>可以看到，如果检查出现错误，则返回 <code>never</code>，但我们传入的 <code>string</code> 是不能合并为 <code>never</code> 的，这将会导致 ts 类型检查出错（其它的类型基本上也是一样的推导方式）。</p>
+<hr>
+<p>附录</p>
+<p>虽然看起来不错，那么这个类型是否满足我们简化 i18next 使用的需求呢？<br>实际上没有。即便有如此强大的类型系统，但它仍然不足以满足特别灵活的需求。实际使用时仍发现以下问题：</p>
+<ul>
+<li>嵌套对象的参数注入没有进行检查</li>
+<li>参数注入的翻译文本没有提示注入参数</li>
+</ul>
+<p>解决方案有两个方向</p>
+<ul>
+<li>linter rule</li>
+<li>code generate</li>
+</ul>
+<p>下面是一个简单的对比</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>typescript</th>
+<th>linter rule</th>
+<th>code generate</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用</td>
+<td>直接使用</td>
+<td>通过 eslint 插件</td>
+<td>通过 cli 命令行</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>一般（不用了解 <code>ast</code>）</td>
+<td>高</td>
+<td>较高</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>绝大多数场景</td>
+<td>容易编写的少量代码的检查</td>
+<td>大量重复可自动化生成的代码</td>
+</tr>
+</tbody></table>
+<h3 id="使用类型系统解析-json-字符串（好玩性质）"><a href="#使用类型系统解析-json-字符串（好玩性质）" class="headerlink" title="使用类型系统解析 json 字符串（好玩性质）"></a>使用类型系统解析 json 字符串（好玩性质）</h3><p><a target="_blank" rel="noopener" href="https://twitter.com/buildsghost/status/1301976526603206657">twitter 上</a> 甚至有人使用 TypeScript 的模板字符串和递归类型解析了 json 字符串。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ParserError&lt;T extends string&gt; = { error: true } &amp; T
+type EatWhitespace&lt;State extends string&gt; = string extends State
+  ? ParserError&lt;'EatWhitespace got generic string type'&gt;
+  : State extends ` ${infer State}` | `\n${infer State}`
+  ? EatWhitespace&lt;State&gt;
+  : State
+type AddKeyValue&lt;
+  Memo extends Record&lt;string, any&gt;,
+  Key extends string,
+  Value extends any
+&gt; = Memo &amp; { [K in Key]: Value }
+type ParseJsonObject&lt;
+  State extends string,
+  Memo extends Record&lt;string, any&gt; = {}
+&gt; = string extends State
+  ? ParserError&lt;'ParseJsonObject got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `}${infer State}`
+  ? [Memo, State]
+  : EatWhitespace&lt;State&gt; extends `"${infer Key}"${infer State}`
+  ? EatWhitespace&lt;State&gt; extends `:${infer State}`
+    ? ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
+      ? EatWhitespace&lt;State&gt; extends `,${infer State}`
+        ? ParseJsonObject&lt;State, AddKeyValue&lt;Memo, Key, Value&gt;&gt;
+        : EatWhitespace&lt;State&gt; extends `}${infer State}`
+        ? [AddKeyValue&lt;Memo, Key, Value&gt;, State]
+        : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+      : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
+    : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+  : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+type ParseJsonArray&lt;
+  State extends string,
+  Memo extends any[] = []
+&gt; = string extends State
+  ? ParserError&lt;'ParseJsonArray got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `]${infer State}`
+  ? [Memo, State]
+  : ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
+  ? EatWhitespace&lt;State&gt; extends `,${infer State}`
+    ? ParseJsonArray&lt;EatWhitespace&lt;State&gt;, [...Memo, Value]&gt;
+    : EatWhitespace&lt;State&gt; extends `]${infer State}`
+    ? [[...Memo, Value], State]
+    : ParserError&lt;`ParseJsonArray received unexpected token: ${State}`&gt;
+  : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
+type ParseJsonValue&lt;State extends string&gt; = string extends State
+  ? ParserError&lt;'ParseJsonValue got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `null${infer State}`
+  ? [null, State]
+  : EatWhitespace&lt;State&gt; extends `"${infer Value}"${infer State}`
+  ? [Value, State]
+  : EatWhitespace&lt;State&gt; extends `[${infer State}`
+  ? ParseJsonArray&lt;State&gt;
+  : EatWhitespace&lt;State&gt; extends `{${infer State}`
+  ? ParseJsonObject&lt;State&gt;
+  : ParserError&lt;`ParseJsonValue received unexpected token: ${State}`&gt;
+type ParseJson&lt;T extends string&gt; = ParseJsonValue&lt;T&gt; extends infer Result
+  ? Result extends [infer Value, string]
+    ? Value
+    : Result extends ParserError&lt;any&gt;
+    ? Result
+    : ParserError&lt;'ParseJsonValue returned unexpected Result'&gt;
+  : ParserError&lt;'ParseJsonValue returned uninferrable Result'&gt;
+
+type Json = ParseJson&lt;'{ "key1": ["value1", null], "key2": "value2" }'&gt; // type Json = { key1: ["value1", null]; } &amp; { key2: "value2"; }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>我想后端语言（Java/GoLang）至今也没有出现如此复杂的类型定义。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然 TypeScript 的类型系统已经如此强大，但它并非没有局限性，像在上面的 <a href="#%E5%9C%A8-i18next-%E4%B8%AD%E6%A0%B9%E6%8D%AE-key-%E8%8E%B7%E5%8F%96%E7%BF%BB%E8%AF%91%E5%AD%97%E7%AC%A6%E4%B8%B2">在 i18next 中根据 key 获取翻译字符串</a> 便是一例。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/typescript/">#typescript</a>
+      
+        <a href="/tags/wiki/">#wiki</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>TypeScript 类型编程</div>
+      <div>https://blog.rxliuli.com/p/d101451820354652a932ffe820d9d1c5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年12月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/63ed4e3837634ee1b5c9ddd1e33d18f9/" title="博客迁移">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">博客迁移</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/c68829779f5449d0afe0e67806dc7fc1/" title="electron 开发经验之谈系列-常见问题">
+                        <span class="hidden-mobile">electron 开发经验之谈系列-常见问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

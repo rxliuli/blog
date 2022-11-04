@@ -1,0 +1,1187 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言在此之前，吾辈介绍了如何 从函数中无中生有的构造数据结构。现在，吾辈将使用它构造一个更强大的数据结构：Stream（流）。 或许你曾经见过这张图  一些数据经过一系列的处理，然后得到结果，而只需要迭代每个元素一次，就像魔法一样。 之前的想法最初，吾辈的想法是让操作保存起来，只有等待某个显式调用的时候才真正执行。 即调用 map&#x2F;filter&#x2F;reduce 时将 action 与参数保存起来，等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="流与延迟计算">
+<meta property="og:url" content="https://blog.rxliuli.com/p/74ee9e8c552b421680a9cd967e2638ad/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言在此之前，吾辈介绍了如何 从函数中无中生有的构造数据结构。现在，吾辈将使用它构造一个更强大的数据结构：Stream（流）。 或许你曾经见过这张图  一些数据经过一系列的处理，然后得到结果，而只需要迭代每个元素一次，就像魔法一样。 之前的想法最初，吾辈的想法是让操作保存起来，只有等待某个显式调用的时候才真正执行。 即调用 map&#x2F;filter&#x2F;reduce 时将 action 与参数保存起来，等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/06db2fe633f446e08a9074e792073ee0.svg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/d3826159559041f2aedb2bb21a1566c9.svg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/c1113e6a67e84910a162d2b244935f15.svg">
+<meta property="article:published_time" content="2022-06-09T13:42:23.930Z">
+<meta property="article:modified_time" content="2022-06-20T04:55:52.522Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/06db2fe633f446e08a9074e792073ee0.svg">
+  
+  
+  
+  <title>流与延迟计算 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="流与延迟计算"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-06-09 21:42" pubdate>
+          2022年6月9日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          96 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">流与延迟计算</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年6月20日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在此之前，吾辈介绍了如何 <a href="/p/a8027393b93445909aeed32a179086dd">从函数中<strong>无中生有</strong>的构造数据结构</a>。现在，吾辈将使用它构造一个更强大的数据结构：Stream（流）。</p>
+<p>或许你曾经见过这张图</p>
+<p><img src="/resources/06db2fe633f446e08a9074e792073ee0.svg" srcset="/img/loading.gif" lazyload alt="stream.drawio.svg"></p>
+<p>一些数据经过一系列的处理，然后得到结果，而只需要迭代每个元素一次，就像魔法一样。</p>
+<h2 id="之前的想法"><a href="#之前的想法" class="headerlink" title="之前的想法"></a>之前的想法</h2><p>最初，吾辈的想法是让操作保存起来，只有等待某个显式调用的时候才真正执行。</p>
+<p>即调用 map/filter/reduce 时将 action 与参数保存起来，等到调用 value 方法的时候才真正执行，像是 lodash 的 <code>_.chain</code> api 就是这种形式的。</p>
+<p>形如</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">_.chain([1, 2, 3, 4])
+  .filter((i) =&gt; i % 2 === 0)
+  .map((i) =&gt; i * 2)
+  .value()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>于是最初吾辈也是按照这种 api 实现</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Stream&lt;T&gt; {
+  private flags: [action: string, ...args: any[]][] = []
+  constructor(private readonly arr: T[]) {}
+  map&lt;R&gt;(f: (item: T) =&gt; R): Stream&lt;R&gt; {
+    this.flags.push(['map', f])
+    return this as any
+  }
+  filter(f: (item: T) =&gt; boolean): Stream&lt;T&gt; {
+    this.flags.push(['filter', f])
+    return this
+  }
+  reduce&lt;R&gt;(f: (r: R, item: T) =&gt; R, init: R): R {
+    this.flags.push(['reduce', f, init])
+    return this.value() as any
+  }
+  value() {
+    const res: any[] = []
+    for (const item of this.arr) {
+      outer: {
+        let temp = item
+        for (const [action, ...args] of this.flags) {
+          switch (action) {
+            case 'map':
+              temp = args[0](temp)
+              break
+            case 'filter':
+              if (!args[0](temp)) {
+                break outer
+              }
+              break
+          }
+        }
+        res.push(temp)
+      }
+    }
+    return res
+  }
+}
+
+it('basic', () =&gt; {
+  const r = new Stream([1, 2, 3, 4])
+    .filter((i) =&gt; i % 2 === 0)
+    .map((i) =&gt; i * 2)
+    .value()
+  expect(r).toEqual([4, 8])
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来 map/filter 工作的还不错，但 reduce 却存在问题，因为在两层 for 循环中 map 是依赖于临时变量替换，filter 则是依赖于 break label 实现，这种方式显然很难在 value 函数中兼容所有的功能。</p>
+<p>不过实际上的解决方案也是延迟执行，只需要转换一下思路即可。下面将使用 cons 来构造流。</p>
+<h2 id="延迟计算"><a href="#延迟计算" class="headerlink" title="延迟计算"></a>延迟计算</h2><p>首先，可以将流可以看作一系列的值，而且只能顺序依次获取，那么，我们仅需要实现一种在需要的时候能拿到值的数据结构就可以了。</p>
+<p>下面将流的每个节点分为两部分，head 部分是一个具体的值，而 tail 部分则是一个产生下一个节点的函数，它可能是空的。</p>
+<p><img src="/resources/d3826159559041f2aedb2bb21a1566c9.svg" srcset="/img/loading.gif" lazyload alt="流节点.excalidraw.svg"></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Stream&lt;T&gt; = Cons&lt;T, () =&gt; Stream&lt;T&gt;&gt; | null
+function makeStream&lt;T&gt;(head: T, tail: () =&gt; Stream&lt;T&gt; = () =&gt; null) {
+  return cons(head, tail)
+}
+function head&lt;T&gt;(s: Stream&lt;T&gt;): T | null {
+  return s ? car(s) : null
+}
+function tail&lt;T&gt;(s: Stream&lt;T&gt;): Stream&lt;T&gt; {
+  return s ? cdr(s)() : null
+}
+function isEmpty(s: Stream&lt;any&gt;): boolean {
+  return s === null
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在有了基本的流的构造函数，可以使用最原始的方法构造了一个流了</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">makeStream(1, () =&gt; makeStream(2, () =&gt; makeStream(3)))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>看起来好像没什么用？这是因为我们还没有动态去构造。例如，我们可以从数组构造一个流，也可以转换回去</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function ofArray&lt;T&gt;(arr: T[]): Stream&lt;T&gt; {
+  return arr.length === 0
+    ? null
+    : makeStream(arr[0], () =&gt; ofArray(arr.slice(1)))
+}
+function toArray&lt;T&gt;(s: Stream&lt;T&gt;): T[] {
+  return isEmpty(s) ? [] : [head(s)!, ...toArray(tail(s))]
+}
+
+const arr = [1, 2, 3, 4]
+expect(toArray(ofArray(arr))).toEqual(arr)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="map-x2F-filter-x2F-reduce"><a href="#map-x2F-filter-x2F-reduce" class="headerlink" title="map/filter/reduce"></a>map/filter/reduce</h2><p>当然，我们也可以为它们编写 map/filter/reduce</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function map&lt;T, R&gt;(s: Stream&lt;T&gt;, fn: (item: T) =&gt; R): Stream&lt;R&gt; {
+  return isEmpty(s) ? null : makeStream(fn(head(s)!), () =&gt; map(tail(s), fn))
+}
+function filter&lt;T&gt;(s: Stream&lt;T&gt;, fn: (item: T) =&gt; boolean): Stream&lt;T&gt; {
+  return isEmpty(s)
+    ? null
+    : fn(head(s)!)
+    ? makeStream(head(s)!, () =&gt; filter(tail(s), fn))
+    : filter(tail(s), fn)
+}
+function reduce&lt;T, R&gt;(s: Stream&lt;T&gt;, fn: (res: R, item: T) =&gt; R, init: R): R {
+  return isEmpty(s) ? init : reduce(tail(s), fn, fn(init, head(s)!))
+}
+
+const r = reduce(
+  map(
+    filter(ofArray([1, 2, 3, 4]), (i) =&gt; i % 2 === 0),
+    (i) =&gt; i * 2,
+  ),
+  (r, i) =&gt; r + i,
+  0,
+)
+expect(r).toBe(12)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>啊咧？奇怪，我们是不是之前在写链表的时候写过类似的代码？像是这样</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function map&lt;T, R&gt;(list: List&lt;T&gt;, f: (i: T) =&gt; R): List&lt;R&gt; {
+  return list === null ? null : (cons(f(car(list)), map(cdr(list)!, f)) as any)
+}
+function filter&lt;T&gt;(list: List&lt;T&gt;, f: (i: T) =&gt; boolean): List&lt;T&gt; {
+  return list === null
+    ? null
+    : f(car(list))
+    ? cons(car(list), filter(cdr(list), f))
+    : filter(cdr(list), f)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>是的，它们的代码实现看起来很像，实际上，它们的区别仅在于流的节点的 cdr 部分是一个可以延迟计算的函数，只有<strong>在需要时</strong>才会被真的计算。在嵌套使用 map/filter 时，不再是先将所有元素通过 map 处理一遍形成新的流，再通过 filter 处理一遍形成新的流，而是在真正转换为链表或数组这种非延时的数据结构时才会被真正计算，而且方向是反的。</p>
+<p>我们可以验证它真的是延迟计算的。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const genStream = jest
+  .fn()
+  .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
+const s = genStream(1)
+expect(head(s)).toEqual(1)
+expect(genStream.mock.calls.length).toBe(1)
+expect(head(tail(s))).toEqual(2)
+expect(genStream.mock.calls.length).toBe(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><p>在继续下一步之前，我们首先对流做一个简单的性能优化</p>
+<p>继续使用上一个示例，当多次访问 tail 时，每次都会重新计算下一个节点的值，<strong>即便已经计算过了</strong>，这很浪费，而且会引发一些其他的问题，例如 <code>tail(s) === tail(s)</code> 的结果会是 false，因为这里生成了两次。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">it('once before', () =&gt; {
+  const genStream = jest
+    .fn()
+    .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
+  const s = genStream(1) // 创建流时会立刻计算 head，1 次
+  tail(s) // 1 次
+  tail(tail(s)) // 2 次
+  tail(tail(tail(s))) // 3 次
+  expect(genStream.mock.calls.length).toBe(7)
+  expect(tail(s) === tail(s)).toBeFalsy() // 两个值不相等
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>那么，是否有办法解决呢？<br>很简单，只需要做个缓存即可。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function once&lt;T extends () =&gt; any&gt;(f: T): T {
+  let flag: any = null
+  return (() =&gt; {
+    if (flag === null) {
+      flag = f()
+    }
+    return flag
+  }) as any
+}
+function makeStream&lt;T&gt;(head: T, tail: () =&gt; Stream&lt;T&gt; = () =&gt; null) {
+  return cons(head, once(tail))
+}
+it('once after', () =&gt; {
+  const genStream = jest
+    .fn()
+    .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
+  const s = genStream(1) // 创建流时会立刻计算 head，1 次
+  tail(tail(tail(s))) // 3 次
+  tail(tail(s)) // 直接从缓存读取，0 次
+  tail(s) // 直接从缓存读取，0 次
+  expect(genStream.mock.calls.length).toBe(4)
+  expect(tail(s) === tail(s)).toBeTruthy() // 两个值相等
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在，所有访问 tail 访问下一个节点都会默认缓存，如果已经计算过，将永远不再重复计算。</p>
+<h2 id="无限流"><a href="#无限流" class="headerlink" title="无限流"></a>无限流</h2><p>流不仅可以表示有限的数据，甚至可以是无限的。</p>
+<p>例如可以使用以下函数生成一个从 n 开始的无限整数流</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function intFrom(n: number): Stream&lt;number&gt; {
+  return makeStream(n, () =&gt; intFrom(n + 1))
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们可以使用以下代码验证它</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const ints = intFrom(1)
+expect(head(ints)).toBe(1)
+expect(head(tail(ints))).toBe(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>或者生成一个所有元素都是同一个值的无限流</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function ones&lt;T&gt;(i: T): Stream&lt;T&gt; {
+  return makeStream(i, () =&gt; ones(i))
+}
+
+let n = ones(1)
+Array(100)
+  .fill(0)
+  .forEach(() =&gt; {
+    expect(head(n)).toBe(1)
+    n = tail(n)
+  })<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>那么，如何截取流的一部分呢？例如截取前 n 个元素（<code>take</code>）或第 n 个之后的所有元素（<code>drop</code>）呢？<br>其实很简单，take 只需要生成新的流并在取到第 n 个元素的时候返回 null，drop 则不断使用 tail 获取下一个节点，直到获取到第 n 个节点就返回，而 slice 则是组合这两个函数。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function take&lt;T&gt;(s: Stream&lt;T&gt;, n: number): Stream&lt;T&gt; {
+  return n === 0 || isEmpty(s)
+    ? null
+    : makeStream(head(s)!, () =&gt; take(tail(s), n - 1))
+}
+function drop&lt;T&gt;(s: Stream&lt;T&gt;, n: number): Stream&lt;T&gt; {
+  return isEmpty(s) || n === 0 ? s : drop(tail(s), n - 1)
+}
+function slice&lt;T&gt;(s: Stream&lt;T&gt;, start: number, end: number) {
+  return take(drop(s, start), end - start)
+}
+
+it('slice', () =&gt; {
+  const ints = intFrom(1)
+  expect(toArray(take(ints, 4))).toEqual([1, 2, 3, 4])
+  expect(head(drop(ints, 4))).toBe(5)
+  expect(toArray(slice(ints, 2, 4))).toEqual([3, 4])
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h2><p>上面的函数并非是链式调用的，在使用起来会感觉有点繁琐，嵌套很多层的话尤其如此，但可以通过简单的包装实现传统的链式调用。</p>
+<p>基本思想是在 Stream 对象中保存当前流，然后每次非终结操作都不断创建新的 Stream 对象，并且在对象的方法中调用之前实现的函数。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class StreamImpl&lt;T&gt; {
+  constructor(private readonly s: Stream&lt;T&gt;) {}
+  map&lt;R&gt;(fn: (item: T) =&gt; R): StreamImpl&lt;R&gt; {
+    return new StreamImpl(map(this.s, fn))
+  }
+  filter(fn: (item: T) =&gt; boolean): StreamImpl&lt;T&gt; {
+    return new StreamImpl(filter(this.s, fn))
+  }
+  reduce&lt;R&gt;(fn: (res: R, item: T) =&gt; R, init: R): R {
+    return reduce(this.s, fn, init)
+  }
+  take(n: number): StreamImpl&lt;T&gt; {
+    return new StreamImpl(take(this.s, n))
+  }
+  drop(n: number): StreamImpl&lt;T&gt; {
+    return new StreamImpl(drop(this.s, n))
+  }
+  value() {
+    return toArray(this.s)
+  }
+}
+function stream&lt;T&gt;(arr: T[]): StreamImpl&lt;T&gt; {
+  return new StreamImpl(ofArray(arr))
+}
+
+it('stream', () =&gt; {
+  const s = stream([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    .filter((i) =&gt; i % 2 === 0)
+    .map((i) =&gt; i * 2)
+    .drop(1)
+    .take(2)
+  expect(s.value()).toEqual([8, 12])
+  expect(s.reduce((r, i) =&gt; r + i, 0)).toBe(20)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，上面的 api 其实已经和 lodash 一样了。</p>
+<h2 id="异步的流"><a href="#异步的流" class="headerlink" title="异步的流"></a>异步的流</h2><p>流不仅可以处理同步的数据，也可以处理异步的数据。但与同步的数据相比，需要更换流节点的基本模型，从 head 立刻计算、tail 延迟计算更换为整个流节点都是延迟计算的。</p>
+<p>一个基本的异步流节点可能是这样的</p>
+<p><img src="/resources/c1113e6a67e84910a162d2b244935f15.svg" srcset="/img/loading.gif" lazyload alt="异步流节点.excalidraw.svg"></p>
+<p>类型定义</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type AsyncStream&lt;T&gt; = Promise&lt;Cons&lt;T, AsyncStream&lt;T&gt;&gt; | null&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>创建一些基本的辅助函数</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/** 从数组中创建异步流 */
+async function asyncOfArray&lt;T&gt;(arr: T[]): AsyncStream&lt;T&gt; {
+  return arr.length === 0 ? null : cons(arr[0], asyncOfArray(arr.slice(1)))
+}
+/** 将异步流转换为数组 */
+async function asyncToArray&lt;T&gt;(s: AsyncStream&lt;T&gt;): Promise&lt;T[]&gt; {
+  const r = await s
+  return r === null ? [] : [car(r), ...(await asyncToArray(cdr(r)))]
+}
+
+it('basic', async () =&gt; {
+  const a = [1, 2, 3, 4]
+  expect(await asyncToArray(asyncOfArray(a))).toEqual(a)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在此基础上实现 map/filter/reduce</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function asyncMap&lt;T, R&gt;(
+  s: AsyncStream&lt;T&gt;,
+  f: (i: T) =&gt; Promise&lt;R&gt;,
+): AsyncStream&lt;R&gt; {
+  const r = await s
+  return r === null ? null : cons((await f(car(r))) as R, asyncMap(cdr(r), f))
+}
+async function asyncFilter&lt;T&gt;(
+  s: AsyncStream&lt;T&gt;,
+  f: (i: T) =&gt; Promise&lt;boolean&gt;,
+): AsyncStream&lt;T&gt; {
+  const r = await s
+  return r === null
+    ? null
+    : (await f(car(r)))
+    ? cons(car(r), asyncFilter(cdr(r), f))
+    : await asyncFilter(cdr(r), f)
+}
+async function asyncReduce&lt;T, R&gt;(
+  s: AsyncStream&lt;T&gt;,
+  f: (r: R, i: T) =&gt; Promise&lt;R&gt;,
+  init: R,
+): Promise&lt;R&gt; {
+  const r = await s
+  return r === null ? init : asyncReduce(cdr(r), f, await f(init, car(r)))
+}
+
+it('map/filter/reduce', async () =&gt; {
+  const s = asyncOfArray([1, 2, 3, 4])
+  const r = await asyncReduce(
+    asyncMap(
+      asyncFilter(s, async (i) =&gt; i % 2 === 0),
+      async (i) =&gt; i * 2,
+    ),
+    async (r, i) =&gt; r + i,
+    0,
+  )
+  expect(r).toBe(12)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里也顺便实现一下 flatMap</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function concat&lt;T&gt;(a: AsyncStream&lt;T&gt;, b: AsyncStream&lt;T&gt;): AsyncStream&lt;T&gt; {
+  const r = await a
+  return r === null ? b : cons(car(r), concat(cdr(r), b))
+}
+async function asyncFlatMap&lt;T, R&gt;(
+  s: AsyncStream&lt;T&gt;,
+  f: (i: T) =&gt; AsyncStream&lt;R&gt;,
+): AsyncStream&lt;R&gt; {
+  const r = await s
+  return r === null ? null : concat(f(car(r)), asyncFlatMap(cdr(r), f))
+}
+async function int(start: number, end: number): AsyncStream&lt;number&gt; {
+  return start === end ? null : cons(start, int(start + 1, end))
+}
+it('flatMap', async () =&gt; {
+  expect(await asyncToArray(int(1, 4))).toEqual([1, 2, 3])
+  const r = asyncFlatMap(int(1, 4), (i) =&gt; int(0, i))
+  expect(await asyncToArray(r)).toEqual([0, 0, 1, 0, 1, 2])
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，同步与异步的 map/filter/reduce 两者之间实现的差距相当小，是否有办法兼容呢？<br>不知道，或许有办法做到，但类型上感觉会有些复杂。</p>
+<h2 id="异步数组"><a href="#异步数组" class="headerlink" title="异步数组"></a>异步数组</h2><p>下面列出一个真实的例子，在写前端应用时，处理异步操作是一件常见的事情，当需要异步的 map/filter/reduce 时，我们经常会使用 <code>Promise.all</code> 来完成</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">it('promise.all', async () =&gt; {
+  const r = (await Promise.all([1, 2, 3, 4].map(async (i) =&gt; [i % 2 === 0, i])))
+    .filter((r) =&gt; r[0])
+    .map((r) =&gt; r[1])
+  expect(r).toEqual([2, 4])
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>但是也可以看到，这种代码非常丑陋，因此吾辈之前曾经写过 AsyncArray 这种异步数组工具类，参考 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/blob/master/libs/async/src/AsyncArray.ts">https://github.com/rxliuli/liuli-tools/blob/master/libs/async/src/AsyncArray.ts</a>。</p>
+<p>下面基于 asyncStream 来实现它，可以看到都是直接转发到异步操作上，这没什么复杂的。有一点比较比较有趣的是这里还实现了 <code>PromiseLike</code> 接口，这让我们可以在不使用 <code>.value</code> 这种显式调用的情况下将流转换为 <code>Promise&lt;any[]&gt;</code>，仅使用 await 就像等待一个 Promise 一样执行了 then 方法，这只是个 Promise 的技巧罢了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class AsyncArray&lt;T&gt; implements PromiseLike&lt;T[]&gt; {
+  static reduce&lt;T, R&gt;(
+    arr: T[],
+    fn: (res: R, item: T) =&gt; Promise&lt;R&gt;,
+    res: R,
+  ): Promise&lt;R&gt; {
+    return asyncReduce(asyncOfArray(arr), fn, res)
+  }
+  static map&lt;T, R&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;R&gt;): Promise&lt;R[]&gt; {
+    return asyncToArray(asyncMap(asyncOfArray(arr), fn))
+  }
+  static filter&lt;T&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;boolean&gt;): Promise&lt;T[]&gt; {
+    return asyncToArray(asyncFilter(asyncOfArray(arr), fn))
+  }
+  static flatMap&lt;T, R&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;R[]&gt;): Promise&lt;R[]&gt; {
+    return asyncToArray(
+      asyncFlatMap(asyncOfArray(arr), async (i) =&gt; asyncOfArray(await fn(i))),
+    )
+  }
+  static async forEach&lt;T&gt;(
+    arr: T[],
+    fn: (item: T) =&gt; Promise&lt;void&gt;,
+  ): Promise&lt;void&gt; {
+    await this.map(arr, fn)
+  }
+
+  private s: AsyncStream&lt;T&gt;
+  constructor(arr: T[]) {
+    this.s = asyncOfArray(arr)
+  }
+
+  private static of&lt;T&gt;(s: AsyncStream&lt;T&gt;): AsyncArray&lt;T&gt; {
+    const r = new AsyncArray&lt;T&gt;([])
+    r.s = s
+    return r
+  }
+
+  map&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R&gt;): AsyncArray&lt;R&gt; {
+    return AsyncArray.of(asyncMap(this.s, fn))
+  }
+  flatMap&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R[]&gt;): AsyncArray&lt;R&gt; {
+    return AsyncArray.of(
+      asyncFlatMap(this.s, async (i) =&gt; asyncOfArray(await fn(i))),
+    )
+  }
+  filter(fn: (item: T) =&gt; Promise&lt;boolean&gt;): AsyncArray&lt;T&gt; {
+    return AsyncArray.of(asyncFilter(this.s, fn))
+  }
+  async forEach&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R&gt;): Promise&lt;void&gt; {
+    await this.map(fn)
+  }
+  reduce&lt;R&gt;(fn: (res: R, item: T) =&gt; Promise&lt;R&gt;, res: R): Promise&lt;R&gt; {
+    return asyncReduce(this.s, fn, res)
+  }
+  then&lt;TResult1 = T[], TResult2 = never&gt;(
+    onfulfilled?: ((value: T[]) =&gt; TResult1 | PromiseLike&lt;TResult1&gt;) | null,
+    onrejected?: ((reason: any) =&gt; TResult2 | PromiseLike&lt;TResult2&gt;) | null,
+  ): PromiseLike&lt;TResult1&gt; {
+    return asyncToArray(this.s) as any
+  }
+}
+
+it('AsyncArray', async () =&gt; {
+  const r = await new AsyncArray([1, 2, 3, 4])
+    .filter(async (i) =&gt; i % 2 === 0)
+    .map(async (i) =&gt; i * 2)
+    .reduce(async (r, i) =&gt; r + i, 0)
+  expect(r).toBe(12)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>流是一个很有用的数据抽象，尤其是在处理集合方面，几乎是无可比肩的，之前曾经非常流行的大数据处理框架 Spark 就非常强调 map/filter/reduce，这种数据结构约定了<strong>接口</strong>，然后就可以抽象出各种通用的处理了，延迟计算的想法更是天才，几乎仅仅只修改了 makeStream，就能够实现集合处理的性能优化了。虽然吾辈了解和实现这些知识有些晚，但就像有人说过 <strong>种一棵树最好的时间是十年前，其次是现在</strong>，亡羊补牢，尤未迟也，只要在不断的变得更好，便已然足够了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>流与延迟计算</div>
+      <div>https://blog.rxliuli.com/p/74ee9e8c552b421680a9cd967e2638ad/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年6月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/76673453498244cfbe34027678d75f67/" title="实现一个玩具 lisp 运行时与解析器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">实现一个玩具 lisp 运行时与解析器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/a8027393b93445909aeed32a179086dd/" title="cons: 无中生有的数据结构">
+                        <span class="hidden-mobile">cons: 无中生有的数据结构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

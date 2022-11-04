@@ -1,0 +1,1007 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景EventEmitter 很适合在不修改组件状态结构的情况下进行组件通信，然而它的生命周期不受 react 管理，需要手动添加&#x2F;清理监听事件很麻烦。而且，如果一个 EventEmitter 没有使用就被初始化也会有点麻烦。 目的所以使用 react context 结合 event emitter 的目的便是  添加高阶组件，通过 react context 为所有子组件注入 em 对象 添加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 React Context 结合 EventEmitter">
+<meta property="og:url" content="https://blog.rxliuli.com/p/3b1502f22ad645b5a6521b39b145e560/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景EventEmitter 很适合在不修改组件状态结构的情况下进行组件通信，然而它的生命周期不受 react 管理，需要手动添加&#x2F;清理监听事件很麻烦。而且，如果一个 EventEmitter 没有使用就被初始化也会有点麻烦。 目的所以使用 react context 结合 event emitter 的目的便是  添加高阶组件，通过 react context 为所有子组件注入 em 对象 添加">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-02T09:59:08.054Z">
+<meta property="article:modified_time" content="2021-01-19T16:06:19.822Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="wiki">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>使用 React Context 结合 EventEmitter - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用 React Context 结合 EventEmitter"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-08-02 17:59" pubdate>
+          2020年8月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用 React Context 结合 EventEmitter</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年1月20日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>EventEmitter 很适合在不修改组件状态结构的情况下进行组件通信，然而它的生命周期不受 react 管理，需要手动添加/清理监听事件很麻烦。而且，如果一个 EventEmitter 没有使用就被初始化也会有点麻烦。</p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>所以使用 react context 结合 event emitter 的目的便是</p>
+<ul>
+<li>添加高阶组件，通过 react context 为所有子组件注入 em 对象</li>
+<li>添加自定义 hooks，从 react context 获取 emitter 对象，并暴露出合适的函数。</li>
+<li>自动清理 emitter 对象和 emitter listener。</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="实现基本的-EventEmitter"><a href="#实现基本的-EventEmitter" class="headerlink" title="实现基本的 EventEmitter"></a>实现基本的 EventEmitter</h3><p>首先，实现一个基本的 EventEmitter，这里之前吾辈曾经就有 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/rx-util/blob/master/src/module/event/EventEmitter.ts">实现过</a>，所以直接拿过来了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type EventType = string | number
+
+export type BaseEvents = Record&lt;EventType, any[]&gt;
+
+/**
+ * 事件总线
+ * 实际上就是发布订阅模式的一种简单实现
+ * 类型定义受到 {@link https://github.com/andywer/typed-emitter/blob/master/index.d.ts} 的启发，不过只需要声明参数就好了，而不需要返回值（应该是 {@code void}）
+ */
+export class EventEmitter&lt;Events extends BaseEvents&gt; {
+  private readonly events = new Map&lt;keyof Events, Function[]&gt;()
+
+  /**
+   * 添加一个事件监听程序
+   * @param type 监听类型
+   * @param callback 处理回调
+   * @returns {@code this}
+   */
+  add&lt;E extends keyof Events&gt;(type: E, callback: (...args: Events[E]) =&gt; void) {
+    const callbacks = this.events.get(type) || []
+    callbacks.push(callback)
+    this.events.set(type, callbacks)
+    return this
+  }
+  /**
+   * 移除一个事件监听程序
+   * @param type 监听类型
+   * @param callback 处理回调
+   * @returns {@code this}
+   */
+  remove&lt;E extends keyof Events&gt;(
+    type: E,
+    callback: (...args: Events[E]) =&gt; void
+  ) {
+    const callbacks = this.events.get(type) || []
+    this.events.set(
+      type,
+      callbacks.filter((fn: any) =&gt; fn !== callback)
+    )
+    return this
+  }
+  /**
+   * 移除一类事件监听程序
+   * @param type 监听类型
+   * @returns {@code this}
+   */
+  removeByType&lt;E extends keyof Events&gt;(type: E) {
+    this.events.delete(type)
+    return this
+  }
+  /**
+   * 触发一类事件监听程序
+   * @param type 监听类型
+   * @param args 处理回调需要的参数
+   * @returns {@code this}
+   */
+  emit&lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) {
+    const callbacks = this.events.get(type) || []
+    callbacks.forEach((fn) =&gt; {
+      fn(...args)
+    })
+    return this
+  }
+
+  /**
+   * 获取一类事件监听程序
+   * @param type 监听类型
+   * @returns 一个只读的数组，如果找不到，则返回空数组 {@code []}
+   */
+  listeners&lt;E extends keyof Events&gt;(type: E) {
+    return Object.freeze(this.events.get(type) || [])
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="结合-context-实现一个包裹组件"><a href="#结合-context-实现一个包裹组件" class="headerlink" title="结合 context 实现一个包裹组件"></a>结合 context 实现一个包裹组件</h3><p>包裹组件的目的是为了能直接提供一个包裹组件，以及提供 provider 的默认值，不需要使用者直接接触 emitter 对象。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import * as React from "react"
+import { createContext, PropsWithChildren } from "react"
+import { BaseEvents, EventEmitter } from "./util/EventEmitter"
+
+export const EventEmitterContext = createContext&lt;EventEmitter&lt;any&gt;&gt;(null as any)
+
+export function EventEmitterRC&lt;T extends BaseEvents&gt;(
+  props: PropsWithChildren&lt;{ value: EventEmitter&lt;T&gt; }&gt;
+) {
+  return (
+    &lt;EventEmitterContext.Provider value={props.value}&gt;
+      {props.children}
+    &lt;/EventEmitterContext.Provider&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="使用-hooks-暴露-emitter-api"><a href="#使用-hooks-暴露-emitter-api" class="headerlink" title="使用 hooks 暴露 emitter api"></a>使用 hooks 暴露 emitter api</h3><p>我们主要需要暴露的 API 只有三个</p>
+<ul>
+<li><code>useListener</code>: 添加监听器，使用 hooks 是为了能在组件卸载时自动清理监听函数</li>
+<li><code>emit</code>: 触发监听器，直接调用即可</li>
+<li><code>emitter</code>: 在当前组件树生效的 emitter 对象</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
+  DependencyList,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react"
+import { EventEmitterContext } from "../EventEmitterRC"
+// noinspection ES6PreferShortImport
+import { BaseEvents, EventEmitter } from "../util/EventEmitter"
+
+function useEmit&lt;Events extends BaseEvents&gt;() {
+  const em = useContext(EventEmitterContext)
+  return useCallback(
+    &lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) =&gt; {
+      console.log("emitter emit: ", type, args)
+      em.emit(type, ...args)
+    },
+    [em]
+  )
+}
+
+export function useEventEmitter&lt;Events extends BaseEvents&gt;() {
+  const emit = useEmit&lt;Events&gt;()
+  // 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次
+  const emitter = useMemo(() =&gt; new EventEmitter&lt;Events&gt;(), [])
+  return {
+    useListener: &lt;E extends keyof Events&gt;(
+      type: E,
+      listener: (...args: Events[E]) =&gt; void,
+      deps: DependencyList = []
+    ) =&gt; {
+      const em = useContext(EventEmitterContext)
+      useEffect(() =&gt; {
+        console.log("emitter add: ", type, listener.name)
+        em.add(type, listener)
+        return () =&gt; {
+          console.log("emitter remove: ", type, listener.name)
+          em.remove(type, listener)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [listener, type, ...deps])
+    },
+    emit,
+    emitter,
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来非常简单，在需要使用的 emitter hooks 的组件外部包裹一个 <code>EventEmitterRC</code> 组件，然后就可以使用 <code>useEventEmitter</code> 了。</p>
+<p>下面是一个简单的 Todo 示例，使用 emitter 实现了 todo 表单 与 todo 列表之间的通信。</p>
+<p>目录结构如下</p>
+<ul>
+<li><code>todo</code><ul>
+<li><code>component</code><ul>
+<li><code>TodoForm.tsx</code></li>
+<li><code>TodoList.tsx</code></li>
+</ul>
+</li>
+<li><code>modal</code><ul>
+<li><code>TodoEntity.ts</code></li>
+<li><code>TodoEvents.ts</code></li>
+</ul>
+</li>
+<li><code>Todo.tsx</code></li>
+</ul>
+</li>
+</ul>
+<p>Todo 父组件，使用 <code>EventEmitterRC</code> 包裹子组件</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const Todo: React.FC&lt;PropsType&gt; = () =&gt; {
+  const { emitter } = useEventEmitter()
+  return (
+    &lt;EventEmitterRC value={emitter}&gt;
+      &lt;TodoForm /&gt;
+      &lt;TodoList /&gt;
+    &lt;/EventEmitterRC&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在表单组件中使用 <code>useEventEmitter</code> hooks 获得 <code>emit</code> 方法，然后在添加 todo 时触发它。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoForm: React.FC&lt;PropsType&gt; = () =&gt; {
+  const { emit } = useEventEmitter&lt;TodoEvents&gt;()
+
+  const [title, setTitle] = useState("")
+
+  function handleAddTodo(e: FormEvent&lt;HTMLFormElement&gt;) {
+    e.preventDefault()
+    emit("addTodo", {
+      title,
+    })
+    setTitle("")
+  }
+
+  return (
+    &lt;form onSubmit={handleAddTodo}&gt;
+      &lt;div&gt;
+        &lt;label htmlFor={"title"}&gt;标题：&lt;/label&gt;
+        &lt;input
+          value={title}
+          onChange={(e) =&gt; setTitle(e.target.value)}
+          id={"title"}
+        /&gt;
+        &lt;button type={"submit"}&gt;添加&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在列表组件中使用 <code>useEventEmitter</code> hooks 获得 <code>useListener</code> hooks，然后监听添加 todo 的事件。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoList: React.FC&lt;PropsType&gt; = () =&gt; {
+  const [list, setList] = useState&lt;TodoEntity[]&gt;([])
+  const { useListener } = useEventEmitter&lt;TodoEvents&gt;()
+  useListener(
+    "addTodo",
+    (todo) =&gt; {
+      setList([...list, todo])
+    },
+    [list]
+  )
+  const em = { useListener }
+  useEffect(() =&gt; {
+    console.log("em: ", em)
+  }, [em])
+  return (
+    &lt;ul&gt;
+      {list.map((todo, i) =&gt; (
+        &lt;li key={i}&gt;{todo.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>下面是一些 TypeScript 类型</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface TodoEntity {
+  title: string
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { BaseEvents } from "../../../components/emitter"
+import { TodoEntity } from "./TodoEntity"
+
+export interface TodoEvents extends BaseEvents {
+  addTodo: [entity: TodoEntity]
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@dominikdosoudil/building-event-emitter-using-react-hooks-650f94a057ea">Building event emitter using react hooks</a></li>
+<li><a target="_blank" rel="noopener" href="https://nodejs.org/api/events.html">NodeJS EventEmitter API</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/wiki/">#wiki</a>
+      
+        <a href="/tags/react/">#react</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用 React Context 结合 EventEmitter</div>
+      <div>https://blog.rxliuli.com/p/3b1502f22ad645b5a6521b39b145e560/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年8月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/fc4a5a2a2e8341c584d6e92060faf01f/" title="使用 rollup 打包 react 库">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用 rollup 打包 react 库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/d984e195f1b1469ca49ff364374ce3d8/" title="关于前端组件通信的一些理解">
+                        <span class="hidden-mobile">关于前端组件通信的一些理解</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

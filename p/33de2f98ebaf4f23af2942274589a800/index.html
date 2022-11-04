@@ -1,0 +1,933 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景项目中需要使用 FTP，所以做了简单的 FTP&#x2F;SFTP 封装，此处仅做一下记录。  注：这里并未实现连接池管理，生产环境强烈建议手动实现连接池以提高性能！  UML 图像说明形状 注：此处参考自 IDEA UML 图中的颜色   蓝色：类&#x2F;步骤 黄色：字段 红色：函数 紫色：配置  图形 长方形：类&#x2F;配置文件&#x2F;依赖项 圆角长方形：字段&#x2F;函数&#x2F;对象&#x2F;变量 箭头：拥有&#x2F;向下依赖的意思  目标封装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 使用 FTP&#x2F;SFTP">
+<meta property="og:url" content="https://blog.rxliuli.com/p/33de2f98ebaf4f23af2942274589a800/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景项目中需要使用 FTP，所以做了简单的 FTP&#x2F;SFTP 封装，此处仅做一下记录。  注：这里并未实现连接池管理，生产环境强烈建议手动实现连接池以提高性能！  UML 图像说明形状 注：此处参考自 IDEA UML 图中的颜色   蓝色：类&#x2F;步骤 黄色：字段 红色：函数 紫色：配置  图形 长方形：类&#x2F;配置文件&#x2F;依赖项 圆角长方形：字段&#x2F;函数&#x2F;对象&#x2F;变量 箭头：拥有&#x2F;向下依赖的意思  目标封装">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.rxliuli.com/20190226221826.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190302115433.png">
+<meta property="og:image" content="https://img.rxliuli.com/20190302120512.png">
+<meta property="article:published_time" content="2020-04-18T14:14:09.393Z">
+<meta property="article:modified_time" content="2020-12-30T05:10:48.233Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.rxliuli.com/20190226221826.png">
+  
+  
+  
+  <title>Java 使用 FTP/SFTP - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java 使用 FTP/SFTP"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          26 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java 使用 FTP/SFTP</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>项目中需要使用 FTP，所以做了简单的 <code>FTP/SFTP</code> 封装，此处仅做一下记录。</p>
+<blockquote>
+<p>注：这里并未实现连接池管理，生产环境强烈建议手动实现连接池以提高性能！</p>
+</blockquote>
+<h2 id="UML-图像说明"><a href="#UML-图像说明" class="headerlink" title="UML 图像说明"></a>UML 图像说明</h2><h3 id="形状"><a href="#形状" class="headerlink" title="形状"></a>形状</h3><blockquote>
+<p>注：此处参考自 IDEA UML 图中的颜色</p>
+</blockquote>
+<ul>
+<li>蓝色：类/步骤</li>
+<li>黄色：字段</li>
+<li>红色：函数</li>
+<li>紫色：配置</li>
+</ul>
+<h3 id="图形"><a href="#图形" class="headerlink" title="图形"></a>图形</h3><ul>
+<li>长方形：类/配置文件/依赖项</li>
+<li>圆角长方形：字段/函数/对象/变量</li>
+<li>箭头：拥有/向下依赖的意思</li>
+</ul>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>封装简单的通用操作</p>
+<ul>
+<li>上传单个文件</li>
+<li>上传使用 <code>InputStream</code>(内存操作)</li>
+<li>下载单个文件</li>
+<li>下载得到 <code>InputStream</code>(内存操作)</li>
+<li>创建目录</li>
+<li>递归创建目录</li>
+<li>删除单个文件/空目录</li>
+<li>获取指定目录下的文件信息列表</li>
+<li>获取文件/目录信息</li>
+<li>递归获取文件/目录信息</li>
+<li>递归删除目录</li>
+<li>监听目录变化（内部使用）</li>
+<li>异步上传后等待结果</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><ol>
+<li>定义顶层接口 <code>FtpOperator</code>，具体实现由子类（<code>BasicFtpOperatorImpl</code>, <code>SftpOperatorImpl</code>）完成</li>
+<li>定义顶层配置文件基类 <code>FtpClientConfig</code>，包含着 ftp 连接必须的一些东西，具体细节在子类配置中 <code>BasicFtpClientConfig</code>, <code>SftpClientConfig</code></li>
+<li>添加工厂类 <code>FtpOperatorFactory</code>，根据不同子类的配置对象创建不同的 ftp 操作对象，并且一经创建就可以永久性使用</li>
+<li>添加 <code>FtpWatchConfig</code>, <code>FtpWatch</code>, <code>FtpWatchFactory</code> FTP 监听器</li>
+<li>添加集成 SpringBoot 中，读取 <code>application.yml</code> 中的配置，并创建不同的 <code>FtpOperator</code> 暴露给外部使用，动态初始化 FTP 监视器</li>
+</ol>
+<blockquote>
+<p>注：这里使用 FTP 监视器的原因是为了避免每次上传数据后都要单独监听 FTP 目录的变化，造成 FTP 多线程连接数量过多<br>注：这里的并未实现 FTPClient 及 Jsch 的对象池管理，所以仅可参考实现，生产环境中仍需进行修改！</p>
+</blockquote>
+<p>图解如下</p>
+<p><img src="https://img.rxliuli.com/20190226221826.png" srcset="/img/loading.gif" lazyload alt="图解"></p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>具体的代码吾辈就不贴到这里了，全部的代码已经放到 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/java-ftp-example">GitHub 的公共仓库</a> 上了。</p>
+<h2 id="FTP-使用"><a href="#FTP-使用" class="headerlink" title="FTP 使用"></a>FTP 使用</h2><p>FtpOperator API 图解<br><img src="https://img.rxliuli.com/20190302115433.png" srcset="/img/loading.gif" lazyload alt="FtpOperator API 图解"></p>
+<p>上传部分流程图解<br><img src="https://img.rxliuli.com/20190302120512.png" srcset="/img/loading.gif" lazyload alt="上传部分流程图解"></p>
+<h3 id="使用-FtpOperator-进行基本操作"><a href="#使用-FtpOperator-进行基本操作" class="headerlink" title="使用 FtpOperator 进行基本操作"></a>使用 FtpOperator 进行基本操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
+@SpringBootTest
+public class FtpSpringConfigTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private FtpOperator ftp;
+
+    @Test
+    public void put() throws UnsupportedEncodingException {
+        // 上传数据
+        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
+        final boolean result = ftp.put(is, "/test.txt");
+        assertThat(result)
+                .isTrue();
+    }
+
+    @Test
+    public void exist() {
+        // 判断数据是否存在于 ftp 服务器
+        final boolean exist = ftp.exist("/test.txt");
+        assertThat(exist)
+                .isTrue();
+    }
+
+    @Test
+    public void get() {
+        // 从 ftp 服务器上下载数据
+        ftp.get("/test.txt", is -&gt; {
+            try {
+                final List&lt;String&gt; list = IOUtils.readLines(is);
+                log.info("list: {}", list);
+                assertThat(list)
+                        .isNotEmpty();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+    }
+
+    @Test
+    public void mkdir() {
+        // 创建文件夹
+        assertThat(ftp.mkdir("/test"))
+                .isTrue();
+    }
+
+    @Test
+    public void mkdirR() {
+        // 递归创建文件夹
+        assertThat(ftp.mkdirR("/test/test2/test3"))
+                .isTrue();
+    }
+
+    @Test
+    public void ls() {
+        // 获取目录下的文件信息列表
+        final List&lt;Stat&gt; list = ftp.ls("/");
+        log.info("list: {}", list.stream()
+                .map(Stat::getPath)
+                .collect(Collectors.joining("\n")));
+        assertThat(list)
+                .isNotEmpty();
+    }
+
+    @Test
+    public void lsr() {
+        // 获取目录下的文件信息列表
+        final List&lt;Stat&gt; list = ftp.lsR("/");
+        log.info("list: {}", list.stream()
+                .map(Stat::getPath)
+                .collect(Collectors.joining("\n")));
+        assertThat(list)
+                .isNotEmpty();
+    }
+
+    @Test
+    public void rm() {
+        // 删除单个文件
+        assertThat(ftp.rm("/test.txt"))
+                .isTrue();
+    }
+
+    @Test
+    public void rmdir() {
+        // 删除指定空目录
+        assertThat(ftp.rmdir("/test/test2/test3"))
+                .isTrue();
+    }
+
+    @Test
+    public void rmdirR() {
+        // 递归删除指定目录
+        assertThat(ftp.rmdirR("/test"))
+                .isTrue();
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="使用-FtpOperator-上传文件并监听结果"><a href="#使用-FtpOperator-上传文件并监听结果" class="headerlink" title="使用 FtpOperator 上传文件并监听结果"></a>使用 FtpOperator 上传文件并监听结果</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
+@SpringBootTest
+public class FtpSpringConfigTest extends BaseTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private FtpOperator ftp;
+    @Test
+    public void watch() throws InterruptedException, UnsupportedEncodingException {
+        // 监听新文件 /test.md 的出现
+        final String path = "/test.md";
+        ftp.watch((Predicate&lt;String&gt;) str -&gt; str.equals(path))
+                .thenAcceptAsync(stat -&gt; {
+                    log.warn("stat: {}", stat);
+                    assertThat(ftp.exist(stat.getPath()))
+                            .isNotNull();
+                });
+        // 创建测试文件
+        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
+        log.warn("test file upload completed!");
+        assertThat(ftp.put(is, path))
+                .isTrue();
+        // 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！
+        Thread.sleep(2000);
+        // 删除测试文件
+        ftp.rm(path);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<hr>
+<p>那么，关于 Java 中使用 <code>FTP/SFTP</code> 便到此为止啦</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java 使用 FTP/SFTP</div>
+      <div>https://blog.rxliuli.com/p/33de2f98ebaf4f23af2942274589a800/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/0a924f166b48497e9d1d19048967e880/" title="Java 微信公众号开发">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java 微信公众号开发</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/5ac18d41f1ef478288f456ba1a96f9e5/" title="Java 中 String 转 LocalDateTime 出现错误">
+                        <span class="hidden-mobile">Java 中 String 转 LocalDateTime 出现错误</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1074 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言esbuild 是一个通用的代码编译器和构建工具，使用 golang 构建，它非常快，性能上比现有的 js 工具链高 1~2 个数量级。它目前还不是一个开箱即用的构建工具，但通过它的插件系统，我们已经可以做到许多事情。  自动排除所有依赖项在构建 lib 时，我们通常都不希望捆绑依赖的模块，希望能够默认排除掉所有的依赖项，这个插件就是用来实现这个功能的。它会将所有不是以 . 开头的导入模块设置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 ESBuild 插件机制实现需要的功能">
+<meta property="og:url" content="https://blog.rxliuli.com/p/ba9b341a8792405fb86d8fe02a18adfc/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言esbuild 是一个通用的代码编译器和构建工具，使用 golang 构建，它非常快，性能上比现有的 js 工具链高 1~2 个数量级。它目前还不是一个开箱即用的构建工具，但通过它的插件系统，我们已经可以做到许多事情。  自动排除所有依赖项在构建 lib 时，我们通常都不希望捆绑依赖的模块，希望能够默认排除掉所有的依赖项，这个插件就是用来实现这个功能的。它会将所有不是以 . 开头的导入模块设置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/006b4700843a4237a22056b3bd29a742.png">
+<meta property="article:published_time" content="2022-05-20T12:54:23.400Z">
+<meta property="article:modified_time" content="2022-05-20T15:03:54.845Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="工程化">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/006b4700843a4237a22056b3bd29a742.png">
+  
+  
+  
+  <title>使用 ESBuild 插件机制实现需要的功能 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用 ESBuild 插件机制实现需要的功能"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-20 20:54" pubdate>
+          2022年5月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用 ESBuild 插件机制实现需要的功能</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年5月20日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://esbuild.github.io/">esbuild</a> 是一个通用的代码编译器和构建工具，使用 golang 构建，它非常快，性能上比现有的 js 工具链高 1~2 个数量级。它目前还不是一个开箱即用的构建工具，但通过它的插件系统，我们已经可以做到许多事情。</p>
+<p><img src="/resources/006b4700843a4237a22056b3bd29a742.png" srcset="/img/loading.gif" lazyload alt="1653052756694"></p>
+<h2 id="自动排除所有依赖项"><a href="#自动排除所有依赖项" class="headerlink" title="自动排除所有依赖项"></a>自动排除所有依赖项</h2><p>在构建 lib 时，我们通常都不希望捆绑依赖的模块，希望能够默认排除掉所有的依赖项，这个插件就是用来实现这个功能的。它会将所有不是以 <code>.</code> 开头的导入模块设置为外部的，避免捆绑到最终构建产物中。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+
+/**
+ * 自动排除所有依赖项
+ * golang 不支持 js 的一些正则表达式语法，参考 https://github.com/evanw/esbuild/issues/1634
+ */
+export function autoExternal(): Plugin {
+  return {
+    name: 'autoExternal',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, (args) =&gt; {
+        if (/^\.{1,2}\//.test(args.path)) {
+          return
+        }
+        return {
+          path: args.path,
+          external: true,
+        }
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们可以这样使用，例如 import esbuild，但它不会被捆绑进来。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build } from 'esbuild'
+console.log(build)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>会被编译成</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> build <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="使用环境变量"><a href="#使用环境变量" class="headerlink" title="使用环境变量"></a>使用环境变量</h2><p>有时候我们会需要针对不同的环境使用环境变量来区分，而使用插件也可以很简单的做到这一点。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+
+/**
+ * @param {string} str
+ */
+function isValidId(str: string) {
+  try {
+    new Function(`var ${str};`)
+  } catch (err) {
+    return false
+  }
+  return true
+}
+
+/**
+ * Create a map of replacements for environment variables.
+ * @return A map of variables.
+ */
+export function defineProcessEnv() {
+  /**
+   * @type {{ [key: string]: string }}
+   */
+  const definitions: Record&lt;string, string&gt; = {}
+  definitions['process.env.NODE_ENV'] = JSON.stringify(
+    process.env.NODE_ENV || 'development',
+  )
+  Object.keys(process.env).forEach((key) =&gt; {
+    if (isValidId(key)) {
+      definitions[`process.env.${key}`] = JSON.stringify(process.env[key])
+    }
+  })
+  definitions['process.env'] = '{}'
+
+  return definitions
+}
+
+export function defineImportEnv() {
+  const definitions: Record&lt;string, string&gt; = {}
+  Object.keys(process.env).forEach((key) =&gt; {
+    if (isValidId(key)) {
+      definitions[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
+    }
+  })
+  definitions['import.meta.env'] = '{}'
+  return definitions
+}
+
+/**
+ * Pass environment variables to esbuild.
+ * @return An esbuild plugin.
+ */
+export function env(options: { process?: boolean; import?: boolean }): Plugin {
+  return {
+    name: 'env',
+    setup(build) {
+      const { platform, define = {} } = build.initialOptions
+      if (platform === 'node') {
+        return
+      }
+      build.initialOptions.define = define
+      if (options.import) {
+        Object.assign(build.initialOptions.define, defineImportEnv())
+      }
+      if (options.process) {
+        Object.assign(build.initialOptions.define, defineProcessEnv())
+      }
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用插件之后，我们就可以在代码中使用环境变量了</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export const NodeEnv = import.meta.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>编译结果</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> NodeEnv <span class="token operator">=</span> <span class="token string">'test'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h2 id="在构建时输出日志"><a href="#在构建时输出日志" class="headerlink" title="在构建时输出日志"></a>在构建时输出日志</h2><p>有时候我们希望以监视模式构建某些东西，但 esbuild 不会在构建后输出消息，我们简单实现一个。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin, PluginBuild } from 'esbuild'
+
+export function log(): Plugin {
+  return {
+    name: 'log',
+    setup(builder: PluginBuild) {
+      let start: number
+      builder.onStart(() =&gt; {
+        start = Date.now()
+      })
+      builder.onEnd((result) =&gt; {
+        if (result.errors.length !== 0) {
+          console.error('build failed', result.errors)
+          return
+        }
+        console.log(`build complete, time ${Date.now() - start}ms`)
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们可以测试它是有效的</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const mockLog = jest.fn()
+jest.spyOn(global.console, 'log').mockImplementation(mockLog)
+await build({
+  stdin: {
+    contents: `export const name = 'liuli'`,
+  },
+  plugins: [log()],
+  write: false,
+})
+expect(mockLog.mock.calls.length).toBe(1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="自动排除-node-开头的依赖"><a href="#自动排除-node-开头的依赖" class="headerlink" title="自动排除 node: 开头的依赖"></a>自动排除 node: 开头的依赖</h2><p>有时候某些依赖的模块使用了 nodejs 的原生模块，但是以 <code>node:</code> 开头的的写法，这会导致 esbuild 无法识别，我们使用以下插件处理它</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+
+/**
+ * 排除和替换 node 内置模块
+ */
+export function nodeExternal(): Plugin {
+  return {
+    name: 'nodeExternals',
+    setup(build) {
+      build.onResolve({ filter: /(^node:)/ }, (args) =&gt; ({
+        path: args.path.slice(5),
+        external: true,
+      }))
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们的以下代码中的 node: 开头的原生模块会被排除</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { path } from 'node:path'
+console.log(path.resolve(__dirname))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>编译结果</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// &lt;stdin&gt;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> path <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'path'</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="通过-raw-捆绑文本文件"><a href="#通过-raw-捆绑文本文件" class="headerlink" title="通过 ?raw 捆绑文本文件"></a>通过 ?raw 捆绑文本文件</h2><p>如果使用过 vite 的话，可能会对它的 <code>?*</code> 功能印象深刻，它提供了各种各样的功能来以不同的方式导入文件，而在 esbuild 中，我们有时候也希望静态捆绑某些内容，例如 readme 文件。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+import { readFile } from 'fs-extra'
+import * as path from 'path'
+
+/**
+ * 通过 ?raw 将资源作为字符串打包进来
+ * @returns
+ */
+export function raw(): Plugin {
+  return {
+    name: 'raw',
+    setup(build) {
+      build.onResolve({ filter: /\?raw$/ }, (args) =&gt; {
+        return {
+          path: path.isAbsolute(args.path)
+            ? args.path
+            : path.join(args.resolveDir, args.path),
+          namespace: 'raw-loader',
+        }
+      })
+      build.onLoad(
+        { filter: /\?raw$/, namespace: 'raw-loader' },
+        async (args) =&gt; {
+          return {
+            contents: await readFile(args.path.replace(/\?raw$/, '')),
+            loader: 'text',
+          }
+        },
+      )
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>通过以下方式验证</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const res = await build({
+  stdin: {
+    contents: `
+        import readme from '../../README.md?raw'
+        console.log(readme)
+      `,
+    resolveDir: __dirname,
+  },
+  plugins: [raw()],
+  bundle: true,
+  write: false,
+})
+console.log(res.outputFiles[0].text)
+expect(
+  res.outputFiles[0].text.includes('@liuli-util/esbuild-plugins'),
+).toBeTruthy()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="重写一些模块"><a href="#重写一些模块" class="headerlink" title="重写一些模块"></a>重写一些模块</h2><p>有时候我们希望重写一些模块，例如将导入的 lodash 更改为 lodash-es 以实现 tree shaking，这时候我们可以通过以下插件办到这件事</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build, Plugin } from 'esbuild'
+import path from 'path'
+
+/**
+ * 将指定的 import 重写为另一个
+ * @param entries
+ * @returns
+ */
+export function resolve(entries: [from: string, to: string][]): Plugin {
+  return {
+    name: 'resolve',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
+        const findEntries = entries.find((item) =&gt; item[0] === args.path)
+        if (!findEntries) {
+          return
+        }
+        return await build.resolve(findEntries[1])
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们可以使用以下配置将 lodash 替换为 lodash-es</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
+  plugins: [resolve([['lodash', 'lodash-es']])],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>源代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { uniq } from 'lodash'
+console.log(uniq([1, 2, 1]))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>编译结果</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash-es'</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="强制指定模块没有副作用"><a href="#强制指定模块没有副作用" class="headerlink" title="强制指定模块没有副作用"></a>强制指定模块没有副作用</h2><p>当我们的使用一个第三方的包时，有可能这个包依赖了一些其他的模块，如果这个模块没有声明 <code>sideEffect</code>，那么即便它没有副作用并且导出了 esm 的包，也会将依赖的模块 bundle 进来，但我们可以使用插件 api 强制指定模块没有副作用。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+
+/**
+ * 设置指定模块为没有副作用的包，由于 webpack/esbuild 的配置不兼容，所以先使用插件来完成这件事
+ * @param packages
+ * @returns
+ */
+export function sideEffects(packages: string[]): Plugin {
+  return {
+    name: 'sideEffects',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
+        if (
+          args.pluginData || // Ignore this if we called ourselves
+          !packages.includes(args.path)
+        ) {
+          return
+        }
+
+        const { path, ...rest } = args
+        rest.pluginData = true // Avoid infinite recursion
+        const result = await build.resolve(path, rest)
+
+        result.sideEffects = false
+        return result
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>我们以如下方式使用它</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
+  plugins: [sideEffects(['lib'])],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这时候，即便 lib-a 中某些代码依赖了 lib-b，但只要你的代码没有依赖到特定方法，那么它就会被正确的 tree shaking</p>
+<p>例如下面的代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+import { hello } from 'lib-a'
+console.log(hello('liuli'))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// lib-a/src/index.ts
+export * from 'lib-b'
+export function hello(name: string) {
+  return `hello ${name}`
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>编译结果</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// dist/main.js</span>
+<span class="token keyword">function</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token parameter"><span class="token literal-property property">name</span><span class="token operator">:</span> string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
+<span class="token punctuation">}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>目前已经实现了 esbuild 的许多插件，但它作为构建应用的基础构建工具仍然稍显薄弱，目前仅推荐使用它构建一些纯 JavaScript/TypeScript 的代码。如果需要构建完整的 web 应用，那么 vite 可能是目前基于 esbuild 的最成熟的构建工具。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+        <a href="/tags/javascript/">#javascript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用 ESBuild 插件机制实现需要的功能</div>
+      <div>https://blog.rxliuli.com/p/ba9b341a8792405fb86d8fe02a18adfc/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/9eb3b1a6e46a4777b3661ce0bb890d69/" title="vite 构建正确内联 svg 资源">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vite 构建正确内联 svg 资源</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/9751355186fd4c5bbad0d041fe85c256/" title="汉诺塔问题">
+                        <span class="hidden-mobile">汉诺塔问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

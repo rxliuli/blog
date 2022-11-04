@@ -1,0 +1,891 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="上古时期 吾辈来的时候已然不多，但部分 mobile 嵌入的静态页面仍然是这种形式  后端模板（JSP&#x2F;FreeMarker）+ 前端静态 HTML 页面。那是个前端开发非常卑微的时代，除了还原 UI 和兼容性之外，所有业务逻辑、路由跳转、状态管理、部署维护都由后端包办完成。前端能做的事情非常有限，UI 还原、CSS 样式以及浏览器兼容性（例如传统前端需要掌握的精确到 1px 的兼容到 IE6 的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2020 吾辈在公司推动的前端技术演进">
+<meta property="og:url" content="https://blog.rxliuli.com/p/5ea2552c67d34130b68cc11143d6191c/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="上古时期 吾辈来的时候已然不多，但部分 mobile 嵌入的静态页面仍然是这种形式  后端模板（JSP&#x2F;FreeMarker）+ 前端静态 HTML 页面。那是个前端开发非常卑微的时代，除了还原 UI 和兼容性之外，所有业务逻辑、路由跳转、状态管理、部署维护都由后端包办完成。前端能做的事情非常有限，UI 还原、CSS 样式以及浏览器兼容性（例如传统前端需要掌握的精确到 1px 的兼容到 IE6 的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/1e8dc3a95f054ef3b404bdc39f95e099.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/86bcfe6872864bd282703cbb5522ff27.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/a5cc319a00a144349c494b91edb92079.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/3654c8048cb14577a2097aa0294fe4f3.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/40a90f19f74143d3a676e7afdec3c658.png">
+<meta property="article:published_time" content="2021-02-26T23:39:54.612Z">
+<meta property="article:modified_time" content="2021-07-09T15:21:09.408Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="工程化">
+<meta property="article:tag" content="公司">
+<meta property="article:tag" content="经验">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/1e8dc3a95f054ef3b404bdc39f95e099.png">
+  
+  
+  
+  <title>2020 吾辈在公司推动的前端技术演进 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2020 吾辈在公司推动的前端技术演进"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-02-27 07:39" pubdate>
+          2021年2月27日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2020 吾辈在公司推动的前端技术演进</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年7月9日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="上古时期"><a href="#上古时期" class="headerlink" title="上古时期"></a>上古时期</h2><blockquote>
+<p>吾辈来的时候已然不多，但部分 mobile 嵌入的静态页面仍然是这种形式</p>
+</blockquote>
+<p>后端模板（JSP/FreeMarker）+ 前端静态 HTML 页面。那是个前端开发非常卑微的时代，除了还原 UI 和兼容性之外，所有业务逻辑、路由跳转、状态管理、部署维护都由后端包办完成。前端能做的事情非常有限，UI 还原、CSS 样式以及浏览器兼容性（例如传统前端需要掌握的精确到 1px 的兼容到 IE6 的高保真切图技巧）是所需的关键技能点，或许还要负责 UI 相关的任务。但这其中，<strong>许多更偏向于「手艺人」的工作，而非工程师的技术价值体现，更重要的是，它无法被沉淀为技术人的长期价值</strong>。</p>
+<blockquote>
+<p>参考: <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/375448022">前端为什么会越来越复杂？</a><br>CSS 不是正交的，所以很麻烦，参考: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29888231">CSS 为什么这么难学？</a></p>
+</blockquote>
+<p>问题</p>
+<ul>
+<li>难以应对大规模的项目开发，几乎没有工程化可言</li>
+<li>前后端耦合导致修改、发布困难（就我们公司有个 gw 项目就是反例）</li>
+<li>前端能做的事情非常有限，几近是后端的附属（App 有趣的一点就是极大的增强了客户端的能力，许多独立 App 开发者的工具类产品可能对后端的依赖极少）</li>
+</ul>
+<h2 id="跨入现代前端-vue-webpack"><a href="#跨入现代前端-vue-webpack" class="headerlink" title="跨入现代前端: vue + webpack"></a>跨入现代前端: vue + webpack</h2><ul>
+<li>框架: vue</li>
+<li>项目组织: git 分支 + 目录</li>
+</ul>
+<blockquote>
+<p>在吾辈进来的时候基本是这样的</p>
+</blockquote>
+<p><img src="/resources/1e8dc3a95f054ef3b404bdc39f95e099.png" srcset="/img/loading.gif" lazyload alt="1614382963380"></p>
+<p>无论如何，前后端分离都已然是大势所趋，公司的项目也不例外，也从 jq 升级为了 vue。vue 是一个及其新手友好的框架，官方文档在前端开源框架中无出其右，所以选择它对招聘确实有一定的帮助（准入门槛低）。</p>
+<p>但这里确实存在一些问题，主要如下</p>
+<ul>
+<li>vue 和 ts 结合的不好，所有前端项目，不是已经用了 ts，就是在走向 ts 的路上（去年 vue3 选择使用 ts 重写 v3）<ul>
+<li>这是一个设计失误，因为 vue 作者更相信另一个 facebook 的静态类型脚本语言 flow.js，但它最终失败了</li>
+</ul>
+</li>
+<li>vue 不是一个创新者，更像是一个现有技术的整合者，更新相比于 react v17/angular v11 慢得多（v3）</li>
+<li>vue 和 ant design 结合的不好，因为蚂蚁金服使用 react 实现，vue 版本并非官方实现（关于这个 UI 框架的选择其实令吾辈有些困惑）</li>
+<li>项目组织方面使用 git 分支 + 目录的形式可能是模仿了后端，但由于目录之间并非模块的形式加上 git 没有规范可言导致没有利用本地模块的优势反而只有劣势</li>
+<li>有些项目使用原生 webpack 进行配置打包，而这实际上非常难以维护，参考: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32148338">webpack 为什么这么难用？</a></li>
+</ul>
+<blockquote>
+<p>典型项目: 前端旧项目</p>
+</blockquote>
+<h2 id="静态类型-引入-typescript"><a href="#静态类型-引入-typescript" class="headerlink" title="静态类型: 引入 typescript"></a>静态类型: 引入 typescript</h2><ul>
+<li>语言: typescript</li>
+<li>项目组织: 分散的 git 项目</li>
+</ul>
+<p>由于使用目录+分支管理的项目组织非常麻烦，所以后面的一些项目采用了每个业务创建一个 git 项目，然后最终将之打包整合到官网（其实就是不同的子路由），独立每个项目的开发和部署。而后希望通过 ts 的静态类型增强前端开发的效率及开发体验（主要是 IDE 在提示、重构和导航方面的支持），所以将之引入了进来，吾辈有自信可以解决任何遇到的 ts 问题。</p>
+<p><img src="/resources/86bcfe6872864bd282703cbb5522ff27.png" srcset="/img/loading.gif" lazyload alt="1614383048466"></p>
+<p>但老实说，问题仍然没有完全解决</p>
+<ul>
+<li>ts 和 vue 2 结合的不好，甚至 vue 3 中 ts 也没能解决模板层面的问题，参考: <a target="_blank" rel="noopener" href="https://github.com/JetBrains/web-types/issues/15">web-types 讨论</a></li>
+<li>分散的 git 项目之间如果存在相同代码，比较难以共享（但因为有 npm 私服所以还不太明显）</li>
+<li>组件粒度较粗，比较小的组件难以抽取</li>
+</ul>
+<blockquote>
+<p>典型项目: 新管理后台</p>
+</blockquote>
+<h2 id="替换框架为-react"><a href="#替换框架为-react" class="headerlink" title="替换框架为 react"></a>替换框架为 react</h2><p>事实上，引入 react 没有 ts 那么安全，因为这次吾辈不能说<strong>吾辈有自信可以解决任何遇到的 react 问题</strong>，因为吾辈也没有实际生产环境的经验。但吾辈仍然引入了，有以下几个考量</p>
+<ul>
+<li>更好的结合 ts 使用</li>
+<li>直接使用官方维护的 ant design for react 版本</li>
+<li>相比于 vue 好得多的 IDE 支持</li>
+<li>更好的开发大型项目（报告系统）</li>
+<li>尝试变化，使用最新的技术</li>
+</ul>
+<p>但这仍然并非终点，在报告系统项目中，单个前端项目的代码量首次达到了 2w+ 行（至今已到 4w+），分割模块势在必行，这里就提到了需要使用到 lerna 了。</p>
+<blockquote>
+<p>典型项目: 公开图库</p>
+</blockquote>
+<h2 id="引入-lerna-以使用-monorepo"><a href="#引入-lerna-以使用-monorepo" class="headerlink" title="引入 lerna 以使用 monorepo"></a>引入 lerna 以使用 monorepo</h2><ul>
+<li>项目组织: monorepo</li>
+</ul>
+<p>Java 后端的项目天然是 monorepo（因为 maven 的原因），而前端在很长时间内都没有类似的工具，直到吾辈遇到了 lerna。这点某位离职的同事有曾提及，但直到几个月后报告系统第一版基本结束时进行重构才真正实用。<br>使用它吾辈改进了以下几点问题</p>
+<ul>
+<li>使用 monorepo 更好的组织模块，保证项目在超过 4w 行代码、20 个模块时仍然保持可维护性</li>
+<li>更简单的共享和复用代码，只要抽离一个模块即可在所有模块直接引用它了</li>
+<li>更加容易统一整个项目的技术栈，引入一个依赖的不同版本几乎不可能出现了</li>
+<li>更加容易容易统一项目的配置，保证整个项目的代码风格都是一致的（例如 eslint/prettier）</li>
+</ul>
+<p><img src="/resources/a5cc319a00a144349c494b91edb92079.png" srcset="/img/loading.gif" lazyload alt="1614383172095"></p>
+<blockquote>
+<p>典型项目: 旧版报告系统</p>
+</blockquote>
+<h2 id="引入-gh-pages-简化发布"><a href="#引入-gh-pages-简化发布" class="headerlink" title="引入 gh-pages 简化发布"></a>引入 gh-pages 简化发布</h2><p>事实上，生产环境的发布一直非常麻烦，即便建宏已经实现了两版的发布系统，但目前使用体验仍然不算好（gw 项目必须要用），但前后端分离的项目却不尽然。后来在一个偶然的情况下，吾辈发现了一种更高效的方式: <a href="/p/7b0fe35b00b345618a9323977a2e552a">使用 gh-pages 发布前端项目</a>，同时喜获冰淇淋一个。</p>
+<blockquote>
+<p>当然，由于后来主要在开发 electron 客户端，web 项目在生产环境的发布变得较少，但这件事仍然证明只要将现有的工具整合起来，仍然可能极大的提高生产力</p>
+</blockquote>
+<p><img src="/resources/3654c8048cb14577a2097aa0294fe4f3.png" srcset="/img/loading.gif" lazyload alt="1614383397001"></p>
+<blockquote>
+<p>典型项目-大屏看板</p>
+</blockquote>
+<h2 id="rushstack-标准化的前端-monorepo"><a href="#rushstack-标准化的前端-monorepo" class="headerlink" title="rushstack: 标准化的前端 monorepo"></a>rushstack: 标准化的前端 monorepo</h2><ul>
+<li>项目组织: lerna monorepo =&gt; <a target="_blank" rel="noopener" href="https://rushstack.io/">rushstack</a></li>
+</ul>
+<p>虽然 lerna 可以分割模块，但它并没有所谓的最佳实践，事实上，吾辈在微软的 monorepo 工具 rush 的相关项目 rushstack 中找到了一种最佳实践，在形式上有许多参考价值（虽然由于大而全且包含许多问题的原因导致没有 lerna 使用广泛），最新的两个生产项目均已重构成这种形式的 monorepo 项目，稍晚一些会将它们合并，便于之后它们的整合。</p>
+<p><img src="/resources/40a90f19f74143d3a676e7afdec3c658.png" srcset="/img/loading.gif" lazyload alt="1614431686700"></p>
+<p>在 rushstack 的介绍中有这么一段话非常有趣：<br>灵活性有其缺点。Node.js 工具因其令人困惑的选项而臭名昭著：选择您的编译器、linter 工具、打包工具、包管理器、任务引擎、单元测试工具、测试断言库等。一旦决定（<strong>下了赌注</strong>），整合所有这些组件就变成了自己的软件项目。随着规模的扩大，这些成本可能会迅速增加！<br>核心就是前端定制需求过多，要求工具链非常灵活，进而导致无法标准化（和现在的报告系统业务面临的问题多么相似。。。）</p>
+<blockquote>
+<p>典型项目 miis</p>
+</blockquote>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><h3 id="统一和规范"><a href="#统一和规范" class="headerlink" title="统一和规范"></a>统一和规范</h3><ul>
+<li>定义统一的业务目录的结构，形成约定俗成</li>
+<li>通过更高层的 cli 抽象强制统一 <code>lib</code> 的项目结构，例如入口文件一定是 <code>lib/src/index.ts</code>，出口一定是 <code>dist/index.js</code>，而打包出来的一定默认支持 <code>esm/commonjs</code></li>
+<li>使用 prettier+git hooks 统一项目中的代码风格</li>
+<li>通过 syncpack 统一多个模块之间的依赖版本</li>
+<li>通过多个模块中的 npm script，例如启动 web 项目的开发环境是 <code>start</code>，启动 electron 开发环境则是 <code>dev:win/mac</code>，打包项目是 <code>build</code>，而 <code>libs</code> 的模块打包发布是 <code>pub</code>，打包 electron 项目是 <code>pkg:*</code></li>
+</ul>
+<h3 id="分层和解耦"><a href="#分层和解耦" class="headerlink" title="分层和解耦"></a>分层和解耦</h3><ul>
+<li>通过 monorepo 分割 electron 项目不同的进程，将之作为单独的 nodejs 项目和 react 项目管理和发布</li>
+<li>通过使用 api class 的形式，将与后端的连接封装在单独的逻辑层，定义参数、返回值的类型，业务层直接引用相关的单例对象调用方法即可</li>
+</ul>
+<blockquote>
+<p>吾辈也好奇现代前端框架强绑定、重 UI 层的现在，如何更好的分离 UI 与业务逻辑</p>
+</blockquote>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><ul>
+<li>使用 lerna 的 <code>--include-dependencies --stream</code> 参数尽可能按照依赖顺序并发运行命令，例如打包所有模块</li>
+<li>为了减少安装依赖上的麻烦，尝试过 <code>nrm/yrm</code> 改源，<code>npmrc</code> 配置镜像，但最终还是要求所有前端必须能够使用 SSR+透明代理工具，否则无法启动项目</li>
+<li>在公司 blog 上分享一些自己的心得和感触</li>
+<li>通过使用 docsify 提升文档维护者的体验，使用 VSCode 编辑文档，然后使用 git 提交便自动部署了</li>
+<li>引入 storybook 为通用组件编写交互式文档</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>公司前端文档: 公司的前端项目在线文档，使用 git + markdown 增强开发者编辑体验，希望更多人在更好的维护它</li>
+<li>common-util: 前端工具库，近期使用 monorepo 将之彻底重构<br>至少优化了以下几项<ul>
+<li><input checked="" disabled="" type="checkbox"> 清理不需要的功能，减少了 60% 的代码</li>
+<li><input checked="" disabled="" type="checkbox"> 使用 monorepo 增强项目的可维护性</li>
+<li><input checked="" disabled="" type="checkbox"> 支持 nodejs 引入</li>
+<li><input disabled="" type="checkbox"> 使用 monorepo 分割打包减小在项目中的引入成本 – babel 的 567 三个版本转变的惨剧历历在目</li>
+<li><input disabled="" type="checkbox"> 找到对用户更友好的使用方式 class vs function – 面向对象 vs 函数式</li>
+</ul>
+</li>
+<li>web-logger: 前端日志，已在报告系统及之后后所有的前端项目中实用，目前还未支持 nodejs</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+        <a href="/tags/%E5%85%AC%E5%8F%B8/">#公司</a>
+      
+        <a href="/tags/%E7%BB%8F%E9%AA%8C/">#经验</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2020 吾辈在公司推动的前端技术演进</div>
+      <div>https://blog.rxliuli.com/p/5ea2552c67d34130b68cc11143d6191c/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年2月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/5ce7d75fe2dc46838b49f9e5e14ac738/" title="electron 开发经验之谈系列-在渲染、主进程间共享数据">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">electron 开发经验之谈系列-在渲染、主进程间共享数据</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/1a6dda43a5a84e61b4b16865d8e52373/" title="实践 lerna monorepo">
+                        <span class="hidden-mobile">实践 lerna monorepo</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

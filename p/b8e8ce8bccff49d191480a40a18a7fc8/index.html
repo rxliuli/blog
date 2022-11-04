@@ -1,0 +1,1129 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言代码生成对于很多开发者都不是陌生的概念，从使用脚手架（create-react-app）生成项目，到使用 ide 生成代码、或是从后端 api schema 生成代码，几乎不可能避免使用它。它可以解决各种各样的问题  从同一个来源生成项目，避免千人千面的项目整体结构 减少编写样板代码 避免在多个地方重复编写代码导致的不一致性  但在使用 TypeScript 时，它还可以做到一些其他有趣的事情">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码生成-从 module css 生成 dts">
+<meta property="og:url" content="https://blog.rxliuli.com/p/b8e8ce8bccff49d191480a40a18a7fc8/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言代码生成对于很多开发者都不是陌生的概念，从使用脚手架（create-react-app）生成项目，到使用 ide 生成代码、或是从后端 api schema 生成代码，几乎不可能避免使用它。它可以解决各种各样的问题  从同一个来源生成项目，避免千人千面的项目整体结构 减少编写样板代码 避免在多个地方重复编写代码导致的不一致性  但在使用 TypeScript 时，它还可以做到一些其他有趣的事情">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/0a85923724f64322b272f96ba09f0982.svg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/736d1e022d374f79be616675e6a616a6.svg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/bef3bb2bf40f43dd87c724d4cfc70bdc.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/13cdf71f96e549c9bb21188dd051a81b.gif">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/07d7086ae24e496ca1dcd291668a36ac.gif">
+<meta property="article:published_time" content="2022-09-28T14:30:47.951Z">
+<meta property="article:modified_time" content="2022-10-18T11:27:14.160Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="vite">
+<meta property="article:tag" content="工程化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/0a85923724f64322b272f96ba09f0982.svg">
+  
+  
+  
+  <title>代码生成-从 module css 生成 dts - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="代码生成-从 module css 生成 dts"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-28 22:30" pubdate>
+          2022年9月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">代码生成-从 module css 生成 dts</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年10月18日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>代码生成对于很多开发者都不是陌生的概念，从使用脚手架（create-react-app）生成项目，到使用 ide 生成代码、或是从后端 api schema 生成代码，几乎不可能避免使用它。它可以解决各种各样的问题</p>
+<ul>
+<li>从同一个来源生成项目，避免千人千面的项目整体结构</li>
+<li>减少编写样板代码</li>
+<li>避免在多个地方重复编写代码导致的不一致性</li>
+</ul>
+<p>但在使用 TypeScript 时，它还可以做到一些其他有趣的事情，包括</p>
+<ul>
+<li>生成类型提高开发者体验，例如为 env、module css、i18n config 生成类型定义</li>
+<li>支持原本不支持引入的文件，例如为 graphql 生成代码音变引入它</li>
+</ul>
+<p>或许有人会认为代码生成需要处理 ast（即抽象语法树），而处理 ast 是一件复杂的事情，因而不去尝试做类似的事情。吾辈要说的是，ast 的实际结构确实可能会很复杂，例如 TypeScript 官方解析器解析 ts 得到的那个，但其核心却相当简单，这个领域仅仅只是门槛稍微有点高。如果你选择了一个合适的语法树操作工具，再加上现有的各种 代码 &lt;=&gt; ast 可视化工具，那事情会变得简单许多。</p>
+<h2 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h2><p>想要生成代码，基本上就像将一只大象放进冰箱里面一样需要三步</p>
+<ol>
+<li>得到某种类型的元数据，例如从 css 得到它的 ast</li>
+<li>转换元数据得到生成目标代码的 ast</li>
+<li>将 ast 转换成代码</li>
+</ol>
+<p><img src="/resources/0a85923724f64322b272f96ba09f0982.svg" srcset="/img/loading.gif" lazyload alt="代码生成步骤.drawio.svg"></p>
+<p>正如标题所言，在这里主要的目标代码是 TypeScript，相应的，元数据的来源多种多样，从 json 数据、到其他语言的 ast、到远端的接口，这实际上没有什么限制，只要你能够将之转换为目标 ast 即可。</p>
+<p>下面我们将来尝试第一个，也是最简单的一个，从 module css 文件生成类型定义</p>
+<h2 id="从-css-生成类型定义"><a href="#从-css-生成类型定义" class="headerlink" title="从 css 生成类型定义"></a>从 css 生成类型定义</h2><h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>为什么要这样做？</p>
+<p>在使用 css module 时，我们通常使用构建工具，例如 rollup/vite/webpack 来解析 *.module.css 文件，并使得最终 bundle 中的结果符合预期。但在开发阶段，它并没有太多提示，例如定义了一个 css class，但你在 ts 中使用时，并不会有什么提示。当你将一个 css class 删除后，也不会有任何代码提示。<br>例如下面这个示例</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/* App.module.css */</span>
+<span class="token selector">.hide</span> <span class="token punctuation">{</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// App.tsx
+import { useReducer } from 'react'
+import css from './App.module.css'
+
+export function App() {
+  const [hide, toggle] = useReducer((s) =&gt; !s, false)
+  return (
+    &lt;div&gt;
+      &lt;button onClick={toggle}&gt;toggle&lt;/button&gt;
+      &lt;p className={hide ? css.hide : ''}&gt;test&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>如果我们在 App.module.css 旁边放一个 App.module.css.d.ts 文件，那么在 ts 中使用时就会很快乐</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const css: {
+  hide: string
+}
+
+export default css<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>当然，在 ide 中也可以完成这个功能，但每个 ide 都需要实现一遍这个功能，这正是问题所在，插件无法跨 ide 使用，但基于 TypeScript 的代码提示可以做到跨 ide 使用，包括 vscode、jetbrains ide、vim 等等。</p>
+<h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p>正如上面所言，想要生成代码，在这里需要得到 css ast 和转换 css ast 为 ts ast，而这就需要选择一个合适的解析器来解析 css 得到 ast 以及生成 ts ast 并转换为代码了。</p>
+<p><img src="/resources/736d1e022d374f79be616675e6a616a6.svg" srcset="/img/loading.gif" lazyload alt="从 css 生成接口基本流程.drawio.svg"></p>
+<p>我们使用以下两个库</p>
+<ul>
+<li>css-tree: 解析 css 代码为 cssom</li>
+<li>ast-types: 一个通用的 ts/js ast 高层次抽象</li>
+<li>recast: 基于 ast-types 的一个 ast 解析生成器</li>
+</ul>
+<blockquote>
+<p>Tip: 代码的 ast 可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">https://astexplorer.net/</a> 以可视化的方式检查<br><img src="/resources/bef3bb2bf40f43dd87c724d4cfc70bdc.png" srcset="/img/loading.gif" lazyload alt="1664382002113.png"></p>
+</blockquote>
+<h3 id="解析-css"><a href="#解析-css" class="headerlink" title="解析 css"></a>解析 css</h3><p>首先，解析 css 得到 ast，并从中过滤出所有 class 选择器类名</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function parse(code: string): string[] {
+  const ast = csstree.parse(code)
+  const r: string[] = []
+  csstree.walk(ast, (node) =&gt; {
+    if (node.type === 'ClassSelector') {
+      r.push(node.name)
+    }
+  })
+  return r
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后将 css 类名列表转换为 ast</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function convert(classes: string[]): n.Program {
+  return b.program([
+    b.variableDeclaration('const', [
+      b.variableDeclarator(
+        b.identifier.from({
+          name: 'css',
+          typeAnnotation: b.tsTypeAnnotation(
+            b.tsTypeLiteral(
+              classes.map((s) =&gt;
+                b.tsPropertySignature(
+                  b.identifier(s),
+                  b.tsTypeAnnotation(b.tsStringKeyword()),
+                ),
+              ),
+            ),
+          ),
+        }),
+      ),
+    ]),
+    b.exportDefaultDeclaration(b.identifier('css')),
+  ])
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>最后，将 ast 转换为 ts 代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function format(ast: n.ASTNode): string {
+  return prettyPrint(ast).code
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>结合一下 3 个方法</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function generate(cssCode: string): string {
+  const classes = parse(cssCode)
+  const ast = convert(classes)
+  return format(ast)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>做个最简单的测试</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(
+  generate(`/* App.module.css */
+.hide {
+  display: none;
+}
+`),
+)
+// 会得到以下代码
+// const css: {
+//     hide: string
+// };
+
+// export default css;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来我们完成了基本的从 css 到 dts 的代码生成，但如果希望实用，它还需要一些额外的步骤</p>
+<ol>
+<li>更好的使用方式封装，例如封装为 cli 自动扫描指定目录下的所有 *.module.css 文件并生成对应的 dts 文件，或者是通过插件直接集成到开发工具的流程中，例如 vite 插件</li>
+<li>发布为 npm 包，或者使用某种形式的 monorepo 便于在多个项目复用</li>
+</ol>
+<p>下面使用 vite 插件作为演示</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig, Plugin, ResolvedConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { globby } from 'globby'
+import path from 'path'
+import * as csstree from 'css-tree'
+import { namedTypes as n, builders as b } from 'ast-types'
+import { prettyPrint } from 'recast'
+import fsExtra from 'fs-extra'
+import { watch } from 'chokidar'
+
+// 上面的代码。。。
+
+const { pathExists, readFile, remove, writeFile } = fsExtra
+
+function cssdts(): Plugin {
+  let config: ResolvedConfig
+  async function generateByPath(item: string) {
+    const cssPath = path.resolve(config.root, item)
+    const code = await readFile(cssPath, 'utf-8')
+    await writeFile(cssPath + '.d.ts', generate(code))
+  }
+
+  return {
+    name: 'vite-plugin-cssdts',
+    configResolved(_config) {
+      config = _config
+    },
+    async buildStart() {
+      const list = await globby('src/**/*.module.css', {
+        cwd: config.root,
+      })
+      await Promise.all(
+        list.map(async (item) =&gt; {
+          const cssPath = path.resolve(config.root, item)
+          await generateByPath(cssPath)
+        }),
+      )
+    },
+    configureServer(server) {
+      watch('src/**/*.module.css', { cwd: config.root })
+        .on('add', generateByPath)
+        .on('change', generateByPath)
+        .on('unlink', async (cssPath) =&gt; {
+          if (cssPath.endsWith('.module.css')) {
+            const dtsPath = cssPath + '.d.ts'
+            if (await pathExists(dtsPath)) {
+              await remove(dtsPath)
+            }
+          }
+        })
+    },
+  }
+}
+
+export default defineConfig({
+  plugins: [react(), cssdts()],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在，每当启动 vite 时都会自动扫描所有的 *.module.css 生成对应的类型定义，在开发模式下还会持续监听文件的变化。</p>
+<p><img src="/resources/13cdf71f96e549c9bb21188dd051a81b.gif" srcset="/img/loading.gif" lazyload alt="代码提示.gif"></p>
+<h3 id="sourcemap"><a href="#sourcemap" class="headerlink" title="sourcemap"></a>sourcemap</h3><p>目前已经实现了代码提示和校验的功能，但跳转尚未生效，我们可以使用 source-map 来实现它。这是另一个有趣的技术，在之后将详细介绍，这里仅说明一下工作方式。sourcemap 将一个文件的内容与一或多个源文件的内容映射，chrome 或 vscode 均支持根据 sourcemap 自动查找对应的源文件，利用这个功能我们可以让生成的 dts 指向 css 文件。</p>
+<p>效果</p>
+<p><img src="/resources/07d7086ae24e496ca1dcd291668a36ac.gif" srcset="/img/loading.gif" lazyload alt="跳转.gif"></p>
+<p>完整代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { SourceMapGenerator, SourceNode } from 'source-map'
+import { defineConfig, Plugin, ResolvedConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { globby } from 'globby'
+import path from 'path'
+import * as csstree from 'css-tree'
+import { namedTypes as n, builders as b } from 'ast-types'
+import * as recast from 'recast'
+import fsExtra from 'fs-extra'
+import { watch } from 'chokidar'
+import { keyBy } from 'lodash-es'
+import tsParser from 'recast/parsers/typescript.js'
+
+function parse(code: string): csstree.ClassSelector[] {
+  const ast = csstree.parse(code, { positions: true })
+  const r: csstree.ClassSelector[] = []
+  csstree.walk(ast, (node) =&gt; {
+    if (node.type === 'ClassSelector') {
+      r.push(node)
+    }
+  })
+  return r
+}
+
+function convert(classes: csstree.ClassSelector[]): n.Program {
+  const r = b.variableDeclaration('const', [
+    b.variableDeclarator(
+      b.identifier.from({
+        name: 'css',
+        typeAnnotation: b.tsTypeAnnotation(
+          b.tsTypeLiteral(
+            classes.map((s) =&gt;
+              b.tsPropertySignature(
+                b.identifier(s.name),
+                b.tsTypeAnnotation(b.tsStringKeyword()),
+              ),
+            ),
+          ),
+        ),
+      }),
+    ),
+  ])
+  ;(r as unknown as n.TSTypeAliasDeclaration).declare = true
+  return b.program([r, b.exportDefaultDeclaration(b.identifier('css'))])
+}
+
+function format(ast: n.ASTNode): string {
+  return recast.prettyPrint(ast).code
+}
+
+function sourcemap({
+  code,
+  classes,
+  source,
+  target,
+}: {
+  code: string
+  classes: csstree.ClassSelector[]
+  source: string
+  target: string
+}) {
+  const root = recast.parse(code, { parser: tsParser })
+  const cssSelectorsMap = keyBy(classes, (item) =&gt; item.name)
+  const map = new SourceMapGenerator({
+    file: target,
+  })
+  recast.visit(root, {
+    visitTSPropertySignature(path) {
+      const name = (path.node.key as n.Identifier).name
+      console.log((path.node.key as n.Identifier).name)
+      const css = cssSelectorsMap[name]
+      interface Pos {
+        line: number
+        column: number
+      }
+
+      function add(original: Pos, generated: Pos) {
+        map.addMapping({
+          source: source,
+          original: {
+            line: original.line,
+            column: original.column,
+          },
+          generated: {
+            line: generated.line,
+            column: generated.column,
+          },
+        })
+      }
+      add(css.loc!.start, path.node!.key.loc!.start)
+      add(css.loc!.end, path.node!.key.loc!.end)
+      return false
+    },
+  })
+  return map.toString()
+}
+
+export function generate(
+  cssCode: string,
+  source: string,
+  target: string,
+): string {
+  const classes = parse(cssCode)
+  const ast = convert(classes)
+  const code = format(ast)
+  const mapCode = sourcemap({ code, classes, source, target })
+  return (
+    code +
+    '\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,' +
+    btoa(mapCode)
+  )
+}
+
+const { pathExists, readFile, remove, writeFile } = fsExtra
+
+function cssdts(): Plugin {
+  let config: ResolvedConfig
+  async function generateByPath(item: string) {
+    const cssPath = path.resolve(config.root, item)
+    const code = await readFile(cssPath, 'utf-8')
+    const dtsPath = cssPath + '.d.ts'
+    await writeFile(dtsPath, generate(code, cssPath, dtsPath))
+  }
+
+  return {
+    name: 'vite-plugin-cssdts',
+    configResolved(_config) {
+      config = _config
+    },
+    async buildStart() {
+      const list = await globby('src/**/*.module.css', {
+        cwd: config.root,
+      })
+      await Promise.all(
+        list.map(async (item) =&gt; {
+          const cssPath = path.resolve(config.root, item)
+          await generateByPath(cssPath)
+        }),
+      )
+    },
+    configureServer(server) {
+      watch('src/**/*.module.css', { cwd: config.root })
+        .on('add', generateByPath)
+        .on('change', generateByPath)
+        .on('unlink', async (cssPath) =&gt; {
+          if (cssPath.endsWith('.module.css')) {
+            const dtsPath = cssPath + '.d.ts'
+            if (await pathExists(dtsPath)) {
+              await remove(dtsPath)
+            }
+          }
+        })
+    },
+  }
+}
+
+export default defineConfig({
+  plugins: [react(), cssdts()],
+  build: {
+    sourcemap: 'inline',
+    minify: false,
+  },
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>在之后的几篇文章中，吾辈将演示代码生成的实际用途，并实现一些简单的例子，也会给出现有的更完善的的工具（如果有的话）。</p>
+<ul>
+<li><a href="/p/d867b35e62454483ae697185d93617ab">代码生成-从环境变量生成类型定义</a></li>
+<li><a href="/p/7fc05ef7c1274b168504c216a6774ea6">代码生成-从 i18n config 生成类型定义</a></li>
+<li>从 graphql 生成代码</li>
+<li>从 open api schema 生成类型定义</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/typescript/">#typescript</a>
+      
+        <a href="/tags/vite/">#vite</a>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>代码生成-从 module css 生成 dts</div>
+      <div>https://blog.rxliuli.com/p/b8e8ce8bccff49d191480a40a18a7fc8/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/d867b35e62454483ae697185d93617ab/" title="代码生成-从环境变量生成类型定义">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码生成-从环境变量生成类型定义</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/73331967c1814df480811eee598e714b/" title="JavaScript ESM 很好，但它现在也许没那么好">
+                        <span class="hidden-mobile">JavaScript ESM 很好，但它现在也许没那么好</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

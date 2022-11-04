@@ -1,0 +1,1480 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景 该功能吾辈已经封装成 NPM 库 vue-url-persist  在使用 Vue SPA 开发面向普通用户的网站时，吾辈也遇到了一些之前未被重视，但却实实在在存在的问题，这次便浅谈一下 SPA 网站将所有数据都存储到内存中导致数据很容易丢失以及吾辈思考并尝试的解决方案。  参考：SPA 全称 single page application，意为 单页应用，不是泥萌想的那样！#笑哭  思维导">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈 Vue SPA 网站 URL 保存数据实践">
+<meta property="og:url" content="https://blog.rxliuli.com/p/35841f3c9ebe46aa9c589a92ff9558a7/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景 该功能吾辈已经封装成 NPM 库 vue-url-persist  在使用 Vue SPA 开发面向普通用户的网站时，吾辈也遇到了一些之前未被重视，但却实实在在存在的问题，这次便浅谈一下 SPA 网站将所有数据都存储到内存中导致数据很容易丢失以及吾辈思考并尝试的解决方案。  参考：SPA 全称 single page application，意为 单页应用，不是泥萌想的那样！#笑哭  思维导">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012847.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012848.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012846.png">
+<meta property="article:published_time" content="2020-02-02T14:15:37.924Z">
+<meta property="article:modified_time" content="2020-12-25T11:17:44.848Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="工程化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012847.png">
+  
+  
+  
+  <title>浅谈 Vue SPA 网站 URL 保存数据实践 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="浅谈 Vue SPA 网站 URL 保存数据实践"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-02-02 22:15" pubdate>
+          2020年2月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          13k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          107 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">浅谈 Vue SPA 网站 URL 保存数据实践</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月25日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><blockquote>
+<p>该功能吾辈已经封装成 NPM 库 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/vue-url-persist">vue-url-persist</a></p>
+</blockquote>
+<p>在使用 Vue SPA 开发面向普通用户的网站时，吾辈也遇到了一些之前未被重视，但却实实在在存在的问题，这次便浅谈一下 SPA 网站将所有数据都存储到内存中导致数据很容易丢失以及吾辈思考并尝试的解决方案。</p>
+<blockquote>
+<p>参考：SPA 全称 <code>single page application</code>，意为 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8">单页应用</a>，不是泥萌想的那样！#笑哭</p>
+</blockquote>
+<p>思维导图</p>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:245px;" src="https://www.processon.com/embed/5e1e5d93e4b0c3908f881d64"></iframe>
+
+<p>首先列出为什么遇到这个问题，具体场景及解决的问题是什么？</p>
+<p>想要解决的一些问题</p>
+<ol>
+<li>刷新页面数据不丢失：因为数据都保存在内存中，所以刷新之后自然不存在了</li>
+<li>URL 复制给其他人数据不丢失：因为数据没有持久化到 URL 上，也没有根据 URL 上的数据进行初始化，所以复制给别人的 URL 当然会丢失数据（搜索条件之类）</li>
+<li>页面返回数据不丢失：因为数据都保存在内存中，所以跳转到其他路由再跳转回来数据当然不会存在了</li>
+</ol>
+<p>那么，先谈一下每个问题的解决方案</p>
+<ol>
+<li>刷新页面数据不丢失<ul>
+<li>将数据序列化到本地，例如 <code>localStorage</code> 中，然后在刷新后获取一次<ul>
+<li>注：这方面已经有先行者了，例如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/vuex-persist">vuex-persist</a> 和 <a target="_blank" rel="noopener" href="https://github.com/robinvdvleuten/vuex-persistedstate">vuex-persistedstate</a></li>
+</ul>
+</li>
+<li>将数据序列化到 URL 上，每次加载都从 URL 上获取数据</li>
+</ul>
+</li>
+<li>URL 复制给其他人数据不丢失<ul>
+<li>只能将数据序列化到 URL 上</li>
+</ul>
+</li>
+<li>页面返回数据不丢失<ul>
+<li>将数据放到 vuex 中，并且在 URL 上使用 <code>key</code> 进行标识<ul>
+<li>注：这方面已经有先行者了，例如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/vue-navigation">vue-navigation</a> 和 <a target="_blank" rel="noopener" href="https://github.com/vuejs/vuex-router-sync">vuex-router-sync</a></li>
+</ul>
+</li>
+<li>将数据序列化到 URL 上，并且不新增路由记录</li>
+<li>使用 vue-router 的缓存 <code>keep-alive</code></li>
+</ul>
+</li>
+</ol>
+<p>在了解了这么多的解决方案之后，吾辈最终选择了兼容性最好的 URL 保存数据，它能同时解决 3 个问题。然而，很遗憾的是，这似乎并没有很多人讨论这个问题，或许，这个问题本应该是默认就需要解决的，亦或是 SPA 网站真的很少关心这些了。</p>
+<blockquote>
+<p>虽说如此，吾辈还是找到了一些讨论的 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/42226479">StackOverflow: How to hold URL query params in Vue with Vue-Router</a></p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>一个基本的思路是能够确定的</p>
+<ol>
+<li>在组件创建时，从 URL 获取数据并为需要的数据进行初始化</li>
+<li>在这些数据变化时，及时将数据序列化到 URL 上</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012847.png" srcset="/img/loading.gif" lazyload alt="思路图"></p>
+<p>然后，再次出现了一个分歧点，到底要不要绑定 Vue？</p>
+<ol>
+<li>不绑定 vue 手动监听对象变化并将对象的变化响应到 URL 上<br><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012848.png" srcset="/img/loading.gif" lazyload alt="不绑定 vue"></li>
+<li>绑定 vue 并使用它的生命周期 <code>created, beforeRouteUpdate</code> 与监听器 <code>watch</code><br><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200105012846.png" srcset="/img/loading.gif" lazyload alt="绑定 vue"></li>
+</ol>
+<p>那么，两者有什么区别呢？</p>
+<table>
+<thead>
+<tr>
+<th>思路</th>
+<th>不绑定 vue</th>
+<th>绑定 vue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>优点</td>
+<td>非框架强相关，理论上可以通用 <code>Vue/React</code></td>
+<td>不需要手动实现 URL 的几种序列化模式，可以预见至少有两种：<code>HTML 5 History/Hash</code></td>
+</tr>
+<tr>
+<td></td>
+<td>没有 vue/vue-router 的历史包袱</td>
+<td>不需要手动实现数据监听/响应（虽然现在已然不算难了）</td>
+</tr>
+<tr>
+<td></td>
+<td>可以不管 vue-router 实现 URL 动态设置，可以自动优雅降级</td>
+<td>灵活性很强，实现比较好的封装之后使用成本很低</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>没有包袱，但同时没有基础，序列化/数据监听都需要手动实现</td>
+<td>存在历史包袱，vue/vue-router 的怪癖一点都绕不过去</td>
+</tr>
+<tr>
+<td></td>
+<td>灵活性不足，只能初始化一次，需要/不需要序列化的数据分割也相当有挑战</td>
+<td>依赖 vue/vue-router，在其更新之时也必须跟着更新</td>
+</tr>
+<tr>
+<td></td>
+<td>不绑定 vue 意味着与 vue 不可能完美契合</td>
+<td>无法通用，在任何一个其他框架（React）上还要再写一套</td>
+</tr>
+</tbody></table>
+<p>最终，在这个十字路口反复踌躇之后，吾辈选择了更加灵活、成本更低的第二种解决方案。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="已解决"><a href="#已解决" class="headerlink" title="已解决"></a>已解决</h3><ul>
+<li>序列化数据到 URL 上导致路由记录会随着改变增加</li>
+<li>即时序列化数据到 URL 上不现实<blockquote>
+<p>这里吾辈对 <a target="_blank" rel="noopener" href="https://yarnpkg.com/">yarn</a> 进行了考察发现其也是异步更新 URL</p>
+</blockquote>
+</li>
+<li>序列化到 URL 上时导致的死循环，<code>序列化数据到 URL 上 =&gt; 路由更新触发 =&gt; 初始化数据到 URL 上 =&gt; 触发数据改变 =&gt; 序列化数据到 URL 上。。。</code></li>
+<li>同一个路由携带不同的查询参数的 URL 直接在地址栏输入回车一次不会触发页面数据更新</li>
+<li>URL 最大保存数据 IE 最多支持 <code>2083</code> 长度的 URL，换算为中文即为 <code>231</code> 个，所以不能作为一种通用方式进行</li>
+<li>Vue 插件不能动态混入，而是在各个生命周期中判断是否要处理的</li>
+</ul>
+<h3 id="仍遗留"><a href="#仍遗留" class="headerlink" title="仍遗留"></a>仍遗留</h3><ul>
+<li>JSON 序列化的数据长度较 query param 更大</li>
+</ul>
+<blockquote>
+<p>下面是具体实现及代码，不喜欢的话可以直接跳到最下面的 <a href="#%E6%80%BB%E7%BB%93">总结</a>。</p>
+</blockquote>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/tree/linter_vue_example/vue_url_persist_vue_example">GitHub</a></p>
+</blockquote>
+<h3 id="基本尝试"><a href="#基本尝试" class="headerlink" title="基本尝试"></a>基本尝试</h3><p>首先，尝试不使用任何封装，直接在 <code>created</code> 生命周期中初始化并绑定 <code>$watch</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token operator">&lt;</span>template<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span>div <span class="token keyword">class</span><span class="token operator">=</span><span class="token string">"form1"</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>label <span class="token keyword">for</span><span class="token operator">=</span><span class="token string">"keyword"</span><span class="token operator">&gt;</span>搜索名<span class="token operator">:</span><span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>input type<span class="token operator">=</span><span class="token string">"text"</span> v<span class="token operator">-</span>model<span class="token operator">=</span><span class="token string">"form.keyword"</span> id<span class="token operator">=</span><span class="token string">"keyword"</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>input
+        type<span class="token operator">=</span><span class="token string">"checkbox"</span>
+        v<span class="token operator">-</span>model<span class="token operator">=</span><span class="token string">"form.hobbyList"</span>
+        id<span class="token operator">=</span><span class="token string">"anime"</span>
+        value<span class="token operator">=</span><span class="token string">"anime"</span>
+      <span class="token operator">/</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>label <span class="token keyword">for</span><span class="token operator">=</span><span class="token string">"anime"</span><span class="token operator">&gt;</span>动画<span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>input type<span class="token operator">=</span><span class="token string">"checkbox"</span> v<span class="token operator">-</span>model<span class="token operator">=</span><span class="token string">"form.hobbyList"</span> id<span class="token operator">=</span><span class="token string">"game"</span> value<span class="token operator">=</span><span class="token string">"game"</span> <span class="token operator">/</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>label <span class="token keyword">for</span><span class="token operator">=</span><span class="token string">"game"</span><span class="token operator">&gt;</span>游戏<span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>input
+        type<span class="token operator">=</span><span class="token string">"checkbox"</span>
+        v<span class="token operator">-</span>model<span class="token operator">=</span><span class="token string">"form.hobbyList"</span>
+        id<span class="token operator">=</span><span class="token string">"movie"</span>
+        value<span class="token operator">=</span><span class="token string">"movie"</span>
+      <span class="token operator">/</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>label <span class="token keyword">for</span><span class="token operator">=</span><span class="token string">"movie"</span><span class="token operator">&gt;</span>电影<span class="token operator">&lt;</span><span class="token operator">/</span>label<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span>
+      <span class="token punctuation">{</span><span class="token punctuation">{</span> form <span class="token punctuation">}</span><span class="token punctuation">}</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>template<span class="token operator">&gt;</span>
+
+<span class="token operator">&lt;</span>script<span class="token operator">&gt;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Form1'</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">form</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">keyword</span><span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">hobbyList</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">created</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token string">'qb'</span>
+    <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>form<span class="token punctuation">,</span> urlData<span class="token punctuation">.</span>form<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+      <span class="token string">'form'</span><span class="token punctuation">,</span>
+      <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlData<span class="token punctuation">.</span>form <span class="token operator">=</span> val
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+            <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">&gt;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="分离通用性函数"><a href="#分离通用性函数" class="headerlink" title="分离通用性函数"></a>分离通用性函数</h3><p>然后，便是将之分离为单独的函数，方便在所有组件中进行复用</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 初始化一些数据需要序列化/反序列化到 url data 上
+ * @param exps 监视的数据的表达式数组
+ */</span>
+<span class="token keyword">function</span> <span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token parameter">exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token string">'qb'</span>
+  <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">[</span>exp<span class="token punctuation">]</span><span class="token punctuation">,</span> urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+      exp<span class="token punctuation">,</span>
+      <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span> <span class="token operator">=</span> val
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+            <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用起来需要在 <code>created</code> 生命中调用</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token function">created</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">initUrlData</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'form'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="处理深层监听"><a href="#处理深层监听" class="headerlink" title="处理深层监听"></a>处理深层监听</h3><p>如果需要监听的值不是 data 下的顶级字段，而是深层字段的话，便不能直接使用 <code>[]</code> 进行取值和赋值了，而是需要实现支持深层取值/赋值的 <code>get/set</code>。而且，深层监听也意味着一般不会是对象，所以也不能采用 <code>Object.assign</code> 进行合并。</p>
+<p>例如需要监听 <code>page</code> 对象中的 <code>offset, size</code> 两字段</p>
+<p>首先，需要编写通用的 <code>get/set</code> 函数</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 解析字段字符串为数组
+ * @param str 字段字符串
+ * @returns 字符串数组，数组的 `[]` 取法会被解析为数组的一个元素
+ */</span>
+<span class="token keyword">function</span> <span class="token function">parseFieldStr</span><span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> str
+    <span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">[\\.\\[]</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">k</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\]$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span> <span class="token operator">?</span> k<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> k<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span> k<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * 安全的深度获取对象的字段
+ * 注: 只要获取字段的值为 {@type null|undefined}，就会直接返回 {@param defVal}
+ * 类似于 ES2019 的可选调用链特性: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE
+ * @param obj 获取的对象
+ * @param fields 字段字符串或数组
+ * @param [defVal] 取不到值时的默认值，默认为 null
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token parameter">obj<span class="token punctuation">,</span> fields<span class="token punctuation">,</span> defVal <span class="token operator">=</span> <span class="token keyword">null</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> fields <span class="token operator">===</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fields <span class="token operator">=</span> <span class="token function">parseFieldStr</span><span class="token punctuation">(</span>fields<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> obj
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> field <span class="token keyword">of</span> fields<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      res <span class="token operator">=</span> Reflect<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> field<span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>res <span class="token operator">===</span> <span class="token keyword">undefined</span> <span class="token operator">||</span> res <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> defVal
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> defVal
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> res
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * 安全的深度设置对象的字段
+ * 注: 只要设置字段的值为 {@type null|undefined}，就会直接返回 {@param defVal}
+ * 类似于 ES2019 的可选调用链特性: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE
+ * @param obj 设置的对象
+ * @param fields 字段字符串或数组
+ * @param [val] 设置字段的值
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token parameter">obj<span class="token punctuation">,</span> fields<span class="token punctuation">,</span> val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> fields <span class="token operator">===</span> <span class="token string">'string'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fields <span class="token operator">=</span> <span class="token function">parseFieldStr</span><span class="token punctuation">(</span>fields<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> obj
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">=</span> fields<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> field <span class="token operator">=</span> fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> res<span class="token punctuation">,</span> field<span class="token punctuation">,</span> res<span class="token punctuation">[</span>field<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">===</span> len <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">[</span>field<span class="token punctuation">]</span> <span class="token operator">=</span> val
+      <span class="token keyword">return</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+    res <span class="token operator">=</span> res<span class="token punctuation">[</span>field<span class="token punctuation">]</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'res: '</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> res <span class="token operator">!==</span> <span class="token string">'object'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token boolean">false</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后，是替换赋值操作，将之修改为一个专门的函数</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 为 vue 实例上的字段进行深度赋值
+ */</span>
+<span class="token keyword">function</span> <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> oldVal <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> newVal <span class="token operator">=</span> urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> oldVal <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> newVal <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">)</span><span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">set</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * 初始化一些数据需要序列化/反序列化到 url data 上
+ * @param exps 监视的数据的表达式数组
+ */</span>
+<span class="token keyword">function</span> <span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token parameter">exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token string">'qb'</span>
+  <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+      exp<span class="token punctuation">,</span>
+      <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span> <span class="token operator">=</span> val
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+            <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这样，便能单独监听对象中的某个字段了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">initUrlData</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'form.keyword'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>参考：lodash 的函数 <a target="_blank" rel="noopener" href="https://lodash.com/docs/4.17.15#get">get</a>/<a target="_blank" rel="noopener" href="https://lodash.com/docs/4.17.15#set">set</a></p>
+</blockquote>
+<h3 id="使用防抖避免触发过快"><a href="#使用防抖避免触发过快" class="headerlink" title="使用防抖避免触发过快"></a>使用防抖避免触发过快</h3><p>但目前而言每次同步都是即时的，在数据量较大时，可能会存在一些问题，所以使用防抖避免每次数据更新都即时同步到 URL 上。</p>
+<p>首先，实现一个简单的防抖函数</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 函数去抖
+ * 去抖 (debounce) 去抖就是对于一定时间段的连续的函数调用，只让其执行一次
+ * 注: 包装后的函数如果两次操作间隔小于 delay 则不会被执行, 如果一直在操作就会一直不执行, 直到操作停止的时间大于 delay 最小间隔时间才会执行一次, 不管任何时间调用都需要停止操作等待最小延迟时间
+ * 应用场景主要在那些连续的操作, 例如页面滚动监听, 包装后的函数只会执行最后一次
+ * 注: 该函数第一次调用一定不会执行，第一次一定拿不到缓存值，后面的连续调用都会拿到上一次的缓存值。如果需要在第一次调用获取到的缓存值，则需要传入第三个参数 {@param init}，默认为 {@code undefined} 的可选参数
+ * 注: 返回函数结果的高阶函数需要使用 {@see Proxy} 实现，以避免原函数原型链上的信息丢失
+ *
+ * @param action 真正需要执行的操作
+ * @param delay 最小延迟时间，单位为 ms
+ * @param init 初始的缓存值，不填默认为 {@see undefined}
+ * @return function(...[*]=): Promise&lt;any&gt; {@see action} 是否异步没有太大关联
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token parameter">action<span class="token punctuation">,</span> delay<span class="token punctuation">,</span> init <span class="token operator">=</span> <span class="token keyword">null</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> flag
+  <span class="token keyword">let</span> result <span class="token operator">=</span> init
+  <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>args</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>flag<span class="token punctuation">)</span> <span class="token function">clearTimeout</span><span class="token punctuation">(</span>flag<span class="token punctuation">)</span>
+      flag <span class="token operator">=</span> <span class="token function">setTimeout</span><span class="token punctuation">(</span>
+        <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">(</span>result <span class="token operator">=</span> <span class="token function">action</span><span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        delay<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+      <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">,</span> delay<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>将 <code>$watch</code> 中的函数用 <code>debounce</code> 进行包装</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 初始化一些数据需要序列化/反序列化到 url data 上
+ * @param exps 监视的数据的表达式数组
+ */</span>
+<span class="token keyword">function</span> <span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token parameter">exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token string">'qb'</span>
+  <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+      exp<span class="token punctuation">,</span>
+      <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span> <span class="token operator">=</span> val
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+            <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>引用：<a target="_blank" rel="noopener" href="https://juejin.im/post/5b8de829f265da43623c4261">掘金：7 分钟理解 JS 的节流、防抖及使用场景</a><br>参考：lodash 的函数 <a target="_blank" rel="noopener" href="https://lodash.com/docs/4.17.15#debounce">debounce</a></p>
+</blockquote>
+<h3 id="处理路由不变但-query-修改的问题"><a href="#处理路由不变但-query-修改的问题" class="headerlink" title="处理路由不变但 query 修改的问题"></a>处理路由不变但 query 修改的问题</h3><p>接下来，就需要处理一种小众，但确实存在的场景了。</p>
+<ul>
+<li>同一个组件被多个路由复用，这些路由仅仅只是一个 path param 改变了。例如 <a target="_blank" rel="noopener" href="https://ant.design/components/tabs-cn/">标签页</a></li>
+<li>用户复制 URL 之后，发现其中的查询关键字错了，于是修改了关键字之后又复制了一次，而粘贴两次路由相同 query param 不同的 URL 是不会重新创建组件的</li>
+</ul>
+<p>首先确定基本的思路：在路由改变但组件没有重新创建时将 URL 上的数据为需要的数据进行初始化</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 在组件被 vue-router 路由复用时，单独进行初始化数据
+ * @param exps 监视的数据的表达式数组
+ * @param route 将要改变的路由对象
+ */</span>
+<span class="token keyword">function</span> <span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">exps<span class="token punctuation">,</span> route</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在 vue 实例的生命周期 <code>beforeRouteUpdate, beforeRouteEnter</code> 重新初始化 <code>data</code> 中的数据</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token function">beforeRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'form'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+    <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">beforeRouteEnter</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">vm</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'form'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>真的以为问题都解决了么？并不然，打开控制台你会发现一些 vue router 的警告</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">vue-router.esm.js?8c4f:2051 Uncaught (in promise) NavigationDuplicated&nbsp;{_name: "NavigationDuplicated", name: "NavigationDuplicated", message: "Navigating to current location ("/form1/?qb=%7B%22…,%22movie%22,%22game%22%5D%7D%7D") is not allowed", stack: "Error↵    at new NavigationDuplicated (webpack-int…/views/Form1.vue?vue&amp;type=script&amp;lang=js&amp;:222:40)"}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>其实是因为循环触发导致的：<code>序列化数据到 URL 上 =&gt; 路由更新触发 =&gt; 初始化数据到 URL 上 =&gt; 触发数据改变 =&gt; 序列化数据到 URL 上。。。</code>，目前可行的解决方案是在 <code>$watch</code> 中判断数据是否与原来的相同，相同就不进行赋值，避免再次触发 vue-router 的 <code>beforeRouteUpdate</code> 生命周期。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
+ * 初始化一些数据需要序列化/反序列化到 url data 上
+ * @param exps 监视的数据的表达式数组
+ */</span>
+<span class="token keyword">function</span> <span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token parameter">exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+  exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+      exp<span class="token punctuation">,</span>
+      <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span> <span class="token operator">=</span> val
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">return</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+            <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>现在，控制台不会再有警告了。</p>
+<h3 id="封装起来"><a href="#封装起来" class="headerlink" title="封装起来"></a>封装起来</h3><h4 id="使用-Vue-插件"><a href="#使用-Vue-插件" class="headerlink" title="使用 Vue 插件"></a>使用 Vue 插件</h4><figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> debounce<span class="token punctuation">,</span> get<span class="token punctuation">,</span> set <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./common'</span>
+
+<span class="token keyword">class</span> <span class="token class-name">VueUrlPersist</span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
+   * 一些选项
+   */</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>expListName <span class="token operator">=</span> <span class="token string">'exps'</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName <span class="token operator">=</span> <span class="token string">'qb'</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 将 URL 上的数据初始化到 data 上
+   * 此处存在一个谬误
+   * 1. 如果对象不使用合并而是赋值，则处理 [干净] 的 URL 就会很棘手，因为无法感知到初始值是什么
+   * 2. 如果对象使用合并，则手动输入的相同路由不同参数的 URL 就无法处理
+   *    注：该问题已经通过在 watch 中判断值是否变化而解决，但总感觉还有莫名其妙的坑在前面等着。。。
+   * @param vm
+   * @param expOrFn
+   * @param urlData
+   */</span>
+  <span class="token function">initVueData</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">,</span> urlData</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> oldVal <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> newVal <span class="token operator">=</span> urlData<span class="token punctuation">[</span>expOrFn<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>oldVal <span class="token operator">===</span> <span class="token keyword">undefined</span> <span class="token operator">||</span> oldVal <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">set</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> oldVal <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> newVal <span class="token operator">!==</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">)</span><span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
+   * 在组件被 vue-router 路由复用时，单独进行初始化数据
+   * @param vm
+   * @param expOrFnList
+   * @param route
+   */</span>
+  <span class="token function">initNextUrlData</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> expOrFnList<span class="token punctuation">,</span> route</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>route<span class="token punctuation">.</span>query<span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'urlData: '</span><span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+    expOrFnList<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">expOrFn</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">initVueData</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 在组件被 vue 创建后初始化数据并监听之，在发生变化时自动序列化到 URL 上
+   * 注：需要序列化到 URL 上的数据必须能被 JSON.stringfy 序列化
+   * @param vm
+   * @param expOrFnList
+   */</span>
+  <span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> expOrFnList</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    expOrFnList<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">expOrFn</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">initVueData</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> expOrFn<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+
+      vm<span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+        expOrFn<span class="token punctuation">,</span>
+        <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+          console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'val 变化了: '</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span>
+          urlData<span class="token punctuation">[</span>expOrFn<span class="token punctuation">]</span> <span class="token operator">=</span> val
+
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>
+            vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span>
+          <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span>
+          <span class="token punctuation">}</span>
+
+          <span class="token keyword">await</span> vm<span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token operator">...</span>vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+              <span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token function">install</span><span class="token punctuation">(</span><span class="token parameter">Vue<span class="token punctuation">,</span> options <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> _this <span class="token operator">=</span> <span class="token keyword">this</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>expListName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>expListName <span class="token operator">=</span> options<span class="token punctuation">.</span>expListName
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>urlPersistName<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>urlPersistName <span class="token operator">=</span> options<span class="token punctuation">.</span>urlPersistName
+    <span class="token punctuation">}</span>
+    <span class="token class-name">Vue</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>$urlPersist <span class="token operator">=</span> <span class="token keyword">this</span>
+
+    <span class="token keyword">function</span> <span class="token function">initDataByRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">to</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> expList <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">[</span>_this<span class="token punctuation">.</span>expListName<span class="token punctuation">]</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>expList<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>$urlPersist<span class="token punctuation">.</span><span class="token function">initNextUrlData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> expList<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    Vue<span class="token punctuation">.</span><span class="token function">mixin</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      <span class="token function">created</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> expList <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">[</span>_this<span class="token punctuation">.</span>expListName<span class="token punctuation">]</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>expList<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">this</span><span class="token punctuation">.</span>$urlPersist<span class="token punctuation">.</span><span class="token function">initUrlData</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> expList<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function">beforeRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">initDataByRouteUpdate</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+        <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function">beforeRouteEnter</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">vm</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">initDataByRouteUpdate</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> VueUrlPersist<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用起来和其他的插件没什么差别</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// main.js</span>
+<span class="token keyword">import</span> VueUrlPersist <span class="token keyword">from</span> <span class="token string">'./views/js/VueUrlPersist'</span>
+
+<span class="token keyword">const</span> vueUrlPersist <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VueUrlPersist</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+Vue<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>vueUrlPersist<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>在需要使用的组件中只要声明这个属性就好了。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Form2Tab'</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">form</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">keyword</span><span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">sex</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">exps</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'form'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然而，使用 vue 插件有个致命的缺陷：无论是否需要，都会为每个组件中都混入三个生命周期函数，吾辈没有找到一种可以根据实例中是否包含某个值而决定是否混入的方式。</p>
+<h4 id="使用高阶函数"><a href="#使用高阶函数" class="headerlink" title="使用高阶函数"></a>使用高阶函数</h4><p>所以，我们使用 <code>高阶函数</code> + <code>mixin</code> 的形式看看。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> debounce<span class="token punctuation">,</span> get<span class="token punctuation">,</span> set <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./common'</span>
+
+<span class="token keyword">class</span> <span class="token class-name">VueUrlPersist</span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
+   * 一些选项
+   */</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">{</span> key <span class="token operator">=</span> <span class="token string">'qb'</span> <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>key <span class="token operator">=</span> key
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 为 vue 实例上的字段进行深度赋值
+   */</span>
+  <span class="token function">setInitData</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> oldVal <span class="token operator">=</span> <span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+    <span class="token keyword">const</span> newVal <span class="token operator">=</span> urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span>
+    <span class="token comment">//如果原值是对象且新值也是对象，则进行浅合并</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      oldVal <span class="token operator">===</span> <span class="token keyword">undefined</span> <span class="token operator">||</span>
+      oldVal <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">||</span>
+      <span class="token keyword">typeof</span> oldVal <span class="token operator">===</span> <span class="token string">'string'</span> <span class="token operator">||</span>
+      <span class="token keyword">typeof</span> oldVal <span class="token operator">===</span> <span class="token string">'number'</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">set</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> oldVal <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> newVal <span class="token operator">===</span> <span class="token string">'object'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">)</span><span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
+   * 初始化一些数据需要序列化/反序列化到 url data 上
+   * @param vm vue 实例
+   * @param exps 监视的数据的表达式数组
+   */</span>
+  <span class="token function">initUrlDataByCreated</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> key <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>key
+    <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setInitData</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span>
+      vm<span class="token punctuation">.</span><span class="token function">$watch</span><span class="token punctuation">(</span>
+        exp<span class="token punctuation">,</span>
+        <span class="token function">debounce</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          urlData<span class="token punctuation">[</span>exp<span class="token punctuation">]</span> <span class="token operator">=</span> val
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span>
+          <span class="token punctuation">}</span>
+          vm<span class="token punctuation">.</span>$router<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            <span class="token literal-property property">query</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+              <span class="token operator">...</span>vm<span class="token punctuation">.</span>$route<span class="token punctuation">.</span>query<span class="token punctuation">,</span>
+              <span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>urlData<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          <span class="token literal-property property">deep</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 在组件被 vue-router 路由复用时，单独进行初始化数据
+   * @param vm vue 实例
+   * @param exps 监视的数据的表达式数组
+   * @param route 将要改变的路由对象
+   */</span>
+  <span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">vm<span class="token punctuation">,</span> exps<span class="token punctuation">,</span> route</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> urlData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>route<span class="token punctuation">.</span>query<span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>key<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    exps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">exp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setInitData</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exp<span class="token punctuation">,</span> urlData<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 生成可以 mixin 到 vue 实例的对象
+   * @param exps 监视的数据的表达式数组
+   * @returns {{created(): void, beforeRouteEnter(*=, *, *): void, beforeRouteUpdate(*=, *, *): void}}
+   */</span>
+  <span class="token function">generateInitUrlData</span><span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>exps</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> _this <span class="token operator">=</span> <span class="token keyword">this</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token function">created</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        _this<span class="token punctuation">.</span><span class="token function">initUrlDataByCreated</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exps<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function">beforeRouteUpdate</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        _this<span class="token punctuation">.</span><span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> exps<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
+        <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function">beforeRouteEnter</span><span class="token punctuation">(</span><span class="token parameter">to<span class="token punctuation">,</span> from<span class="token punctuation">,</span> next</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'beforeRouteEnter'</span><span class="token punctuation">)</span>
+        <span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">vm</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> _this<span class="token punctuation">.</span><span class="token function">initUrlDataByRouteUpdate</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> exps<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">/**
+   * 修改一些配置
+   * @param options 配置项
+   */</span>
+  <span class="token function">config</span><span class="token punctuation">(</span><span class="token parameter">options</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> options<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">const</span> vueUrlPersist <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VueUrlPersist</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> generateInitUrlData <span class="token operator">=</span> vueUrlPersist<span class="token punctuation">.</span><span class="token function">generateInitUrlData</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>
+  vueUrlPersist<span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+
+<span class="token keyword">export</span> <span class="token punctuation">{</span> vueUrlPersist<span class="token punctuation">,</span> generateInitUrlData<span class="token punctuation">,</span> VueUrlPersist <span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> vueUrlPersist<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用起来几乎一样简单</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> generateInitUrlData <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./js/VueUrlPersist'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'Form1'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">mixins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">generateInitUrlData</span><span class="token punctuation">(</span><span class="token string">'form'</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">form</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">keyword</span><span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">hobbyList</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来，使用高阶函数也没有比 Vue 插件麻烦太多。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，虽然路途坎坷，不过这个问题还是很有趣的，而且确实能解决实际的问题，所以还是有研究价值的。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>浅谈 Vue SPA 网站 URL 保存数据实践</div>
+      <div>https://blog.rxliuli.com/p/35841f3c9ebe46aa9c589a92ff9558a7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年2月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/c3a85bdc85f94927ab017df2c2f552b6/" title="点击按钮自动提交了 Form 表单">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">点击按钮自动提交了 Form 表单</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/8c57648407fa4b72ac30c3a61b1c1fef/" title="在传统项目中使用 babel 编译 ES6">
+                        <span class="hidden-mobile">在传统项目中使用 babel 编译 ES6</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1106 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="问题兼容问题是由于使用了平台特定的功能导致，会导致下面几种情况  不同的模块化规范：rollup 打包时指定 平台限定的代码：例如包含不同平台的适配代码 平台限定的依赖：例如在 nodejs 需要填充 fetch&#x2F;FormData 平台限定的类型定义：例如浏览器中的 Blob 和 nodejs 中的 Buffer  不同的模块化规范这是很常见的一件事，现在就已经有包括 cjs&#x2F;amd&#x2F;iife&#x2F;u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编写兼容 nodejs&#x2F;浏览器的库">
+<meta property="og:url" content="https://blog.rxliuli.com/p/b8a95af9134a488e9d94463bd18768c9/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="问题兼容问题是由于使用了平台特定的功能导致，会导致下面几种情况  不同的模块化规范：rollup 打包时指定 平台限定的代码：例如包含不同平台的适配代码 平台限定的依赖：例如在 nodejs 需要填充 fetch&#x2F;FormData 平台限定的类型定义：例如浏览器中的 Blob 和 nodejs 中的 Buffer  不同的模块化规范这是很常见的一件事，现在就已经有包括 cjs&#x2F;amd&#x2F;iife&#x2F;u">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/1a7d05ea9c1e4978bcc540c2eb8cca6f.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/a5134edf1c7b4742aed1a0914faa45ad.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/2085a6a480124ea8b0fdddf4877f75c7.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/1fb8606dac2c487eafca45ecc4e3a9a3.svg">
+<meta property="article:published_time" content="2021-06-04T16:04:05.510Z">
+<meta property="article:modified_time" content="2022-08-26T08:18:58.903Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="wiki">
+<meta property="article:tag" content="工程化">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/1a7d05ea9c1e4978bcc540c2eb8cca6f.png">
+  
+  
+  
+  <title>编写兼容 nodejs/浏览器的库 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="编写兼容 nodejs/浏览器的库"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-06-05 00:04" pubdate>
+          2021年6月5日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          50 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">编写兼容 nodejs/浏览器的库</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年8月26日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>兼容问题是由于使用了平台特定的功能导致，会导致下面几种情况</p>
+<ul>
+<li>不同的模块化规范：rollup 打包时指定</li>
+<li>平台限定的代码：例如包含不同平台的适配代码</li>
+<li>平台限定的依赖：例如在 nodejs 需要填充 <code>fetch/FormData</code></li>
+<li>平台限定的类型定义：例如浏览器中的 <code>Blob</code> 和 nodejs 中的 <code>Buffer</code></li>
+</ul>
+<h2 id="不同的模块化规范"><a href="#不同的模块化规范" class="headerlink" title="不同的模块化规范"></a>不同的模块化规范</h2><p>这是很常见的一件事，现在就已经有包括 cjs/amd/iife/umd/esm 多种规范了，所以支持它们（或者说，至少支持主流的 cjs/esm）也成为必须做的一件事。幸运的是，打包工具 rollup 提供了相应的配置支持不同格式的输出文件。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/multiple-module-format">GitHub 示例项目</a></p>
+</blockquote>
+<p>形如</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// rollup.config.js</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token string">'src/index.ts'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.js'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/index.esm.js'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后在 package.json 中指定即可</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>许多库都支持 cjs/esm，例如 <a target="_blank" rel="noopener" href="https://github.com/rollup/rollup/blob/master/package.json">rollup</a>，但也有仅支持 esm 的库，例如 <a target="_blank" rel="noopener" href="https://github.com/unifiedjs">unified.js 系列</a></p>
+</blockquote>
+<h2 id="平台限定的代码"><a href="#平台限定的代码" class="headerlink" title="平台限定的代码"></a>平台限定的代码</h2><ul>
+<li>通过不同的入口文件打包不同的出口文件，并通过 <code>browser</code> 指定环境相关的代码，例如 <code>dist/browser.js</code>/<code>dist/node.js</code>：使用时需要注意打包工具（将成本转嫁给使用者）</li>
+<li>使用代码判断运行环境动态加载</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>不同出口</th>
+<th>代码判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>优点</td>
+<td>代码隔离的更彻底</td>
+<td>不依赖于打包工具行为</td>
+</tr>
+<tr>
+<td></td>
+<td>最终代码仅包含当前环境的代码</td>
+<td></td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>依赖于使用者的打包工具的行为</td>
+<td>判断环境的代码可能并不准确</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>最终代码包含所有代码，只是选择性加载</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>axios 结合以上两种方式实现了浏览器、nodejs 支持，但同时导致有着两种方式的缺点而且有点迷惑行为，参考 <a target="_blank" rel="noopener" href="https://github.com/axios/axios/blob/e9965bfafc82d8b42765705061b9ebe2d5532493/dist/axios.js#L872-L882">getDefaultAdapter</a>。例如在 jsdom 环境会认为是浏览器环境，参考 <a target="_blank" rel="noopener" href="https://github.com/axios/axios/issues/1180">detect jest and use http adapter instead of XMLHTTPRequest</a></p>
+</blockquote>
+<h3 id="通过不同的入口文件打包不同的出口文件"><a href="#通过不同的入口文件打包不同的出口文件" class="headerlink" title="通过不同的入口文件打包不同的出口文件"></a>通过不同的入口文件打包不同的出口文件</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/platform-specific-code-multiple-bundle">GitHub 示例项目</a></p>
+</blockquote>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// rollup.config.js</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'src/index.ts'</span><span class="token punctuation">,</span> <span class="token string">'src/browser.ts'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "browser": {
+    "dist/cjs/index.js": "dist/cjs/browser.js",
+    "dist/esm/index.js": "dist/esm/browser.js"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="使用代码判断运行环境动态加载"><a href="#使用代码判断运行环境动态加载" class="headerlink" title="使用代码判断运行环境动态加载"></a>使用代码判断运行环境动态加载</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/platform-specific-code-dynamic-judgment">GitHub 示例项目</a></p>
+</blockquote>
+<p>基本上就是在代码中判断然后 <code>await import</code> 而已</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { BaseAdapter } from './adapters/BaseAdapter'
+import { Class } from 'type-fest'
+
+export class Adapter implements BaseAdapter {
+  private adapter?: BaseAdapter
+  private async init() {
+    if (this.adapter) {
+      return
+    }
+    let Adapter: Class&lt;BaseAdapter&gt;
+    if (typeof fetch === 'undefined') {
+      Adapter = (await import('./adapters/NodeAdapter')).NodeAdapter
+    } else {
+      Adapter = (await import('./adapters/BrowserAdapter')).BrowserAdapter
+    }
+    this.adapter = new Adapter()
+  }
+  async get&lt;T&gt;(url: string): Promise&lt;T&gt; {
+    await this.init()
+    return this.adapter!.get(url)
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// rollup.config.js</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token string">'src/index.ts'</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>注: vitejs 无法捆绑处理这种包，因为 nodejs 原生包在浏览器环境确实不存在，这是一个已知错误，参考：<a target="_blank" rel="noopener" href="https://github.com/aws-amplify/amplify-js/issues/7499">Cannot use amplify-js in browser environment (breaking vite/snowpack/esbuild)</a>。</p>
+</blockquote>
+<h2 id="平台限定的依赖"><a href="#平台限定的依赖" class="headerlink" title="平台限定的依赖"></a>平台限定的依赖</h2><ul>
+<li>直接 <code>import</code> 依赖使用：会导致在不同的环境炸掉（例如 <code>node-fetch</code> 在浏览器就会炸掉）</li>
+<li>在代码中判断运行时通过 <code>require</code> 动态 引入依赖：会导致即便用不到，也仍然会被打包加载</li>
+<li>在代码中判断运行时通过 <code>import()</code> 动态引入依赖：会导致代码分割，依赖作为单独的文件选择性加载</li>
+<li>通过不同的入口文件打包不同的出口文件，例如 <code>dist/browser.js</code>/<code>dist/node.js</code>：使用时需要注意（将成本转嫁给使用者）</li>
+<li>声明 <code>peerDependencies</code> 可选依赖，让使用者自行填充：使用时需要注意（将成本转嫁给使用者）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>require</th>
+<th>import</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否一定会加载</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>是否需要开发者注意</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>是否会多次加载</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否同步</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>rollup 支持</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<h2 id="在代码中判断运行时通过-require-动态引入依赖"><a href="#在代码中判断运行时通过-require-动态引入依赖" class="headerlink" title="在代码中判断运行时通过 require 动态引入依赖"></a>在代码中判断运行时通过 <code>require</code> 动态引入依赖</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/platform-specific-lib-require">GitHub 项目示例</a></p>
+</blockquote>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/adapters/BaseAdapter.ts
+import { BaseAdapter } from './BaseAdapter'
+
+export class BrowserAdapter implements BaseAdapter {
+  private static init() {
+    if (typeof fetch === 'undefined') {
+      const globalVar: any =
+        (typeof globalThis !== 'undefined' &amp;&amp; globalThis) ||
+        (typeof self !== 'undefined' &amp;&amp; self) ||
+        (typeof global !== 'undefined' &amp;&amp; global) ||
+        {}
+      // 关键在于这里的动态 require
+      Reflect.set(globalVar, 'fetch', require('node-fetch').default)
+    }
+  }
+
+  async get&lt;T&gt;(url: string): Promise&lt;T&gt; {
+    BrowserAdapter.init()
+    return (await fetch(url)).json()
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p><img src="/resources/1a7d05ea9c1e4978bcc540c2eb8cca6f.png" srcset="/img/loading.gif" lazyload alt="1624018106300"></p>
+<h2 id="在代码中判断运行时通过-import-动态引入依赖"><a href="#在代码中判断运行时通过-import-动态引入依赖" class="headerlink" title="在代码中判断运行时通过 import() 动态引入依赖"></a>在代码中判断运行时通过 <code>import()</code> 动态引入依赖</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/platform-specific-lib-import">GitHub 项目示例</a></p>
+</blockquote>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/adapters/BaseAdapter.ts
+import { BaseAdapter } from './BaseAdapter'
+
+export class BrowserAdapter implements BaseAdapter {
+  // 注意，这里变成异步的函数了
+  private static async init() {
+    if (typeof fetch === 'undefined') {
+      const globalVar: any =
+        (typeof globalThis !== 'undefined' &amp;&amp; globalThis) ||
+        (typeof self !== 'undefined' &amp;&amp; self) ||
+        (typeof global !== 'undefined' &amp;&amp; global) ||
+        {}
+      Reflect.set(globalVar, 'fetch', (await import('node-fetch')).default)
+    }
+  }
+
+  async get&lt;T&gt;(url: string): Promise&lt;T&gt; {
+    await BrowserAdapter.init()
+    return (await fetch(url)).json()
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>打包结果</p>
+<p><img src="/resources/a5134edf1c7b4742aed1a0914faa45ad.png" srcset="/img/loading.gif" lazyload alt="1624018026889"></p>
+<h3 id="遇到的一些子问题"><a href="#遇到的一些子问题" class="headerlink" title="遇到的一些子问题"></a>遇到的一些子问题</h3><ul>
+<li><p>怎么判断是否存在全局变量</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">typeof fetch === 'undefined'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+</li>
+<li><p>怎么为不同环境的全局变量写入 ployfill</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const globalVar: any =
+  (typeof globalThis !== 'undefined' &amp;&amp; globalThis) ||
+  (typeof self !== 'undefined' &amp;&amp; self) ||
+  (typeof global !== 'undefined' &amp;&amp; global) ||
+  {}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p><code>TypeError: Right-hand side of 'instanceof' is not callable</code>: 主要是 axios 会判断 <code>FormData</code>，而 <code>form-data</code> 则存在默认导出，所以需要使用 <code>(await import('form-data')).default</code>（吾辈总有种在给自己挖坑的感觉）<br><img src="/resources/2085a6a480124ea8b0fdddf4877f75c7.png" srcset="/img/loading.gif" lazyload alt="1622828175546"></p>
+</li>
+</ul>
+<p>使用者在使用 rollup 打包时可能会遇到兼容性的问题，实际上就是需要选择内联到代码还是单独打包成一个文件，参考：<a target="_blank" rel="noopener" href="https://rollupjs.org/guide/en/#inlinedynamicimports">https://rollupjs.org/guide/en/#inlinedynamicimports</a></p>
+<p>内联 =&gt; 外联</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 内联</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/extension.js'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 外联</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="平台限定的类型定义"><a href="#平台限定的类型定义" class="headerlink" title="平台限定的类型定义"></a>平台限定的类型定义</h2><p>以下解决方案本质上都是多个 bundle</p>
+<ul>
+<li>混合类型定义。例如 axios</li>
+<li>打包不同的出口文件和类型定义，要求使用者自行指定需要的文件。例如通过 <code>module/node</code>/<code>module/browser</code> 加载不同的功能（其实和插件系统非常接近，无非是否分离多个模块罢了）</li>
+<li>使用插件系统将不同环境的适配代码分离为多个子模块。例如 remark.js 社区</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>多个类型定义文件</th>
+<th>混合类型定义</th>
+<th>多模块</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>优点</td>
+<td>环境指定更明确</td>
+<td>统一入口</td>
+<td>环境指定更明确</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>需要使用者自行选择</td>
+<td>类型定义冗余</td>
+<td>需要使用者自行选择</td>
+</tr>
+<tr>
+<td></td>
+<td>dependencies 冗余</td>
+<td></td>
+<td>维护起来相对麻烦（尤其是维护者不是一个人的时候）</td>
+</tr>
+</tbody></table>
+<h3 id="打包不同的出口文件和类型定义，要求使用者自行指定需要的文件"><a href="#打包不同的出口文件和类型定义，要求使用者自行指定需要的文件" class="headerlink" title="打包不同的出口文件和类型定义，要求使用者自行指定需要的文件"></a>打包不同的出口文件和类型定义，要求使用者自行指定需要的文件</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/cross-platform-lib-demo/tree/master/apps/platform-specific-type-definition-multiple-bundle">GitHub 项目示例</a></p>
+</blockquote>
+<p>主要是在核心代码做一层抽象，然后将平台特定的代码抽离出去单独打包。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/index.ts
+import { BaseAdapter } from './adapters/BaseAdapter'
+
+export class Adapter&lt;T&gt; implements BaseAdapter&lt;T&gt; {
+  upload: BaseAdapter&lt;T&gt;['upload']
+
+  constructor(private base: BaseAdapter&lt;T&gt;) {
+    this.upload = this.base.upload
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// rollup.config.js</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token string">'src/index.ts'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'src/adapters/BrowserAdapter.ts'</span><span class="token punctuation">,</span> <span class="token string">'src/adapters/NodeAdapter.ts'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/cjs/adapters'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'cjs'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">{</span> <span class="token literal-property property">dir</span><span class="token operator">:</span> <span class="token string">'dist/esm/adapters'</span><span class="token punctuation">,</span> <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'esm'</span><span class="token punctuation">,</span> <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">typescript</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用者示例</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Adapter } from 'platform-specific-type-definition-multiple-bundle'
+
+import { BrowserAdapter } from 'platform-specific-type-definition-multiple-bundle/dist/esm/adapters/BrowserAdapter'
+export async function browser() {
+  const adapter = new Adapter(new BrowserAdapter())
+  console.log('browser: ', await adapter.upload(new Blob()))
+}
+
+// import { NodeAdapter } from 'platform-specific-type-definition-multiple-bundle/dist/esm/adapters/NodeAdapter'
+// export async function node() {
+//   const adapter = new Adapter(new NodeAdapter())
+//   console.log('node: ', await adapter.upload(new Buffer(10)))
+// }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="使用插件系统将不同环境的适配代码分离为多个子模块"><a href="#使用插件系统将不同环境的适配代码分离为多个子模块" class="headerlink" title="使用插件系统将不同环境的适配代码分离为多个子模块"></a>使用插件系统将不同环境的适配代码分离为多个子模块</h3><p>简单来说，如果你希望将运行时依赖分散到不同的子模块中（例如上面那个 <code>node-fetch</code>），或者你的插件 API 非常强大，那么便可以将一些<strong>官方</strong>适配代码分离为插件子模块。</p>
+<h2 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h2><p><img src="/resources/1fb8606dac2c487eafca45ecc4e3a9a3.svg" srcset="/img/loading.gif" lazyload alt="兼容 nodejs 与浏览器的库的技术方案选择.drawio.svg"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/wiki/">#wiki</a>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+        <a href="/tags/javascript/">#javascript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>编写兼容 nodejs/浏览器的库</div>
+      <div>https://blog.rxliuli.com/p/b8a95af9134a488e9d94463bd18768c9/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年6月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/7fc05ef7c1274b168504c216a6774ea6/" title="代码生成-从 i18n config 生成类型定义">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码生成-从 i18n config 生成类型定义</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/4a6736bffd064ed9b46d2021870039ec/" title="如何看待新事物">
+                        <span class="hidden-mobile">如何看待新事物</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1006 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简介Java8 面世以来已经 6 年了，许多人也开始使用起了 lambda,Stream&lt;T&gt;,Optional&lt;T&gt; 之类的新的语言特性，然而对于 Java8 提供的新的时间 API 虽然据说比旧版本的 Date 好很多，但并没有得到完全的使用。一方面是为了兼容旧的系统，另一方面 Java8 的时间 API 似乎太过于强大了，让人有些不知所措，不知道应该从何下手。再加上因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Java8 新的时间 API">
+<meta property="og:url" content="https://blog.rxliuli.com/p/1be5a81d31cd4c0b9b1f198f556eec81/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="简介Java8 面世以来已经 6 年了，许多人也开始使用起了 lambda,Stream&lt;T&gt;,Optional&lt;T&gt; 之类的新的语言特性，然而对于 Java8 提供的新的时间 API 虽然据说比旧版本的 Date 好很多，但并没有得到完全的使用。一方面是为了兼容旧的系统，另一方面 Java8 的时间 API 似乎太过于强大了，让人有些不知所措，不知道应该从何下手。再加上因">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T14:14:09.397Z">
+<meta property="article:modified_time" content="2020-12-30T05:08:53.083Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>使用 Java8 新的时间 API - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用 Java8 新的时间 API"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          8.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          71 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用 Java8 新的时间 API</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Java8 面世以来已经 6 年了，许多人也开始使用起了 <code>lambda</code>,<code>Stream&lt;T&gt;</code>,<code>Optional&lt;T&gt;</code> 之类的新的语言特性，然而对于 Java8 提供的新的时间 <code>API</code> 虽然据说比旧版本的 <code>Date</code> 好很多，但并没有得到完全的使用。一方面是为了兼容旧的系统，另一方面 Java8 的时间 API 似乎太过于强大了，让人有些不知所措，不知道应该从何下手。再加上因为对 <code>Date</code>,<code>Calendar</code> 的熟悉，此消彼长之下自然是懒得去修改了。</p>
+<p>其实对于时间 API，大致的需求是一样的</p>
+<ul>
+<li>创建/修改/比较/转换简单</li>
+<li>对遗留系统的时间可以集成/转换</li>
+<li>主流框架对其要有支持</li>
+</ul>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><h3 id="常用的类"><a href="#常用的类" class="headerlink" title="常用的类"></a>常用的类</h3><ul>
+<li><a href="#LocalDate">LocalDate</a>: 日期的不可变类</li>
+<li><a href="#LocalTime">LocalTime</a>: 时间的不可变类</li>
+<li><a href="#LocalDateTime">LocalDateTime</a>: 日期时间的不可变类</li>
+<li><a href="#OffsetDateTime">OffsetDateTime</a>: 偏移标准 UTC 时间的日期时间不可变类</li>
+<li><a href="#Temporal/TemporalAccessor">Temporal/TemporalAccessor</a>: 上面几个时间类的基类</li>
+<li><a href="#Period">Period</a>: 计算日期差值</li>
+<li><a href="#Duration">Duration</a>: 计算日期时间差值</li>
+<li><a href="#TemporalField/ChronoField">ChronoField/TemporalField</a>: 时间的单位</li>
+<li><a href="#TemporalUnit/ChronoUnit">ChronoUnit/TemporalUnit</a>: 根据指定的单位计算时间</li>
+<li><a href="#DateTimeFormatter">DateTimeFormatter</a>: 时间格式化</li>
+<li><a href="#%E5%85%BC%E5%AE%B9-Date">兼容 Date</a>: 兼容旧的 Date 类</li>
+</ul>
+<h3 id="LocalDate"><a href="#LocalDate" class="headerlink" title="LocalDate"></a>LocalDate</h3><p>一个不可变（线程安全）的日期对象，用且表示 <em>年-月-日</em> 的时间，默认 <code>toString()</code> 格式是 <code>yyyy-MM-dd</code>。</p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//获取当前的日期
+final LocalDate now = LocalDate.now();
+//toString 一下日期
+//会得到 yyyy-MM-dd 格式
+System.out.println("现在：" + now);
+//1 天后的日期
+final LocalDate localDatePlusDayOne = now.plusDays(1);
+System.out.println("一天后：" + localDatePlusDayOne);
+//一天前的日期
+final LocalDate localDateMinusDayOne = now.minusDays(1);
+System.out.println("一天前：" + localDateMinusDayOne);
+//比较两个日期/时间的大小
+final int nowEvenBigger = now.compareTo(localDatePlusDayOne);
+System.out.println("当前时间更大么？" + nowEvenBigger);
+//获取指定单位的日期（年/月/日/星期）
+//获取当前月的时间
+final int dayOfMonth = now.getDayOfMonth();
+System.out.println("当前月的天数：" + dayOfMonth);
+//更加通用获取方式
+//使用枚举类 ChronoField
+final int dayOfMonthForChronoField = now.get(ChronoField.DAY_OF_MONTH);
+System.out.println("当前月的天数（通过 get() 获取）：" + dayOfMonthForChronoField);
+//比较两个日期的差值
+final long between = ChronoUnit.DAYS.between(now, localDatePlusDayOne);
+System.out.println(between);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>上面有些地方看不太懂不碍事，先过一遍，下面对其中的部分代码会有解释</p>
+<h3 id="LocalTime"><a href="#LocalTime" class="headerlink" title="LocalTime"></a>LocalTime</h3><p>一个不可变的（线程安全）的时间对象，用于表示 <em>时：分：秒：毫秒</em> 的时间，默认 <code>toString()</code> 格式是 <code>hh:mm:ss.SSS</code>。</p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//获得当前时间
+final LocalTime now = LocalTime.now();
+//默认格式 hh:mm:ss.SSS
+System.out.println("现在：" + now);
+//一个小时后的时间
+final LocalTime localTimePlusHourOne = now.plusHours(1);
+System.out.println("一小时后：" + localTimePlusHourOne);
+//一分钟前的时间
+final LocalTime localTimeMinusMinuteOne = now.minusMinutes(1);
+System.out.println(localTimeMinusMinuteOne);
+//比较时间大小（实现了 Comparable 接口）
+final int nowEvenBigger = now.compareTo(localTimeMinusMinuteOne);
+System.out.println("当前时间更大么？" + nowEvenBigger);
+//获取指定单位的时间
+//当前小时数
+final int hour = now.getHour();
+System.out.println("当前时间的小时数：" + hour);
+//使用枚举类 ChronoField 获取
+final int hourOfDay = now.get(ChronoField.HOUR_OF_DAY);
+System.out.println("当前时间的小时数（通过 get() 获取）：" + hourOfDay);
+//比较两个日期的差值
+final long between = ChronoUnit.HOURS.between(now, localTimePlusHourOne);
+System.out.println(between);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="LocalDateTime"><a href="#LocalDateTime" class="headerlink" title="LocalDateTime"></a>LocalDateTime</h3><p>不可变的日期时间对象，用于表示 <em>日-月-年 时：分：秒：毫秒</em> 的日期时间，默认格式化格式是 <code>yyyy-MM-ddThh:mm:ss.SSS</code>。</p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//当前日期时间
+final LocalDateTime now = LocalDateTime.now();
+//默认格式 yyyy-MM-ddThh:mm:ss.SSS
+System.out.println("现在：" + now);
+//一个小时后的时间
+final LocalDateTime localTimePlusHourOne = now.plusHours(1);
+System.out.println("一小时后：" + localTimePlusHourOne);
+//一分钟前的时间
+final LocalDateTime localTimeMinusMinuteOne = now.minusMinutes(1);
+System.out.println(localTimeMinusMinuteOne);
+//比较时间大小（实现了 Comparable 接口）
+final int nowEvenBigger = now.compareTo(localTimeMinusMinuteOne);
+System.out.println("当前时间更大么？" + nowEvenBigger);
+//获取指定单位的时间
+//当前小时数
+final int hour = now.getHour();
+System.out.println("当前时间的小时数：" + hour);
+//使用枚举类 ChronoField 获取
+final int hourOfDay = now.get(ChronoField.HOUR_OF_DAY);
+System.out.println("当前时间的小时数（通过 get() 获取）：" + hourOfDay);
+//比较两个日期的差值
+final long between = ChronoUnit.HOURS.between(now, localTimePlusHourOne);
+System.out.println(between);
+//获取一天的开始和结束
+final LocalDateTime start = LocalDateTime.of(yesterday, LocalTime.MIN);
+final LocalDateTime end = LocalDateTime.of(yesterday, LocalTime.MAX);
+System.out.println(start);
+System.out.println(end);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，和上面的 <a href="#LocalTime">LocalTime</a> 除了类型不同外，代码是完全相同的，因为 <a href="#LocalDateTime">LocalDateTime</a> 是包含 <a href="#LocalDate">LocalDate</a> 与 <a href="#LocalTime">LocalTime</a> 的。在源码中也可以看到其包含了两个属性。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//获取日期/时间对象
+final LocalDate localDate = now.toLocalDate();
+final LocalTime localTime = now.toLocalTime();
+System.out.println("当前日期：" + localDate);
+System.out.println("当前时间：" + localTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="OffsetDateTime"><a href="#OffsetDateTime" class="headerlink" title="OffsetDateTime"></a>OffsetDateTime</h3><p>代表偏移标准 UTC 时间的日期时间不可变对象，用于表示 <em>日-月-年 时：分：秒：毫秒时区</em>，默认格式是 <code>yyyy-MM-ddThh:mm:ss.SSSZoneId</code></p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//当前偏移的日期时间
+final OffsetDateTime now = OffsetDateTime.now();
+System.out.println(now);
+//其实个人感觉就是多了一个时区
+//获取到时区
+ZoneId zone = now.toZonedDateTime().getZone();
+System.out.println(zone);
+//转换时区
+ZonedDateTime zonedDateTime = now.atZoneSameInstant(ZoneId.of("+00:00"));
+System.out.println(zonedDateTime);
+//其他基本操作和上面的差不多，就不啰嗦啦<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Temporal-x2F-TemporalAccessor"><a href="#Temporal-x2F-TemporalAccessor" class="headerlink" title="Temporal/TemporalAccessor"></a>Temporal/TemporalAccessor</h3><p>上面的 <a href="#LocalDate">LocalDate</a>, <a href="#LocalTime">LocalTime</a>, <a href="#LocalDateTime">LocalDateTime</a>, <a href="#OffsetDateTime">OffsetDateTime</a> 的基类，并定义了一系列非常通用的方法</p>
+<ul>
+<li>minus: 减少时间</li>
+<li>plus: 增加时间</li>
+<li>with: 获取时间指定单位的值</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime now = LocalDateTime.now();
+//获取上个星期
+final LocalDateTime lastWeek = now.minus(1, ChronoUnit.WEEKS);
+//获取下个月
+final LocalDateTime nextMonth = now.plus(1, ChronoUnit.MONTHS);
+//获取当前是今年的第几个星期
+final int weekValue = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+//获取这周星期一的时间
+final LocalDateTime nowOfMonday = now.with(DayOfWeek.MONDAY);
+final LocalDateTime nowOfMonday2 = now.with(ChronoField.DAY_OF_WEEK, 1);
+System.out.println(
+    "lastWeek: " + lastWeek
+        + "\nnextMonth: " + nextMonth
+        + "\nweekValue: " + weekValue
+        + "\nnowOfMonday: " + nowOfMonday
+        + "\nnowOfMonday2: " + nowOfMonday2
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Period"><a href="#Period" class="headerlink" title="Period"></a>Period</h3><p>代表两个日期的差值，默认 <code>toString()</code> 格式是 <code>P([时间][单位])*</code></p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDate now = LocalDate.now();
+final LocalDate localTimePlusMonthOne = now.plusDays(1);
+//计算相差的时间
+final Period betweenForDay = Period.between(now, localTimePlusMonthOne);
+//获取相差的天数
+System.out.println("相差的天数：" + betweenForDay.getDays());
+//使用 get() 方法获取通用的相差的天数
+System.out.println("相差的天数(使用 get() 获取)：" + betweenForDay.get(ChronoUnit.DAYS));
+//对相差的日期减去一天并判断是否为 0
+System.out.println("相差的日期减去 1 天是不是就相同了呢？" + betweenForDay.minusDays(1).isZero());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="Duration"><a href="#Duration" class="headerlink" title="Duration"></a>Duration</h3><p>代表两个日期时间的差值，默认 <code>toString()</code> 格式是 <code>PT([时间][单位])*</code></p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime now = LocalDateTime.now();
+final LocalDateTime localDateTimeForPlusHourOne = now.plusHours(1);
+//计算两个时间的差值
+final Duration between = Duration.between(now, localDateTimeForPlusHourOne);
+//默认格式是 PT 时间 单位
+System.out.println("相差的时间：" + between);
+//获取日期
+final long betweenSeconds = between.getSeconds();
+System.out.println("相差的时间（/秒）：" + betweenSeconds);
+//根据指定单位获取相差时间的大小
+final long betweenSecondsForGet = between.get(ChronoUnit.SECONDS);
+System.out.println("相差的时间（/秒）：" + betweenSecondsForGet);
+//转换成毫秒
+System.out.println("相差的时间（/毫秒）：" + between.toMillis());
+//获取相差时间支持的单位列表（其实感觉上没太大意义）
+final List&lt;TemporalUnit&gt; temporalUnitList = between.getUnits();
+System.out.println("相差的时间列表：" + temporalUnitList);
+//在创建一个时间差
+final Duration betweenForMinutes = Duration.between(now, now.minusMinutes(100));
+//判断两个时间差哪个更大
+System.out.println("between 的时间差更大么？" + between.compareTo(betweenForMinutes));
+//获取绝对值
+System.out.println("相差的绝对时间：" + betweenForMinutes.abs());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="TemporalField-x2F-ChronoField"><a href="#TemporalField-x2F-ChronoField" class="headerlink" title="TemporalField/ChronoField"></a>TemporalField/ChronoField</h3><p>日期/时间单位字段，TemporalField 是接口，ChronoField 则是实现类。</p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime now = LocalDateTime.now();
+final ChronoField hourOfDay = ChronoField.HOUR_OF_DAY;
+System.out.println(hourOfDay);
+//获取当前小时数
+final long nowForHours = hourOfDay.getFrom(now);
+System.out.println("当前时间的小时数：" + nowForHours);
+//获取到指定单位的时间大小
+final int hoursForGet = now.get(ChronoField.HOUR_OF_DAY);
+System.out.println("当前时间的小时数（get()）：" + hoursForGet);
+//获取到特定单位的时间对比对象 Duration
+final TemporalUnit baseUnit = hourOfDay.getBaseUnit();
+System.out.println(baseUnit);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="TemporalUnit-x2F-ChronoUnit"><a href="#TemporalUnit-x2F-ChronoUnit" class="headerlink" title="TemporalUnit/ChronoUnit"></a>TemporalUnit/ChronoUnit</h3><p>也是时间单位，TemporalUnit 是接口，ChronoUnit 则是实现类。和上面的不同的地方在于上面的不能 ChronoField 不能对时间进行对比差值，只能根据指定单位获取时间的大小。</p>
+<p>基本操作</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//获取一个小时数
+final ChronoUnit chronoUnit = ChronoUnit.MILLIS;
+System.out.println(chronoUnit);
+//获取两个时间的差值毫秒数
+final LocalDateTime now = LocalDateTime.now();
+final LocalDateTime localDateTimePlusHourOne = now.plusHours(1);
+final long betweenForMillis = chronoUnit.between(now, localDateTimePlusHourOne);
+System.out.println("相差的毫秒数：" + betweenForMillis);
+//根据指定的单位修改时间也需要使用这个
+final LocalDateTime localDateTimePlusMinuteOne = now.plus(1, ChronoUnit.MINUTES);
+System.out.println("一分钟后的时间：" + localDateTimePlusMinuteOne);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="DateTimeFormatter"><a href="#DateTimeFormatter" class="headerlink" title="DateTimeFormatter"></a>DateTimeFormatter</h3><p>日期时间格式化类，基本上没什么好说的（标准的格式化一般就足够了，毕竟显示是前端的事情，而标准的格式化确实是国际标准呢）</p>
+<p>基本使用</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">//获取一个标准 iso 日期时间格式化对象
+final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
+System.out.println(dateTimeFormatter);
+//格式化日期时间
+final LocalDateTime now = LocalDateTime.now();
+System.out.println("当前日期时间：" + dateTimeFormatter.format(now));
+//根据自定义的格式格式化时间
+final DateTimeFormatter customDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 hh时mm分ss秒");
+System.out.println(customDateTimeFormatter.format(now));<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="兼容-Date"><a href="#兼容-Date" class="headerlink" title="兼容 Date"></a>兼容 Date</h3><p>使用新的时间 API 固然很令人舒服，但有时候不得不兼容旧的 Date 类型，这时候如何转换就很重要了呢</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime now = LocalDateTime.now();
+//转换为 Instant（包括时区）
+final Instant instant = now.toInstant(ZoneOffset.UTC);
+System.out.println(instant);
+//转换为 Date
+final Date date = Date.from(instant);
+System.out.println("当前时间：" + date);
+//转换为 Instant
+final Instant dateToInstant = date.toInstant();
+System.out.println("两次转换后的时间还是相同的吧？" + dateToInstant.equals(instant));
+//转换为 LocalDateTime
+final ZoneId zoneId = ZoneId.systemDefault();
+final LocalDateTime toLocalDateTime = LocalDateTime.ofInstant(dateToInstant, zoneId);
+System.out.println("转换后的日期时间：" + toLocalDateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="主流框架支持"><a href="#主流框架支持" class="headerlink" title="主流框架支持"></a>主流框架支持</h2><p>现如今大部分的包应该都支持 Java8 时间 API 了吧</p>
+<p>例如：</p>
+<ul>
+<li>Jackson：jackson-datatype-jsr310</li>
+<li>Mybatis：mybatis-typehandlers-jsr310</li>
+</ul>
+<p>那么，关于 Java8 新的时间 API 的使用暂且到这里了，想到什么吾辈再补充啦（=´∇ ｀=）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用 Java8 新的时间 API</div>
+      <div>https://blog.rxliuli.com/p/1be5a81d31cd4c0b9b1f198f556eec81/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/000f77381ffc4421af246bc07bd90c70/" title="Windows 下安装 Gradle">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Windows 下安装 Gradle</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/3e615fbd1550496eb30c0910a1b5e4c5/" title="使用 GitHub 作为 Maven 仓库">
+                        <span class="hidden-mobile">使用 GitHub 作为 Maven 仓库</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

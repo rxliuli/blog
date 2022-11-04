@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景 某些言辞可能略微辛辣，请勿对号入座。  最近在帮同事做代码的 code review，发现了一些日常很难见到的奇妙代码，其中有些吾辈可能都不知道可以这样写。所以发布出来，便于其他刚入坑的萌新警戒。 先发一份快乐源泉  下面列一些吾辈发现的问题 目录结构和命名混乱这似乎是多人协作天生就会遇到的问题，但吾辈确实还是想吐槽一番。如果说按照业务分割顶级目录，然后在子目录分割类型，那么 asssets">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Code Review 漫谈 01">
+<meta property="og:url" content="https://blog.rxliuli.com/p/aa0ef1c7a0fe4bfba5f9bce94c0bbfb0/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景 某些言辞可能略微辛辣，请勿对号入座。  最近在帮同事做代码的 code review，发现了一些日常很难见到的奇妙代码，其中有些吾辈可能都不知道可以这样写。所以发布出来，便于其他刚入坑的萌新警戒。 先发一份快乐源泉  下面列一些吾辈发现的问题 目录结构和命名混乱这似乎是多人协作天生就会遇到的问题，但吾辈确实还是想吐槽一番。如果说按照业务分割顶级目录，然后在子目录分割类型，那么 asssets">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/a1e4918a0e834fba9d2a9a3b3d116fe4.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/161aede761584deebbe48e7be4037b6b.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/a7610cd7d8f4497da83ef55951c0afb2.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/3b9aaca8482046c585ecb4f27cb14b6b.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/6968acf3ffa449738555bda1f72e054a.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/365644f6ee564ac9b8a0ddc48ad55582.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/8607b5d643b6465eb0f32f36fba1325d.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/7af843a192da4864bc2eed3d9f413ad8.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/82757bba467e473490aac210265ce014.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/7dfe37881c1140218ebc7c2f1c563dc5.png">
+<meta property="article:published_time" content="2022-04-03T07:17:18.168Z">
+<meta property="article:modified_time" content="2022-04-03T09:11:48.406Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="javascript">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/a1e4918a0e834fba9d2a9a3b3d116fe4.png">
+  
+  
+  
+  <title>Code Review 漫谈 01 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Code Review 漫谈 01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-04-03 15:17" pubdate>
+          2022年4月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Code Review 漫谈 01</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年4月3日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><blockquote>
+<p>某些言辞可能略微辛辣，请勿对号入座。</p>
+</blockquote>
+<p>最近在帮同事做代码的 code review，发现了一些日常很难见到的奇妙代码，其中有些吾辈可能都不知道可以这样写。所以发布出来，便于其他刚入坑的萌新警戒。</p>
+<p>先发一份快乐源泉</p>
+<p><img src="/resources/a1e4918a0e834fba9d2a9a3b3d116fe4.png" srcset="/img/loading.gif" lazyload alt="1648974891923"></p>
+<p>下面列一些吾辈发现的问题</p>
+<h2 id="目录结构和命名混乱"><a href="#目录结构和命名混乱" class="headerlink" title="目录结构和命名混乱"></a>目录结构和命名混乱</h2><p>这似乎是多人协作天生就会遇到的问题，但吾辈确实还是想吐槽一番。如果说按照业务分割顶级目录，然后在子目录分割类型，那么 asssets/components 显然不像，反之亦然。</p>
+<p><img src="/resources/161aede761584deebbe48e7be4037b6b.png" srcset="/img/loading.gif" lazyload alt="1648973811543"></p>
+<p>或许你已经被同时存在驼峰、中划线、强制小写的写法感觉满头疑惑，但实际上这是同一个人写的，你甚至能见到 userInitData/userInitData2 这种神奇的命名，它们有什么不同？或许只有天知道（如何编写不可维护的代码）。</p>
+<h2 id="graphql-拼接-sql-字符串"><a href="#graphql-拼接-sql-字符串" class="headerlink" title="graphql 拼接 sql 字符串"></a>graphql 拼接 sql 字符串</h2><p>老实说，吾辈还没想过 graphql 还能这样用，不确定这种用法和后端传统艺能拼接 sql 语句有什么不同 – 后者已经被各种 orm 框架抨击过许多次了。整体上，吾辈还挺喜欢 graphql 的，它强制后端给出 service schema，前端便可以基于这个 schema 完成代码生成、编辑器支持以及各种周边工具，使用门槛比之原生的 restful 虽然稍显繁重，但仍然在开发体验上要优于 restful。但这种用法完全享受不到优点，甚至比使用 restful 还要糟糕。</p>
+<p><img src="/resources/a7610cd7d8f4497da83ef55951c0afb2.png" srcset="/img/loading.gif" lazyload alt="1648973635984"></p>
+<h2 id="绝大多数时候应该使用命名导出，因为可以导出多个并更好的做代码提示"><a href="#绝大多数时候应该使用命名导出，因为可以导出多个并更好的做代码提示" class="headerlink" title="绝大多数时候应该使用命名导出，因为可以导出多个并更好的做代码提示"></a>绝大多数时候应该使用命名导出，因为可以导出多个并更好的做代码提示</h2><p>吾辈不确定为什么会有人喜欢用默认导出，它不仅限定一个文件只能导出一个，还导致编辑器在代码提示和重构方面会出现一些细微的问题。</p>
+<p><img src="/resources/3b9aaca8482046c585ecb4f27cb14b6b.png" srcset="/img/loading.gif" lazyload alt="1648974537284"><br><img src="/resources/6968acf3ffa449738555bda1f72e054a.png" srcset="/img/loading.gif" lazyload alt="1648974457995"></p>
+<h2 id="操作状态（view-层）应该与请求后端（api-层）分离，更不应该将状态传到-api-层"><a href="#操作状态（view-层）应该与请求后端（api-层）分离，更不应该将状态传到-api-层" class="headerlink" title="操作状态（view 层）应该与请求后端（api 层）分离，更不应该将状态传到 api 层"></a>操作状态（view 层）应该与请求后端（api 层）分离，更不应该将状态传到 api 层</h2><p>分层是一个基本的思想，不管是 java web 后端的 mvc，还是前端的 mvvm，都会将不同的部分分割开来分离关注点，以便于后续维护。前端在实际业务开发中，框架一般处理了 model =&gt; view，但这仍然需要继续分层，现在一个很不好的趋势是重 view 层，什么东西都写到 view 层（指 react、vue 组件），而这让测试和后续维护变得很痛苦（单测有依赖的组件非常麻烦）。</p>
+<p><img src="/resources/365644f6ee564ac9b8a0ddc48ad55582.png" srcset="/img/loading.gif" lazyload alt="1648976016738"></p>
+<h2 id="绝大多数-async-函数都必须使用-await-等待"><a href="#绝大多数-async-函数都必须使用-await-等待" class="headerlink" title="绝大多数 async 函数都必须使用 await 等待"></a>绝大多数 async 函数都必须使用 await 等待</h2><p>泥萌见过调用 async 函数时不加上 await 的么？吾辈见过了。除了某些特殊情况之外，在绝大多数情况下，调用 async 函数都需要使用 await 等待，而下面这里并没有这样做，甚至还写了虚假的 try/catch 来捕获永远无法捕获到的错误。</p>
+<p><img src="/resources/8607b5d643b6465eb0f32f36fba1325d.png" srcset="/img/loading.gif" lazyload alt="1648975322020"></p>
+<h2 id="应该使用-reactive-x2F-ref-分离多个状态，而非用-vue2-一个组件一个集中状态的方式"><a href="#应该使用-reactive-x2F-ref-分离多个状态，而非用-vue2-一个组件一个集中状态的方式" class="headerlink" title="应该使用 reactive/ref 分离多个状态，而非用 vue2 一个组件一个集中状态的方式"></a>应该使用 reactive/ref 分离多个状态，而非用 vue2 一个组件一个集中状态的方式</h2><p>或许是因为 vue2 将状态都写到 <code>data</code> 字段中的原因，vue3 也有人在这样写，将所有的状态放到一个对象中，而这虽然能够运行，但完全没有根据业务分割状态和逻辑，硬生生把 vue3 用成了 vue2。</p>
+<p><img src="/resources/7af843a192da4864bc2eed3d9f413ad8.png" srcset="/img/loading.gif" lazyload alt="1648974707241"></p>
+<h2 id="anyscript"><a href="#anyscript" class="headerlink" title="anyscript"></a>anyscript</h2><p>引入 TypeScript 本是便于项目的开发和可维护性，但实际执行过程中，几乎变成了 anyscript。不知道怎么写类型？那就不写就好了，不是么？</p>
+<p><img src="/resources/82757bba467e473490aac210265ce014.png" srcset="/img/loading.gif" lazyload alt="1648975542659"><br><img src="/resources/7dfe37881c1140218ebc7c2f1c563dc5.png" srcset="/img/loading.gif" lazyload alt="1648975628217"></p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>曾经吾辈刚开始工作时（还在写 java），提升代码细节质量主要依赖于 jetbrains idea 内置的 linter。吾辈认为，大部分时候，如果 idea 认为错了，那么可能就真的错了。个人认为，提高代码质量方法很多，要么去阅读现有好的代码，或者有人帮忙指导，但最重要的还是自己有意识希望将代码写的更好，而不仅仅是抱着<strong>代码和人有一个能跑就行</strong>的心态，将 coding 作为养家糊口的一份手段。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/javascript/">#javascript</a>
+      
+        <a href="/tags/vue/">#vue</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Code Review 漫谈 01</div>
+      <div>https://blog.rxliuli.com/p/aa0ef1c7a0fe4bfba5f9bce94c0bbfb0/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年4月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/f34835c49a8647a6b50ad61c6f08eea5/" title="Code Review 漫谈 02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Code Review 漫谈 02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/2930fc364bbe42139765efc0c23746f8/" title="VSCode 扩展 New Project 发布 0.2.0">
+                        <span class="hidden-mobile">VSCode 扩展 New Project 发布 0.2.0</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

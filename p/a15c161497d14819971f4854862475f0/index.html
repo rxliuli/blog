@@ -1,0 +1,1173 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景有时候使用 lambda 参数的时候忘记应该接口的名字，所以便在此写一下 Java8function 包下原生的相关接口，方便快速查找。 lambda 接口   class 参数 返回值 Stream 示例 应用场景    Function &lt;T&gt; &lt;R&gt; map&#x2F;flatMap 映射   Consumer &lt;T&gt; void forEach&#x2F;peek 迭代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8 函数式功能速查">
+<meta property="og:url" content="https://blog.rxliuli.com/p/a15c161497d14819971f4854862475f0/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景有时候使用 lambda 参数的时候忘记应该接口的名字，所以便在此写一下 Java8function 包下原生的相关接口，方便快速查找。 lambda 接口   class 参数 返回值 Stream 示例 应用场景    Function &lt;T&gt; &lt;R&gt; map&#x2F;flatMap 映射   Consumer &lt;T&gt; void forEach&#x2F;peek 迭代">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T14:14:09.394Z">
+<meta property="article:modified_time" content="2020-12-30T05:10:44.868Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Java8 函数式功能速查 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java8 函数式功能速查"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Java8 函数式功能速查</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>有时候使用 <code>lambda</code> 参数的时候忘记应该接口的名字，所以便在此写一下 Java8<br><code>function</code> 包下原生的相关接口，方便快速查找。</p>
+<h2 id="lambda-接口"><a href="#lambda-接口" class="headerlink" title="lambda 接口"></a>lambda 接口</h2><table>
+<thead>
+<tr>
+<th>class</th>
+<th>参数</th>
+<th>返回值</th>
+<th><code>Stream</code> 示例</th>
+<th>应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Function</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>&lt;R&gt;</code></td>
+<td><code>map/flatMap</code></td>
+<td>映射</td>
+</tr>
+<tr>
+<td><code>Consumer</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>void</code></td>
+<td><code>forEach/peek</code></td>
+<td>迭代</td>
+</tr>
+<tr>
+<td><code>Predicate</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>boolean</code></td>
+<td><code>filter/anyMatch</code></td>
+<td>过滤</td>
+</tr>
+<tr>
+<td><code>Supplier</code></td>
+<td></td>
+<td><code>&lt;R&gt;</code></td>
+<td><code>generate</code></td>
+<td>生成</td>
+</tr>
+<tr>
+<td><code>BiFunction</code></td>
+<td><code>&lt;U,T&gt;</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>reduce</code></td>
+<td>归纳</td>
+</tr>
+<tr>
+<td><code>UnaryOperator</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>iterate</code></td>
+<td>映射相同类型</td>
+</tr>
+<tr>
+<td><code>BinaryOperator</code></td>
+<td><code>&lt;T,T&gt;</code></td>
+<td><code>&lt;T&gt;</code></td>
+<td><code>reduce</code></td>
+<td>归纳相同类型</td>
+</tr>
+<tr>
+<td><code>Comparator</code></td>
+<td><code>&lt;T,T&gt;</code></td>
+<td><code>&lt;U&gt;</code></td>
+<td><code>sort</code></td>
+<td>比较</td>
+</tr>
+</tbody></table>
+<h2 id="Stream-流"><a href="#Stream-流" class="headerlink" title="Stream 流"></a>Stream 流</h2><p>Stream 流为我们提供了一种简单的操作集合的方式，每个操作都具有原子性。</p>
+<table>
+<thead>
+<tr>
+<th>function</th>
+<th>参数</th>
+<th>返回值</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>filter</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>过滤</td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td><code>Function&lt;T,T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>映射</td>
+</tr>
+<tr>
+<td><code>flatMap</code></td>
+<td><code>Function&lt;T,Stream&lt;T&gt;&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>压平映射</td>
+</tr>
+<tr>
+<td><code>distinct</code></td>
+<td></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>去重</td>
+</tr>
+<tr>
+<td><code>sorted</code></td>
+<td></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>排序, 要求 <code>T</code> 实现 <code>Closeable</code></td>
+</tr>
+<tr>
+<td><code>sorted</code></td>
+<td><code>Comparator&lt;T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>排序</td>
+</tr>
+<tr>
+<td><code>peek</code></td>
+<td><code>Consumer&lt;T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>迭代，但有返回值</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>long</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>限制数量</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td><code>long</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>从开头丢弃指定数量的元素</td>
+</tr>
+<tr>
+<td><code>forEach</code></td>
+<td><code>Consumer&lt;T&gt;</code></td>
+<td><code>void</code></td>
+<td>迭代</td>
+</tr>
+<tr>
+<td><code>forEachOrdered</code></td>
+<td><code>Consumer&lt;T&gt;</code></td>
+<td><code>void</code></td>
+<td>保证顺序的迭代</td>
+</tr>
+<tr>
+<td><code>toArray</code></td>
+<td></td>
+<td><code>Object[]</code></td>
+<td>转换为数组</td>
+</tr>
+<tr>
+<td><code>toArray</code></td>
+<td><code>IntFunction&lt;T[]&gt;</code></td>
+<td><code>T[]</code></td>
+<td>转换为指定类型的数组</td>
+</tr>
+<tr>
+<td><code>reduce</code></td>
+<td><code>BinaryOperator&lt;T&gt;</code></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>归纳为一个元素</td>
+</tr>
+<tr>
+<td><code>collect</code></td>
+<td><code>Collector&lt;T,A,R&gt;</code></td>
+<td><code>R</code></td>
+<td>将结果归集</td>
+</tr>
+<tr>
+<td><code>min</code></td>
+<td><code>Comparator&lt;T&gt;</code></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>最小值</td>
+</tr>
+<tr>
+<td><code>max</code></td>
+<td><code>Comparator&lt;T&gt;</code></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>最大值</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td></td>
+<td><code>long</code></td>
+<td>长度</td>
+</tr>
+<tr>
+<td><code>anyMatch</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>boolean</code></td>
+<td>是否存在匹配的元素</td>
+</tr>
+<tr>
+<td><code>allMatch</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>boolean</code></td>
+<td>是否所有元素都匹配</td>
+</tr>
+<tr>
+<td><code>noneMatch</code></td>
+<td><code>Predicate&lt;T&gt;</code></td>
+<td><code>boolean</code></td>
+<td>是否所有元素都不匹配</td>
+</tr>
+<tr>
+<td><code>findFirst</code></td>
+<td></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>查找第一个元素</td>
+</tr>
+<tr>
+<td><code>findAny</code></td>
+<td></td>
+<td><code>Optional&lt;T&gt;</code></td>
+<td>查找任意一个元素</td>
+</tr>
+<tr>
+<td><code>empty</code></td>
+<td></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>获取一个空的流</td>
+</tr>
+<tr>
+<td><code>of</code></td>
+<td><code>T...</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>将多个元素构造为流</td>
+</tr>
+<tr>
+<td><code>iterate</code></td>
+<td><code>T,UnaryOperator&lt;T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>构造无限有序流</td>
+</tr>
+<tr>
+<td><code>generate</code></td>
+<td><code>Supplier</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>构造无限无序流</td>
+</tr>
+<tr>
+<td><code>concat</code></td>
+<td><code>Stream&lt;T&gt;,Stream&lt;T&gt;</code></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>连接两个流</td>
+</tr>
+<tr>
+<td><code>parallel</code></td>
+<td></td>
+<td><code>Stream&lt;T&gt;</code></td>
+<td>将流转换为并行模式（多线程）</td>
+</tr>
+</tbody></table>
+<h2 id="Collectors"><a href="#Collectors" class="headerlink" title="Collectors"></a>Collectors</h2><p>Collectors 是一个 Java8 增加的一个工具类，用于简单的构造 <code>Collector</code> 接口的实现，主要用于 <code>Stream.collect()</code> 中的参数。<code>Stream.collect()</code> 用于将流转换为其他的数据结构，包括但不限于 <code>Collection</code>, <code>Map</code>, <code>String</code>, <code>Long</code> 等等，并以此衍生出了许多有用的操作：分组，转换为 <code>Map</code>，归约（<code>reduce</code> 的另一种使用方式），连接（归约的特化形式）</p>
+<table>
+<thead>
+<tr>
+<th>function</th>
+<th>功能</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toList</code></td>
+<td>转换为 <code>List</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toSet</code></td>
+<td>转换为 <code>Set</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toMap</code></td>
+<td>转换为 <code>Map</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toCollection</code></td>
+<td>转换为 <code>Collection</code> 的子类</td>
+<td></td>
+</tr>
+<tr>
+<td><code>joining</code></td>
+<td>所有元素连接为 <code>String</code>, 可以指定<strong>分隔符/开头/结尾</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>mapping</code></td>
+<td>在转换之前对每个元素进行映射，常用于分组</td>
+<td></td>
+</tr>
+<tr>
+<td><code>collectingAndThen</code></td>
+<td>在转为之前对结果进行一些操作，例如构造不可变集合</td>
+<td></td>
+</tr>
+<tr>
+<td><code>counting</code></td>
+<td>计算元素总数</td>
+<td></td>
+</tr>
+<tr>
+<td><code>minBy</code></td>
+<td>最小值</td>
+<td></td>
+</tr>
+<tr>
+<td><code>maxBy</code></td>
+<td>最大值</td>
+<td></td>
+</tr>
+<tr>
+<td><code>summingInt</code></td>
+<td>计算总和（结果为 <code>Integer</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>summingLong</code></td>
+<td>计算总和（结果为 <code>Long</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>summingDouble</code></td>
+<td>计算总和（结果为 <code>Double</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>averagingInt</code></td>
+<td>计算平均值（结果为 <code>Integer</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>averagingLong</code></td>
+<td>计算平均值（结果为 <code>Long</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>averagingDouble</code></td>
+<td>计算平均值（结果为 <code>Double</code>）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reducing</code></td>
+<td>归纳, 与 <code>Stream.reduce()</code> 功能相同</td>
+<td></td>
+</tr>
+<tr>
+<td><code>groupingBy</code></td>
+<td>分组, <code>Collectors</code> 独有</td>
+<td></td>
+</tr>
+<tr>
+<td><code>groupingByConcurrent</code></td>
+<td>并发分组</td>
+<td></td>
+</tr>
+<tr>
+<td><code>partitioningBy</code></td>
+<td>特化分组, 分成 <code>true</code> 和 <code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toMap</code></td>
+<td>转换为 <code>Map</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>toConcurrentMap</code></td>
+<td>转换为并发 <code>Map</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>summarizingInt</code></td>
+<td>汇总信息并尽可能返回 <code>Integer</code>。注: <code>summarizing*</code> 的方法汇总的信息都是 <strong>数量/求和/平均值/最小值/最大值</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>summarizingLong</code></td>
+<td>汇总信息并尽可能返回 <code>Long</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>summarizingDouble</code></td>
+<td>汇总信息并尽可能返回 <code>Double</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="一些示例"><a href="#一些示例" class="headerlink" title="一些示例"></a>一些示例</h2><h3 id="常见-Stream-操作"><a href="#常见-Stream-操作" class="headerlink" title="常见 Stream 操作"></a>常见 Stream 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final List&lt;String&gt; collect = Stream.of("1", "12", "", "123", "2", "12", "321", "")
+                //过滤
+                .filter(s -&gt; !s.isEmpty())
+                //提取出组成字符串的字符
+                .flatMap(s -&gt; Arrays.stream(s.split("")))
+                //去重
+                .distinct()
+                //转换为集合
+                .collect(Collectors.toList());
+System.out.println(collect); //结果是 [1, 2, 3]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="常见-Collectors-操作"><a href="#常见-Collectors-操作" class="headerlink" title="常见 Collectors 操作"></a>常见 Collectors 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final Map&lt;Integer, List&lt;List&lt;String&gt;&gt;&gt; collect = Stream.of("1", "12", "", "123", "2", "13", "321", "")
+        .collect(
+                //分组
+                Collectors.groupingBy(
+                        //分组条件
+                        String::length,
+                        //分组之前对每个元素进行映射
+                        Collectors.mapping(
+                                //映射函数
+                                s -&gt; Arrays.asList(s.split("")),
+                                //最后将 Stream 转换为 List
+                                Collectors.toList()
+                        )
+                )
+        );
+System.out.println(collect); //结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [1, 3]], 3=[[1, 2, 3], [3, 2, 1]]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<hr>
+<p>最后，Java8 有很多有趣的功能，或许我们所使用的不过是其中一个很小的子集，然而了解的越多越是觉得 Java8 的改进很多呢</p>
+<blockquote>
+<p>注：本文并非 <code>API</code> 列表，并未包含<strong>全部</strong>的功能，所以如果找不到所需要的函数可以查看 <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/">JDK8 Oracle Documentation</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java8 函数式功能速查</div>
+      <div>https://blog.rxliuli.com/p/a15c161497d14819971f4854862475f0/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/4550b527cf7347e4b63ec081299ec120/" title="Java8 时间格式化 DateTimeFormatter">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java8 时间格式化 DateTimeFormatter</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/c3b0f31116a54d93ad13f48dd4bdd9b2/" title="MybatisPlus 自定义全局操作 exists 一直返回 null">
+                        <span class="hidden-mobile">MybatisPlus 自定义全局操作 exists 一直返回 null</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

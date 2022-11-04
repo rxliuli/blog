@@ -1,0 +1,994 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言可能许多前端开发者都知道，自从去年 sindresorhus 发表 esm only 的宣言 一年多以来，许多项目开始转向了 esm only，即仅支持 esm 而不支持 cjs，以此来迫使整个生态更快的迁移到 esm only。 一些流行的项目已经这样做了  sindresorhus 维护的上千个 npm 包 node-fetch remark 系列 更多。。。  它们声称：你可以仍然使用现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript ESM 很好，但它现在也许没那么好">
+<meta property="og:url" content="https://blog.rxliuli.com/p/73331967c1814df480811eee598e714b/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言可能许多前端开发者都知道，自从去年 sindresorhus 发表 esm only 的宣言 一年多以来，许多项目开始转向了 esm only，即仅支持 esm 而不支持 cjs，以此来迫使整个生态更快的迁移到 esm only。 一些流行的项目已经这样做了  sindresorhus 维护的上千个 npm 包 node-fetch remark 系列 更多。。。  它们声称：你可以仍然使用现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-10T09:47:00.363Z">
+<meta property="article:modified_time" content="2022-10-01T17:47:14.585Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>JavaScript ESM 很好，但它现在也许没那么好 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JavaScript ESM 很好，但它现在也许没那么好"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-10 17:47" pubdate>
+          2022年8月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          58 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JavaScript ESM 很好，但它现在也许没那么好</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年10月2日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>可能许多前端开发者都知道，自从去年 sindresorhus 发表 <a target="_blank" rel="noopener" href="https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c">esm only 的宣言</a> 一年多以来，许多项目开始转向了 esm only，即仅支持 esm 而不支持 cjs，以此来迫使整个生态更快的迁移到 esm only。</p>
+<p>一些流行的项目已经这样做了</p>
+<ul>
+<li>sindresorhus 维护的上千个 npm 包</li>
+<li>node-fetch</li>
+<li>remark 系列</li>
+<li>更多。。。</li>
+</ul>
+<p>它们声称：你可以仍然使用现有版本而不升级到最新版，大版本更新不会影响到你。事实如何？</p>
+<p>吾辈之前碰到过几次无法使用 esm only 包的问题，每当吾辈想尝试 esm only 时，总是还有一些问题，最痛苦的是，一些包是 esm only，而另一些是 cjs only，总要选择放弃一边，fuck esm only。主要问题一些是 cjs only 的包，以及必须兼容的包 typescript/jest/ts-jest/wallaby 未能正确支持 esm。当然，吾辈可以选择寻找 esm only 包的替代品，例如 globby =&gt; fast-glob、remark =&gt; markdown-it、node-fetch =&gt; node-fetch@2，lodash-es =&gt; lodash，但这终究不是一个长久的选择，更何况有些包很难真正找到替代品，例如 remark 系列。</p>
+<p>那么，使用旧版本的包有什么问题呢？<br>主要问题是很难找到正确的版本，当然，如果使用的是相对独立的包，例如 node-fetch 这个，就可以直接使用 v2 版本即可。但如果使用的是 vuepress/remark 这种 monorepo 中包含许多小型包的项目，你很难找到每个子项目正确的版本。</p>
+<p>吾辈最近在做 epub 生成器的时候需要从 markdown 并操作 ast 做一些转换，最后转换为 html，因此再次使用 remark，也决定真正尝试使用 esm，下面是一些尝试的过程。</p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>使用 esm 必须解决以下几个问题，否则在生产环境中使用是不可能的</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> typescript 支持 – 基本上全部的 web 项目都使用了 ts，不支持的话是不可接受的</li>
+<li><input checked="" disabled="" type="checkbox"> jest 支持 – 同样大量使用的测试工具<ul>
+<li><input checked="" disabled="" type="checkbox"> wallaby 支持 – 一个付费的所见即所得的测试工具</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> 允许引用 cjs 模块 – 需要支持现有包</li>
+<li><input checked="" disabled="" type="checkbox"> 双模块包仍然能支持两种 esm/cjs 的项目 – 需要支持 cjs 项目引用</li>
+<li><input checked="" disabled="" type="checkbox"> 支持不打包的模块 – monorepo 中有些私有模块不会 bundle</li>
+<li><input checked="" disabled="" type="checkbox"> esbuild 支持 – esbuild 正在成为 lib bundle 标准</li>
+</ul>
+<h2 id="修改-package-声明"><a href="#修改-package-声明" class="headerlink" title="修改 package 声明"></a>修改 package 声明</h2><p>第一步是修改包的模块类型，修改 <code>"type": "module"</code> 即可将包声明为 esm，所有 js 代码将默认以 esm 模块运行。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "type": "module"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="TypeScript-支持"><a href="#TypeScript-支持" class="headerlink" title="TypeScript 支持"></a>TypeScript 支持</h2><p>从 ts4.7 开始支持 NodeNext，所以需要更改 tsconfig.json</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "NodeNext"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>另外，在 ts 文件中导入其他 ts 文件必须使用 .js 后缀</p>
+<p>这是一个奇怪的限制，参考 <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#type-in-packagejson-and-new-extensions">ts 4.7 发布文档</a></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { helper } from './foo.js' // works in ESM &amp; CJS
+helper()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>看起来是否会很奇怪，但现在只能这样写，typescript 甚至会这样提示</p>
+<h2 id="jest-x2F-wallaby-支持"><a href="#jest-x2F-wallaby-支持" class="headerlink" title="jest/wallaby 支持"></a>jest/wallaby 支持</h2><p>例如使用 <code>pnpm jest src/__tests__/lodash.test.ts</code> 命令运行以下代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { uniq } from 'lodash-es'
+
+it('uniq', () =&gt; {
+  console.log(uniq([1, 2, 1]))
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>出现错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Jest encountered an unexpected token<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>从 jest 28 开始支持实验性的 esm 支持，wallaby/ts-jest 也都可以通过配置支持，按照以下步骤即可处理</p>
+<ol>
+<li><p>配置 ts-jest</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "jest": {
+    "preset": "ts-jest/presets/default-esm",
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    },
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "testMatch": ["&lt;rootDir&gt;/src/**/__tests__/*.test.ts"]
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p>修改命令为 <code>node --experimental-vm-modules node_modules/jest/bin/jest.js src/__tests__/lodash.test.ts</code></p>
+</li>
+<li><p>配置 wallaby</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "wallaby": {
+    "env": {
+      "params": {
+        "runner": "--experimental-vm-modules"
+      }
+    }
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p>由于 esm 的导入是静态的，所以还需要卸载 <code>@types/jest</code> 使用 <code>@jest/globals</code> 包导入测试需要的函数，例如 <code>it/expect/describe/beforeEach</code> 等等</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { it, expect } from '@jest/globals'
+
+it('basic', () =&gt; {
+  expect(1 + 2).toBe(3)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+</ol>
+<h2 id="nodejs-支持"><a href="#nodejs-支持" class="headerlink" title="nodejs 支持"></a>nodejs 支持</h2><p>nodejs 自从 14 就开始支持 esm，但直到目前 18 为止迁移仍然不是平滑的，主要遇到了以下问题。</p>
+<h3 id="导入-cjs-only-模块"><a href="#导入-cjs-only-模块" class="headerlink" title="导入 cjs only 模块"></a>导入 cjs only 模块</h3><p>遗憾的是，现存的大量包都是 cjs only 模块的，不可能短时间迁移，而 nodejs 中 esm 与 cjs 的互操作性并不太好，所以需要处理一下。下面以 fs-extra 为例：</p>
+<p>之前一般会这样写</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { readdir } from 'fs-extra'
+import path from 'path'
+
+console.log(await readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用 tsx 运行时会出现错误 <code>SyntaxError: The requested module 'fs-extra' does not provide an export named 'readdir'</code>，这似乎是一个已知错误，参考：<a target="_blank" rel="noopener" href="https://github.com/esbuild-kit/tsx/issues/38">https://github.com/esbuild-kit/tsx/issues/38</a></p>
+<p>现在需要修改为</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import fsExtra from 'fs-extra'
+import path from 'path'
+
+console.log(await fsExtra.readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>或者修改为以下代码使用 <code>ts-node --esm &lt;file&gt;</code> 运行（tsx 不支持这种方式）</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import fsExtra = require('fs-extra')
+import path from 'path'
+
+console.log(await fsExtra.readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="使用-dirname"><a href="#使用-dirname" class="headerlink" title="使用 __dirname"></a>使用 <code>__dirname</code></h3><p>是的，你没看错，在 esm 模块下 <code>__dirname</code> 不可用了，取而代之的是 <code>import.meta.url</code>，总而言之，现在的使用方式是</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+console.log(__dirname)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>参考文章 <a target="_blank" rel="noopener" href="https://flaviocopes.com/fix-dirname-not-defined-es-module-scope/">https://flaviocopes.com/fix-dirname-not-defined-es-module-scope/</a>，之后在谈到 esbuild 时再说打包 cjs bundle 如何处理 <code>import.meta.url</code>（在 cjs 中不支持，又是二选一）。</p>
+<h2 id="lib-维护与使用"><a href="#lib-维护与使用" class="headerlink" title="lib 维护与使用"></a>lib 维护与使用</h2><h3 id="新的-esm-与-cjs-双包支持配置"><a href="#新的-esm-与-cjs-双包支持配置" class="headerlink" title="新的 esm 与 cjs 双包支持配置"></a>新的 esm 与 cjs 双包支持配置</h3><p>之前，我们通过 main/module 字段区分模块</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>但在 esm 项目中引用会报错</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">SyntaxError: The requested module 'cjs-and-esm-lib' does not provide an export named 'hello'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>esm 项目不认这个，它新定义了 exports 字段，所以需要增加（注意 main 字段仍需保留兼容旧版本 node）exports 字段</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>参考该回答：<a target="_blank" rel="noopener" href="https://stackoverflow.com/a/70020984">https://stackoverflow.com/a/70020984</a></p>
+<h2 id="esbuild-支持"><a href="#esbuild-支持" class="headerlink" title="esbuild 支持"></a>esbuild 支持</h2><p>原以为 esbuild 天生支持 esm 所以应该会很简单，但实际上也遇到了相当多的问题。</p>
+<p>捆绑以下代码为 cjs 会出现错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
+import { fileURLToPath } from 'url'
+import fsExtra from 'fs-extra'
+
+const { readdir } = fsExtra
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+console.log(__dirname)
+console.log(await readdir(__dirname))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>命令</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --format=esm
+esbuild src/bin.ts --platform=node --outfile=dist/bin.js --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">[ERROR] Top-level await is currently not supported with the "cjs" output format<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这里是因为 cjs 不能包含顶级 await，修改为</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
+import { fileURLToPath } from 'url'
+import fsExtra from 'fs-extra'
+
+const { readdir } = fsExtra
+
+;(async () =&gt; {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  console.log(__dirname)
+  console.log(await readdir(__dirname))
+})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>捆绑没有问题，但运行会出错</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">node dist/bin.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>首先是第一个错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">var import_path = __toESM(require("path"), 1);
+                  ^
+
+ReferenceError: require is not defined in ES module scope, you can use import instead
+This file is being treated as an ES module because it has a '.js' file extension and 'esm-demo\packages\esm-include-cjs-lib\package.json' contains "type": "module". To
+treat it as a CommonJS script, rename it to use the '.cjs' file extension.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>它说这是一个 esm 包，默认代码是 esm 模块，如果希望是以 cjs 模块执行，需要修改为 cjs 后缀。</p>
+<p>修改命令</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>然后出现了第二个错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string or an instance of URL. Received undefined<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>相关代码</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// src/bin.ts</span>
+<span class="token keyword">var</span> import_path <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">var</span> import_url <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span>
+<span class="token keyword">var</span> import_fs_extra <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require_lib</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">var</span> import_meta <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token keyword">var</span> <span class="token punctuation">{</span> readdir <span class="token punctuation">}</span> <span class="token operator">=</span> import_fs_extra<span class="token punctuation">.</span>default
+<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> __filename <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> import_url<span class="token punctuation">.</span>fileURLToPath<span class="token punctuation">)</span><span class="token punctuation">(</span>import_meta<span class="token punctuation">.</span>url<span class="token punctuation">)</span> <span class="token comment">// 这里是关键，因为 import.meta.url 在 cjs 代码中是空的</span>
+  <span class="token keyword">const</span> __dirname <span class="token operator">=</span> import_path<span class="token punctuation">.</span>default<span class="token punctuation">.</span><span class="token function">dirname</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">readdir</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>根据<a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/1492#issuecomment-893144483">这个 issue 中作者的回答</a>，修改命令</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --inject:./import-meta-url.js --define:import.meta.url=import_meta_url --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>遗憾的是，这不再生效，bundle 的代码如下</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// import-meta-url.js</span>
+<span class="token keyword">var</span> import_meta_url2 <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pathToFileURL</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>import_meta_url2<span class="token punctuation">)</span>
+
+<span class="token comment">// src/bin.ts</span>
+<span class="token keyword">var</span> import_path <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token keyword">var</span> import_url <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span>
+<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> __filename2 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> import_url<span class="token punctuation">.</span>fileURLToPath<span class="token punctuation">)</span><span class="token punctuation">(</span>import_meta_url<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> __dirname <span class="token operator">=</span> import_path<span class="token punctuation">.</span>default<span class="token punctuation">.</span><span class="token function">dirname</span><span class="token punctuation">(</span>__filename2<span class="token punctuation">)</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以明显看到，注入的脚本的变量名被修改了，从 <code>import_meta_url</code> =&gt; <code>import_meta_url2</code>，这是奇怪的问题。。。</p>
+<p>或许可以替换 <code>--inject</code> =&gt; <code>--banner</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --define:import.meta.url=import_meta_url --bundle --sourcemap --banner:js="var import_meta_url = require('url').pathToFileURL(__filename)" --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这样就生效了</p>
+<hr>
+<p>那么，运行 esm bundle 呢？<br>也会出现错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">throw new Error('Dynamic require of "' + x + '" is not supported')
+
+Error: Dynamic require of "fs" is not supported<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>按照<a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/1921#issuecomment-1152991694">这里</a>的解决方法修改命令</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --banner:js="import { createRequire } from 'module';const require = createRequire(import.meta.url);" --format=esm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>现在，bundle 后的代码可以终于运行了。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>或许 esm only 看起来很好，也有 tree shaking 看起来很棒的想法，但现在，它都还没有真正在生产中可用。包括一系列重要的项目都没有迁移，包括 react/vscode/electron/vite 等等。实际上，在此之前，许多人（吾辈亦然）也都使用 esm 模块来编写代码，只是最终的 bundle 产物可能不是 esm，例如在浏览器中可能是 iife，在 nodejs 中是 cjs，但绝大多数的应用层开发者并不关心这些，只有 lib 的维护者才会关心，esm only 则将包的复杂度也转移给了使用者，而且在 cjs 中引用 esm only 的包并没有真正可用的方案。相比于 esbuild/vite 这种解决实际问题的项目而言，esm only 运动更像是一场 web 前端圈内的狂欢。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/javascript/">#javascript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JavaScript ESM 很好，但它现在也许没那么好</div>
+      <div>https://blog.rxliuli.com/p/73331967c1814df480811eee598e714b/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/b8e8ce8bccff49d191480a40a18a7fc8/" title="代码生成-从 module css 生成 dts">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码生成-从 module css 生成 dts</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/002e2156c7de4d7189c30e6af1eb76ee/" title="新视点">
+                        <span class="hidden-mobile">新视点</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

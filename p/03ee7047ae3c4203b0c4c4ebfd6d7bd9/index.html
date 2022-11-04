@@ -1,0 +1,981 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言 如果你使用 JavaScript 没出现什么问题，那吾辈就不推荐你迁移到 TypeScript！   JavaScript 不能无缝迁移到 TypeScript！ JavaScript 不能无缝迁移到 TypeScript！ JavaScript 不能无缝迁移到 TypeScript！  重要的话说三遍，TypeScript 是 JavaScript 的超集，所以有很多人认为（并宣称）Jav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript &#x3D;&gt; TypeScript 迁移体验">
+<meta property="og:url" content="https://blog.rxliuli.com/p/03ee7047ae3c4203b0c4c4ebfd6d7bd9/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言 如果你使用 JavaScript 没出现什么问题，那吾辈就不推荐你迁移到 TypeScript！   JavaScript 不能无缝迁移到 TypeScript！ JavaScript 不能无缝迁移到 TypeScript！ JavaScript 不能无缝迁移到 TypeScript！  重要的话说三遍，TypeScript 是 JavaScript 的超集，所以有很多人认为（并宣称）Jav">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-02-02T14:15:37.861Z">
+<meta property="article:modified_time" content="2020-12-25T11:26:38.091Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="wiki">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>JavaScript =&gt; TypeScript 迁移体验 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JavaScript =&gt; TypeScript 迁移体验"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-02-02 22:15" pubdate>
+          2020年2月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          54 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JavaScript =&gt; TypeScript 迁移体验</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月25日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>如果你使用 JavaScript 没出现什么问题，那吾辈就不推荐你迁移到 TypeScript！</p>
+</blockquote>
+<ul>
+<li><code>JavaScript</code> 不能无缝迁移到 <code>TypeScript</code>！</li>
+<li><code>JavaScript</code> 不能无缝迁移到 <code>TypeScript</code>！</li>
+<li><code>JavaScript</code> 不能无缝迁移到 <code>TypeScript</code>！</li>
+</ul>
+<p>重要的话说三遍，TypeScript 是 JavaScript 的超集，所以有很多人认为（并宣称）JavaScript 可以很容易迁移到 TypeScript，甚至是无缝迁移的！<br>导致了 JavaScript 开发者满心欢喜的入坑了 TypeScript（包括吾辈），然后掉进了坑里，甚至差点爬不出来。。。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><ul>
+<li>问: 为什么吾辈用 JavaScript 用的好好的，偏偏自找麻烦去入坑了 TypeScript 了呢？</li>
+<li>答: JavaScript 因为一些固有问题和主流编辑器 VSCode 支持不力，导致代码写起来会感觉很不方便</li>
+<li>问: 具体谈谈</li>
+<li>答: 有很多令人不满意的地方，这里只谈几点:<ul>
+<li>JavaScript 没有类型，所以写 JSDoc 感觉很麻烦，但不写又不太好。然而，JavaScript 代码写的太顺利的话就可能忘记加上 JSDoc，之后代码就很难维护。</li>
+<li>VSCode 支持不好，这点或许才是最重要的: VSCode 使用 TypeScript 编写，并基于 TypeScript 实现的语法提示功能，虽然也支持根据 JSDoc 的注释进行提示，然而当你去做一个开源项目，并将之发布到 npm 之后，情况发生了变化。。。当一个用户使用 npm/yarn 安装了你的项目之后，发现并没有任何代码提示，如此你会怎么做？</li>
+<li>复杂的类型很难使用 JSDoc 表达出来并清晰地告诉调用者，例如高阶函数。</li>
+<li>等等。。。。</li>
+</ul>
+</li>
+</ul>
+<p>是的，TypeScript 确实解决了以上的一些问题，却同时带入了另外一些问题。</p>
+<ul>
+<li>TypeScript 有类型了，然而即便有类型推导，还是要加很多类型，而且有时候 TypeScript 和我们的想法不同的时候还要用 <code>!</code>/<code>(t as unkonwn) as R</code> 这种 <strong>hack 技巧</strong>。</li>
+<li>VSCode 天生支持 TypeScript，但 TypeScript 的 API Doc 生成工具实在谈不上多好，例如 <a target="_blank" rel="noopener" href="https://typedoc.org/">typedoc</a> 相比于 <a target="_blank" rel="noopener" href="https://esdoc.org/">ESDoc</a> 不过是个半吊子。。。</li>
+<li>事实上，即便使用 TypeScript 写的项目，只要使用者没有在 <code>jsconfig.json</code> 中进行配置的话，提示仍然默认不存在</li>
+<li>TypeScript 的类型系统是把双刃剑，实在太复杂了，当然有理由认为是为了兼容 JavaScript。然而在 TypeScript 想要正确的表达类型也是一件相当困难的事情。</li>
+</ul>
+<h2 id="类型系统踩坑"><a href="#类型系统踩坑" class="headerlink" title="类型系统踩坑"></a>类型系统踩坑</h2><h3 id="如何声明参数与返回值类型相同？"><a href="#如何声明参数与返回值类型相同？" class="headerlink" title="如何声明参数与返回值类型相同？"></a>如何声明参数与返回值类型相同？</h3><p>例如一个函数接受一个参数，并返回一个完全相同类型的返回值。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself(obj: any): any {
+  return obj
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>假使这样写的话，类型系统就不会发挥作用了，调用函数的结果将是 <code>any</code>，意味着类型系统将没有效果。</p>
+<p>例如下面的代码会被 ts 认为是错误</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 这段代码并不会有提示
+console.log(returnItself('abc').length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>需要写成</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself&lt;T = any&gt;(obj: T): T {
+  return obj
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里主要声明了参数和返回值是同一类型，默认为 any，但具体取决于参数的不同而使得返回值也不同，返回值不会丢失类型信息。</p>
+<h3 id="如何声明参数与返回值类型有关联？"><a href="#如何声明参数与返回值类型有关联？" class="headerlink" title="如何声明参数与返回值类型有关联？"></a>如何声明参数与返回值类型有关联？</h3><p>例如一个计算函数执行时间的函数 <code>timing</code>，接受一个函数参数，有可能是同步/异步的，所以要根据函数的返回值确定 <code>timing</code> 的返回值为 <code>number/Promise&lt;number&gt;</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然而在使用时你会发现返回值类型不太对，因为 <code>timing</code> 的返回值是 <code>number | Promise&lt;number&gt;</code> 这种复合类型</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 这里会提示类型错误
+const res: number = timing(() =&gt; sleep(100))
+expect(res).toBeGreaterThan(99)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>解决方案有二</p>
+<ol>
+<li>使用函数声明重载</li>
+<li>使用类型判断</li>
+</ol>
+<h4 id="使用函数声明重载"><a href="#使用函数声明重载" class="headerlink" title="使用函数声明重载"></a>使用函数声明重载</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(fn: (...args: any[]) =&gt; Promise&lt;any&gt;): Promise&lt;number&gt;
+export function timing(fn: (...args: any[]) =&gt; any): number
+export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>感觉函数声明顺序有点奇怪是因为 <code>Promise&lt;any&gt;</code> 属于 <code>any</code> 的子类，而函数声明重载必须由具体到宽泛。当然，我们有方法可以在 <code>any</code> 中排除掉 <code>Promise&lt;any&gt;</code>，这样顺序就对了！</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; Exclude&lt;any, Promise&lt;any&gt;&gt;,
+): number
+export function timing(fn: (...args: any[]) =&gt; Promise&lt;any&gt;): Promise&lt;number&gt;
+export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h4 id="使用类型判断"><a href="#使用类型判断" class="headerlink" title="使用类型判断"></a>使用类型判断</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+  // 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number
+): R extends Promise&lt;any&gt; ? Promise&lt;number&gt; : number {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return (performance.now() - begin) as any
+  }
+  return result.then(() =&gt; performance.now() - begin) as any
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h4 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h4><p>可以看出来，第一种方式的优点在于可以很精细的控制每个不同参数对应的返回值，并且，可以处理特别复杂的情况，缺点则是如果写 doc 文档的话需要为每个声明都写上，即便，它们有大部分注释是相同的。<br>而第二种方式，则在代码量上有所减少，而且不必使用函数声明重载。缺点则是无法应对特别复杂的情况，另外一点就是使用了 <code>any</code>，可能会造成<strong>重构火葬场</strong>。</p>
+<h3 id="TypeScript-类型系统就是认为吾辈错了怎么办？"><a href="#TypeScript-类型系统就是认为吾辈错了怎么办？" class="headerlink" title="TypeScript 类型系统就是认为吾辈错了怎么办？"></a>TypeScript 类型系统就是认为吾辈错了怎么办？</h3><p>有时候，明明自己知道是正确的，但 TypeScript 偏偏认为你写错了。思考以下功能如何实现？</p>
+<p>将 Array 转换为 Map，接受三个参数</p>
+<ol>
+<li>需要转换的数组</li>
+<li>将数组元素转换为 Map key 的函数</li>
+<li>将数组元素转换为 Map value 的函数，可选，默认为数组元素</li>
+</ol>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself&lt;T = any&gt;(obj: T): T {
+  return obj
+}
+
+export type ArrayCallback&lt;T, R&gt; = (item: T, index: number, arr: T[]) =&gt; R
+
+export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可能有以上代码，然而实际上 <code>returnItself</code> 无法直接赋值给 <code>ArrayCallback&lt;T, V&gt;</code>。当然，我们知道，这一定是可以赋值的，但 TypeScript 却无法编译通过！</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  // 是的，这里添加 as any 就好了
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself as any,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>或者，如果 <code>returnItself</code> 用的比较多的话（例如吾辈），可以使用另一种方式</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 修改 returnItself 的返回值
+function returnItself&lt;T, R = T&gt;(obj: T): R {
+  return obj as any
+}
+
+export type ArrayCallback&lt;T, R&gt; = (item: T, index: number, arr: T[]) =&gt; R
+
+export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="如何强制调用非空时对象上的函数？"><a href="#如何强制调用非空时对象上的函数？" class="headerlink" title="如何强制调用非空时对象上的函数？"></a>如何强制调用非空时对象上的函数？</h3><p>当有时候你得到一个对象可能为空时，无法直接调用其上的函数，会提示函数不存在。<br>例如下面从数组中查询字符串，然后获取长度，在 TypeScript 中便会报错，因为 str 的类型为 string/undefined。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+//
+console.log(str.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>之前使用 JavaScript 从未遇到过这种事情，事实上确实有可能为空，但 JavaScript 太过于动态，并不会提示错误，而 TypeScript 就会提示这种低级错误，因为类型系统。<br>但是啊，凡事都有例外，当吾辈确实想调用 string 上的函数时报错真的是有点讨厌，那么有什么办法呢？</p>
+<ol>
+<li><p>使用 <code>!</code> 强制调用</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+console.log(str!.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p>使用 <code>(str as any)</code> 转换为 any 类型之后再随意调用任何函数</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+console.log((str as any).length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p>使用注释 <code>// @ts-ignore</code> 忽略错误（非常强力，少用）</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+// @ts-ignore
+console.log(str.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+</ol>
+<p>注意: 三种方式推荐程度逐渐降低，因为后两种实际上都会忽略类型系统，导致编写代码没有提示！</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>截至目前为止，吾辈已经着手使用 TypeScript 重构工具函数库 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/rx-util">rx-util</a> 两周了，基本上打包配置，文档生成，类型定义基本上算是大致完成，感觉之后的公共项目大概都会用 TypeScript 实现了，毕竟前端主流开发工具 VSCode 对其的支持真的很好，而且 TypeScript 的接口这种概念真的太有用了！</p>
+<h2 id="一些吐槽"><a href="#一些吐槽" class="headerlink" title="一些吐槽"></a>一些吐槽</h2><p>使用了有一段时间了，这里不得不再次声明一下，TypeScript 的类型系统复杂度超乎想象，如果你没有准备好在生产系统中使用，那就最好不要使用。缺少关于类型系统（尤其是原生类型，例如 <code>PromiseLike</code> 居然没有人讲过）的说明，使得 TypeScript 的类型系统很多时候看起来都只是为了<strong>好玩</strong>而已。而且稍微复杂一点的情况思考如何设计类型的时间将会超过具体的代码实现，使用它请务必再三慎重考虑！</p>
+<p>TypeScript 的类型系统为了兼容 JavaScript 缺陷实在太大了。</p>
+<blockquote>
+<p>参见某个知乎用户的话:</p>
+</blockquote>
+<ol>
+<li><p>ts 写不出一个合并对象的方法</p>
+<p>下面是一个 js 合并对象的方法</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">extend</span><span class="token punctuation">(</span><span class="token parameter">dest<span class="token punctuation">,</span> <span class="token operator">...</span>sources</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>dest<span class="token punctuation">,</span> <span class="token operator">...</span>sources<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这么一个简单的方法，ts 写不出不丢失类型信息的实现。</p>
+<p>下面贴的是 typescript 源码中对 Object.assign 的声明，我相信都能看出有多傻：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">assign&lt;T, U&gt;(target: T, source: U): T &amp; U;
+assign&lt;T, U, V&gt;(target: T, source1: U, source2: V): T &amp; U &amp; V;
+assign&lt;T, U, V, W&gt;(target: T, source1: U, source2: V, source3: W): T &amp; U &amp; &amp; W;
+assign(target: object, ...sources: any[]): any;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>按这个实现，多于 4 个参数就直接丢掉类型信息了，建议 ts 至少把 A-Z 都作为泛型量用上…</p>
+</li>
+<li><p>一些很明显的类型推断却推断不出来</p>
+<p>用 assert 方法做参数检查是很常用的做法，一个简单的 assert 方法：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">assert</span><span class="token punctuation">(</span><span class="token parameter">condition<span class="token punctuation">,</span> msg</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后看这样一段代码：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function foo(p: number | string) {
+  assert(typeof p === 'number', 'p is a number')
+  p.length // 这里报错，ts 竟然不知道到这一步 p 必定是 string 类型
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/typescript/">#typescript</a>
+      
+        <a href="/tags/wiki/">#wiki</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JavaScript =&gt; TypeScript 迁移体验</div>
+      <div>https://blog.rxliuli.com/p/03ee7047ae3c4203b0c4c4ebfd6d7bd9/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年2月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/f7d449caae624527b5ed6fa00031b164/" title="JavaScript 使用 Promise">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JavaScript 使用 Promise</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/e7a2212e393e448198da90006d5c21e7/" title="JavaScript 自定义解析字符串为 Date 对象">
+                        <span class="hidden-mobile">JavaScript 自定义解析字符串为 Date 对象</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

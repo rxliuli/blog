@@ -1,0 +1,1006 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前置要求本文假设你已经了解或知道以下技能，尤其而且是勾选的内容。   Gradle  SpringBoot  MongoDB  SpringBoot 集成 MongoDB   注：本文不谈 SpringBoot 如何整合 MongoDB，如果需要可以去吾辈的另一篇记录 将 Mybatis&#x2F;MongoDB 集成到 SpringBoot 中的示例 查看，并且本文以项目 spring-boot-myba">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Mongo Data 使用">
+<meta property="og:url" content="https://blog.rxliuli.com/p/ac14d8147c2b4ee38414b1a4f66fb199/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前置要求本文假设你已经了解或知道以下技能，尤其而且是勾选的内容。   Gradle  SpringBoot  MongoDB  SpringBoot 集成 MongoDB   注：本文不谈 SpringBoot 如何整合 MongoDB，如果需要可以去吾辈的另一篇记录 将 Mybatis&#x2F;MongoDB 集成到 SpringBoot 中的示例 查看，并且本文以项目 spring-boot-myba">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T14:14:09.395Z">
+<meta property="article:modified_time" content="2021-06-21T11:57:25.735Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Spring Mongo Data 使用 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Spring Mongo Data 使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Spring Mongo Data 使用</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年6月21日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前置要求"><a href="#前置要求" class="headerlink" title="前置要求"></a>前置要求</h2><p>本文假设你已经了解或知道以下技能，尤其而且是勾选的内容。</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Gradle</li>
+<li><input checked="" disabled="" type="checkbox"> SpringBoot</li>
+<li><input checked="" disabled="" type="checkbox"> MongoDB</li>
+<li><input checked="" disabled="" type="checkbox"> SpringBoot 集成 MongoDB</li>
+</ul>
+<blockquote>
+<p>注：本文不谈 SpringBoot 如何整合 MongoDB，如果需要可以去吾辈的另一篇记录 <a href="/p/6427d24f405346eea9fb15e9f317babb">将 Mybatis/MongoDB 集成到 SpringBoot 中的示例</a> 查看，并且本文以项目 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/spring-boot-mybatis-plus-mongo-example">spring-boot-mybatis-plus-mongo-example</a> 为基础作为说明。</p>
+</blockquote>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
+<p>注：Spring Data MongoDB 是 Spring Data 的一部分，下面统一使用 MongoData 来称呼。</p>
+</blockquote>
+<h3 id="继承-MongoRepository-lt-T-ID-gt-使用命名方法"><a href="#继承-MongoRepository-lt-T-ID-gt-使用命名方法" class="headerlink" title="继承 MongoRepository<T, ID> 使用命名方法"></a>继承 MongoRepository&lt;T, ID&gt; 使用命名方法</h3><p>集成了 MongoData 之后，我们可以选择让 Dao 继承 <code>MongoRepository&lt;T, ID&gt;</code> 模板以获得通用方法，并且，可以通过特定方式的命名方法让 MongoData 来帮我们自动实现。</p>
+<p>例如</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
+public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {
+    /**
+     * 根据 id 查询用户日志信息
+     *
+     * @param id 查询的 id
+     * @return 用户日志
+     */
+    UserInfoLog findUserInfoLogByIdEquals(Long id);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这个方法将会被 MongoData 自动实现，而我们做的只是让接口方法名符合 MongoData 的命名规范罢了。</p>
+<p>这里来说明一下 <code>findUserInfoLogByIdEquals</code> 方法，将之拆分开来</p>
+<ul>
+<li><code>find</code>: 代表查询的意思，可以想象成 SQL 中的 <code>select</code></li>
+<li><code>UserInfoLog</code>: 代表查询的类型，可以想象成 <code>select</code> 中的表名（非必须，默认为当前 <code>MongoRepository</code> 的实体泛型类）</li>
+<li><code>By</code>: 代表着条件的开始，可以想象成 SQL 中的 <code>where</code></li>
+<li><code>Id</code>: 代表着条件中的字段，可以想象成 <code>where</code> 下的条件字段名</li>
+<li><code>Equals</code>: 代表条件的操作，可以想象成 <code>where</code> 下的条件操作，此处等价于 <code>=</code></li>
+</ul>
+<p>是的，MongoData 会自动根据方法名创建具体的实现，而我们要做的，仅仅是让方法名复合 MongoData 的规范而已。</p>
+<p>甚至于，我们可以添加更多的条件，例如下面的 <code>findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+  * 根据用户 id/记录时间/操作说明查询用户日志
+  *
+  * @param userId  用户 id
+  * @param logTime 记录时间
+  * @param operate 操作说明
+  * @return 用户日志
+  */
+List&lt;UserInfoLog&gt; findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex(Long userId, LocalDateTime logTime, String operate);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>当吾辈第一次看到这么长的方法名时（是的，足足有 71 个字符组成），也只能惊呼：**Oh my Gad!**<br>这对业务层的调用实在是太过于痛苦了，尤其而且能逼死强迫症（例如吾辈），所以下面就说一种更加灵活的解决方案！</p>
+<h3 id="使用-MongoOperations-创建更加灵活的查询"><a href="#使用-MongoOperations-创建更加灵活的查询" class="headerlink" title="使用 MongoOperations 创建更加灵活的查询"></a>使用 MongoOperations 创建更加灵活的查询</h3><p>修改 <code>UserInfoLogRepository</code> 并定义 <code>listByParam()</code> 以替代上面的 <code>findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex()</code> 方法</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoLogRepository {
+    /**
+     * 根据一些参数查询用户信息列表
+     *
+     * @param userInfoLog 参数对象
+     * @return 用户信息列表
+     */
+    List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>创建实现类 <code>UserInfoLogRepositoryImpl</code> 并实现 <code>listByParam()</code> 方法。这里注入 <code>MongoOperations</code> MongoDB 操作模板，它的实现类实际上是 <code>MongoTemplate</code>，然后使用 <code>Criteria</code> 定义复杂的查询。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
+public class UserInfoLogRepositoryImpl implements UserInfoLogRepository {
+    @Autowired
+    private MongoOperations mongoOperations;
+
+    @Override
+    public List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog) {
+        final Criteria criteria = new Criteria();
+        if (userInfoLog.getUserId() != null) {
+            criteria.and("userId")
+                    .is(userInfoLog.getUserId());
+        }
+        if (userInfoLog.getLogTime() != null) {
+            criteria.and("logTime")
+                    .gte(userInfoLog.getLogTime());
+        }
+        if (userInfoLog.getOperate() != null) {
+            criteria.and("operate")
+                    .regex(userInfoLog.getOperate());
+        }
+        return mongoOperations.find(new Query(criteria), UserInfoLog.class);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，<code>listByParam()</code> 相对而言更加优雅，不过代码量上也有增加就是了。事实上，对于复杂的查询，最好使用这种方式进行查询。</p>
+<h3 id="集合-MongoRepository-和-MongoOperations"><a href="#集合-MongoRepository-和-MongoOperations" class="headerlink" title="集合 MongoRepository 和 MongoOperations"></a>集合 MongoRepository 和 MongoOperations</h3><p>总之，上面两种方式各有优缺点。<code>MongoRepository</code> 对于大部分常见的操作基本都可以正常替代，而 <code>MongoOperations</code> 比之灵活得多，我们是否只能<strong>鱼与熊掌不可兼得</strong>呢？<br>当然不是，MongoData 在设计之初便充分权衡过方便与灵活性的平衡点，所以，我们可以同时使用它们！</p>
+<p>具体使用步骤如下</p>
+<h4 id="自定义更加复杂的-Dao-接口"><a href="#自定义更加复杂的-Dao-接口" class="headerlink" title="自定义更加复杂的 Dao 接口"></a>自定义更加复杂的 Dao 接口</h4><p>该接口定义需要自己实现的方法，需要同时被 <code>UserInfoLogRepository</code> 和 <code>UserInfoLogRepositoryImpl</code> 实现</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface CustomUserInfoLogRepository {
+    /**
+     * 根据一些参数查询用户信息列表
+     *
+     * @param userInfoLog 参数对象
+     * @return 用户信息列表
+     */
+    List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h4 id="定义一些简单操作的-Dao-接口"><a href="#定义一些简单操作的-Dao-接口" class="headerlink" title="定义一些简单操作的 Dao 接口"></a>定义一些简单操作的 Dao 接口</h4><p>注意，这里同时继承了 <code>CustomUserInfoLogRepository</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {
+    /**
+     * 根据 id 查询用户日志信息
+     *
+     * @param id 查询的 id
+     * @return 用户日志
+     */
+    @Nullable
+    UserInfoLog findUserInfoLogByIdEquals(Long id);
+
+    /**
+     * 根据用户 id/记录时间/操作说明查询用户日志
+     *
+     * @param userId  用户 id
+     * @param logTime 记录时间
+     * @param operate 操作说明
+     * @return 用户日志
+     */
+    List&lt;UserInfoLog&gt; findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex(Long userId, LocalDateTime logTime, String operate);
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h4 id="定义实现-UserInfoLogRepositoryImpl-类"><a href="#定义实现-UserInfoLogRepositoryImpl-类" class="headerlink" title="定义实现 UserInfoLogRepositoryImpl 类"></a>定义实现 UserInfoLogRepositoryImpl 类</h4><p>数据仓库 <code>UserInfoLogRepository</code> 的实现类，但请务必注意，实现类继承的是 <code>CustomUserInfoLogRepository</code> 接口，而非本应该继承的接口。而且实现类的名字必须是基础接口名 + <code>Impl</code>，因为 MongoData 默认使用的实现类就是这个名字。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public class UserInfoLogRepositoryImpl implements CustomUserInfoLogRepository {
+    @Autowired
+    private MongoOperations mongoOperations;
+
+    @Override
+    public List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog) {
+        final Criteria criteria = new Criteria();
+        if (userInfoLog.getUserId() != null) {
+            criteria.and("userId")
+                    .is(userInfoLog.getUserId());
+        }
+        if (userInfoLog.getLogTime() != null) {
+            criteria.and("logTime")
+                    .gte(userInfoLog.getLogTime());
+        }
+        if (userInfoLog.getOperate() != null) {
+            criteria.and("operate")
+                    .regex(userInfoLog.getOperate());
+        }
+        return mongoOperations.find(new Query(criteria), UserInfoLog.class);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="常用-API"><a href="#常用-API" class="headerlink" title="常用 API"></a>常用 API</h2><p>匹配标准：<code>Criteria</code></p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>参数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>and</code></td>
+<td><code>String</code></td>
+<td>并且</td>
+</tr>
+<tr>
+<td><code>not</code></td>
+<td><code>/Object</code></td>
+<td>非</td>
+</tr>
+<tr>
+<td><code>orOperator</code></td>
+<td><code>Criteria...</code></td>
+<td>并且是其他标准</td>
+</tr>
+<tr>
+<td><code>andOperator</code></td>
+<td><code>Criteria...</code></td>
+<td>并且是其他标准</td>
+</tr>
+<tr>
+<td><code>is</code></td>
+<td><code>Object</code></td>
+<td>等于</td>
+</tr>
+<tr>
+<td><code>ne</code></td>
+<td><code>Object</code></td>
+<td>不等于</td>
+</tr>
+<tr>
+<td><code>le</code></td>
+<td><code>Object</code></td>
+<td>小于</td>
+</tr>
+<tr>
+<td><code>let</code></td>
+<td><code>Object</code></td>
+<td>小于或等于</td>
+</tr>
+<tr>
+<td><code>gt</code></td>
+<td><code>Object</code></td>
+<td>大于</td>
+</tr>
+<tr>
+<td><code>gte</code></td>
+<td><code>Object</code></td>
+<td>大于或等于</td>
+</tr>
+<tr>
+<td><code>in</code></td>
+<td><code>Object.../Collection&lt;?&gt;</code></td>
+<td>在其中</td>
+</tr>
+<tr>
+<td><code>nin</code></td>
+<td><code>Object.../Collection&lt;?&gt;</code></td>
+<td>不在其中</td>
+</tr>
+<tr>
+<td><code>mod</code></td>
+<td><code>Number,Number</code></td>
+<td>模运算</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td><code>Object.../Collection&lt;?&gt;</code></td>
+<td>包含全部</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code>int</code></td>
+<td>长度</td>
+</tr>
+<tr>
+<td><code>exists</code></td>
+<td><code>boolean</code></td>
+<td>存在</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>int/Type...</code></td>
+<td>结构化数据的类型</td>
+</tr>
+<tr>
+<td><code>regex</code></td>
+<td><code>String/String,String/Pattern</code></td>
+<td>正则</td>
+</tr>
+<tr>
+<td><code>alike</code></td>
+<td><code>Example&lt;?&gt;</code></td>
+<td>匹配到最像的</td>
+</tr>
+<tr>
+<td><code>isEqual</code></td>
+<td><code>Object,Object</code></td>
+<td>是否相等</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/java/">#java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Spring Mongo Data 使用</div>
+      <div>https://blog.rxliuli.com/p/ac14d8147c2b4ee38414b1a4f66fb199/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/95eaa7c43d9545afb1865646bb46839d/" title="SpringBoot 进行测试">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot 进行测试</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/e0271cf3c06f49d7b3c51372e1893e10/" title="SpringBoot 使用阿里云的短信服务出现问题">
+                        <span class="hidden-mobile">SpringBoot 使用阿里云的短信服务出现问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

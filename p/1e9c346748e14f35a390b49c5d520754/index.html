@@ -1,0 +1,952 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景有一个需要从数据库随机获取指定数量的数据的需求，然而这个问题却是意外的挺麻烦。 假设有一个数据表 create table topic (   id      int primary key not null   comment &#39;编号&#39;,   content varchar(20)     not null   comment &#39;内容&#39; )   comment &#39;主题表&#39;;   这里的 to">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 获取随机条数据">
+<meta property="og:url" content="https://blog.rxliuli.com/p/1e9c346748e14f35a390b49c5d520754/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景有一个需要从数据库随机获取指定数量的数据的需求，然而这个问题却是意外的挺麻烦。 假设有一个数据表 create table topic (   id      int primary key not null   comment &#39;编号&#39;,   content varchar(20)     not null   comment &#39;内容&#39; )   comment &#39;主题表&#39;;   这里的 to">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-18T14:14:09.412Z">
+<meta property="article:modified_time" content="2020-12-30T05:18:49.641Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="sql">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MySQL 获取随机条数据 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL 获取随机条数据"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-18 22:14" pubdate>
+          2020年4月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MySQL 获取随机条数据</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2020年12月30日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>有一个需要从数据库随机获取指定数量的数据的需求，然而这个问题却是意外的挺麻烦。</p>
+<p>假设有一个数据表</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">create table topic (
+  id      int primary key not null
+  comment '编号',
+  content varchar(20)     not null
+  comment '内容'
+)
+  comment '主题表';<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>这里的 <code>topic</code> 表有两个关键性的特点</p>
+<ul>
+<li>主键可以进行比较（<code>int</code>）</li>
+<li>主键整体存在趋势（自增/自减）</li>
+</ul>
+</blockquote>
+<h2 id="解决方案-1：直接使用-order-by-rand"><a href="#解决方案-1：直接使用-order-by-rand" class="headerlink" title="解决方案 1：直接使用 order by rand()"></a>解决方案 1：直接使用 <code>order by rand()</code></h2><p>直接使用 <code>order by rand()</code> 就可以获取到随机的数据了，而且能够获取到全部的数据（顺序仍然是随机的）。</p>
+<ol>
+<li>按照 <code>rand()</code> 产生的结果<blockquote>
+<p>这一步相当于为每条数据加上一列由 <code>rand()</code> 函数产生的数据，然后对这一列进行排序</p>
+</blockquote>
+</li>
+<li>限制查询条数</li>
+</ol>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select *
+from topic
+order by rand()
+limit 50000;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>但缺点很明显，速度是个问题，因为 rand() 的数据没有索引，所以会造成排序速度极慢。</p>
+<p>在 10w 条数据中随机获取 5w 条数据，花费时常 <strong>6 s 378 ms</strong>，这个时间真的太长了点。</p>
+<p>其实 <code>order by rand()</code> 看起来很奇怪，实际上等效于：</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select *
+from (
+       select
+         topic.*,
+         rand() as order_column
+       from topic
+     ) as temp
+order by order_column
+limit 50000;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="解决方案-2：使用-where-subquery-取中间的随机值"><a href="#解决方案-2：使用-where-subquery-取中间的随机值" class="headerlink" title="解决方案 2：使用 where subquery 取中间的随机值"></a>解决方案 2：使用 <code>where subquery</code> 取中间的随机值</h2><p>因为 <code>order by rand()</code> 没有索引导致的排序太耗时，我们可以尝试绕过这个问题。</p>
+<p>下面的这种解决方案便是如此</p>
+<ol>
+<li>取最小值和最大值之间的随机值</li>
+<li>判断 id 是否大于（或者小于）这个随机值</li>
+<li>限制查询条数</li>
+</ol>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select *
+from topic
+where id &gt;= ((select max(id)
+              from topic)
+             - (select min(id)
+                from topic))
+            * rand()
+            + (select min(id)
+               from topic)
+limit 50000;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这种方法查询速度虽然极快（150 ms），但却会受到数据分布密度的影响。如果数据不是平均的，那么查询到的总数据条数就会受限。</p>
+<p>那么，下面来说该方法的缺陷</p>
+<ul>
+<li><p>获取到的数据受分布密度影响</p>
+<p>例如数据分布呈以下情况</p>
+<p><code>1,100002,100003,100004...199999,200000</code></p>
+<p>那么使用上述代码就只能获取到很少一部分数据（大约在 2.5w 条左右）。然而如果将符号稍微下改一下，将 <code>&gt;=</code> 修改为 <code>&lt;=</code>，那么能够获取到的平均数量将大大增加（7.5w 条左右）。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select *
+from topic
+# 注意：这里的符号修改了
+where id &gt;= ((select max(id)
+              from topic)
+            - (select min(id)
+                from topic))
+            * rand()
+            + (select min(id)
+              from topic)
+limit 50000;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+</li>
+<li><p>每一条数据获取到的概率不是完全相同的<br>虽然获取到的全部数据是随机的，但每一个的概率却并不相同。例如在 <code>&lt;=</code> 时会出现永远都为第一条的现象，究其原因就是因为 <strong>第一条</strong> 的概率实在是太大了，因为查询数据表时数据的检索规则是从第一条开始的呢！即便修改成 <code>&gt;=</code>，所得到的第一条数据也普遍偏小。<br>使用 <code>&gt;=</code> 的结果</p>
+<ul>
+<li>数据越是在前面，那么获取到的概率就越低</li>
+<li>但即便是很低概率，在最前面总有机会，所以第一条一般偏小</li>
+<li>数据密度前面偏大时，获取到的数量会非常小</li>
+</ul>
+</li>
+</ul>
+<p>密度越是趋于平均，获取到的最大随机数据条数的平均值愈接近 <code>1/2</code>，否则则会愈加偏离（不一定偏大还是偏小）。</p>
+<h2 id="解决方案-3：使用临时表-temporary-table"><a href="#解决方案-3：使用临时表-temporary-table" class="headerlink" title="解决方案 3：使用临时表 temporary table"></a>解决方案 3：使用临时表 <code>temporary table</code></h2><p>解决方案 2 着眼于避免使用没有索引的 <code>rand()</code> 进行排序，但这里思考另一个解决方案，使用加了索引之后的 <code>rand()</code> 进行排序。创建临时表，仅包含主键 <code>id</code> 和需要进行排序的索引列 <code>randomId</code>，然后排序完成过后获取到乱序数据。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">drop temporary table if exists temp_topic;
+create temporary table temp_topic (
+  id       bigint primary key not null,
+  randomId double             not null,
+  index (randomId)
+)
+  as
+    select
+      id,
+      rand() as randomId
+    from topic;
+select t.*
+from topic t
+  join (
+         select id
+         from (
+                select id
+                from temp_topic
+                order by randomId
+              ) as temp
+         limit 50000
+       ) as temp
+    on t.id = temp.id;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这种方法的查询速度不算很快（878 ms，相比于第二种），而且仍然是与数据量呈正相关的（因为要复制数据）。但和第一种，也是真正的随机获取。</p>
+<h2 id="解决方案-4：使用-join-order-by-rand"><a href="#解决方案-4：使用-join-order-by-rand" class="headerlink" title="解决方案 4：使用 join order by rand()"></a>解决方案 4：使用 <code>join order by rand()</code></h2><p>吾辈在 <a target="_blank" rel="noopener" href="https://stackoverflow.com/">StackOverflow</a> 上面看到了一个 <a target="_blank" rel="noopener" href="https://stackoverflow.com/a/36013954/8409380">最优解 by 2016</a>，一切表现的都很好，速度不算慢（261 ms），也可以获取到全部数据，也是真正的随机获取。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select g.*
+from
+  topic g
+  join
+  (select id
+   from
+     topic
+   where
+     rand() &lt; (select ((50000 / count(0)) * 10)
+               from
+                 topic)
+   order by rand()
+   limit 50000) as z on z.id = g.id;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里的 <code>where rand()</code> 是想要在获取的数据与总数据量差距过大（10 倍以上）时过滤数据，提高排序效率。</p>
+<p>吾辈这里不清楚上面发生了什么，感觉 <code>rand()</code> 只要在 <code>join</code> 里面之后的排序就会变得很快！<br>事实上，只要使用 <code>join</code> 内连接之后，就算是 <code>order by rand()</code> 的效率也很高，甚至在获取少量数据时比上面使用 <code>where rand</code> 过滤数据后再排序的的速度还要快</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT t.*
+FROM topic t
+  JOIN
+  (SELECT id
+   FROM `topic`
+   ORDER BY RAND()
+   LIMIT 50000) AS z ON z.id = t.id;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<blockquote>
+<p>注：在获取的数据量很大时，使用上面那种 <code>where</code> 过滤一次的效率上会更有优势一点！</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><blockquote>
+<p>这里有一篇不错的英文文章对随机获取数据进行了分析：<a target="_blank" rel="noopener" href="http://jan.kneschke.de/projects/mysql/order-by-rand/">http://jan.kneschke.de/projects/mysql/order-by-rand/</a>，也有人在 StackOverflow 上进行了讨论 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1823306/">https://stackoverflow.com/questions/1823306/</a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>不同点</th>
+<th><code>order by rand()</code></th>
+<th><code>where subquery</code></th>
+<th><code>temporary table</code></th>
+<th><code>join order by rand()</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可以随机获取全部</td>
+<td>可以</td>
+<td>几乎不可能</td>
+<td>可以</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>慢</td>
+<td>极快</td>
+<td>较快</td>
+<td>极快</td>
+</tr>
+<tr>
+<td>需要可比较的主键类型</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>受数据分布密度影响</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>速度受表数据复杂度影响</td>
+<td>很大</td>
+<td>极小</td>
+<td>较小</td>
+<td>极小</td>
+</tr>
+</tbody></table>
+<p>那么，看完上面的不同点对比，我们也可以得出它们的使用场景了</p>
+<ul>
+<li>强烈推荐首选 <code>join order by rand()</code> 作为随机获取数据的解决方案</li>
+<li>唯一不推荐的就是 <code>order by rand()</code>，这是新手才会写出来 sql。当然，如果你的数据量很小（1000 条以下）时，直接使用 <code>order by rand()</code> 以现代机器的性能 sql 也不会很慢呢</li>
+</ul>
+<blockquote>
+<p>注：如果仅仅只是需要打乱数据顺序的话还是更推荐将数据读取到内存中在进行操作更好！</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/sql/">#sql</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL 获取随机条数据</div>
+      <div>https://blog.rxliuli.com/p/1e9c346748e14f35a390b49c5d520754/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/13df762003114c38a6fe53f03f8fa1ec/" title="MySQL 创建用户及授权">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MySQL 创建用户及授权</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/84c23dd0034c4dfaa803e2845852ab09/" title="MySQL 使用 IF 判断是否执行 SQL">
+                        <span class="hidden-mobile">MySQL 使用 IF 判断是否执行 SQL</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

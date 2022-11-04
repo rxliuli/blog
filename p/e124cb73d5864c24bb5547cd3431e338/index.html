@@ -1,0 +1,981 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="场景最近迁移了一些 API，因为所有前端项目都在同一个 monorepo 中，所以作为 lib 维护者吾辈还需要帮助迁移其他使用的模块。由于项目数量较多（大约有 30 多个），手动迁移非常麻烦而且难以测试。所以在调研了一些现有的大规模重构的方法后，吾辈选择了 jscodeshift 作为主要工具来做自动化迁移。那么，它相比于使用 ide 的重构功能、使用字符串搜索替换亦或是手工一个个替换有什么不同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 jscodeshift 做重构">
+<meta property="og:url" content="https://blog.rxliuli.com/p/e124cb73d5864c24bb5547cd3431e338/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="场景最近迁移了一些 API，因为所有前端项目都在同一个 monorepo 中，所以作为 lib 维护者吾辈还需要帮助迁移其他使用的模块。由于项目数量较多（大约有 30 多个），手动迁移非常麻烦而且难以测试。所以在调研了一些现有的大规模重构的方法后，吾辈选择了 jscodeshift 作为主要工具来做自动化迁移。那么，它相比于使用 ide 的重构功能、使用字符串搜索替换亦或是手工一个个替换有什么不同">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/911c2de3c0244a2bafca13e8c32d2f0f.svg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/cffe2a8a0f69452bbaca26977e4a9ade.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/48b7b59c126142358065492d2935f1cb.png">
+<meta property="article:published_time" content="2022-07-14T13:45:05.338Z">
+<meta property="article:modified_time" content="2022-08-07T10:36:38.099Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="工程化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/911c2de3c0244a2bafca13e8c32d2f0f.svg">
+  
+  
+  
+  <title>使用 jscodeshift 做重构 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用 jscodeshift 做重构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-07-14 21:45" pubdate>
+          2022年7月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用 jscodeshift 做重构</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年8月7日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>最近迁移了一些 API，因为所有前端项目都在同一个 monorepo 中，所以作为 lib 维护者吾辈还需要帮助迁移其他使用的模块。由于项目数量较多（大约有 30 多个），手动迁移非常麻烦而且难以测试。所以在调研了一些现有的大规模重构的方法后，吾辈选择了 jscodeshift 作为主要工具来做自动化迁移。<br>那么，它相比于使用 ide 的重构功能、使用字符串搜索替换亦或是手工一个个替换有什么不同呢？</p>
+<ul>
+<li>ide（vscode）的重构大多数时候不太好用，尤其在 monorepo 中以及包含 vue 文件时，它基本上无效的。</li>
+<li>字符串替换我们经常使用，它只能处理简单的情况，并不能处理一些更复杂的情况，例如替换导入的变量并修改下面对应的值。</li>
+<li>手工一个个替换最大的问题是浪费时间，并且难以形成积累以供后续复用，处理大量文件时是不现实的。</li>
+</ul>
+<p><img src="/resources/911c2de3c0244a2bafca13e8c32d2f0f.svg" srcset="/img/loading.gif" lazyload alt="codemod.drawio.svg"></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>jscodeshift 支持多种解析器，包括常见的 babel、ts、tsx，也提供链式调用 API，类似于 jquery。在调研的过程中，吾辈还发现了一个非常好的工具 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a>，它可以非常方便的浏览一段代码的 ast，便于确认如何找到想要处理的 ast 节点。</p>
+<p><img src="/resources/cffe2a8a0f69452bbaca26977e4a9ade.png" srcset="/img/loading.gif" lazyload alt="1658135431847"></p>
+<p>jscodeshift 同时提供了 cli/lib 的使用方式，下面是基本的使用命令，它会在匹配的 ts 文件上运行转换脚本 transform.ts，<code>-d</code> 表示尝试运行并确定影响范围。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">jscodeshift -t=./transform.ts --parser=ts ./*.ts -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h3 id="替换-import-导入的变量并替换所有使用到的-API"><a href="#替换-import-导入的变量并替换所有使用到的-API" class="headerlink" title="替换 import 导入的变量并替换所有使用到的 API"></a>替换 import 导入的变量并替换所有使用到的 API</h3><p>一种需求是将命名空间导入重构为命名导入，例如将 <code>import * as _ from 'lodash'</code> 转换为 <code>import { uniq } from 'lodash'</code> 便于构建工具能正确的 tree shaking。</p>
+<p>转换前</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import * as _ from 'lodash'
+
+console.log(_.sort(_.uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>转换后</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { sort, uniq } from 'lodash'
+
+console.log(sort(uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里只需要找到引用命名空间的所有调用，并分别替换<strong>导入</strong>与<strong>命名空间方法调用</strong>即可，以下是实现</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
+  Identifier,
+  ImportDeclaration,
+  MemberExpression,
+  Transform,
+} from 'jscodeshift'
+
+const replaceImport: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
+  const importNames = root
+    .find(j.ImportDeclaration)
+    .find(j.ImportNamespaceSpecifier)
+    .find(j.Identifier)
+    .nodes()
+    .map((node) =&gt; (node as Identifier).name)
+  console.log(importNames)
+  const list = importNames.map((name) =&gt; ({
+    name,
+    list: root
+      .find(j.MemberExpression, {
+        object: { name },
+      })
+      .nodes()
+      .map((node) =&gt; ((node as MemberExpression).property as Identifier).name),
+  }))
+  console.log(list)
+  list.forEach(({ name, list }) =&gt; {
+    root
+      .find(j.ImportDeclaration, {
+        specifiers: [{ type: 'ImportNamespaceSpecifier', local: { name } }],
+      })
+      .replaceWith((path) =&gt; {
+        const node = path.node as ImportDeclaration
+        node.specifiers = list.map((name) =&gt;
+          j.importSpecifier(j.identifier(name)),
+        )
+        return node
+      })
+    list.forEach((p) =&gt; {
+      root
+        .find(j.MemberExpression, { object: { name }, property: { name: p } })
+        .replaceWith(j.identifier(p))
+    })
+  })
+  return root.toSource()
+}
+
+export default replaceImport<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="将废弃的-API-替换为新的-API-调用"><a href="#将废弃的-API-替换为新的-API-调用" class="headerlink" title="将废弃的 API 替换为新的 API 调用"></a>将废弃的 API 替换为新的 API 调用</h3><p>还有一些时候我们废弃了一些 API，但目前仍然有引用，为了避免堆叠兼容式的代码，需要将使用旧 API 的代码转换为使用新 API 的代码。<br>例如我们希望替换以下代码</p>
+<p>转换前</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { RendererApiFactory } from 'ipc-renderer'
+
+export const { vmBasicMessageChannel } = RendererApiFactory.createAll()
+export const { systemApi } = RendererApiFactory.createAllIpcMainApi(
+  vmBasicMessageChannel,
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>转换后</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { ApiFactory } from 'app-utils'
+
+export const { basicMessageChannel, systemApi } =
+  ApiFactory.createAll(basicMessageChannel)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里替换稍微复杂一点，涉及到以下几个操作</p>
+<ul>
+<li>删除 import 的指定导入</li>
+<li>创建新的导入</li>
+<li>删除变量</li>
+<li>创建新的导出</li>
+<li>清理空的导入、导出</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Identifier, ObjectProperty, Transform } from 'jscodeshift'
+
+const depretedApi: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
+
+  const findImport = root
+    .find(j.ImportDeclaration, { source: { value: 'ipc-renderer' } })
+    .filter(
+      (path) =&gt;
+        j(path.node).find(j.ImportSpecifier, {
+          imported: { name: 'RendererApiFactory' },
+        }).length !== 0,
+    )
+  if (findImport.length === 0) {
+    return
+  }
+  findImport
+    .find(j.ImportSpecifier, { imported: { name: 'RendererApiFactory' } })
+    .remove()
+  findImport.insertAfter(
+    j.importDeclaration(
+      [j.importSpecifier(j.identifier('ApiFactory'))],
+      j.literal('app-utils'),
+    ),
+  )
+  if (findImport.find(j.ImportSpecifier).length === 0) {
+    findImport.remove()
+  }
+
+  root
+    .find(j.ExportNamedDeclaration)
+    .filter(
+      (path) =&gt;
+        j(path.node).find(j.MemberExpression, {
+          object: { name: 'RendererApiFactory' },
+          property: { name: 'createAll' },
+        }).length !== 0,
+    )
+    .remove()
+  const createAllIpcMainApi = root.find(j.ExportNamedDeclaration).filter(
+    (path) =&gt;
+      j(path.node).find(j.MemberExpression, {
+        object: { name: 'RendererApiFactory' },
+        property: { name: 'createAllIpcMainApi' },
+      }).length !== 0,
+  )
+  const keys = createAllIpcMainApi
+    .find(j.ObjectPattern)
+    .find(j.ObjectProperty)
+    .nodes()
+    .map((node) =&gt; ((node as ObjectProperty).key as Identifier).name)
+  console.log(keys)
+  createAllIpcMainApi.insertAfter(
+    j(
+      `export const { ${['basicMessageChannel', ...keys].join(
+        ', ',
+      )} } = ApiFactory.createAll()`,
+    )
+      .find(j.ExportNamedDeclaration)
+      .nodes()[0],
+  )
+  createAllIpcMainApi.remove()
+  console.log(root.toSource())
+  return root.toSource()
+}
+
+export default depretedApi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>这里可以看到，吾辈并未使用 jscodeshift 构建 ast 的 api，而是直接使用了字符串拼接的方法。主要是使用 jscodeshift 的 api 构建过于繁琐，所以直接拼接字符串然后解析可能更简单一点。</p>
+<h3 id="替换方法调用到多个参数与对象参数"><a href="#替换方法调用到多个参数与对象参数" class="headerlink" title="替换方法调用到多个参数与对象参数"></a>替换方法调用到多个参数与对象参数</h3><p>除此之外，我们还能变换方法调用的参数，例如将多个参数转换为对象参数（这在 ide 中是现成的功能）</p>
+<p>转换前</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show('liuli', 17, false)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>转换后</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show({ name: 'liuli', age: 17, sex: false })<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这里我们仅需要找到需要处理的函数调用，然后转换其参数即可。</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { CallExpression, Identifier, Transform } from 'jscodeshift'
+
+const replaceParams: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
+
+  const names = ['name', 'age', 'sex']
+  root
+    .find(j.CallExpression, { callee: { type: 'Identifier', name: 'show' } })
+    .replaceWith((path) =&gt; {
+      const node = path.node as CallExpression
+      const args = node.arguments
+      node.arguments = [
+        j.objectExpression(
+          names.map((name, i) =&gt;
+            j.objectProperty(j.identifier(name), args[i] as Identifier),
+          ),
+        ),
+      ]
+      return node
+    })
+
+  return root.toSource()
+}
+
+export default replaceParams<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h2 id="踩到的一些坑"><a href="#踩到的一些坑" class="headerlink" title="踩到的一些坑"></a>踩到的一些坑</h2><h3 id="使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大"><a href="#使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大" class="headerlink" title="使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大"></a>使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大</h3><p>ts 的 ast 非常特立独行，可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 看到。吾辈一般会选择使用 @typescript-eslint/parser，它既能解析 js/ts/tsx，又能与 jscodeshift 的 api 相结合判断如何检索节点。</p>
+<h3 id="无法直接按类型找到泛型参数"><a href="#无法直接按类型找到泛型参数" class="headerlink" title="无法直接按类型找到泛型参数"></a>无法直接按类型找到泛型参数</h3><p>例如可以在 ast viewer 中看到节点 TSTypeParameterInstantiation</p>
+<p><img src="/resources/48b7b59c126142358065492d2935f1cb.png" srcset="/img/loading.gif" lazyload alt="1658133727745"></p>
+<p>但却无法使用 jscodeshift 找到</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const root = j(`wrap&lt;IHelloApi&gt;()`)
+expect(root.find(j.TSTypeParameterInstantiation).length).toBe(0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="string-prototype-replace-替换包含-的字符串时会出现奇怪的现象"><a href="#string-prototype-replace-替换包含-的字符串时会出现奇怪的现象" class="headerlink" title="string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象"></a>string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象</h3><p>运行下面这段代码，可能会得到让你意外的结果</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const s = 'hell$$ w$$rld'
+console.log(s.replaceAll(s, s)) // hell$ w$rld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>这与 string.prototype.replace 的一些奇怪实现有关，具体参考 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E4%BD%BF%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0">mdn</a>，目前 StackOverflow 上的推荐方法是先处理一次要替换的值</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(s.replaceAll(s, s.replaceAll('$', '$$$$')))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h3 id="glob-模式依赖于-bash"><a href="#glob-模式依赖于-bash" class="headerlink" title="glob 模式依赖于 bash"></a>glob 模式依赖于 bash</h3><p>这点很烦人，它并未使用 node-glob 之类的包来实现文件匹配，而是直接依赖于 shell 本身的 glob 匹配，而默认情况下并不支持 <code>**</code>。某种变通的方法是使用 <code>find + xargs</code> 来绕过</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">find ./*/src -iname '*.vue' -o -iname '*.ts' | xargs jscodeshift -t "./convertAppApi.ts" -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.toptal.com/javascript/write-code-to-rewrite-your-code">https://www.toptal.com/javascript/write-code-to-rewrite-your-code</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/typescript/">#typescript</a>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用 jscodeshift 做重构</div>
+      <div>https://blog.rxliuli.com/p/e124cb73d5864c24bb5547cd3431e338/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年7月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/002e2156c7de4d7189c30e6af1eb76ee/" title="新视点">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">新视点</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/76673453498244cfbe34027678d75f67/" title="实现一个玩具 lisp 运行时与解析器">
+                        <span class="hidden-mobile">实现一个玩具 lisp 运行时与解析器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
