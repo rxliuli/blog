@@ -6,7 +6,7 @@
   <link href="https://blog.rxliuli.com/atom.xml" rel="self"/>
   
   <link href="https://blog.rxliuli.com/"/>
-  <updated>2022-11-06T08:28:11.959Z</updated>
+  <updated>2022-11-06T14:47:47.198Z</updated>
   <id>https://blog.rxliuli.com/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用 cloudflare workers 代理访问 google photos</title>
+    <link href="https://blog.rxliuli.com/p/c826295333d241969663ac463ad63642/"/>
+    <id>https://blog.rxliuli.com/p/c826295333d241969663ac463ad63642/</id>
+    <published>2022-11-06T09:20:16.041Z</published>
+    <updated>2022-11-06T14:47:47.198Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>吾辈使用 Google Photos 作为个人相册，但它的外链却无法在 blog 中使用，而且也无法在国内直接访问，这其实有点麻烦。在此之前，吾辈通过 <a href="https://blog.csdn.net/kaimo313/article/details/119649989">使用外链图片的时候报 403 怎么处理？</a> 了解到 <a href="https://images.weserv.nl/">https://images.weserv.nl</a> 服务，它可以通过 cloudflare cdn 代理访问原本无法直接访问的图片。使用上也很简单，只要在 <a href="https://images.weserv.nl/?url=">https://images.weserv.nl?url=</a> 加上原本图片的路径即可。<br>但在今天偶然一次打开 blog 的时候发现，通过 weserv 外链的图片加载很慢，数量比较多时甚至需要几分钟才能全部加载完成，这是不能忍受的。</p><p><img src="/resources/347adbd7a2f44629abb6d1258f75ac49.png" alt="1667745493673.png"></p><h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><blockquote><p>cloudflare workers 的免费层每天最多允许 10w 次请求，对于吾辈这种流量很小的网站完全可以接受。</p></blockquote><p>于是，吾辈想到了利用 <a href="https://workers.cloudflare.com/">cloudflare workers</a> 代理的方法，它的基本思路与 weserv 类似，但不再使用它的服务，而是直接使用 cloudflare 代理。lambda 函数实现很简单，就是透传 url 参数罢了。</p><figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>  <span class="token keyword">async</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token parameter">request</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token keyword">const</span> url <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span>url<span class="token punctuation">)</span>    <span class="token keyword">const</span> r <span class="token operator">=</span> url<span class="token punctuation">.</span>searchParams<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span>    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'r'</span><span class="token punctuation">,</span> r<span class="token punctuation">)</span>    <span class="token keyword">return</span> <span class="token function">fetch</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span>  <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure><p>部署上去之后，再配置一下自定义路由。于是，吾辈便有了一个基本的图片访问代理 <a href="https://image-proxy.rxliuli.com/">https://image-proxy.rxliuli.com</a>。</p><h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>使用之后，图片加载速度变得看起来还不错。</p><p><img src="/resources/ac26ab6a729f4cd3b4ea5c2bc9eee18a.png" alt="1667745662310.png"></p><p>直接使用 curl 访问单张图片它们看起来差距没那么大，但在浏览器中同时加载多张图片的体验却截然不同。下面是使用 curl 的对比</p><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ time curl https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-noreal    0m1.951suser    0m0.000ssys     0m0.000s$ time curl https://images.weserv.nl/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-noreal    0m4.584suser    0m0.000ssys     0m0.000s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure><h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>公共的服务看起来不错，weserv 甚至将性能作为第一点声明，但免费的东西使用的太多了性能可能就会变差，毕竟资源总是有限的呢。</p><p><img src="/resources/4bc71ba715f048b5b5d7beb7bb93cd56.png" alt="1667746013873.png"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html"></summary>
+      
+    
+    
+    
+    
+    <category term="工具" scheme="https://blog.rxliuli.com/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+  </entry>
   
   <entry>
     <title>2022 年里做前端是怎样一种体验</title>
@@ -449,28 +471,6 @@
     <category term="javascript" scheme="https://blog.rxliuli.com/tags/javascript/"/>
     
     <category term="vue" scheme="https://blog.rxliuli.com/tags/vue/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>VSCode 扩展 New Project 发布 0.2.0</title>
-    <link href="https://blog.rxliuli.com/p/2930fc364bbe42139765efc0c23746f8/"/>
-    <id>https://blog.rxliuli.com/p/2930fc364bbe42139765efc0c23746f8/</id>
-    <published>2022-03-31T04:37:33.381Z</published>
-    <updated>2022-03-31T05:07:39.149Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在之前 <a href="/p/605d5f360fc7438dac50148c36610217">VSCode 扩展 New Project 发布 0.1.0</a> 一文中，吾辈实现了基本的扩展功能，也说明在过程中遇到的一些问题。<br>现在，吾辈实现了自定义生成器的功能，然后发布了 0.2.0，这让使用公司内部的 cli 生成器变成了可能。</p><p>具体来说，有以下几步</p><ol><li>公开生成器的 json schema</li><li>从 vscode 配置中获取 json configs</li><li>渲染为创建模板项目的表单</li><li>创建时与内部支持的生成器走同一个流程</li></ol><h2 id="定义-schema"><a href="#定义-schema" class="headerlink" title="定义 schema"></a>定义 schema</h2><p>typescript interface</p><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface BaseConfig {  name: string  label: string  default?: any}export interface SelectConfig extends BaseConfig {  type: 'select'  options: {    label: string    value: string  }[]}export interface CheckboxConfig extends BaseConfig {  type: 'checkbox'}export interface InputConfig extends BaseConfig {  type: 'input'}export type Conifg = SelectConfig | CheckboxConfig | InputConfigexport interface BootstrapConfig {  id: string  title: string  package: string  command: string  configs: Conifg[]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure><p>转换得到的 json schema</p><figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{  "type": "array",  "description": "List of generators to use",  "items": {    "type": "object",    "properties": {      "id": {        "type": "string",        "description": "The id of the generator"      },      "title": {        "type": "string",        "description": "The title of the generator"      },      "package": {        "type": "string",        "description": "npm package"      },      "command": {        "type": "string",        "description": "command to run"      },      "configs": {        "type": "array",        "description": "configs to pass to the command",        "items": {          "type": "object",          "properties": {            "type": {              "type": "string",              "enum": ["select", "checkbox", "input"],              "description": ""            },            "name": {              "type": "string",              "description": ""            },            "label": {              "type": "string",              "description": ""            },            "default": {},            "options": {              "type": "array",              "items": {                "type": "object",                "properties": {                  "label": {                    "type": "string",                    "description": "option label"                  },                  "value": {                    "type": "string",                    "description": "option value"                  }                },                "required": ["label", "value"]              }            }          },          "required": ["type", "name", "label"]        }      }    },    "required": ["id", "title", "package", "command", "configs"]  }}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure><p>接着我们就可以在 VSCode 中自定义生成器了</p><figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{  "newProject.generators": [    {      "id": "@liuli-util/cli",      "title": "liuli-cli",      "package": "@liuli-util/cli",      "command": "liuli-cli generate",      "configs": [        {          "type": "select",          "name": "template",          "label": "Template",          "default": "lib",          "options": [            { "label": "lib", "value": "lib" },            { "label": "cli", "value": "cli" }          ]        },        {          "type": "checkbox",          "name": "init-sync",          "label": "init sync",          "default": false        }      ]    }  ]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure><p>然后便可以使用这个生成器创建项目了</p><p><img src="/resources/dec1bb478fb34a83baf03512bf181d42.png" alt="1648703038281"></p><blockquote><p><a href="https://github.com/rxliuli/vscode-plugin-new-project/blob/master/webview-ui/src/assets/generators.json">更多的生成器配置示例</a></p></blockquote><h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><ul><li>cli 最好支持非交互式的模式。交互式 cli 虽然对命令行使用较为友好，但这个插件本身的就已经实现了交互部分，所以不需要额外使用 cli 本身的交互行为</li><li>cli 生成项目的命令格式大体上需要满足 <code>cli command name flags</code>。例如 <code>create-vite hello-world --template=preact-ts</code>，幸运的是，commanderjs 和 yargs 都支持这种模式，而且许多 cli 也是如此做的</li></ul><h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>目前插件的基本功能已完成，后续已知需要处理的几件事情有</p><ul><li>feat: 国际化支持</li><li>feat: 支持类似于 jetbrains ide 的覆盖模式（目前是清除）</li><li>feat: 支持更多的现有框架</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html"></summary>
-      
-    
-    
-    
-    
-    <category term="vscode" scheme="https://blog.rxliuli.com/tags/vscode/"/>
     
   </entry>
   
