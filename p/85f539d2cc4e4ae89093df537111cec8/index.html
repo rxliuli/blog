@@ -331,58 +331,58 @@
 <h3 id="使用-electron-通信实现窗口的三个操作"><a href="#使用-electron-通信实现窗口的三个操作" class="headerlink" title="使用 electron 通信实现窗口的三个操作"></a>使用 electron 通信实现窗口的三个操作</h3><p>其实，electron 本身支持在渲染层暴露 <code>remote</code> 模块，但这里我们选择使用 <code>ipcRenderer/ipcMain</code> 手动实现，remote 模块因为安全原因默认被禁用了。</p>
 <p>下面的步骤基本和 <a href="/p/76393a60949c47c7add910df0206734c">渲染、主进程通信</a> 所属一样，下面贴一些关键代码</p>
 <p>共享类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// WindowDefine.ts
-import { BaseDefine } from 'electron_ipc_type'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// WindowDefine.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> BaseDefine <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'electron_ipc_type'</span>
 
-export interface WindowDefine extends BaseDefine&lt;'WindowApi'&gt; {
-  action(type: 'min' | 'max' | 'close'): void
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">WindowDefine</span> <span class="token keyword">extends</span> <span class="token class-name">BaseDefine<span class="token operator">&lt;</span><span class="token string">'WindowApi'</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  <span class="token function">action</span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token string">'min'</span> <span class="token operator">|</span> <span class="token string">'max'</span> <span class="token operator">|</span> <span class="token string">'close'</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>主进程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-class WindowApi {
-  async action(e: IpcMainInvokeEvent, type: 'min' | 'max' | 'close') {
-    const win = BrowserWindow.fromWebContents(e.sender)
-    switch (type) {
-      case 'min':
-        win.minimize()
-        break
-      case 'max':
-        win.isMaximized() ? win.unmaximize() : win.maximize()
-        break
-      case 'close':
-        win.close()
-        break
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
+<span class="token keyword">class</span> <span class="token class-name">WindowApi</span> <span class="token punctuation">{</span>
+  <span class="token keyword">async</span> <span class="token function">action</span><span class="token punctuation">(</span>e<span class="token operator">:</span> IpcMainInvokeEvent<span class="token punctuation">,</span> type<span class="token operator">:</span> <span class="token string">'min'</span> <span class="token operator">|</span> <span class="token string">'max'</span> <span class="token operator">|</span> <span class="token string">'close'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> win <span class="token operator">=</span> BrowserWindow<span class="token punctuation">.</span><span class="token function">fromWebContents</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>sender<span class="token punctuation">)</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">case</span> <span class="token string">'min'</span><span class="token operator">:</span>
+        win<span class="token punctuation">.</span><span class="token function">minimize</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'max'</span><span class="token operator">:</span>
+        win<span class="token punctuation">.</span><span class="token function">isMaximized</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> win<span class="token punctuation">.</span><span class="token function">unmaximize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> win<span class="token punctuation">.</span><span class="token function">maximize</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'close'</span><span class="token operator">:</span>
+        win<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>渲染进程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// BasicLayout.tsx
-const windowApi = IpcRendererClient.gen&lt;WindowDefine&gt;('WindowApi')
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// BasicLayout.tsx</span>
+<span class="token keyword">const</span> windowApi <span class="token operator">=</span> IpcRendererClient<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">gen</span><span class="token generic class-name"><span class="token operator">&lt;</span>WindowDefine<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token string">'WindowApi'</span><span class="token punctuation">)</span>
 
-/**
+<span class="token comment">/**
  * 封装 electron 的窗口控制 hooks
- */
-function useElectronWindowControl() {
-  return {
-    handleMin: () =&gt; windowApi.action('min'),
-    handleMax: () =&gt; windowApi.action('max'),
-    handleClose: () =&gt; windowApi.action('close'),
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">function</span> <span class="token function">useElectronWindowControl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">handleMin</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> windowApi<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token string">'min'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">handleMax</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> windowApi<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token string">'max'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">handleClose</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> windowApi<span class="token punctuation">.</span><span class="token function">action</span><span class="token punctuation">(</span><span class="token string">'close'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/electron_example/tree/3aea837b0c7661e030406a0c20d306694402a26f">参考代码</a></p>
 </blockquote>
 <h3 id="隐藏掉默认的顶栏"><a href="#隐藏掉默认的顶栏" class="headerlink" title="隐藏掉默认的顶栏"></a>隐藏掉默认的顶栏</h3><p>实际上，只要在创建 electron 的 <code>BrowserWindow</code> 实例时配置即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">new BrowserWindow({
-  webPreferences: {
-    nodeIntegration: true,
-  },
-  frame: false,
-  autoHideMenuBar: true,
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  webPreferences<span class="token operator">:</span> <span class="token punctuation">{</span>
+    nodeIntegration<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  frame<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+  autoHideMenuBar<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在，electron 程序就有自定义顶栏啦</p>
 <p><img src="/resources/92f7aa2fcd894107b05056f5c662e051.png" srcset="/img/loading.gif" lazyload alt="1611134001681.png"></p>

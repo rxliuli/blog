@@ -329,84 +329,84 @@
 <h3 id="让程序保持单例启动"><a href="#让程序保持单例启动" class="headerlink" title="让程序保持单例启动"></a>让程序保持单例启动</h3><blockquote>
 <p>参考: <a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/api/app#apprequestsingleinstancelock">app.requestSingleInstanceLock()</a><br>注: 仅在单例模式下才能监听 <code>second-instance</code> 事件</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 请求单例锁，避免打开多个 electron 实例
-const gotTheLock = app.requestSingleInstanceLock()
-if (!gotTheLock) {
-  app.quit()
-  return
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 请求单例锁，避免打开多个 electron 实例</span>
+<span class="token keyword">const</span> gotTheLock <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">requestSingleInstanceLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>gotTheLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  app<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="设置客户端支持的协议（在-Windows-中会写入到注册表）"><a href="#设置客户端支持的协议（在-Windows-中会写入到注册表）" class="headerlink" title="设置客户端支持的协议（在 Windows 中会写入到注册表）"></a>设置客户端支持的协议（在 Windows 中会写入到注册表）</h3><blockquote>
 <p>参考: <a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/api/app#appsetasdefaultprotocolclientprotocol-path-args">app.setAsDefaultProtocolClient(protocol[, path, args])</a></p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { app } from 'electron'
-import path = require('path')
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> app <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'electron'</span>
+<span class="token keyword">import</span> path <span class="token operator">=</span> <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span>
 
-/**
+<span class="token comment">/**
  * 客户端默认支持的协议
- */
-export class DefaultProtocolClient {
-  constructor(public readonly protocol: string) {}
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">DefaultProtocolClient</span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token keyword">public</span> <span class="token keyword">readonly</span> protocol<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-  /**
+  <span class="token comment">/**
    * 注册一个默认支持打开的协议
-   */
-  register() {
-    // 开发模式下在 window 运行需要做兼容
-    if (
-      process.env.NODE_ENV === 'development' &amp;&amp;
-      process.platform === 'win32'
-    ) {
-      // 设置 electron.exe 和 app 的路径
-      app.setAsDefaultProtocolClient(this.protocol, process.execPath, [
-        path.resolve(process.argv[1]),
-      ])
-    } else {
-      app.setAsDefaultProtocolClient(this.protocol)
-    }
-  }
+   */</span>
+  <span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 开发模式下在 window 运行需要做兼容</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'development'</span> <span class="token operator">&amp;&amp;</span>
+      process<span class="token punctuation">.</span>platform <span class="token operator">===</span> <span class="token string">'win32'</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 设置 electron.exe 和 app 的路径</span>
+      app<span class="token punctuation">.</span><span class="token function">setAsDefaultProtocolClient</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>protocol<span class="token punctuation">,</span> process<span class="token punctuation">.</span>execPath<span class="token punctuation">,</span> <span class="token punctuation">[</span>
+        path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      app<span class="token punctuation">.</span><span class="token function">setAsDefaultProtocolClient</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>protocol<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
 
-  /**
+  <span class="token comment">/**
    * 从命令行参数中找到 url
    * @param argv
-   */
-  findUrl(argv: string[]): string | undefined {
-    const regExp = new RegExp(`^${this.protocol}://`)
-    return argv.find((str) =&gt; regExp.test(str))
-  }
-}
+   */</span>
+  <span class="token function">findUrl</span><span class="token punctuation">(</span>argv<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token keyword">undefined</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> regExp <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">^</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>protocol<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">://</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> argv<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> regExp<span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const defaultProtocolClient = new DefaultProtocolClient('custom-protocol')
+<span class="token keyword">const</span> defaultProtocolClient <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultProtocolClient</span><span class="token punctuation">(</span><span class="token string">'custom-protocol'</span><span class="token punctuation">)</span>
 
-await defaultProtocolClient.register()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">await</span> defaultProtocolClient<span class="token punctuation">.</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="处理命令行参数找到其中需要的-url-信息"><a href="#处理命令行参数找到其中需要的-url-信息" class="headerlink" title="处理命令行参数找到其中需要的 url 信息"></a>处理命令行参数找到其中需要的 <code>url</code> 信息</h3><p>添加函数 <code>handleDefaultProtocol</code> 从命令行参数中找到 url 然后处理它。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
  * 处理客户端支持的默认协议
  * @param argv
- */
-async function handleDefaultProtocol(argv: string[]) {
-  const url = defaultProtocolClient.findUrl(argv)
-  if (!url) {
-    return
-  }
-  await dialog.showMessageBox({
-    type: 'info',
-    message: 'window protocol 自定义协议打开',
-    detail: ` 链接:${url}`,
-  })
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">handleDefaultProtocol</span><span class="token punctuation">(</span>argv<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> url <span class="token operator">=</span> defaultProtocolClient<span class="token punctuation">.</span><span class="token function">findUrl</span><span class="token punctuation">(</span>argv<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">await</span> dialog<span class="token punctuation">.</span><span class="token function">showMessageBox</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    type<span class="token operator">:</span> <span class="token string">'info'</span><span class="token punctuation">,</span>
+    message<span class="token operator">:</span> <span class="token string">'window protocol 自定义协议打开'</span><span class="token punctuation">,</span>
+    detail<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string"> 链接:</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>url<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="监听-ready-和-second-instance-事件"><a href="#监听-ready-和-second-instance-事件" class="headerlink" title="监听 ready 和 second-instance 事件"></a>监听 <code>ready</code> 和 <code>second-instance</code> 事件</h3><blockquote>
 <p>参考: <a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/api/app#%E4%BA%8B%E4%BB%B6-second-instance">事件: ‘second-instance’</a></p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">app.addListener('second-instance', async (event, argv) =&gt; {
-  await handleDefaultProtocol(argv)
-})
-app.addListener('ready', async () =&gt; {
-  await createMainWindow()
-  await handleDefaultProtocol(process.argv)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">app<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token string">'second-instance'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>event<span class="token punctuation">,</span> argv<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token function">handleDefaultProtocol</span><span class="token punctuation">(</span>argv<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+app<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token string">'ready'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token function">createMainWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> <span class="token function">handleDefaultProtocol</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="外部调用"><a href="#外部调用" class="headerlink" title="外部调用"></a>外部调用</h2><p>既然我们自定义协议的目的是让外部程序调用，那么如何使用外部调用就很重要了。</p>
 <p>首先检查注册表中是否已经包含它了，操作 <em>ctrl+s =&gt; 搜索注册表 =&gt; 进入注册表 =&gt; ctrl+f 查找 <code>custom-protocol</code></em></p>
@@ -414,9 +414,9 @@ app.addListener('ready', async () =&gt; {
 <h3 id="浏览器打开"><a href="#浏览器打开" class="headerlink" title="浏览器打开"></a>浏览器打开</h3><p>如上图所示，可以简单在浏览器中输入 <a href="custom-protocol://test">custom-protocol://test</a> 来启动程序。</p>
 <p><img src="/resources/46116b80afd84b45a11b57ac67e1550e.gif" srcset="/img/loading.gif" lazyload alt="自定义协议效果"></p>
 <h3 id="nodejs-示例"><a href="#nodejs-示例" class="headerlink" title="nodejs 示例"></a>nodejs 示例</h3><p>在 nodejs 中使用 npm 包 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/open">open</a> 可以轻易打开自定义默认链接。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import * as open from 'open'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> open <span class="token keyword">from</span> <span class="token string">'open'</span>
 
-open('custom-protocol://test')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token function">open</span><span class="token punctuation">(</span><span class="token string">'custom-protocol://test'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>其实本质上就是拼接命令，然后执行系统命令打开 url，参考<a target="_blank" rel="noopener" href="https://github.com/sindresorhus/open/blob/master/index.js">它的实现</a>。</p>
 

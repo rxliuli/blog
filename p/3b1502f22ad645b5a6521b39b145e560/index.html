@@ -321,96 +321,96 @@
 <li>自动清理 emitter 对象和 emitter listener。</li>
 </ul>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="实现基本的-EventEmitter"><a href="#实现基本的-EventEmitter" class="headerlink" title="实现基本的 EventEmitter"></a>实现基本的 EventEmitter</h3><p>首先，实现一个基本的 EventEmitter，这里之前吾辈曾经就有 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/rx-util/blob/master/src/module/event/EventEmitter.ts">实现过</a>，所以直接拿过来了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type EventType = string | number
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">EventType</span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span>
 
-export type BaseEvents = Record&lt;EventType, any[]&gt;
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">BaseEvents</span> <span class="token operator">=</span> Record<span class="token operator">&lt;</span>EventType<span class="token punctuation">,</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span>
 
-/**
+<span class="token comment">/**
  * 事件总线
  * 实际上就是发布订阅模式的一种简单实现
  * 类型定义受到 {@link https://github.com/andywer/typed-emitter/blob/master/index.d.ts} 的启发，不过只需要声明参数就好了，而不需要返回值（应该是 {@code void}）
- */
-export class EventEmitter&lt;Events extends BaseEvents&gt; {
-  private readonly events = new Map&lt;keyof Events, Function[]&gt;()
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">EventEmitter<span class="token operator">&lt;</span>Events <span class="token keyword">extends</span> BaseEvents<span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  <span class="token keyword">private</span> <span class="token keyword">readonly</span> events <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token keyword">keyof</span> Events<span class="token punctuation">,</span> <span class="token builtin">Function</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-  /**
+  <span class="token comment">/**
    * 添加一个事件监听程序
    * @param type 监听类型
    * @param callback 处理回调
    * @returns {@code this}
-   */
-  add&lt;E extends keyof Events&gt;(type: E, callback: (...args: Events[E]) =&gt; void) {
-    const callbacks = this.events.get(type) || []
-    callbacks.push(callback)
-    this.events.set(type, callbacks)
-    return this
-  }
-  /**
+   */</span>
+  <span class="token generic-function"><span class="token function">add</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">,</span> <span class="token function-variable function">callback</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> Events<span class="token punctuation">[</span><span class="token constant">E</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> callbacks <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    callbacks<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>callback<span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> callbacks<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
    * 移除一个事件监听程序
    * @param type 监听类型
    * @param callback 处理回调
    * @returns {@code this}
-   */
-  remove&lt;E extends keyof Events&gt;(
-    type: E,
-    callback: (...args: Events[E]) =&gt; void
-  ) {
-    const callbacks = this.events.get(type) || []
-    this.events.set(
-      type,
-      callbacks.filter((fn: any) =&gt; fn !== callback)
-    )
-    return this
-  }
-  /**
+   */</span>
+  <span class="token generic-function"><span class="token function">remove</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
+    type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">callback</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> Events<span class="token punctuation">[</span><span class="token constant">E</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> callbacks <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>
+      type<span class="token punctuation">,</span>
+      callbacks<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>fn<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> fn <span class="token operator">!==</span> callback<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
    * 移除一类事件监听程序
    * @param type 监听类型
    * @returns {@code this}
-   */
-  removeByType&lt;E extends keyof Events&gt;(type: E) {
-    this.events.delete(type)
-    return this
-  }
-  /**
+   */</span>
+  <span class="token generic-function"><span class="token function">removeByType</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
    * 触发一类事件监听程序
    * @param type 监听类型
    * @param args 处理回调需要的参数
    * @returns {@code this}
-   */
-  emit&lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) {
-    const callbacks = this.events.get(type) || []
-    callbacks.forEach((fn) =&gt; {
-      fn(...args)
-    })
-    return this
-  }
+   */</span>
+  <span class="token generic-function"><span class="token function">emit</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">,</span> <span class="token operator">...</span>args<span class="token operator">:</span> Events<span class="token punctuation">[</span><span class="token constant">E</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> callbacks <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    callbacks<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>fn<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">fn</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span>
+  <span class="token punctuation">}</span>
 
-  /**
+  <span class="token comment">/**
    * 获取一类事件监听程序
    * @param type 监听类型
    * @returns 一个只读的数组，如果找不到，则返回空数组 {@code []}
-   */
-  listeners&lt;E extends keyof Events&gt;(type: E) {
-    return Object.freeze(this.events.get(type) || [])
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */</span>
+  <span class="token generic-function"><span class="token function">listeners</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">freeze</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="结合-context-实现一个包裹组件"><a href="#结合-context-实现一个包裹组件" class="headerlink" title="结合 context 实现一个包裹组件"></a>结合 context 实现一个包裹组件</h3><p>包裹组件的目的是为了能直接提供一个包裹组件，以及提供 provider 的默认值，不需要使用者直接接触 emitter 对象。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import * as React from "react"
-import { createContext, PropsWithChildren } from "react"
-import { BaseEvents, EventEmitter } from "./util/EventEmitter"
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> React <span class="token keyword">from</span> <span class="token string">"react"</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createContext<span class="token punctuation">,</span> PropsWithChildren <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react"</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> BaseEvents<span class="token punctuation">,</span> EventEmitter <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./util/EventEmitter"</span>
 
-export const EventEmitterContext = createContext&lt;EventEmitter&lt;any&gt;&gt;(null as any)
+<span class="token keyword">export</span> <span class="token keyword">const</span> EventEmitterContext <span class="token operator">=</span> <span class="token generic-function"><span class="token function">createContext</span><span class="token generic class-name"><span class="token operator">&lt;</span>EventEmitter<span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;&gt;</span></span></span><span class="token punctuation">(</span><span class="token keyword">null</span> <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">)</span>
 
-export function EventEmitterRC&lt;T extends BaseEvents&gt;(
-  props: PropsWithChildren&lt;{ value: EventEmitter&lt;T&gt; }&gt;
-) {
-  return (
-    &lt;EventEmitterContext.Provider value={props.value}&gt;
-      {props.children}
-    &lt;/EventEmitterContext.Provider&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">EventEmitterRC</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> BaseEvents<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
+  props<span class="token operator">:</span> PropsWithChildren<span class="token operator">&lt;</span><span class="token punctuation">{</span> value<span class="token operator">:</span> EventEmitter<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token punctuation">}</span><span class="token operator">&gt;</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">EventEmitterContext.Provider</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>value<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>children<span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">EventEmitterContext.Provider</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用-hooks-暴露-emitter-api"><a href="#使用-hooks-暴露-emitter-api" class="headerlink" title="使用 hooks 暴露 emitter api"></a>使用 hooks 暴露 emitter api</h3><p>我们主要需要暴露的 API 只有三个</p>
 <ul>
@@ -418,53 +418,53 @@ export function EventEmitterRC&lt;T extends BaseEvents&gt;(
 <li><code>emit</code>: 触发监听器，直接调用即可</li>
 <li><code>emitter</code>: 在当前组件树生效的 emitter 对象</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
-  DependencyList,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react"
-import { EventEmitterContext } from "../EventEmitterRC"
-// noinspection ES6PreferShortImport
-import { BaseEvents, EventEmitter } from "../util/EventEmitter"
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span>
+  DependencyList<span class="token punctuation">,</span>
+  useCallback<span class="token punctuation">,</span>
+  useContext<span class="token punctuation">,</span>
+  useEffect<span class="token punctuation">,</span>
+  useMemo<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react"</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> EventEmitterContext <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../EventEmitterRC"</span>
+<span class="token comment">// noinspection ES6PreferShortImport</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> BaseEvents<span class="token punctuation">,</span> EventEmitter <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../util/EventEmitter"</span>
 
-function useEmit&lt;Events extends BaseEvents&gt;() {
-  const em = useContext(EventEmitterContext)
-  return useCallback(
-    &lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) =&gt; {
-      console.log("emitter emit: ", type, args)
-      em.emit(type, ...args)
-    },
-    [em]
-  )
-}
+<span class="token keyword">function</span> <span class="token generic-function"><span class="token function">useEmit</span><span class="token generic class-name"><span class="token operator">&lt;</span>Events <span class="token keyword">extends</span> BaseEvents<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> em <span class="token operator">=</span> <span class="token function">useContext</span><span class="token punctuation">(</span>EventEmitterContext<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token function">useCallback</span><span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">,</span> <span class="token operator">...</span>args<span class="token operator">:</span> Events<span class="token punctuation">[</span><span class="token constant">E</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"emitter emit: "</span><span class="token punctuation">,</span> type<span class="token punctuation">,</span> args<span class="token punctuation">)</span>
+      em<span class="token punctuation">.</span><span class="token function">emit</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> <span class="token operator">...</span>args<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>em<span class="token punctuation">]</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-export function useEventEmitter&lt;Events extends BaseEvents&gt;() {
-  const emit = useEmit&lt;Events&gt;()
-  // 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次
-  const emitter = useMemo(() =&gt; new EventEmitter&lt;Events&gt;(), [])
-  return {
-    useListener: &lt;E extends keyof Events&gt;(
-      type: E,
-      listener: (...args: Events[E]) =&gt; void,
-      deps: DependencyList = []
-    ) =&gt; {
-      const em = useContext(EventEmitterContext)
-      useEffect(() =&gt; {
-        console.log("emitter add: ", type, listener.name)
-        em.add(type, listener)
-        return () =&gt; {
-          console.log("emitter remove: ", type, listener.name)
-          em.remove(type, listener)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [listener, type, ...deps])
-    },
-    emit,
-    emitter,
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">useEventEmitter</span><span class="token generic class-name"><span class="token operator">&lt;</span>Events <span class="token keyword">extends</span> BaseEvents<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> emit <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useEmit</span><span class="token generic class-name"><span class="token operator">&lt;</span>Events<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次</span>
+  <span class="token keyword">const</span> emitter <span class="token operator">=</span> <span class="token function">useMemo</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">new</span> <span class="token class-name">EventEmitter<span class="token operator">&lt;</span>Events<span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    useListener<span class="token operator">:</span> <span class="token operator">&lt;</span><span class="token constant">E</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> Events<span class="token operator">&gt;</span><span class="token punctuation">(</span>
+      type<span class="token operator">:</span> <span class="token constant">E</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">listener</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> Events<span class="token punctuation">[</span><span class="token constant">E</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">,</span>
+      deps<span class="token operator">:</span> DependencyList <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> em <span class="token operator">=</span> <span class="token function">useContext</span><span class="token punctuation">(</span>EventEmitterContext<span class="token punctuation">)</span>
+      <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"emitter add: "</span><span class="token punctuation">,</span> type<span class="token punctuation">,</span> listener<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
+        em<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+          <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"emitter remove: "</span><span class="token punctuation">,</span> type<span class="token punctuation">,</span> listener<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
+          em<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>type<span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// eslint-disable-next-line react-hooks/exhaustive-deps</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>listener<span class="token punctuation">,</span> type<span class="token punctuation">,</span> <span class="token operator">...</span>deps<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    emit<span class="token punctuation">,</span>
+    emitter<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来非常简单，在需要使用的 emitter hooks 的组件外部包裹一个 <code>EventEmitterRC</code> 组件，然后就可以使用 <code>useEventEmitter</code> 了。</p>
 <p>下面是一个简单的 Todo 示例，使用 emitter 实现了 todo 表单 与 todo 列表之间的通信。</p>
@@ -486,80 +486,80 @@ export function useEventEmitter&lt;Events extends BaseEvents&gt;() {
 </li>
 </ul>
 <p>Todo 父组件，使用 <code>EventEmitterRC</code> 包裹子组件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const Todo: React.FC&lt;PropsType&gt; = () =&gt; {
-  const { emitter } = useEventEmitter()
-  return (
-    &lt;EventEmitterRC value={emitter}&gt;
-      &lt;TodoForm /&gt;
-      &lt;TodoList /&gt;
-    &lt;/EventEmitterRC&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> Todo<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>PropsType<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> emitter <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useEventEmitter</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">EventEmitterRC</span></span> <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>emitter<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">TodoForm</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">TodoList</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">EventEmitterRC</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在表单组件中使用 <code>useEventEmitter</code> hooks 获得 <code>emit</code> 方法，然后在添加 todo 时触发它。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoForm: React.FC&lt;PropsType&gt; = () =&gt; {
-  const { emit } = useEventEmitter&lt;TodoEvents&gt;()
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> TodoForm<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>PropsType<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> emit <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useEventEmitter</span><span class="token generic class-name"><span class="token operator">&lt;</span>TodoEvents<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-  const [title, setTitle] = useState("")
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>title<span class="token punctuation">,</span> setTitle<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>
 
-  function handleAddTodo(e: FormEvent&lt;HTMLFormElement&gt;) {
-    e.preventDefault()
-    emit("addTodo", {
-      title,
-    })
-    setTitle("")
-  }
+  <span class="token keyword">function</span> <span class="token function">handleAddTodo</span><span class="token punctuation">(</span>e<span class="token operator">:</span> FormEvent<span class="token operator">&lt;</span>HTMLFormElement<span class="token operator">&gt;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">emit</span><span class="token punctuation">(</span><span class="token string">"addTodo"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      title<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token function">setTitle</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  return (
-    &lt;form onSubmit={handleAddTodo}&gt;
-      &lt;div&gt;
-        &lt;label htmlFor={"title"}&gt;标题：&lt;/label&gt;
-        &lt;input
-          value={title}
-          onChange={(e) =&gt; setTitle(e.target.value)}
-          id={"title"}
-        /&gt;
-        &lt;button type={"submit"}&gt;添加&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/form&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">onSubmit</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>handleAddTodo<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">htmlFor</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"title"</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">标题：</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
+          <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>title<span class="token punctuation">}</span></span>
+          <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">setTitle</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+          <span class="token attr-name">id</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"title"</span><span class="token punctuation">}</span></span>
+        <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"submit"</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">添加</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在列表组件中使用 <code>useEventEmitter</code> hooks 获得 <code>useListener</code> hooks，然后监听添加 todo 的事件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoList: React.FC&lt;PropsType&gt; = () =&gt; {
-  const [list, setList] = useState&lt;TodoEntity[]&gt;([])
-  const { useListener } = useEventEmitter&lt;TodoEvents&gt;()
-  useListener(
-    "addTodo",
-    (todo) =&gt; {
-      setList([...list, todo])
-    },
-    [list]
-  )
-  const em = { useListener }
-  useEffect(() =&gt; {
-    console.log("em: ", em)
-  }, [em])
-  return (
-    &lt;ul&gt;
-      {list.map((todo, i) =&gt; (
-        &lt;li key={i}&gt;{todo.title}&lt;/li&gt;
-      ))}
-    &lt;/ul&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> TodoList<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>PropsType<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>list<span class="token punctuation">,</span> setList<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useState</span><span class="token generic class-name"><span class="token operator">&lt;</span>TodoEntity<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span> useListener <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token generic-function"><span class="token function">useEventEmitter</span><span class="token generic class-name"><span class="token operator">&lt;</span>TodoEvents<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token function">useListener</span><span class="token punctuation">(</span>
+    <span class="token string">"addTodo"</span><span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>todo<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">setList</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>list<span class="token punctuation">,</span> todo<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>list<span class="token punctuation">]</span>
+  <span class="token punctuation">)</span>
+  <span class="token keyword">const</span> em <span class="token operator">=</span> <span class="token punctuation">{</span> useListener <span class="token punctuation">}</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"em: "</span><span class="token punctuation">,</span> em<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>em<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token punctuation">{</span>list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>todo<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>todo<span class="token punctuation">.</span>title<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>下面是一些 TypeScript 类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface TodoEntity {
-  title: string
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">TodoEntity</span> <span class="token punctuation">{</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { BaseEvents } from "../../../components/emitter"
-import { TodoEntity } from "./TodoEntity"
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> BaseEvents <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"../../../components/emitter"</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> TodoEntity <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./TodoEntity"</span>
 
-export interface TodoEvents extends BaseEvents {
-  addTodo: [entity: TodoEntity]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">TodoEvents</span> <span class="token keyword">extends</span> <span class="token class-name">BaseEvents</span> <span class="token punctuation">{</span>
+  addTodo<span class="token operator">:</span> <span class="token punctuation">[</span>entity<span class="token operator">:</span> TodoEntity<span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://medium.com/@dominikdosoudil/building-event-emitter-using-react-hooks-650f94a057ea">Building event emitter using react hooks</a></li>

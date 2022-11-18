@@ -325,94 +325,94 @@
 <li>浏览器使用 localStorage 实现</li>
 <li>electron 中则使用 electron-store 实现</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type Store from 'electron-store'
-import isElectron from 'is-electron'
-import { DeepReadonly } from 'utility-types'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token class-name">Store</span> <span class="token keyword">from</span> <span class="token string">'electron-store'</span>
+<span class="token keyword">import</span> isElectron <span class="token keyword">from</span> <span class="token string">'is-electron'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> DeepReadonly <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'utility-types'</span>
 
-interface BaseStore {
-  get(key: string): string | null
+<span class="token keyword">interface</span> <span class="token class-name">BaseStore</span> <span class="token punctuation">{</span>
+  <span class="token function">get</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token keyword">null</span>
 
-  set(key: string, value: string): void
-}
+  <span class="token function">set</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token punctuation">}</span>
 
-class ElectronStoreImpl implements BaseStore {
-  private store: Store
+<span class="token keyword">class</span> <span class="token class-name">ElectronStoreImpl</span> <span class="token keyword">implements</span> <span class="token class-name">BaseStore</span> <span class="token punctuation">{</span>
+  <span class="token keyword">private</span> store<span class="token operator">:</span> Store
 
-  constructor() {
-    const Store = window.require('electron-store')
-    this.store = new Store()
-  }
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> Store <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'electron-store'</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>store <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Store</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  set(key: string, value: string): void {
-    this.store.set(key, value)
-  }
+  <span class="token function">set</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>store<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  get(key: string) {
-    return this.store.get(key) as string
-  }
-}
+  <span class="token function">get</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>store<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">string</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-class LocalStorageImpl implements BaseStore {
-  get(key: string) {
-    return localStorage.getItem(key)
-  }
+<span class="token keyword">class</span> <span class="token class-name">LocalStorageImpl</span> <span class="token keyword">implements</span> <span class="token class-name">BaseStore</span> <span class="token punctuation">{</span>
+  <span class="token function">get</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  set(key: string, value: string) {
-    localStorage.setItem(key, value)
-  }
-}
+  <span class="token function">set</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const symbol = Symbol('ElectronStore.store')
+<span class="token keyword">const</span> <span class="token builtin">symbol</span> <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token string">'ElectronStore.store'</span><span class="token punctuation">)</span>
 
-export class ElectronStore {
-  private readonly [symbol]: BaseStore = isElectron()
-    ? new ElectronStoreImpl()
-    : new LocalStorageImpl()
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ElectronStore</span> <span class="token punctuation">{</span>
+  <span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token punctuation">[</span><span class="token builtin">symbol</span><span class="token punctuation">]</span><span class="token operator">:</span> BaseStore <span class="token operator">=</span> <span class="token function">isElectron</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">?</span> <span class="token keyword">new</span> <span class="token class-name">ElectronStoreImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">LocalStorageImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-  static getInstance&lt;T extends object&gt;(
-    init?: Partial&lt;T&gt;,
-  ): Partial&lt;{ [P in keyof T]: DeepReadonly&lt;T[P]&gt; }&gt; {
-    const electronStore = new ElectronStore()
+  <span class="token keyword">static</span> <span class="token generic-function"><span class="token function">getInstance</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> object<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
+    init<span class="token operator">?</span><span class="token operator">:</span> Partial<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token operator">:</span> Partial<span class="token operator">&lt;</span><span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token constant">P</span> <span class="token keyword">in</span> <span class="token keyword">keyof</span> <span class="token constant">T</span><span class="token punctuation">]</span><span class="token operator">:</span> DeepReadonly<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">P</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">}</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> electronStore <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ElectronStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-    const proxy = new Proxy({} as any, {
-      get(target: any, p: string): any {
-        const text = electronStore[symbol].get(p)
-        try {
-          if (text === null || text === undefined) {
-            return null
-          }
-          return JSON.parse(text)
-        } catch (e) {
-          return null
-        }
-      },
-      set(target: any, p: string, value: any): boolean {
-        electronStore[symbol].set(
-          p,
-          value !== undefined &amp;&amp; value !== null ? JSON.stringify(value) : value,
-        )
-        return true
-      },
-    })
-    if (init) {
-      Object.entries(init).forEach(([k, v]) =&gt; {
-        const text = electronStore[symbol].get(k)
-        if (text === null || text === undefined) {
-          proxy[k] = v
-        }
-      })
-    }
-    return proxy
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    <span class="token keyword">const</span> proxy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Proxy</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+      <span class="token function">get</span><span class="token punctuation">(</span>target<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">,</span> p<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> text <span class="token operator">=</span> electronStore<span class="token punctuation">[</span><span class="token builtin">symbol</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>text <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">||</span> text <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">null</span>
+          <span class="token punctuation">}</span>
+          <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">return</span> <span class="token keyword">null</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token function">set</span><span class="token punctuation">(</span>target<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">,</span> p<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">{</span>
+        electronStore<span class="token punctuation">[</span><span class="token builtin">symbol</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>
+          p<span class="token punctuation">,</span>
+          value <span class="token operator">!==</span> <span class="token keyword">undefined</span> <span class="token operator">&amp;&amp;</span> value <span class="token operator">!==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token operator">:</span> value<span class="token punctuation">,</span>
+        <span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>init<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      Object<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>init<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">[</span>k<span class="token punctuation">,</span> v<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> text <span class="token operator">=</span> electronStore<span class="token punctuation">[</span><span class="token builtin">symbol</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>text <span class="token operator">===</span> <span class="token keyword">null</span> <span class="token operator">||</span> text <span class="token operator">===</span> <span class="token keyword">undefined</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          proxy<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">=</span> v
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> proxy
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>你可能发现了，为了简化使用的 API，这里使用了代理模式拦截了对实例的访问，修改为使用 <code>get/set</code> 方法取值和设值。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来和一个普通的对象没什么区别，直接通过 <code>.</code> 访问或设置属性即可。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const userStore = ElectronStore.getInstance&lt;{ name: string; age: number }&gt;()
-userStore.name = 'liuli'
-console.log(userStore.name === 'liuli')
-userStore.age = 1
-console.log(userStore.age === 1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> userStore <span class="token operator">=</span> ElectronStore<span class="token punctuation">.</span><span class="token generic-function"><span class="token function">getInstance</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> age<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+userStore<span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">'liuli'</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>userStore<span class="token punctuation">.</span>name <span class="token operator">===</span> <span class="token string">'liuli'</span><span class="token punctuation">)</span>
+userStore<span class="token punctuation">.</span>age <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>userStore<span class="token punctuation">.</span>age <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>具体代码在 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/electron_example/blob/ed158e9d013d7138697c76b52ddefb4748fe1af0/libs/electron-util/src/ElectronStore.ts#L40">electron_example</a>，由于是一个浅层封装，所以并未发布，但可以直接将模块复制到项目中使用。</p>

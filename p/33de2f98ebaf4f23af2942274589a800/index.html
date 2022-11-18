@@ -365,131 +365,131 @@
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>具体的代码吾辈就不贴到这里了，全部的代码已经放到 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/java-ftp-example">GitHub 的公共仓库</a> 上了。</p>
 <h2 id="FTP-使用"><a href="#FTP-使用" class="headerlink" title="FTP 使用"></a>FTP 使用</h2><p>FtpOperator API 图解<br><img src="https://img.rxliuli.com/20190302115433.png" srcset="/img/loading.gif" lazyload alt="FtpOperator API 图解"></p>
 <p>上传部分流程图解<br><img src="https://img.rxliuli.com/20190302120512.png" srcset="/img/loading.gif" lazyload alt="上传部分流程图解"></p>
-<h3 id="使用-FtpOperator-进行基本操作"><a href="#使用-FtpOperator-进行基本操作" class="headerlink" title="使用 FtpOperator 进行基本操作"></a>使用 FtpOperator 进行基本操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class FtpSpringConfigTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private FtpOperator ftp;
+<h3 id="使用-FtpOperator-进行基本操作"><a href="#使用-FtpOperator-进行基本操作" class="headerlink" title="使用 FtpOperator 进行基本操作"></a>使用 FtpOperator 进行基本操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@RunWith</span><span class="token punctuation">(</span><span class="token class-name">SpringRunner</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@SpringBootTest</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FtpSpringConfigTest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">FtpOperator</span> ftp<span class="token punctuation">;</span>
 
-    @Test
-    public void put() throws UnsupportedEncodingException {
-        // 上传数据
-        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
-        final boolean result = ftp.put(is, "/test.txt");
-        assertThat(result)
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">UnsupportedEncodingException</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 上传数据</span>
+        <span class="token keyword">final</span> <span class="token class-name">ByteArrayInputStream</span> is <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayInputStream</span><span class="token punctuation">(</span><span class="token string">"测试数据"</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> <span class="token keyword">boolean</span> result <span class="token operator">=</span> ftp<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>is<span class="token punctuation">,</span> <span class="token string">"/test.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void exist() {
-        // 判断数据是否存在于 ftp 服务器
-        final boolean exist = ftp.exist("/test.txt");
-        assertThat(exist)
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">exist</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 判断数据是否存在于 ftp 服务器</span>
+        <span class="token keyword">final</span> <span class="token keyword">boolean</span> exist <span class="token operator">=</span> ftp<span class="token punctuation">.</span><span class="token function">exist</span><span class="token punctuation">(</span><span class="token string">"/test.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>exist<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void get() {
-        // 从 ftp 服务器上下载数据
-        ftp.get("/test.txt", is -&gt; {
-            try {
-                final List&lt;String&gt; list = IOUtils.readLines(is);
-                log.info("list: {}", list);
-                assertThat(list)
-                        .isNotEmpty();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 从 ftp 服务器上下载数据</span>
+        ftp<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"/test.txt"</span><span class="token punctuation">,</span> is <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> <span class="token class-name">IOUtils</span><span class="token punctuation">.</span><span class="token function">readLines</span><span class="token punctuation">(</span>is<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"list: {}"</span><span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">assertThat</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">IOException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
 
-        });
-    }
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void mkdir() {
-        // 创建文件夹
-        assertThat(ftp.mkdir("/test"))
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">mkdir</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 创建文件夹</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">mkdir</span><span class="token punctuation">(</span><span class="token string">"/test"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void mkdirR() {
-        // 递归创建文件夹
-        assertThat(ftp.mkdirR("/test/test2/test3"))
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">mkdirR</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 递归创建文件夹</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">mkdirR</span><span class="token punctuation">(</span><span class="token string">"/test/test2/test3"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void ls() {
-        // 获取目录下的文件信息列表
-        final List&lt;Stat&gt; list = ftp.ls("/");
-        log.info("list: {}", list.stream()
-                .map(Stat::getPath)
-                .collect(Collectors.joining("\n")));
-        assertThat(list)
-                .isNotEmpty();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">ls</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 获取目录下的文件信息列表</span>
+        <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Stat</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> ftp<span class="token punctuation">.</span><span class="token function">ls</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"list: {}"</span><span class="token punctuation">,</span> list<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">Stat</span><span class="token operator">::</span><span class="token function">getPath</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">joining</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void lsr() {
-        // 获取目录下的文件信息列表
-        final List&lt;Stat&gt; list = ftp.lsR("/");
-        log.info("list: {}", list.stream()
-                .map(Stat::getPath)
-                .collect(Collectors.joining("\n")));
-        assertThat(list)
-                .isNotEmpty();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">lsr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 获取目录下的文件信息列表</span>
+        <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Stat</span><span class="token punctuation">&gt;</span></span> list <span class="token operator">=</span> ftp<span class="token punctuation">.</span><span class="token function">lsR</span><span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"list: {}"</span><span class="token punctuation">,</span> list<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">Stat</span><span class="token operator">::</span><span class="token function">getPath</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">joining</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isNotEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void rm() {
-        // 删除单个文件
-        assertThat(ftp.rm("/test.txt"))
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">rm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 删除单个文件</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">rm</span><span class="token punctuation">(</span><span class="token string">"/test.txt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void rmdir() {
-        // 删除指定空目录
-        assertThat(ftp.rmdir("/test/test2/test3"))
-                .isTrue();
-    }
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">rmdir</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 删除指定空目录</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">rmdir</span><span class="token punctuation">(</span><span class="token string">"/test/test2/test3"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Test
-    public void rmdirR() {
-        // 递归删除指定目录
-        assertThat(ftp.rmdirR("/test"))
-                .isTrue();
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">rmdirR</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 递归删除指定目录</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">rmdirR</span><span class="token punctuation">(</span><span class="token string">"/test"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="使用-FtpOperator-上传文件并监听结果"><a href="#使用-FtpOperator-上传文件并监听结果" class="headerlink" title="使用 FtpOperator 上传文件并监听结果"></a>使用 FtpOperator 上传文件并监听结果</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class FtpSpringConfigTest extends BaseTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private FtpOperator ftp;
-    @Test
-    public void watch() throws InterruptedException, UnsupportedEncodingException {
-        // 监听新文件 /test.md 的出现
-        final String path = "/test.md";
-        ftp.watch((Predicate&lt;String&gt;) str -&gt; str.equals(path))
-                .thenAcceptAsync(stat -&gt; {
-                    log.warn("stat: {}", stat);
-                    assertThat(ftp.exist(stat.getPath()))
-                            .isNotNull();
-                });
-        // 创建测试文件
-        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
-        log.warn("test file upload completed!");
-        assertThat(ftp.put(is, path))
-                .isTrue();
-        // 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！
-        Thread.sleep(2000);
-        // 删除测试文件
-        ftp.rm(path);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-FtpOperator-上传文件并监听结果"><a href="#使用-FtpOperator-上传文件并监听结果" class="headerlink" title="使用 FtpOperator 上传文件并监听结果"></a>使用 FtpOperator 上传文件并监听结果</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@RunWith</span><span class="token punctuation">(</span><span class="token class-name">SpringRunner</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@SpringBootTest</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FtpSpringConfigTest</span> <span class="token keyword">extends</span> <span class="token class-name">BaseTest</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">FtpOperator</span> ftp<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Test</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">watch</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">InterruptedException</span><span class="token punctuation">,</span> <span class="token class-name">UnsupportedEncodingException</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 监听新文件 /test.md 的出现</span>
+        <span class="token keyword">final</span> <span class="token class-name">String</span> path <span class="token operator">=</span> <span class="token string">"/test.md"</span><span class="token punctuation">;</span>
+        ftp<span class="token punctuation">.</span><span class="token function">watch</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">Predicate</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">)</span> str <span class="token operator">-&gt;</span> str<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">thenAcceptAsync</span><span class="token punctuation">(</span>stat <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
+                    log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"stat: {}"</span><span class="token punctuation">,</span> stat<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">exist</span><span class="token punctuation">(</span>stat<span class="token punctuation">.</span><span class="token function">getPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                            <span class="token punctuation">.</span><span class="token function">isNotNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 创建测试文件</span>
+        <span class="token keyword">final</span> <span class="token class-name">ByteArrayInputStream</span> is <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ByteArrayInputStream</span><span class="token punctuation">(</span><span class="token string">"测试数据"</span><span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"test file upload completed!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertThat</span><span class="token punctuation">(</span>ftp<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>is<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！</span>
+        <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 删除测试文件</span>
+        ftp<span class="token punctuation">.</span><span class="token function">rm</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <hr>
 <p>那么，关于 Java 中使用 <code>FTP/SFTP</code> 便到此为止啦</p>

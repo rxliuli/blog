@@ -638,30 +638,30 @@
 <p>注：如果你不需要操纵 markdown ast，强烈建议使用一站式的 markdown-it</p>
 </blockquote>
 <p>基本使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import unified from 'unified'
-import remarkParse from 'remark-parse'
-import remarkStringify from 'remark-stringify'
-import visit from 'unist-util-visit'
-import unistUtilMap from 'unist-util-map'
-import remarkGfm from 'remark-gfm'
-import { format, Options } from 'prettier'
-import { Node } from 'unist'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> unified <span class="token keyword">from</span> <span class="token string">'unified'</span>
+<span class="token keyword">import</span> remarkParse <span class="token keyword">from</span> <span class="token string">'remark-parse'</span>
+<span class="token keyword">import</span> remarkStringify <span class="token keyword">from</span> <span class="token string">'remark-stringify'</span>
+<span class="token keyword">import</span> visit <span class="token keyword">from</span> <span class="token string">'unist-util-visit'</span>
+<span class="token keyword">import</span> unistUtilMap <span class="token keyword">from</span> <span class="token string">'unist-util-map'</span>
+<span class="token keyword">import</span> remarkGfm <span class="token keyword">from</span> <span class="token string">'remark-gfm'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> format<span class="token punctuation">,</span> Options <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'prettier'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Node <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'unist'</span>
 
-const md = unified().use(remarkParse).use(remarkGfm).use(remarkStringify, {
-  bullet: '-',
-  fences: true,
-  incrementListMarker: false,
-})
+<span class="token keyword">const</span> md <span class="token operator">=</span> <span class="token function">unified</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>remarkParse<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>remarkGfm<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>remarkStringify<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  bullet<span class="token operator">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span>
+  fences<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  incrementListMarker<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-const node = unistUtilMap(md.parse(content), (node) =&gt; {
-  console.log('node: ', node)
-  return node
-})
-const str = format(md.stringify(node), {
-  parser: 'markdown',
-  tabWidth: 2,
-})
-console.log(str)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">const</span> node <span class="token operator">=</span> <span class="token function">unistUtilMap</span><span class="token punctuation">(</span>md<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'node: '</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> node
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> str <span class="token operator">=</span> <span class="token function">format</span><span class="token punctuation">(</span>md<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  parser<span class="token operator">:</span> <span class="token string">'markdown'</span><span class="token punctuation">,</span>
+  tabWidth<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h4 id="unified-txt-x2F-markdown-x2F-html-解析器的抽象核心"><a href="#unified-txt-x2F-markdown-x2F-html-解析器的抽象核心" class="headerlink" title="unified: txt/markdown/html 解析器的抽象核心"></a>unified: txt/markdown/html 解析器的抽象核心</h4><h4 id="remark-parse-解析-markdown-的插件"><a href="#remark-parse-解析-markdown-的插件" class="headerlink" title="remark-parse: 解析 markdown 的插件"></a>remark-parse: 解析 markdown 的插件</h4><h4 id="remark-gfm-支持-gfm-的插件"><a href="#remark-gfm-支持-gfm-的插件" class="headerlink" title="remark-gfm: 支持 gfm 的插件"></a>remark-gfm: 支持 gfm 的插件</h4><h4 id="remark-stringify-序列化-ast-为-markdown-的插件"><a href="#remark-stringify-序列化-ast-为-markdown-的插件" class="headerlink" title="remark-stringify: 序列化 ast 为 markdown 的插件"></a>remark-stringify: 序列化 ast 为 markdown 的插件</h4><h4 id="unist-util-visit-遍历-ast-的插件"><a href="#unist-util-visit-遍历-ast-的插件" class="headerlink" title="unist-util-visit: 遍历 ast 的插件"></a>unist-util-visit: 遍历 ast 的插件</h4><h3 id="puppeteer-无头浏览器"><a href="#puppeteer-无头浏览器" class="headerlink" title="puppeteer: 无头浏览器"></a><a target="_blank" rel="noopener" href="https://github.com/puppeteer/puppeteer">puppeteer</a>: 无头浏览器</h3><h2 id="脚手架和打包工具"><a href="#脚手架和打包工具" class="headerlink" title="脚手架和打包工具"></a>脚手架和打包工具</h2><h3 id="vite-一个非常优秀的前端脚手架"><a href="#vite-一个非常优秀的前端脚手架" class="headerlink" title="vite: 一个非常优秀的前端脚手架"></a>vite: 一个非常优秀的前端脚手架</h3><table>
 <thead>

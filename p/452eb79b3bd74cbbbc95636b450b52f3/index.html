@@ -323,23 +323,23 @@
 <p>注：以下内容使用 react+ts 实现</p>
 </blockquote>
 <h2 id="添加事件禁止选择、拖拽、右键"><a href="#添加事件禁止选择、拖拽、右键" class="headerlink" title="添加事件禁止选择、拖拽、右键"></a>添加事件禁止选择、拖拽、右键</h2><p>简而言之，这是一种简单有效的方式，能够在用户不打开控制台的情况下阻止用户保存图片。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">export function preventDefaultListener(e: any) {
-  e.preventDefault()
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">preventDefaultListener</span><span class="token punctuation">(</span><span class="token parameter"><span class="token literal-property property">e</span><span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-;&lt;img
-  src={props.url}
-  alt=""
-  style={{
-    //禁止用户选择
-    userSelect: 'none',
-    //禁止所有鼠标事件，过于强大，图片仅用于展示可用
-    // pointerEvents: 'none',
-  }}
-  onTouchStart={preventDefaultListener}
-  onContextMenu={preventDefaultListener}
-  onDragStart={preventDefaultListener}
-/&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token punctuation">;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span>
+  <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>url<span class="token punctuation">}</span></span>
+  <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span>
+  <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span>
+    <span class="token comment">//禁止用户选择</span>
+    <span class="token literal-property property">userSelect</span><span class="token operator">:</span> <span class="token string">'none'</span><span class="token punctuation">,</span>
+    <span class="token comment">//禁止所有鼠标事件，过于强大，图片仅用于展示可用</span>
+    <span class="token comment">// pointerEvents: 'none',</span>
+  <span class="token punctuation">}</span><span class="token punctuation">}</span></span>
+  <span class="token attr-name">onTouchStart</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>preventDefaultListener<span class="token punctuation">}</span></span>
+  <span class="token attr-name">onContextMenu</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>preventDefaultListener<span class="token punctuation">}</span></span>
+  <span class="token attr-name">onDragStart</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>preventDefaultListener<span class="token punctuation">}</span></span>
+<span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/dxzg/p/9930559.html">https://www.cnblogs.com/dxzg/p/9930559.html</a></p>
@@ -347,54 +347,54 @@
 <h2 id="将之转换为-canvas"><a href="#将之转换为-canvas" class="headerlink" title="将之转换为 canvas"></a>将之转换为 canvas</h2><p>另一种思路是将图片转换为 canvas 避免用户使用 <code>img</code> 相关的操作。</p>
 <ol>
 <li><p>将图片转成 canvas</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function imageToCanvas(url: string, canvas: HTMLCanvasElement) {
-  return new Promise((resolve, reject) =&gt; {
-    //新建Image对象，引入当前目录下的图片
-    const img = new Image()
-    img.src = url
-    const c = canvas.getContext('2d')!
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">imageToCanvas</span><span class="token punctuation">(</span>url<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> canvas<span class="token operator">:</span> HTMLCanvasElement<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>resolve<span class="token punctuation">,</span> reject<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">//新建Image对象，引入当前目录下的图片</span>
+    <span class="token keyword">const</span> img <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Image</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    img<span class="token punctuation">.</span>src <span class="token operator">=</span> url
+    <span class="token keyword">const</span> c <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">'2d'</span><span class="token punctuation">)</span><span class="token operator">!</span>
 
-    //图片初始化完成后调用
-    img.onload = function () {
-      //将canvas的宽高设置为图像的宽高
-      canvas.width = img.width
-      canvas.height = img.height
+    <span class="token comment">//图片初始化完成后调用</span>
+    img<span class="token punctuation">.</span><span class="token function-variable function">onload</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">//将canvas的宽高设置为图像的宽高</span>
+      canvas<span class="token punctuation">.</span>width <span class="token operator">=</span> img<span class="token punctuation">.</span>width
+      canvas<span class="token punctuation">.</span>height <span class="token operator">=</span> img<span class="token punctuation">.</span>height
 
-      //canvas画图片
-      c.drawImage(img, 0, 0, img.width, img.height)
-      resolve()
-    }
-    img.addEventListener('error', (e) =&gt; {
-      reject(e)
-    })
-  })
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+      <span class="token comment">//canvas画图片</span>
+      c<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>img<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> img<span class="token punctuation">.</span>width<span class="token punctuation">,</span> img<span class="token punctuation">.</span>height<span class="token punctuation">)</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    img<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">reject</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>禁用 canvas 事件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const throwFn = () =&gt; {
-  throw new Error(
-    "Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.",
-  )
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">throwFn</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>
+    <span class="token string">"Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-const $canvasRef = useRef&lt;HTMLCanvasElement&gt;(null)
- useEffect(() =&gt; {
-     ;(async () =&gt; {
-         await imageToCanvas(props.url, $canvasRef.current!)
-         $canvasRef.current!.toBlob = throwFn
-         $canvasRef.current!.toDataURL = throwFn
-     })()
- }, [])
+<span class="token keyword">const</span> $canvasRef <span class="token operator">=</span> useRef<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLCanvasElement</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">(null)
+ useEffect(() =&gt; </span><span class="token punctuation">{</span>
+     <span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+         <span class="token keyword">await</span> <span class="token function">imageToCanvas</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>url<span class="token punctuation">,</span> $canvasRef<span class="token punctuation">.</span>current<span class="token operator">!</span><span class="token punctuation">)</span>
+         $canvasRef<span class="token punctuation">.</span>current<span class="token operator">!</span><span class="token punctuation">.</span>toBlob <span class="token operator">=</span> throwFn
+         $canvasRef<span class="token punctuation">.</span>current<span class="token operator">!</span><span class="token punctuation">.</span>toDataURL <span class="token operator">=</span> throwFn
+     <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+ <span class="token punctuation">}</span><span class="token plain-text">, [])
  return (
-     &lt;canvas
-         ref={$canvasRef}
-         onTouchStart={preventDefaultListener}
-         onContextMenu={preventDefaultListener}
-     /&gt;
- )<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+     </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>canvas</span>
+         <span class="token attr-name">ref</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>$canvasRef<span class="token punctuation">}</span></span>
+         <span class="token attr-name">onTouchStart</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>preventDefaultListener<span class="token punctuation">}</span></span>
+         <span class="token attr-name">onContextMenu</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>preventDefaultListener<span class="token punctuation">}</span></span>
+     <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+ )</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 <h2 id="禁止用户使用控制台查看源码"><a href="#禁止用户使用控制台查看源码" class="headerlink" title="禁止用户使用控制台查看源码"></a>禁止用户使用控制台查看源码</h2><p>如果能禁止用户操作控制台，那么自然能够避免用户查看源码了，下面是一个简单的实现。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
  * 兼容异步函数的返回值
  * @param res 返回值
  * @param callback 同步/异步结果的回调函数
@@ -402,77 +402,77 @@ const $canvasRef = useRef&lt;HTMLCanvasElement&gt;(null)
  * @typeparam Param 处理参数具体的类型，如果是 Promise 类型，则指定为原类型
  * @typeparam R 返回值具体的类型，如果是 Promise 类型，则指定为 Promise 类型，否则为原类型
  * @returns 处理后的结果，如果是同步的，则返回结果是同步的，否则为异步的
- */
-export function compatibleAsync&lt;T = any, Param = T | Promise&lt;T&gt;, R = T&gt;(
-  res: Param,
-  callback: (r: T) =&gt; R,
-): Param extends Promise&lt;T&gt; ? Promise&lt;R&gt; : R {
-  return (res instanceof Promise
-    ? res.then(callback)
-    : callback(res as any)) as any
-}
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">compatibleAsync</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token punctuation">,</span> Param <span class="token operator">=</span> <span class="token constant">T</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token constant">R</span> <span class="token operator">=</span> <span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
+  res<span class="token operator">:</span> Param<span class="token punctuation">,</span>
+  <span class="token function-variable function">callback</span><span class="token operator">:</span> <span class="token punctuation">(</span>r<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">R</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> Param <span class="token keyword">extends</span> <span class="token class-name"><span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token operator">?</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token constant">R</span><span class="token operator">&gt;</span> <span class="token operator">:</span> <span class="token constant">R</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>res <span class="token keyword">instanceof</span> <span class="token class-name"><span class="token builtin">Promise</span></span>
+    <span class="token operator">?</span> res<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>callback<span class="token punctuation">)</span>
+    <span class="token operator">:</span> <span class="token function">callback</span><span class="token punctuation">(</span>res <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">any</span>
+<span class="token punctuation">}</span>
 
-/**
+<span class="token comment">/**
  * 测试函数的执行时间
  * 注：如果函数返回 Promise，则该函数也会返回 Promise，否则直接返回执行时间
  * @param fn 需要测试的函数
  * @returns 执行的毫秒数
- */
-export function timing&lt;R&gt;(
-  fn: (...args: any[]) =&gt; R,
-  // 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number
-): R extends Promise&lt;any&gt; ? Promise&lt;number&gt; : number {
-  const begin = performance.now()
-  const res = fn()
-  return compatibleAsync(res, () =&gt; performance.now() - begin)
-}
-/**
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">timing</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">R</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
+  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">R</span><span class="token punctuation">,</span>
+  <span class="token comment">// 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">R</span> <span class="token keyword">extends</span> <span class="token class-name"><span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span></span> <span class="token operator">?</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span> <span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> begin <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token function">compatibleAsync</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/**
  * 禁止他人调试网站相关方法的集合对象
- */
-export class AntiDebug {
-  /**
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AntiDebug</span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
    * 不停循环 debugger 防止有人调试代码
    * @returns 取消函数
-   */
-  public static cyclingDebugger(): Function {
-    const res = setInterval(() =&gt; {
-      debugger
-    }, 100)
-    return () =&gt; clearInterval(res)
-  }
-  /**
+   */</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token function">cyclingDebugger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Function</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">debugger</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">clearInterval</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
    * 检查是否正在 debugger 并调用回调函数
    * @param fn 回调函数，默认为重载页面
    * @returns 取消函数
-   */
-  public static checkDebug(
-    fn: Function = () =&gt; window.location.reload(),
-  ): Function {
-    const res = setInterval(() =&gt; {
-      const diff = timing(() =&gt; {
-        debugger
-      })
-      if (diff &gt; 500) {
-        console.log(diff)
-        fn()
-      }
-    }, 1000)
-    return () =&gt; clearInterval(res)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */</span>
+  <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token function">checkDebug</span><span class="token punctuation">(</span>
+    fn<span class="token operator">:</span> <span class="token function-variable function">Function</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> window<span class="token punctuation">.</span>location<span class="token punctuation">.</span><span class="token function">reload</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Function</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> diff <span class="token operator">=</span> <span class="token function">timing</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">debugger</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">&gt;</span> <span class="token number">500</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>diff<span class="token punctuation">)</span>
+        <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">clearInterval</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">useEffect(() =&gt; {
-  const cancel1 = AntiDebug.cyclingDebugger() as any
-  const cancel2 = AntiDebug.checkDebug(() =&gt;
-    console.log('请不要打开调试'),
-  ) as any
-  return () =&gt; {
-    cancel1()
-    cancel2()
-  }
-}, [])
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> cancel1 <span class="token operator">=</span> AntiDebug<span class="token punctuation">.</span><span class="token function">cyclingDebugger</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">as</span> any
+  <span class="token keyword">const</span> cancel2 <span class="token operator">=</span> AntiDebug<span class="token punctuation">.</span><span class="token function">checkDebug</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'请不要打开调试'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span> <span class="token keyword">as</span> any
+  <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">cancel1</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token function">cancel2</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
 
-return &lt;img src={url} alt="" /&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>url<span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="传输图片使用自定义格式"><a href="#传输图片使用自定义格式" class="headerlink" title="传输图片使用自定义格式"></a>传输图片使用自定义格式</h2><p>该功能需要服务端配合，故而此处赞不实现，可以参考 <a target="_blank" rel="noopener" href="https://weread.qq.com/">微信读书</a>，就是将文本转为 canvas，数据传输也进行了加密，可以在很大程度上防止普通用户想要复制/下载的行为了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如同所有的前端限制用户的技术一样，这是一个没有终点的斗争。。。</p>

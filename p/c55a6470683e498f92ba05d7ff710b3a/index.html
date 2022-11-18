@@ -375,152 +375,152 @@ D[渲染列表]</code></pre>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/BasicListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>如下所示，我们想要构造下面这样一个简单的列表页面，包含一个面包屑导航列表、搜索框、过滤条件选择器和一个表格。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import * as React from 'react'
-import { Button } from 'antd'
-import { Link } from 'react-router-dom'
-import { Moment } from 'moment'
-import { LabeledValue } from 'antd/es/select'
-import { userApi } from './api/UserApi'
-import {
-  BasicList,
-  BasicListPropsType,
-  FilterFieldTypeEnum,
-} from '../../components/list'
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Button <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'antd'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Link <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-router-dom'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Moment <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'moment'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> LabeledValue <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'antd/es/select'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> userApi <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./api/UserApi'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
+  BasicList<span class="token punctuation">,</span>
+  BasicListPropsType<span class="token punctuation">,</span>
+  FilterFieldTypeEnum<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../components/list'</span>
 
-type PropsType = {}
+<span class="token keyword">type</span> <span class="token class-name">PropsType</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-type Config = Omit&lt;BasicListPropsType, 'params'&gt; &amp; {
-  params?: {
-    keyword?: string
-    test?: number
-    birthdayTimeRange?: [Moment, Moment]
-  }
-}
-const testOptionList: LabeledValue[] = [
-  { value: 0, label: '测试 0' },
-  { value: 1, label: '测试 1' },
-  { value: 2, label: '测试 2' },
-]
+<span class="token keyword">type</span> <span class="token class-name">Config</span> <span class="token operator">=</span> Omit<span class="token operator">&lt;</span>BasicListPropsType<span class="token punctuation">,</span> <span class="token string">'params'</span><span class="token operator">&gt;</span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span>
+  params<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    keyword<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span>
+    test<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span>
+    birthdayTimeRange<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">[</span>Moment<span class="token punctuation">,</span> Moment<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">const</span> testOptionList<span class="token operator">:</span> LabeledValue<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'测试 0'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'测试 1'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span> label<span class="token operator">:</span> <span class="token string">'测试 2'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
 
-//列表配置项
-const config: Config = {
-  header: {
-    placeholder: '用户名/住址',
-    list: ['用户', '列表'],
-  },
-  filters: [
-    {
-      type: FilterFieldTypeEnum.Select,
-      label: '测试字段',
-      field: 'test',
-      options: testOptionList,
-    },
-    {
-      type: FilterFieldTypeEnum.TimeRange,
-      label: '生日',
-      field: 'birthdayTimeRange',
-    },
-  ],
-  columns: [
-    { field: 'id', title: 'ID' },
-    { field: 'name', title: '姓名' },
-    { field: 'birthday', title: '生日' },
-    {
-      field: 'operate',
-      title: '操作',
-      slot: (param) =&gt; &lt;Link to={`/system/user/${param.record.id}`}&gt;详情&lt;/Link&gt;,
-    },
-  ],
-  api: userApi,
-}
+<span class="token comment">//列表配置项</span>
+<span class="token keyword">const</span> config<span class="token operator">:</span> Config <span class="token operator">=</span> <span class="token punctuation">{</span>
+  header<span class="token operator">:</span> <span class="token punctuation">{</span>
+    placeholder<span class="token operator">:</span> <span class="token string">'用户名/住址'</span><span class="token punctuation">,</span>
+    list<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'用户'</span><span class="token punctuation">,</span> <span class="token string">'列表'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  filters<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      type<span class="token operator">:</span> FilterFieldTypeEnum<span class="token punctuation">.</span>Select<span class="token punctuation">,</span>
+      label<span class="token operator">:</span> <span class="token string">'测试字段'</span><span class="token punctuation">,</span>
+      field<span class="token operator">:</span> <span class="token string">'test'</span><span class="token punctuation">,</span>
+      options<span class="token operator">:</span> testOptionList<span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      type<span class="token operator">:</span> FilterFieldTypeEnum<span class="token punctuation">.</span>TimeRange<span class="token punctuation">,</span>
+      label<span class="token operator">:</span> <span class="token string">'生日'</span><span class="token punctuation">,</span>
+      field<span class="token operator">:</span> <span class="token string">'birthdayTimeRange'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  columns<span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> field<span class="token operator">:</span> <span class="token string">'id'</span><span class="token punctuation">,</span> title<span class="token operator">:</span> <span class="token string">'ID'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> field<span class="token operator">:</span> <span class="token string">'name'</span><span class="token punctuation">,</span> title<span class="token operator">:</span> <span class="token string">'姓名'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> field<span class="token operator">:</span> <span class="token string">'birthday'</span><span class="token punctuation">,</span> title<span class="token operator">:</span> <span class="token string">'生日'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      field<span class="token operator">:</span> <span class="token string">'operate'</span><span class="token punctuation">,</span>
+      title<span class="token operator">:</span> <span class="token string">'操作'</span><span class="token punctuation">,</span>
+      <span class="token function-variable function">slot</span><span class="token operator">:</span> <span class="token punctuation">(</span>param<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">to</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/system/user/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>param<span class="token punctuation">.</span>record<span class="token punctuation">.</span>id<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">详情</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">&gt;</span></span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  api<span class="token operator">:</span> userApi<span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-/**
+<span class="token comment">/**
  * 一个基本的列表页面
  * @constructor
- */
-const BasicListExample: React.FC&lt;PropsType&gt; = () =&gt; {
-  return &lt;BasicList {...config} /&gt;
-}
+ */</span>
+<span class="token keyword">const</span> BasicListExample<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>PropsType<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">BasicList</span></span> <span class="token spread"><span class="token punctuation">{</span><span class="token operator">...</span>config<span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span>
+<span class="token punctuation">}</span>
 
-export default BasicListExample<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">default</span> BasicListExample<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用自定义过滤器组件"><a href="#使用自定义过滤器组件" class="headerlink" title="使用自定义过滤器组件"></a>使用自定义过滤器组件</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/CustomFilterListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>事实上，总有各种奇怪的过滤器无法满足，这时候就需要添加一个自定义的过滤器了。<br>例如下面这个过滤器，包含了年龄的值和单位，是不是感觉很奇怪</p>
 <p>关键代码配置如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const config: Config = {
-  filters: [
-    {
-      type: FilterFieldTypeEnum.Slot,
-      label: '年龄',
-      field: 'age',
-      children: (
-        &lt;Input.Group compact&gt;
-          &lt;Form.Item name={['age', 'value']} noStyle&gt;
-            &lt;InputNumber style={{ width: 'calc(100% - 64px)' }} /&gt;
-          &lt;/Form.Item&gt;
-          &lt;Form.Item name={['age', 'unit']} noStyle&gt;
-            &lt;Select style={{ width: 64 }} options={ageUnitOptionList} /&gt;
-          &lt;/Form.Item&gt;
-        &lt;/Input.Group&gt;
-      ),
-    },
-  ],
-  // 此处是为了添加过滤器的默认值
-  params: {
-    age: {
-      unit: 0,
-    },
-  },
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token literal-property property">config</span><span class="token operator">:</span> Config <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">filters</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token literal-property property">type</span><span class="token operator">:</span> FilterFieldTypeEnum<span class="token punctuation">.</span>Slot<span class="token punctuation">,</span>
+      <span class="token literal-property property">label</span><span class="token operator">:</span> <span class="token string">'年龄'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">field</span><span class="token operator">:</span> <span class="token string">'age'</span><span class="token punctuation">,</span>
+      <span class="token literal-property property">children</span><span class="token operator">:</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Input.Group</span></span> <span class="token attr-name">compact</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Form.Item</span></span> <span class="token attr-name">name</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'value'</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span> <span class="token attr-name">noStyle</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">InputNumber</span></span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> <span class="token literal-property property">width</span><span class="token operator">:</span> <span class="token string">'calc(100% - 64px)'</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Form.Item</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Form.Item</span></span> <span class="token attr-name">name</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span><span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'unit'</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span> <span class="token attr-name">noStyle</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Select</span></span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> <span class="token literal-property property">width</span><span class="token operator">:</span> <span class="token number">64</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span> <span class="token attr-name">options</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>ageUnitOptionList<span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Form.Item</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Input.Group</span></span><span class="token punctuation">&gt;</span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token comment">// 此处是为了添加过滤器的默认值</span>
+  <span class="token literal-property property">params</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token literal-property property">unit</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="添加表格的额外操作"><a href="#添加表格的额外操作" class="headerlink" title="添加表格的额外操作"></a>添加表格的额外操作</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/TableOperationListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>有时候，我们需要添加一个额外的表格操作，例如导出/导入数据/删除选中数据。</p>
 <p>关键代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">async function handleBatchDelete({
-  selectedRowKeys,
-  setSelectedRowKeys,
-  searchPage,
-}: ListTableOperateParam) {
-  if (selectedRowKeys.length === 0) {
-    return
-  }
-  await userApi.batchDelete(selectedRowKeys)
-  setSelectedRowKeys([])
-  await searchPage()
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">handleBatchDelete</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span>
+  selectedRowKeys<span class="token punctuation">,</span>
+  setSelectedRowKeys<span class="token punctuation">,</span>
+  searchPage<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token operator">:</span> ListTableOperateParam</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>selectedRowKeys<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">await</span> userApi<span class="token punctuation">.</span><span class="token function">batchDelete</span><span class="token punctuation">(</span>selectedRowKeys<span class="token punctuation">)</span>
+  <span class="token function">setSelectedRowKeys</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> <span class="token function">searchPage</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-const config = useMemo&lt;Config&gt;(
-  () =&gt; ({
-    tableOperate: (params) =&gt; (
-      &lt;Button onClick={() =&gt; handleBatchDelete(params)}&gt;删除选中&lt;/Button&gt;
-    ),
-  }),
+<span class="token keyword">const</span> config <span class="token operator">=</span> useMemo<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Config</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">(
+  () =&gt; (</span><span class="token punctuation">{</span>
+    <span class="token function-variable function">tableOperate</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">params</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Button</span></span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">handleBatchDelete</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">删除选中</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Button</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token plain-text">),
   [],
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="过滤器的下拉框数据来源是异步的"><a href="#过滤器的下拉框数据来源是异步的" class="headerlink" title="过滤器的下拉框数据来源是异步的"></a>过滤器的下拉框数据来源是异步的</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/AsyncSelectOptionsListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>很多时候，我们的数据来源并不是由前端写死，而是从后台获取的，这就要求我们传入的值是 react 的一个 State 而非一个固定值。</p>
 <p>关键代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const testOptionList = useAsyncMemo([], dictApi.list)
-const config = useMemo&lt;Config&gt;(
-  () =&gt; ({
-    filters: [
-      {
-        type: FilterFieldTypeEnum.Select,
-        label: '测试字段',
-        field: 'test',
-        options: testOptionList,
-      },
-    ],
-  }),
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> testOptionList <span class="token operator">=</span> <span class="token function">useAsyncMemo</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> dictApi<span class="token punctuation">.</span>list<span class="token punctuation">)</span>
+<span class="token keyword">const</span> config <span class="token operator">=</span> useMemo<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Config</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">(
+  () =&gt; (</span><span class="token punctuation">{</span>
+    <span class="token literal-property property">filters</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token literal-property property">type</span><span class="token operator">:</span> FilterFieldTypeEnum<span class="token punctuation">.</span>Select<span class="token punctuation">,</span>
+        <span class="token literal-property property">label</span><span class="token operator">:</span> <span class="token string">'测试字段'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">field</span><span class="token operator">:</span> <span class="token string">'test'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">options</span><span class="token operator">:</span> testOptionList<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token plain-text">),
   [testOptionList],
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="组件-API"><a href="#组件-API" class="headerlink" title="组件 API"></a>组件 API</h2><h3 id="BasicList"><a href="#BasicList" class="headerlink" title="BasicList"></a>BasicList</h3><p>参考 <em>src/components/common/table/js/BasicListOptions.d.ts</em></p>
 <table>

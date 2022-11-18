@@ -321,24 +321,24 @@
 <p>以下代码均由 TypeScript 实现，最好能了解 <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/2/types-from-types.html">TypeScript 类型操作</a></p>
 </blockquote>
 <p>其实树结构数据可以抽象出非常简单的 interface（接口）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface Node {
-  id: string
-  children: Node[]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">Node</span> <span class="token punctuation">{</span>
+  id<span class="token operator">:</span> <span class="token builtin">string</span>
+  children<span class="token operator">:</span> Node<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>无非是业务中多了一些字段，这两个字段的名字有所不同罢了。</p>
 <p>例如系统菜单与系统权限</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface SysMenu {
-  id: number // 菜单 id
-  name: string // 显示的名称
-  sub: SysMenu[] // 子级菜单
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">SysMenu</span> <span class="token punctuation">{</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token comment">// 菜单 id</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token comment">// 显示的名称</span>
+  sub<span class="token operator">:</span> SysMenu<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment">// 子级菜单</span>
+<span class="token punctuation">}</span>
 
-interface SysPermission {
-  uid: string // 系统唯一 uuid
-  label: string // 显示的菜单名
-  children: SysPermission[] // 子权限
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">interface</span> <span class="token class-name">SysPermission</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token comment">// 系统唯一 uuid</span>
+  label<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token comment">// 显示的菜单名</span>
+  children<span class="token operator">:</span> SysPermission<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment">// 子权限</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>可以看到，它们都有 <code>id</code> 和 <code>children</code> 字段，只是名字不同。那么，根据封装不变的部分，将变化的部分交予外部输入的封装原则，这两个字段便由外部指定了。</p>
 <h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>那么，树结构都有哪些操作呢？</p>
@@ -352,58 +352,58 @@ interface SysPermission {
 </ul>
 <p>然而，吾辈目前用到的仅有 <code>each/map/filter/treeToList</code>，所以先行实现下面几个。</p>
 <h2 id="定义通用树结构需要的必须参数类型"><a href="#定义通用树结构需要的必须参数类型" class="headerlink" title="定义通用树结构需要的必须参数类型"></a>定义通用树结构需要的必须参数类型</h2><p>如果树结构必须包含 <code>id/children</code>，那么，便可以以此定义树结构操作的通用参数了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface TreeOption&lt;T extends object&gt; {
-  /**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">TreeOption<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> object<span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
    * 唯一标识的字段
-   */
-  id: keyof T
-  /**
+   */</span>
+  id<span class="token operator">:</span> <span class="token keyword">keyof</span> <span class="token constant">T</span>
+  <span class="token comment">/**
    * 子节点的字段
-   */
-  children: keyof T
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */</span>
+  children<span class="token operator">:</span> <span class="token keyword">keyof</span> <span class="token constant">T</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>上面是一个接口，必须声明 <code>id/children</code> 的字段名是什么，便于内部实现读取树节点信息。</p>
 <blockquote>
 <p>感谢 TypeScript，没有它就无法定义出类型，就不能检查出代码中的细微错误。例如，Java 就很难定义反射相关的类型，通常只能使用 <code>String</code>。</p>
 </blockquote>
 <h2 id="treeMap"><a href="#treeMap" class="headerlink" title="treeMap"></a>treeMap</h2><p>下面实现 treeMap，其实就是一个递归函数。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { TreeOption } from './treeOption'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> TreeOption <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeOption'</span>
 
-/**
+<span class="token comment">/**
  * 树结构映射
  * 使用深度优先算法
  * @param nodeList
  * @param fn
  * @param options
- */
-export function treeMap&lt;
-  T extends object,
-  C extends TreeOption&lt;T&gt;,
-  F extends (
-    t: Omit&lt;T, C['children']&gt; &amp; Record&lt;C['children'], ReturnType&lt;F&gt;[]&gt;,
-    path: T[C['id']][],
-  ) =&gt; object
-&gt;(nodeList: T[], fn: F, options: C): ReturnType&lt;F&gt;[] {
-  function inner(nodeList: T[], parentPath: T[C['id']][]): any {
-    return nodeList.map((node) =&gt; {
-      const path = [...parentPath, node[options.id]]
-      const children = (node[options.children] as any) as T[]
-      if (!children) {
-        return fn(node as any, path)
-      }
-      return fn(
-        {
-          ...node,
-          [options.children]: inner(children, path),
-        },
-        path,
-      )
-    })
-  }
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> treeMap<span class="token operator">&lt;</span>
+  <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token class-name">object</span><span class="token punctuation">,</span>
+  <span class="token constant">C</span> <span class="token keyword">extends</span> <span class="token class-name">TreeOption<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span><span class="token punctuation">,</span>
+  <span class="token constant">F</span> <span class="token keyword">extends</span> <span class="token punctuation">(</span>
+    t<span class="token operator">:</span> Omit<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'children'</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token operator">&amp;</span> Record<span class="token operator">&lt;</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'children'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> ReturnType<span class="token operator">&lt;</span><span class="token constant">F</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
+    path<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span> <span class="token operator">=&gt;</span> object
+<span class="token operator">&gt;</span><span class="token punctuation">(</span>nodeList<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> fn<span class="token operator">:</span> <span class="token constant">F</span><span class="token punctuation">,</span> options<span class="token operator">:</span> <span class="token constant">C</span><span class="token punctuation">)</span><span class="token operator">:</span> ReturnType<span class="token operator">&lt;</span><span class="token constant">F</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token keyword">function</span> <span class="token function">inner</span><span class="token punctuation">(</span>nodeList<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> parentPath<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> nodeList<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span>parentPath<span class="token punctuation">,</span> node<span class="token punctuation">[</span>options<span class="token punctuation">.</span>id<span class="token punctuation">]</span><span class="token punctuation">]</span>
+      <span class="token keyword">const</span> children <span class="token operator">=</span> <span class="token punctuation">(</span>node<span class="token punctuation">[</span>options<span class="token punctuation">.</span>children<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>children<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">fn</span><span class="token punctuation">(</span>node <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> <span class="token function">fn</span><span class="token punctuation">(</span>
+        <span class="token punctuation">{</span>
+          <span class="token operator">...</span>node<span class="token punctuation">,</span>
+          <span class="token punctuation">[</span>options<span class="token punctuation">.</span>children<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token function">inner</span><span class="token punctuation">(</span>children<span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        path<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  return inner(nodeList, [])
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  <span class="token keyword">return</span> <span class="token function">inner</span><span class="token punctuation">(</span>nodeList<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>不过细心的人可能已经发现，这里做了两个奇怪的操作</p>
 <ol>
@@ -411,99 +411,99 @@ export function treeMap&lt;
 <li>计算了节点的 <code>path</code>，并丢到 map 函数中。– 这是为了能轻松知道当前节点的所有父节点以及层级，便于在有需要时（例如转换为列表）能拿到这个关键信息。</li>
 </ol>
 <h2 id="treeFilter"><a href="#treeFilter" class="headerlink" title="treeFilter"></a>treeFilter</h2><p>嗯，下面的函数都将基于 treeMap 实现了（#笑）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { TreeOption } from './treeOption'
-import { treeMap } from './treeMap'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> TreeOption <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeOption'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> treeMap <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeMap'</span>
 
-/**
+<span class="token comment">/**
  * 过滤一个树节点列表
  * @param nodeList
  * @param fn
  * @param options
- */
-export function treeFilter&lt;T extends object, C extends TreeOption&lt;T&gt;&gt;(
-  nodeList: T[],
-  fn: (t: T, path: T[C['id']][]) =&gt; boolean,
-  options: C,
-): T[] {
-  return treeMap(
-    nodeList,
-    (node: any, path) =&gt; {
-      const children = (node[options.children] as any) as T[] | undefined
-      //如果是错误的节点直接炸掉
-      if (!fn(node as T, path)) {
-        return null
-      }
-      //如果是叶子节点就返回
-      if (!children) {
-        return node
-      }
-      //计算所有子节点中不是 null 的子节点
-      const sub = children.filter((node) =&gt; node !== null)
-      //如果所有子节点为 null 就炸掉
-      if (sub.length === 0) {
-        return null
-      }
-      return {
-        ...node,
-        children: sub,
-      }
-    },
-    options,
-  ).filter((node) =&gt; node !== null)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">treeFilter</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> object<span class="token punctuation">,</span> <span class="token constant">C</span> <span class="token keyword">extends</span> TreeOption<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;&gt;</span></span></span><span class="token punctuation">(</span>
+  nodeList<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  fn<span class="token operator">:</span> <span class="token punctuation">(</span>t<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> path<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">boolean</span><span class="token punctuation">,</span>
+  options<span class="token operator">:</span> <span class="token constant">C</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">treeMap</span><span class="token punctuation">(</span>
+    nodeList<span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>node<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> children <span class="token operator">=</span> <span class="token punctuation">(</span>node<span class="token punctuation">[</span>options<span class="token punctuation">.</span>children<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token keyword">undefined</span>
+      <span class="token comment">//如果是错误的节点直接炸掉</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">fn</span><span class="token punctuation">(</span>node <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">//如果是叶子节点就返回</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>children<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> node
+      <span class="token punctuation">}</span>
+      <span class="token comment">//计算所有子节点中不是 null 的子节点</span>
+      <span class="token keyword">const</span> sub <span class="token operator">=</span> children<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> node <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+      <span class="token comment">//如果所有子节点为 null 就炸掉</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>sub<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> <span class="token punctuation">{</span>
+        <span class="token operator">...</span>node<span class="token punctuation">,</span>
+        children<span class="token operator">:</span> sub<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    options<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> node <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>上面过滤的流程图</p>
 <p><img src="/resources/6a3af88df8204b888564bfce8d1d9e5c.svg" srcset="/img/loading.gif" lazyload alt="treeFilter 流程图.drawio.svg"></p>
 <h2 id="treeEach"><a href="#treeEach" class="headerlink" title="treeEach"></a>treeEach</h2><p>同样的，也是基于 treeMap，其实这个就有点乏善可陈了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { TreeOption } from './treeOption'
-import { treeMap } from './treeMap'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> TreeOption <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeOption'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> treeMap <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeMap'</span>
 
-/**
+<span class="token comment">/**
  * 树结构映射
  * 使用深度优先算法
  * @param nodeList
  * @param fn
  * @param options
- */
-export function treeEach&lt;T extends object, C extends TreeOption&lt;T&gt;&gt;(
-  nodeList: T[],
-  fn: (t: T, path: T[C['id']][]) =&gt; void,
-  options: C,
-) {
-  treeMap(
-    nodeList,
-    (node, path) =&gt; {
-      fn(node as T, path)
-      return node
-    },
-    options,
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">treeEach</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> object<span class="token punctuation">,</span> <span class="token constant">C</span> <span class="token keyword">extends</span> TreeOption<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;&gt;</span></span></span><span class="token punctuation">(</span>
+  nodeList<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  fn<span class="token operator">:</span> <span class="token punctuation">(</span>t<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> path<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span><span class="token punctuation">,</span>
+  options<span class="token operator">:</span> <span class="token constant">C</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">treeMap</span><span class="token punctuation">(</span>
+    nodeList<span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>node<span class="token punctuation">,</span> path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token function">fn</span><span class="token punctuation">(</span>node <span class="token keyword">as</span> <span class="token constant">T</span><span class="token punctuation">,</span> path<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> node
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    options<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="treeToList"><a href="#treeToList" class="headerlink" title="treeToList"></a>treeToList</h2><p>同上。。。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { TreeOption } from './treeOption'
-import { treeEach } from './treeEach'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> TreeOption <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeOption'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> treeEach <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./treeEach'</span>
 
-/**
+<span class="token comment">/**
  * 将一个树节点列表压平
  * @param nodeList
  * @param options
- */
-export function treeToList&lt;
-  T extends object,
-  C extends TreeOption&lt;T&gt; &amp; { path: string },
-  R extends T &amp; { [K in C['path']]: NonNullable&lt;T[C['id']]&gt;[] }
-&gt;(nodeList: T[], options: C): R[] {
-  const res: R[] = []
-  treeEach(
-    nodeList,
-    (node, path) =&gt; {
-      res.push({ ...node, [options.path]: path } as R)
-    },
-    options,
-  )
-  return res
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">treeToList</span><span class="token generic class-name"><span class="token operator">&lt;</span>
+  <span class="token constant">T</span> <span class="token keyword">extends</span> object<span class="token punctuation">,</span>
+  <span class="token constant">C</span> <span class="token keyword">extends</span> TreeOption<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span> path<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token constant">R</span> <span class="token keyword">extends</span> <span class="token constant">T</span> <span class="token operator">&amp;</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token constant">K</span> <span class="token keyword">in</span> <span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'path'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">:</span> NonNullable<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">C</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>nodeList<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> options<span class="token operator">:</span> <span class="token constant">C</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">R</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> res<span class="token operator">:</span> <span class="token constant">R</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token function">treeEach</span><span class="token punctuation">(</span>
+    nodeList<span class="token punctuation">,</span>
+    <span class="token punctuation">(</span>node<span class="token punctuation">,</span> path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token operator">...</span>node<span class="token punctuation">,</span> <span class="token punctuation">[</span>options<span class="token punctuation">.</span>path<span class="token punctuation">]</span><span class="token operator">:</span> path <span class="token punctuation">}</span> <span class="token keyword">as</span> <span class="token constant">R</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    options<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+  <span class="token keyword">return</span> res
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p>那么，下面是一些泥萌可能存在的一些问题，吾辈在此解答，如有其他问题，可直接在下面评论。</p>
 <ul>

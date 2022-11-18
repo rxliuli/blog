@@ -337,33 +337,33 @@
 <li>electron-builder 要求必须使用固定的版本号，意味着 electron 依赖需要指定为 <code>"electron": "10.2.0"</code></li>
 </ol>
 <p>下面是一个基本的配置示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "main": "dist/main.js",
-  "scripts": {
-    // 一个非常基本的打包脚本
-    "pkg": "electron-builder"
-  },
-  "devDependencies": {
-    "electron": "10.2.0",
-    "electron-builder": "^22.9.1",
-    // electron 主进程实际上是 nodejs 环境，所以为了更好的开发体验，安装 nodejs 的类型定义
-    "@types/node": "^12.19.12"
-  },
-  "build": {
-    // 程序的唯一标识符
-    "appId": "com.rxliuli.electron_example",
-    // 打包出来的 exe 名字
-    "productName": "electron 示例应用",
-    // 打包的目录
-    "directories": {
-      "output": "release"
-    },
-    "win": {
-      // 打包目标，参考: https://www.electron.build/
-      "target": ["nsis"]
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"dist/main.js"</span><span class="token punctuation">,</span>
+  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 一个非常基本的打包脚本</span>
+    <span class="token property">"pkg"</span><span class="token operator">:</span> <span class="token string">"electron-builder"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"devDependencies"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"electron"</span><span class="token operator">:</span> <span class="token string">"10.2.0"</span><span class="token punctuation">,</span>
+    <span class="token property">"electron-builder"</span><span class="token operator">:</span> <span class="token string">"^22.9.1"</span><span class="token punctuation">,</span>
+    <span class="token comment">// electron 主进程实际上是 nodejs 环境，所以为了更好的开发体验，安装 nodejs 的类型定义</span>
+    <span class="token property">"@types/node"</span><span class="token operator">:</span> <span class="token string">"^12.19.12"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"build"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 程序的唯一标识符</span>
+    <span class="token property">"appId"</span><span class="token operator">:</span> <span class="token string">"com.rxliuli.electron_example"</span><span class="token punctuation">,</span>
+    <span class="token comment">// 打包出来的 exe 名字</span>
+    <span class="token property">"productName"</span><span class="token operator">:</span> <span class="token string">"electron 示例应用"</span><span class="token punctuation">,</span>
+    <span class="token comment">// 打包的目录</span>
+    <span class="token property">"directories"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"output"</span><span class="token operator">:</span> <span class="token string">"release"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"win"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 打包目标，参考: https://www.electron.build/</span>
+      <span class="token property">"target"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"nsis"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="复制静态资源"><a href="#复制静态资源" class="headerlink" title="复制静态资源"></a>复制静态资源</h3><p>现在，我们需要打包静态资源并复制到主进程模块里面</p>
 <ol>
@@ -372,20 +372,20 @@
 <li>将静态资源复制到 <code>build/dist</code> 目录下</li>
 </ol>
 <h3 id="修改主进程入口文件-main-ts"><a href="#修改主进程入口文件-main-ts" class="headerlink" title="修改主进程入口文件 main.ts"></a>修改主进程入口文件 main.ts</h3><p>还需要修改 <em>src/main.ts</em> 代码，主要修改 BrowserWindow 对象载入的 <code>url</code> 地址</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { app, BrowserWindow } from 'electron'
-import path = require('path')
-import { URL } from 'url'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> app<span class="token punctuation">,</span> BrowserWindow <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'electron'</span>
+<span class="token keyword">import</span> path <span class="token operator">=</span> <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token constant">URL</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'url'</span>
 
-async function createMainWindow() {
-  // 创建新的 electron 窗口
-  const mainWindow = new BrowserWindow()
-  // 载入生产环境的 url
-  await mainWindow.loadURL(
-    new URL(path.join(__dirname, './build/index.html')).href,
-  )
-}
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">createMainWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 创建新的 electron 窗口</span>
+  <span class="token keyword">const</span> mainWindow <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// 载入生产环境的 url</span>
+  <span class="token keyword">await</span> mainWindow<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span>
+    <span class="token keyword">new</span> <span class="token class-name"><span class="token constant">URL</span></span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./build/index.html'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>href<span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-// 其他代码...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">// 其他代码...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注意，这个 url 路径是相对于打包后的 <code>dist/main.js</code> 而言的，因为最终打包的程序运行时的相对路径也是这样。</p>
@@ -415,52 +415,52 @@ async function createMainWindow() {
 <li><code>fs-extra @types/fs-extra</code>: fs 的扩展增强，使用 Promise 包装异步 api</li>
 </ul>
 <p>2、添加 gulp 脚本文件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { copy, remove } from 'fs-extra'
-import * as path from 'path'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> copy<span class="token punctuation">,</span> remove <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'fs-extra'</span>
+<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
 
-async function copyByMap(copyMap: [string, string][]) {
-  await Promise.all(
-    copyMap.map(async ([src, destDir]) =&gt; {
-      const srcPath = path.resolve(__dirname, src)
-      const destPath = path.resolve(__dirname, destDir, path.basename(srcPath))
-      await copy(srcPath, destPath)
-    }),
-  )
-}
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">copyByMap</span><span class="token punctuation">(</span>copyMap<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>
+    copyMap<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>src<span class="token punctuation">,</span> destDir<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> srcPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> src<span class="token punctuation">)</span>
+      <span class="token keyword">const</span> destPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> destDir<span class="token punctuation">,</span> path<span class="token punctuation">.</span><span class="token function">basename</span><span class="token punctuation">(</span>srcPath<span class="token punctuation">)</span><span class="token punctuation">)</span>
+      <span class="token keyword">await</span> <span class="token function">copy</span><span class="token punctuation">(</span>srcPath<span class="token punctuation">,</span> destPath<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-/**
+<span class="token comment">/**
  * 清理最终生成目录
- */
-export async function clean() {
-  await remove(path.resolve(__dirname, 'dist'))
-  await remove(path.resolve(__dirname, 'release'))
-}
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token function">remove</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'dist'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">await</span> <span class="token function">remove</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'release'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-/**
+<span class="token comment">/**
  * 复制一些资源到 dist 目录中
- */
-export async function copyStatic() {
-  await copyByMap([['../renderer/build', 'dist/']])
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">copyStatic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token function">copyByMap</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token string">'../renderer/build'</span><span class="token punctuation">,</span> <span class="token string">'dist/'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>3、添加 npm script</p>
 <blockquote>
 <p>注: lerna 的好处之一就是可以运行其它模块的 npm script。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "scripts": {
-    // 打包渲染层的静态资源
-    "build:web": "lerna run --scope renderer build",
-    // 打包渲染层的静态资源之后复制然后使用 electron-builder 打包 exe 程序
-    "pkg": "gulp clean &amp;&amp; yarn compile &amp;&amp; yarn build:web &amp;&amp; gulp copyStatic &amp;&amp; electron-builder"
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 打包渲染层的静态资源</span>
+    <span class="token property">"build:web"</span><span class="token operator">:</span> <span class="token string">"lerna run --scope renderer build"</span><span class="token punctuation">,</span>
+    <span class="token comment">// 打包渲染层的静态资源之后复制然后使用 electron-builder 打包 exe 程序</span>
+    <span class="token property">"pkg"</span><span class="token operator">:</span> <span class="token string">"gulp clean &amp;&amp; yarn compile &amp;&amp; yarn build:web &amp;&amp; gulp copyStatic &amp;&amp; electron-builder"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>4、修改 tsconfig.json</p>
 <p>此时在 <em>apps/main</em> 模块根目录下也有 ts 文件了，所以 tsc 翻译代码会将它们也包含进去，但实际上不需要。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "include": ["src"]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"include"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"src"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在，我们可以使用一个命令打包 exe 程序了。</p>
 <blockquote>
@@ -471,19 +471,19 @@ export async function copyStatic() {
 <li><p>安装依赖 <code>yarn add -D env-cmd</code></p>
 </li>
 <li><p>添加配置文件 <em>.env-cmdrc.json</em><br>基本上是一个键值映射文件，键是环境，值对象是环境变量</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "dev": {
-    "ELECTRON_START_URL": "http://localhost:3000/"
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"dev"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"ELECTRON_START_URL"</span><span class="token operator">:</span> <span class="token string">"http://localhost:3000/"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>在 <code>dev:electron</code> 命令之前设定环境变量 <code>env-cmd -e dev electron ./dist/main.js</code></p>
 </li>
 <li><p>修改 <em>src/main.ts</em> 读取环境变量</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">await mainWindow.loadURL(
-  process.env.ELECTRON_START_URL ||
-    path.join(__dirname, './build/index.html'),
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">await</span> mainWindow<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span>
+  process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">ELECTRON_START_URL</span> <span class="token operator">||</span>
+    path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./build/index.html'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 <p>现在，像 <a href="/p/23ec4673a06f41b59bfaf5a7da6d98db">基本项目搭建</a> 中 <strong>更新 <em>package.json</em> 添加几个 npm script</strong> 说的那样启动开发环境就会显示开发环境的页面，打包后显示的则是打包后的静态资源。</p>
 <p><img src="/resources/866c4124afe04289b88972507b3f6743.png" srcset="/img/loading.gif" lazyload alt="效果"></p>

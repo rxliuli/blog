@@ -315,23 +315,23 @@
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦</p>
 <h2 id="行转列"><a href="#行转列" class="headerlink" title="行转列"></a>行转列</h2><p>指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧</p>
 <p>例如下面这个 <code>exam</code> 表</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">drop table if exists exam;
-create table exam (
-  name    varchar(20) not null
-  comment '姓名',
-  subject varchar(20) not null
-  comment '考试科目',
-  score   int         null
-  comment '考试成绩'
-)
-  comment '考试记录';
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">drop</span> <span class="token keyword">table</span> <span class="token keyword">if</span> <span class="token keyword">exists</span> exam<span class="token punctuation">;</span>
+<span class="token keyword">create</span> <span class="token keyword">table</span> exam <span class="token punctuation">(</span>
+  name    <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  subject <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'考试科目'</span><span class="token punctuation">,</span>
+  score   <span class="token keyword">int</span>         <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'考试成绩'</span>
+<span class="token punctuation">)</span>
+  <span class="token keyword">comment</span> <span class="token string">'考试记录'</span><span class="token punctuation">;</span>
 
-insert into exam values ('琉璃', '语文', 90);
-insert into exam values ('琉璃', '英语', 85);
-insert into exam values ('楚轩', '数学', 100);
-insert into exam values ('楚轩', '物理', 100);
-insert into exam values ('张三', '化学', 40);
-insert into exam values ('李四', '生物', 100);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'琉璃'</span><span class="token punctuation">,</span> <span class="token string">'语文'</span><span class="token punctuation">,</span> <span class="token number">90</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'琉璃'</span><span class="token punctuation">,</span> <span class="token string">'英语'</span><span class="token punctuation">,</span> <span class="token number">85</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'楚轩'</span><span class="token punctuation">,</span> <span class="token string">'数学'</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'楚轩'</span><span class="token punctuation">,</span> <span class="token string">'物理'</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'张三'</span><span class="token punctuation">,</span> <span class="token string">'化学'</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam <span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'李四'</span><span class="token punctuation">,</span> <span class="token string">'生物'</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>直接查询会是下面这个样子</p>
 <table>
@@ -425,24 +425,24 @@ insert into exam values ('李四', '生物', 100);<span aria-hidden="true" class
 </tbody></table>
 <p>大致的实现思路是判断 <code>subject</code> 的值，如果等于 <code>转换列</code> 的值，就将之设置为该 <code>转换列</code> 的值。（此处的 <code>转换列</code> 指的是根据 <code>subject</code> 的值查询的新列）</p>
 <p>目前网络上能找到的方法有下面两种</p>
-<h3 id="使用-if-实现行转列"><a href="#使用-if-实现行转列" class="headerlink" title="使用 if 实现行转列"></a>使用 if 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                              as '姓名',
-  max(if(subject = '语文', score, 0)) as '语文',
-  max(if(subject = '数学', score, 0)) as '数学',
-  max(if(subject = '英语', score, 0)) as '英语',
-  max(if(subject = '物理', score, 0)) as '物理',
-  max(if(subject = '化学', score, 0)) as '化学',
-  max(if(subject = '生物', score, 0)) as '生物'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-if-实现行转列"><a href="#使用-if-实现行转列" class="headerlink" title="使用 if 实现行转列"></a>使用 if 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name                              <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'语文'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'语文'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'数学'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'数学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'英语'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'英语'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'物理'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'物理'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'化学'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'化学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'生物'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'生物'</span>
+<span class="token keyword">from</span> exam
+<span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>优点：简单方便，即便是将几列合并也可以简单做到。例如我们想要统计主科/副科的总分</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                                                                  as '姓名',
-  sum(if(subject = '语文' or subject = '数学' or subject = '英语', score, 0)) as '主科',
-  sum(if(subject = '物理' or subject = '化学' or subject = '生物', score, 0)) as '副科'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name                                                                  <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token function">sum</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'语文'</span> <span class="token operator">or</span> subject <span class="token operator">=</span> <span class="token string">'数学'</span> <span class="token operator">or</span> subject <span class="token operator">=</span> <span class="token string">'英语'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'主科'</span><span class="token punctuation">,</span>
+  <span class="token function">sum</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'物理'</span> <span class="token operator">or</span> subject <span class="token operator">=</span> <span class="token string">'化学'</span> <span class="token operator">or</span> subject <span class="token operator">=</span> <span class="token string">'生物'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'副科'</span>
+<span class="token keyword">from</span> exam
+<span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>查询结果</p>
 <table>
@@ -475,20 +475,20 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 </tr>
 </tbody></table>
 <p>或者简单的实现小计</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  -- 这里的 ifnull 其实是为了让最后一行的统计不为 null
-  ifnull(name, 'total')             as '姓名',
-  max(if(subject = '语文', score, 0)) as '语文',
-  max(if(subject = '数学', score, 0)) as '数学',
-  max(if(subject = '英语', score, 0)) as '英语',
-  max(if(subject = '物理', score, 0)) as '物理',
-  max(if(subject = '化学', score, 0)) as '化学',
-  max(if(subject = '生物', score, 0)) as '生物',
-  -- 统计每一行数据
-  sum(score)                        as total
-from exam
--- 按照 name 进行分组并进行小计
-group by name with rollup;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  <span class="token comment">-- 这里的 ifnull 其实是为了让最后一行的统计不为 null</span>
+  ifnull<span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'total'</span><span class="token punctuation">)</span>             <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'语文'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'语文'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'数学'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'数学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'英语'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'英语'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'物理'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'物理'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'化学'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'化学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">if</span><span class="token punctuation">(</span>subject <span class="token operator">=</span> <span class="token string">'生物'</span><span class="token punctuation">,</span> score<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'生物'</span><span class="token punctuation">,</span>
+  <span class="token comment">-- 统计每一行数据</span>
+  <span class="token function">sum</span><span class="token punctuation">(</span>score<span class="token punctuation">)</span>                        <span class="token keyword">as</span> total
+<span class="token keyword">from</span> exam
+<span class="token comment">-- 按照 name 进行分组并进行小计</span>
+<span class="token keyword">group</span> <span class="token keyword">by</span> name <span class="token keyword">with rollup</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>查询结果</p>
 <table>
@@ -555,43 +555,43 @@ group by name with rollup;<span aria-hidden="true" class="line-numbers-rows"><sp
 <td>590</td>
 </tr>
 </tbody></table>
-<h3 id="使用-case-when-实现行转列"><a href="#使用-case-when-实现行转列" class="headerlink" title="使用 case when 实现行转列"></a>使用 case when 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name as '姓名',
-  max(case subject when '语文' then score else 0 end) as '语文',
-  max(case subject when '数学' then score else 0 end) as '数学',
-  max(case subject when '英语' then score else 0 end) as '英语',
-  max(case subject when '物理' then score else 0 end) as '物理',
-  max(case subject when '化学' then score else 0 end) as '化学',
-  max(case subject when '生物' then score else 0 end) as '生物'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-case-when-实现行转列"><a href="#使用-case-when-实现行转列" class="headerlink" title="使用 case when 实现行转列"></a>使用 case when 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'语文'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'语文'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'数学'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'数学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'英语'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'英语'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'物理'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'物理'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'化学'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'化学'</span><span class="token punctuation">,</span>
+  <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject <span class="token keyword">when</span> <span class="token string">'生物'</span> <span class="token keyword">then</span> score <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'生物'</span>
+<span class="token keyword">from</span> exam
+<span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>优点：相比于 <code>if</code> 更加灵活，可以对每个 <code>转换列</code> 的值进行单独的处理。例如我们想要统计主科/副科的总分，并设置计算语文/数学时增加一半，而英语的分数则忽略不计</p>
 <blockquote>
 <p>感觉这个优势相当的小，当然如果用到的话却是无需多言的</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name     as '姓名',
-  sum(case subject
-      when '语文'
-        then score * 1.5
-      when '数学'
-        then score * 1.5
-      when '英语'
-        then 0
-      else 0
-      end) as '主科',
-  sum(case subject
-      when '物理'
-        then score
-      when '化学'
-        then score
-      when '生物'
-        then score
-      else 0
-      end) as '副科'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name     <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token function">sum</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject
+      <span class="token keyword">when</span> <span class="token string">'语文'</span>
+        <span class="token keyword">then</span> score <span class="token operator">*</span> <span class="token number">1.5</span>
+      <span class="token keyword">when</span> <span class="token string">'数学'</span>
+        <span class="token keyword">then</span> score <span class="token operator">*</span> <span class="token number">1.5</span>
+      <span class="token keyword">when</span> <span class="token string">'英语'</span>
+        <span class="token keyword">then</span> <span class="token number">0</span>
+      <span class="token keyword">else</span> <span class="token number">0</span>
+      <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'主科'</span><span class="token punctuation">,</span>
+  <span class="token function">sum</span><span class="token punctuation">(</span><span class="token keyword">case</span> subject
+      <span class="token keyword">when</span> <span class="token string">'物理'</span>
+        <span class="token keyword">then</span> score
+      <span class="token keyword">when</span> <span class="token string">'化学'</span>
+        <span class="token keyword">then</span> score
+      <span class="token keyword">when</span> <span class="token string">'生物'</span>
+        <span class="token keyword">then</span> score
+      <span class="token keyword">else</span> <span class="token number">0</span>
+      <span class="token keyword">end</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'副科'</span>
+<span class="token keyword">from</span> exam
+<span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>查询结果</p>
 <table>
@@ -623,34 +623,34 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 <td>0</td>
 </tr>
 </tbody></table>
-<h3 id="使用子查询实现行转列"><a href="#使用子查询实现行转列" class="headerlink" title="使用子查询实现行转列"></a>使用子查询实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name,
-  if(language != 'null', language, 0)       as '语文',
-  if(mathematics != 'null', mathematics, 0) as '数学',
-  if(english != 'null', english, 0)         as '英语',
-  if(physical != 'null', physical, 0)       as '物理',
-  if(chemistry != 'null', chemistry, 0)     as '化学',
-  if(biological != 'null', biological, 0)   as '生物'
-from (
-       select
-         e.name,
-         (select e1.score from exam e1 where subject = '语文' and e1.name = e.name limit 1) as language,
-         (select e1.score from exam e1 where subject = '数学' and e1.name = e.name limit 1) as mathematics,
-         (select e1.score from exam e1 where subject = '英语' and e1.name = e.name limit 1) as english,
-         (select e1.score from exam e1 where subject = '物理' and e1.name = e.name limit 1) as physical,
-         (select e1.score from exam e1 where subject = '化学' and e1.name = e.name limit 1) as chemistry,
-         (select e1.score from exam e1 where subject = '生物' and e1.name = e.name limit 1) as biological
-       from exam e
-       group by name
-     ) temp;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用子查询实现行转列"><a href="#使用子查询实现行转列" class="headerlink" title="使用子查询实现行转列"></a>使用子查询实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">language</span> <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> <span class="token keyword">language</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>       <span class="token keyword">as</span> <span class="token string">'语文'</span><span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>mathematics <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> mathematics<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'数学'</span><span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>english <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> english<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>         <span class="token keyword">as</span> <span class="token string">'英语'</span><span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>physical <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> physical<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>       <span class="token keyword">as</span> <span class="token string">'物理'</span><span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>chemistry <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> chemistry<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>     <span class="token keyword">as</span> <span class="token string">'化学'</span><span class="token punctuation">,</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>biological <span class="token operator">!=</span> <span class="token string">'null'</span><span class="token punctuation">,</span> biological<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>   <span class="token keyword">as</span> <span class="token string">'生物'</span>
+<span class="token keyword">from</span> <span class="token punctuation">(</span>
+       <span class="token keyword">select</span>
+         e<span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'语文'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token keyword">language</span><span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'数学'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> mathematics<span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'英语'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> english<span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'物理'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> physical<span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'化学'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> chemistry<span class="token punctuation">,</span>
+         <span class="token punctuation">(</span><span class="token keyword">select</span> e1<span class="token punctuation">.</span>score <span class="token keyword">from</span> exam e1 <span class="token keyword">where</span> subject <span class="token operator">=</span> <span class="token string">'生物'</span> <span class="token operator">and</span> e1<span class="token punctuation">.</span>name <span class="token operator">=</span> e<span class="token punctuation">.</span>name <span class="token keyword">limit</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">as</span> biological
+       <span class="token keyword">from</span> exam e
+       <span class="token keyword">group</span> <span class="token keyword">by</span> name
+     <span class="token punctuation">)</span> <span class="token keyword">temp</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>优点：使用起来最灵活，但代码量也是最大的。可以对每一个列的多条/单条数据进行单独的处理，不需要必须使用统计函数（<code>sum/avg/max/min/count</code>）。例如上面就是如果查到了多条数据就直接取第一条，当然也可以对第一条数据做后续处理。</p>
 <h3 id="使用-group-concat-简单的行连接"><a href="#使用-group-concat-简单的行连接" class="headerlink" title="使用 group_concat 简单的行连接"></a>使用 group_concat 简单的行连接</h3><p>并非是真正的行转列，实际上只是把不同字段的数据 <em>连接</em> 了起来</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                              as '姓名',
-  group_concat(subject, ' ', score) as '成绩单'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name                              <span class="token keyword">as</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  group_concat<span class="token punctuation">(</span>subject<span class="token punctuation">,</span> <span class="token string">' '</span><span class="token punctuation">,</span> score<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token string">'成绩单'</span>
+<span class="token keyword">from</span> exam
+<span class="token keyword">group</span> <span class="token keyword">by</span> name<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>查询结果</p>
 <table>
@@ -679,31 +679,31 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 </tbody></table>
 <h2 id="列转行"><a href="#列转行" class="headerlink" title="列转行"></a>列转行</h2><p>将类似的列按照某种规则变成一列，并生成等同倍数的行。</p>
 <p>我们需要将上面行转列得到的表转换回来，例如下面的 <code>exam_score</code> 表</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">create table exam_score (
-  name        varchar(20) not null
-  comment '姓名',
-  language    int         not null
-  comment '语文',
-  mathematics int         not null
-  comment '数学',
-  english     int         not null
-  comment '英语',
-  physical    int         not null
-  comment '物理',
-  chemistry   int         not null
-  comment '化学',
-  biological  int         not null
-  comment '生物'
-)
-  comment '考试成绩';
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('张三', 0, 0, 0, 0, 40, 0);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('李四', 0, 0, 0, 0, 0, 100);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('楚轩', 0, 100, 0, 100, 0, 0);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('琉璃', 90, 0, 85, 0, 0, 0);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> exam_score <span class="token punctuation">(</span>
+  name        <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span> <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
+  <span class="token keyword">language</span>    <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'语文'</span><span class="token punctuation">,</span>
+  mathematics <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'数学'</span><span class="token punctuation">,</span>
+  english     <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'英语'</span><span class="token punctuation">,</span>
+  physical    <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'物理'</span><span class="token punctuation">,</span>
+  chemistry   <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'化学'</span><span class="token punctuation">,</span>
+  biological  <span class="token keyword">int</span>         <span class="token operator">not</span> <span class="token boolean">null</span>
+  <span class="token keyword">comment</span> <span class="token string">'生物'</span>
+<span class="token punctuation">)</span>
+  <span class="token keyword">comment</span> <span class="token string">'考试成绩'</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam_score <span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token keyword">language</span><span class="token punctuation">,</span> mathematics<span class="token punctuation">,</span> english<span class="token punctuation">,</span> physical<span class="token punctuation">,</span> chemistry<span class="token punctuation">,</span> biological<span class="token punctuation">)</span>
+<span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'张三'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam_score <span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token keyword">language</span><span class="token punctuation">,</span> mathematics<span class="token punctuation">,</span> english<span class="token punctuation">,</span> physical<span class="token punctuation">,</span> chemistry<span class="token punctuation">,</span> biological<span class="token punctuation">)</span>
+<span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'李四'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam_score <span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token keyword">language</span><span class="token punctuation">,</span> mathematics<span class="token punctuation">,</span> english<span class="token punctuation">,</span> physical<span class="token punctuation">,</span> chemistry<span class="token punctuation">,</span> biological<span class="token punctuation">)</span>
+<span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'楚轩'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> exam_score <span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token keyword">language</span><span class="token punctuation">,</span> mathematics<span class="token punctuation">,</span> english<span class="token punctuation">,</span> physical<span class="token punctuation">,</span> chemistry<span class="token punctuation">,</span> biological<span class="token punctuation">)</span>
+<span class="token keyword">values</span> <span class="token punctuation">(</span><span class="token string">'琉璃'</span><span class="token punctuation">,</span> <span class="token number">90</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">85</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>直接查询结果是</p>
 <table>
@@ -795,88 +795,88 @@ values ('琉璃', 90, 0, 85, 0, 0, 0);<span aria-hidden="true" class="line-numbe
 <td>100</td>
 </tr>
 </tbody></table>
-<h3 id="使用-union-all-联合查询"><a href="#使用-union-all-联合查询" class="headerlink" title="使用 union all 联合查询"></a>使用 union all 联合查询</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name,
-  '语文'     as 'subject',
-  language as score
-from exam_score
-where language != 0
-union all
-select
-  name,
-  '数学'        as 'subject',
-  mathematics as score
-from exam_score
-where mathematics != 0
-union all
-select
-  name,
-  '英语'    as 'subject',
-  english as score
-from exam_score
-where english != 0
-union all
-select
-  name,
-  '物理'     as 'subject',
-  physical as score
-from exam_score
-where physical != 0
-union all
-select
-  name,
-  '化学'      as 'subject',
-  chemistry as score
-from exam_score
-where chemistry != 0
-union all
-select
-  name,
-  '生物'       as 'subject',
-  biological as score
-from exam_score
-where biological != 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-union-all-联合查询"><a href="#使用-union-all-联合查询" class="headerlink" title="使用 union all 联合查询"></a>使用 union all 联合查询</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'语文'</span>     <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  <span class="token keyword">language</span> <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> <span class="token keyword">language</span> <span class="token operator">!=</span> <span class="token number">0</span>
+<span class="token keyword">union</span> <span class="token keyword">all</span>
+<span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'数学'</span>        <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  mathematics <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> mathematics <span class="token operator">!=</span> <span class="token number">0</span>
+<span class="token keyword">union</span> <span class="token keyword">all</span>
+<span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'英语'</span>    <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  english <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> english <span class="token operator">!=</span> <span class="token number">0</span>
+<span class="token keyword">union</span> <span class="token keyword">all</span>
+<span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'物理'</span>     <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  physical <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> physical <span class="token operator">!=</span> <span class="token number">0</span>
+<span class="token keyword">union</span> <span class="token keyword">all</span>
+<span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'化学'</span>      <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  chemistry <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> chemistry <span class="token operator">!=</span> <span class="token number">0</span>
+<span class="token keyword">union</span> <span class="token keyword">all</span>
+<span class="token keyword">select</span>
+  name<span class="token punctuation">,</span>
+  <span class="token string">'生物'</span>       <span class="token keyword">as</span> <span class="token string">'subject'</span><span class="token punctuation">,</span>
+  biological <span class="token keyword">as</span> score
+<span class="token keyword">from</span> exam_score
+<span class="token keyword">where</span> biological <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>唔，好长的 sql 语句，这还只是 6 个 <code>转换列</code>，如果有更多的话恐怕。。。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="sql-行转列的问题"><a href="#sql-行转列的问题" class="headerlink" title="sql 行转列的问题"></a>sql 行转列的问题</h3><p>sql 的技巧确实很多，然而相比之下 sql 只是一门 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SQL">结构化查询语言</a>，并不算是真正的编程语言呢！行转列/列转行这些需求放到真正的编程语言中是很容易处理的，下面演示使用 js 的实现</p>
 <h3 id="使用-JavaScript-实现行转列"><a href="#使用-JavaScript-实现行转列" class="headerlink" title="使用 JavaScript 实现行转列"></a>使用 JavaScript 实现行转列</h3><p>假设有下面这样一个 json 数据</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">[
-  {
-    "name": "琉璃",
-    "subject": "语文",
-    "score": 75
-  },
-  {
-    "name": "琉璃",
-    "subject": "语文",
-    "score": 90
-  },
-  {
-    "name": "琉璃",
-    "subject": "英语",
-    "score": 85
-  },
-  {
-    "name": "楚轩",
-    "subject": "数学",
-    "score": 100
-  },
-  {
-    "name": "楚轩",
-    "subject": "物理",
-    "score": 100
-  },
-  {
-    "name": "张三",
-    "subject": "化学",
-    "score": 40
-  },
-  {
-    "name": "李四",
-    "subject": "生物",
-    "score": 100
-  }
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"琉璃"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"语文"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">75</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"琉璃"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"语文"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">90</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"琉璃"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"英语"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">85</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"楚轩"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"数学"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"楚轩"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"物理"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"张三"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"化学"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">40</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"李四"</span><span class="token punctuation">,</span>
+    <span class="token property">"subject"</span><span class="token operator">:</span> <span class="token string">"生物"</span><span class="token punctuation">,</span>
+    <span class="token property">"score"</span><span class="token operator">:</span> <span class="token number">100</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>转换方法</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
@@ -945,44 +945,44 @@ where biological != 0;<span aria-hidden="true" class="line-numbers-rows"><span><
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>看起来好像更长了？但实际上 <code>groupBy()/uniqueBy()</code> 都是通用的函数，所以实际代码应该不超过 20 行。转换后的数据如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">[
-  {
-    "语文": 75,
-    "英语": 85,
-    "数学": 0,
-    "物理": 0,
-    "化学": 0,
-    "生物": 0,
-    "name": "琉璃"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 100,
-    "物理": 100,
-    "化学": 0,
-    "生物": 0,
-    "name": "楚轩"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 0,
-    "物理": 0,
-    "化学": 40,
-    "生物": 0,
-    "name": "张三"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 0,
-    "物理": 0,
-    "化学": 0,
-    "生物": 100,
-    "name": "李四"
-  }
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"语文"</span><span class="token operator">:</span> <span class="token number">75</span><span class="token punctuation">,</span>
+    <span class="token property">"英语"</span><span class="token operator">:</span> <span class="token number">85</span><span class="token punctuation">,</span>
+    <span class="token property">"数学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"物理"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"化学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"生物"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"琉璃"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"语文"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"英语"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"数学"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+    <span class="token property">"物理"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+    <span class="token property">"化学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"生物"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"楚轩"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"语文"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"英语"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"数学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"物理"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"化学"</span><span class="token operator">:</span> <span class="token number">40</span><span class="token punctuation">,</span>
+    <span class="token property">"生物"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"张三"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">{</span>
+    <span class="token property">"语文"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"英语"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"数学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"物理"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"化学"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token property">"生物"</span><span class="token operator">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"李四"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用-JavaScript-实现列转行"><a href="#使用-JavaScript-实现列转行" class="headerlink" title="使用 JavaScript 实现列转行"></a>使用 JavaScript 实现列转行</h3><p>那么，如何转换回来呢？转换回来的话却是简单许多了呢</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**

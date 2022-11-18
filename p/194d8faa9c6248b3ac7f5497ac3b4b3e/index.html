@@ -324,30 +324,30 @@
 <p>例如有一个开关，控制灯泡怎么变化，在指定状态下点击会触发不同的行为，然后改变状态。</p>
 <h2 id="基本示例"><a href="#基本示例" class="headerlink" title="基本示例"></a>基本示例</h2><p>想象以下场景，有一个开关控制着一个灯泡，灯泡有三种状态：关闭、打开弱光和打开强光，轮流变化。</p>
 <h3 id="使用原生代码实现"><a href="#使用原生代码实现" class="headerlink" title="使用原生代码实现"></a>使用原生代码实现</h3><p>首先，我们尝试简单的使用 <code>if/else</code> 判断进行实现。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  private state: 'off' | 'weak' | 'strong' = 'off'
-  click() {
-    switch (this.state) {
-      case 'off':
-        console.log('打开弱光')
-        this.state = 'weak'
-        break
-      case 'weak':
-        console.log('打开强光')
-        this.state = 'strong'
-        break
-      case 'strong':
-        console.log('关灯')
-        this.state = 'off'
-        break
-    }
-  }
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">Light</span> <span class="token punctuation">{</span>
+  <span class="token keyword">private</span> state<span class="token operator">:</span> <span class="token string">'off'</span> <span class="token operator">|</span> <span class="token string">'weak'</span> <span class="token operator">|</span> <span class="token string">'strong'</span> <span class="token operator">=</span> <span class="token string">'off'</span>
+  <span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">case</span> <span class="token string">'off'</span><span class="token operator">:</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'weak'</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'weak'</span><span class="token operator">:</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开强光'</span><span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'strong'</span>
+        <span class="token keyword">break</span>
+      <span class="token keyword">case</span> <span class="token string">'strong'</span><span class="token operator">:</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'关灯'</span><span class="token punctuation">)</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'off'</span>
+        <span class="token keyword">break</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">const</span> light <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Light</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然而，这种代码充斥着判断，同时代码本身也都耦合在了一起。目前只有一个 <code>flag</code> 的时候还没太大问题，如果有更多的 flag（例如典型的用户角色与状态同时控制指定操作的行为），代码将非常混乱。</p>
 <blockquote>
@@ -358,64 +358,64 @@ light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 <li>将不同的逻辑抽离为单独的方法</li>
 <li>使用 Map 消除条件判断</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  private state: 'off' | 'weak' | 'strong' = 'off'
-  private map = {
-    off: this.offClick.bind(this),
-    weak: this.weakClick.bind(this),
-    strong: this.strongClick.bind(this),
-  }
-  click() {
-    this.map[this.state]()
-  }
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">Light</span> <span class="token punctuation">{</span>
+  <span class="token keyword">private</span> state<span class="token operator">:</span> <span class="token string">'off'</span> <span class="token operator">|</span> <span class="token string">'weak'</span> <span class="token operator">|</span> <span class="token string">'strong'</span> <span class="token operator">=</span> <span class="token string">'off'</span>
+  <span class="token keyword">private</span> map <span class="token operator">=</span> <span class="token punctuation">{</span>
+    off<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">offClick</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    weak<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">weakClick</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    strong<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">strongClick</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+  <span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>map<span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  private offClick() {
-    console.log('打开弱光')
-    this.state = 'weak'
-  }
-  private weakClick() {
-    console.log('打开强光')
-    this.state = 'strong'
-  }
-  private strongClick() {
-    console.log('关灯')
-    this.state = 'off'
-  }
-}
+  <span class="token keyword">private</span> <span class="token function">offClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'weak'</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">private</span> <span class="token function">weakClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开强光'</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'strong'</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">private</span> <span class="token function">strongClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'关灯'</span><span class="token punctuation">)</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'off'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">const</span> light <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Light</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>事实上，第一种方式是卓有成效且任何人都能够无师自通的（分离了实现和控制），但第二种，虽然这里可以简化逻辑的控制，但稍微复杂或是由多个 <code>flag</code> 控制的状态流转则无法使用这种方式抽离出来。</p>
 <h3 id="使用简单的状态模式"><a href="#使用简单的状态模式" class="headerlink" title="使用简单的状态模式"></a>使用简单的状态模式</h3><p>下面是用简单的状态模式来简化代码的控制逻辑</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  toggle: (light: Light) =&gt; void = FSM.off
-  click() {
-    this.toggle(this)
-  }
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">Light</span> <span class="token punctuation">{</span>
+  <span class="token function-variable function">toggle</span><span class="token operator">:</span> <span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span> <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>off
+  <span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">toggle</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.toggle = FSM.weak
-  },
-  weak(light: Light) {
-    console.log('打开强光')
-    light.toggle = FSM.strong
-  },
-  strong(light: Light) {
-    console.log('关灯')
-    light.toggle = FSM.off
-  },
-}
+<span class="token keyword">const</span> <span class="token constant">FSM</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">off</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>weak
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">weak</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开强光'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>strong
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">strong</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'关灯'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>off
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">const</span> light <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Light</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>仔细观察变化</p>
 <ol>
@@ -424,187 +424,187 @@ light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 </ol>
 <p>其实本质上状态模式是将控制流程分散到了各个子流程中，不再集中在一个地方控制。</p>
 <h3 id="结合-react-与状态模式"><a href="#结合-react-与状态模式" class="headerlink" title="结合 react 与状态模式"></a>结合 react 与状态模式</h3><p>然后，有趣的地方来了：如何结合状态模式与现有框架？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import React from 'react'
-import ReactDOM from 'react-dom'
-import { useState } from 'react'
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">'react-dom'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
 
-class Light {
-  toggle: (light: Light) =&gt; void = FSM.off
-  click() {
-    this.toggle(this)
-  }
-}
+<span class="token keyword">class</span> <span class="token class-name">Light</span> <span class="token punctuation">{</span>
+  <span class="token function-variable function">toggle</span><span class="token operator">:</span> <span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span> <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>off
+  <span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">toggle</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.toggle = FSM.weak
-  },
-  weak(light: Light) {
-    console.log('打开强光')
-    light.toggle = FSM.strong
-  },
-  strong(light: Light) {
-    console.log('关灯')
-    light.toggle = FSM.off
-  },
-}
+<span class="token keyword">const</span> <span class="token constant">FSM</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">off</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>weak
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">weak</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开强光'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>strong
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">strong</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'关灯'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>off
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-function App() {
-  const [light] = useState(new Light())
-  return (
-    &lt;div&gt;
-      &lt;h2&gt;app&lt;/h2&gt;
-      &lt;button onClick={() =&gt; light.click()}&gt;灯的开关&lt;/button&gt;
-    &lt;/div&gt;
-  )
-}
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>light<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Light</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">app</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">灯的开关</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-ReactDOM.render(&lt;App /&gt;, document.querySelector('#app'))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/&gt;</span></span><span class="token punctuation">,</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#app'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然而，当我们想要即时显示当前状态时，却发现了问题，是的，状态模式中将状态放在 <code>Light</code> 类中，而它并不在 react 的控制范围之内！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// 其他代码
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 其他代码</span>
 
-class Light {
-  state: 'off' | 'weak' | 'strong' = 'off'
-  // 其他代码
-}
+<span class="token keyword">class</span> <span class="token class-name">Light</span> <span class="token punctuation">{</span>
+  state<span class="token operator">:</span> <span class="token string">'off'</span> <span class="token operator">|</span> <span class="token string">'weak'</span> <span class="token operator">|</span> <span class="token string">'strong'</span> <span class="token operator">=</span> <span class="token string">'off'</span>
+  <span class="token comment">// 其他代码</span>
+<span class="token punctuation">}</span>
 
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.state = 'weak'
-    light.toggle = FSM.weak
-  },
-  // 其他状态的代码
-}
+<span class="token keyword">const</span> <span class="token constant">FSM</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">off</span><span class="token punctuation">(</span>light<span class="token operator">:</span> Light<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+    light<span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token string">'weak'</span>
+    light<span class="token punctuation">.</span>toggle <span class="token operator">=</span> <span class="token constant">FSM</span><span class="token punctuation">.</span>weak
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token comment">// 其他状态的代码</span>
+<span class="token punctuation">}</span>
 
-function App() {
-  const [light] = useState(new Light())
-  return (
-    &lt;div&gt;
-      &lt;h2&gt;app&lt;/h2&gt;
-      &lt;button onClick={() =&gt; light.click()}&gt;灯的开关&lt;/button&gt;
-      &lt;p&gt;{light.state}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>light<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Light</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">app</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> light<span class="token punctuation">.</span><span class="token function">click</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">灯的开关</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>light<span class="token punctuation">.</span>state<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 
-// 其他代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">// 其他代码</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>即便这样做，仍然不会发生变化，因为 Light 是个对象，而我们并未使用 <code>setLight</code> 修改它，所以自然不会发生变化</p>
 <h3 id="尝试-react-useReducer"><a href="#尝试-react-useReducer" class="headerlink" title="尝试 react + useReducer"></a>尝试 react + useReducer</h3><p>当然，我们可以使用 <code>useReducer</code> 试试，毕竟它是专门应对复杂逻辑处理的 hooks。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type LightState = 'off' | 'weak' | 'strong'
-const FSM: Record&lt;LightState, () =&gt; LightState&gt; = {
-  off(): LightState {
-    console.log('打开弱光')
-    return 'weak'
-  },
-  weak(): LightState {
-    console.log('打开强光')
-    return 'strong'
-  },
-  strong(): LightState {
-    console.log('关灯')
-    return 'off'
-  },
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">LightState</span> <span class="token operator">=</span> <span class="token string">'off'</span> <span class="token operator">|</span> <span class="token string">'weak'</span> <span class="token operator">|</span> <span class="token string">'strong'</span>
+<span class="token keyword">const</span> <span class="token constant">FSM</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span>LightState<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> LightState<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">off</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> LightState <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开弱光'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token string">'weak'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">weak</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> LightState <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'打开强光'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token string">'strong'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">strong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> LightState <span class="token punctuation">{</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'关灯'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> <span class="token string">'off'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-const App: React.FC = () =&gt; {
-  const [num, setNum] = useState(0)
-  const [lightState, lightSend] = useReducer&lt;(state: LightState) =&gt; LightState&gt;(
-    (state) =&gt; {
-      return FSM[state]()
-    },
-    'off',
-  )
+<span class="token keyword">const</span> App<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>num<span class="token punctuation">,</span> setNum<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>lightState<span class="token punctuation">,</span> lightSend<span class="token punctuation">]</span> <span class="token operator">=</span> useReducer<span class="token operator">&lt;</span><span class="token punctuation">(</span>state<span class="token operator">:</span> LightState<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> LightState<span class="token operator">&gt;</span><span class="token punctuation">(</span>
+    <span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token constant">FSM</span><span class="token punctuation">[</span>state<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">'off'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">)</span>
 
-  return (
-    &lt;div className="App"&gt;
-      &lt;header&gt;
-        &lt;button onClick={() =&gt; lightSend()}&gt;切换&lt;/button&gt;
-        每次从 off =&gt; weak 就改变状态
-      &lt;/header&gt;
-      &lt;p&gt;{lightState}&lt;/p&gt;
-      &lt;p&gt;当前 useState 的值: {num}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span>div className<span class="token operator">=</span><span class="token string">"App"</span><span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>header<span class="token operator">&gt;</span>
+        <span class="token operator">&lt;</span>button onClick<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">lightSend</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>切换<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
+        每次从 off <span class="token operator">=&gt;</span> weak 就改变状态
+      <span class="token operator">&lt;</span><span class="token operator">/</span>header<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span><span class="token punctuation">{</span>lightState<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+      <span class="token operator">&lt;</span>p<span class="token operator">&gt;</span>当前 useState 的值<span class="token operator">:</span> <span class="token punctuation">{</span>num<span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然而，可以看到，FSM 逻辑代码在 react 组件外部时，想要修改 react 组件内部的状态仍然非常困难，只能维护状态机自身的状态，而这显然是没多大用处的。解决方案很简单，使用回调的形式将具体的实现函数放在 react 组件内部，而这，正是 xstate 集成 react 实现的功能之一。</p>
 <h2 id="使用-xstate"><a href="#使用-xstate" class="headerlink" title="使用 xstate"></a>使用 xstate</h2><h3 id="react-状态机-xstate"><a href="#react-状态机-xstate" class="headerlink" title="react + 状态机 xstate"></a>react + 状态机 xstate</h3><p>下面是一个使用状态机控制点击开关控制灯泡的示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">enum LightStateEnum {
-  Off = 'off',
-  Weak = 'weak',
-  Strong = 'strong',
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">enum</span> LightStateEnum <span class="token punctuation">{</span>
+  Off <span class="token operator">=</span> <span class="token string">'off'</span><span class="token punctuation">,</span>
+  Weak <span class="token operator">=</span> <span class="token string">'weak'</span><span class="token punctuation">,</span>
+  Strong <span class="token operator">=</span> <span class="token string">'strong'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-enum LightEventEnum {
-  Click = 'click',
-}
-interface LightEvent extends EventObject {
-  type: LightEventEnum.Click
-  num: number
-}
+<span class="token keyword">enum</span> LightEventEnum <span class="token punctuation">{</span>
+  Click <span class="token operator">=</span> <span class="token string">'click'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">interface</span> <span class="token class-name">LightEvent</span> <span class="token keyword">extends</span> <span class="token class-name">EventObject</span> <span class="token punctuation">{</span>
+  type<span class="token operator">:</span> LightEventEnum<span class="token punctuation">.</span>Click
+  num<span class="token operator">:</span> <span class="token builtin">number</span>
+<span class="token punctuation">}</span>
 
-enum LightActionEnum {
-  EntryWeak = 'entryWeak',
-}
+<span class="token keyword">enum</span> LightActionEnum <span class="token punctuation">{</span>
+  EntryWeak <span class="token operator">=</span> <span class="token string">'entryWeak'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-const lightStateMachine = Machine&lt;{}, LightEvent&gt;({
-  initial: LightStateEnum.Off,
-  states: {
-    [LightStateEnum.Off]: {
-      on: {
-        [LightEventEnum.Click]: {
-          target: LightStateEnum.Weak,
-          actions: LightActionEnum.EntryWeak,
-        },
-      },
-    },
-    [LightStateEnum.Weak]: {
-      on: {
-        [LightEventEnum.Click]: LightStateEnum.Strong,
-      },
-    },
-    [LightStateEnum.Strong]: {
-      on: {
-        [LightEventEnum.Click]: LightStateEnum.Off,
-      },
-    },
-  },
-})
+<span class="token keyword">const</span> lightStateMachine <span class="token operator">=</span> <span class="token generic-function"><span class="token function">Machine</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> LightEvent<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  initial<span class="token operator">:</span> LightStateEnum<span class="token punctuation">.</span>Off<span class="token punctuation">,</span>
+  states<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">[</span>LightStateEnum<span class="token punctuation">.</span>Off<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      on<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span>LightEventEnum<span class="token punctuation">.</span>Click<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          target<span class="token operator">:</span> LightStateEnum<span class="token punctuation">.</span>Weak<span class="token punctuation">,</span>
+          actions<span class="token operator">:</span> LightActionEnum<span class="token punctuation">.</span>EntryWeak<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>LightStateEnum<span class="token punctuation">.</span>Weak<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      on<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span>LightEventEnum<span class="token punctuation">.</span>Click<span class="token punctuation">]</span><span class="token operator">:</span> LightStateEnum<span class="token punctuation">.</span>Strong<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>LightStateEnum<span class="token punctuation">.</span>Strong<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      on<span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span>LightEventEnum<span class="token punctuation">.</span>Click<span class="token punctuation">]</span><span class="token operator">:</span> LightStateEnum<span class="token punctuation">.</span>Off<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-const App: React.FC = () =&gt; {
-  const [num, setNum] = useState(0)
-  const [lightState, lightSend] = useMachine(lightStateMachine, {
-    actions: {
-      [LightActionEnum.EntryWeak](_context, event) {
-        console.log('entryOff: ', event.num)
-        setNum(num + event.num)
-      },
-    },
-  })
-  return (
-    &lt;div className="App"&gt;
-      &lt;header&gt;
-        &lt;button
-          onClick={() =&gt;
-            lightSend({
-              type: LightEventEnum.Click,
-              num: 1,
-            })
-          }
-        &gt;
+<span class="token keyword">const</span> App<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>num<span class="token punctuation">,</span> setNum<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>lightState<span class="token punctuation">,</span> lightSend<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useMachine</span><span class="token punctuation">(</span>lightStateMachine<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    actions<span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">[</span>LightActionEnum<span class="token punctuation">.</span>EntryWeak<span class="token punctuation">]</span><span class="token punctuation">(</span>_context<span class="token punctuation">,</span> event<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'entryOff: '</span><span class="token punctuation">,</span> event<span class="token punctuation">.</span>num<span class="token punctuation">)</span>
+        <span class="token function">setNum</span><span class="token punctuation">(</span>num <span class="token operator">+</span> event<span class="token punctuation">.</span>num<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>App<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+          <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
+            <span class="token function">lightSend</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+              type<span class="token operator">:</span> LightEventEnum<span class="token punctuation">.</span>Click<span class="token punctuation">,</span>
+              num<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+          <span class="token punctuation">}</span></span>
+        <span class="token punctuation">&gt;</span></span><span class="token plain-text">
           切换
-        &lt;/button&gt;
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
         每次从 off =&gt; weak 就改变状态
-      &lt;/header&gt;
-      &lt;p&gt;{lightState.value}&lt;/p&gt;
-      &lt;p&gt;当前 useState 的值: {num}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>lightState<span class="token punctuation">.</span>value<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">当前 useState 的值: </span><span class="token punctuation">{</span>num<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>看的出来，上面多了很多<strong>模板</strong>代码，但状态机的意图我们却能以声明式的形式构造出来，具体 <code>actions</code> 的实现细节则被分离在 hooks 中。</p>
 <h2 id="xstate-概述"><a href="#xstate-概述" class="headerlink" title="xstate 概述"></a>xstate 概述</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><blockquote>

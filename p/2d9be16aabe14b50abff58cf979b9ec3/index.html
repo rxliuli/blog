@@ -253,7 +253,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.9k 字
+          1.7k 字
         
       </span>
     
@@ -265,7 +265,7 @@
         
         
           <!-- compatible with older versions-->
-          16 分钟
+          15 分钟
         
       </span>
     
@@ -318,66 +318,66 @@
               <div class="markdown-body">
                 
                 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">enum TypeEnum {
-  A,
-  B,
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">enum</span> TypeEnum <span class="token punctuation">{</span>
+  <span class="token constant">A</span><span class="token punctuation">,</span>
+  <span class="token constant">B</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-type A = {
-  a: string
-}
-type B = {
-  b: number
-}
+<span class="token keyword">type</span> <span class="token class-name"><span class="token constant">A</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  a<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">type</span> <span class="token class-name"><span class="token constant">B</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  b<span class="token operator">:</span> <span class="token builtin">number</span>
+<span class="token punctuation">}</span>
 
-//region 普通参数
+<span class="token comment">//region 普通参数</span>
 
-function fn1(type: TypeEnum.A, obj: A): void
-function fn1(type: TypeEnum.B, obj: B): void
-function fn1(type: TypeEnum, obj: A | B) {}
+<span class="token keyword">function</span> <span class="token function">fn1</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">,</span> obj<span class="token operator">:</span> <span class="token constant">A</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn1</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">B</span><span class="token punctuation">,</span> obj<span class="token operator">:</span> <span class="token constant">B</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn1</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">,</span> obj<span class="token operator">:</span> <span class="token constant">A</span> <span class="token operator">|</span> <span class="token constant">B</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">//endregion</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>上面是一个简单的重载函数，吾辈希望在输入第一个参数 <code>type</code> 之后，ts 就能匹配到正确的参数，然而事实上，ts 并没能完全做到。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402140820.png" srcset="/img/loading.gif" lazyload alt="ts 类型提示"></p>
 <p>当然，如果真的这样写 ts 的类型检查仍然能正确地抛出错误消息，然而未能推导终究是有点问题的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// TS2769: No overload matches this call. &nbsp;&nbsp;Overload 1 of 2, '(type: TypeEnum.A, obj: A): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type '{ a: string; b: number; }' is not assignable to parameter of type 'A'. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object literal may only specify known properties, and 'b' does not exist in type 'A'. &nbsp;&nbsp;Overload 2 of 2, '(type: TypeEnum.B, obj: B): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type 'TypeEnum.A' is not assignable to parameter of type 'TypeEnum.B'
-fn1(TypeEnum.A, {
-  a: '',
-  b: 1,
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// TS2769: No overload matches this call.   Overload 1 of 2, '(type: TypeEnum.A, obj: A): void', gave the following error.     Argument of type '{ a: string; b: number; }' is not assignable to parameter of type 'A'.       Object literal may only specify known properties, and 'b' does not exist in type 'A'.   Overload 2 of 2, '(type: TypeEnum.B, obj: B): void', gave the following error.     Argument of type 'TypeEnum.A' is not assignable to parameter of type 'TypeEnum.B'</span>
+<span class="token function">fn1</span><span class="token punctuation">(</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  a<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+  b<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后，吾辈想到了几种方式可以尝试解决。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>尝试使用继承限制字段的类型。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 对象参数
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">//region 对象参数</span>
 
-function fn2(arg: { type: TypeEnum.A; obj: A }): void
-function fn2(arg: { type: TypeEnum.B; obj: B }): void
-function fn2(arg: { type: TypeEnum; obj: A | B }) {}
+<span class="token keyword">function</span> <span class="token function">fn2</span><span class="token punctuation">(</span>arg<span class="token operator">:</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">;</span> obj<span class="token operator">:</span> <span class="token constant">A</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn2</span><span class="token punctuation">(</span>arg<span class="token operator">:</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">B</span><span class="token punctuation">;</span> obj<span class="token operator">:</span> <span class="token constant">B</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn2</span><span class="token punctuation">(</span>arg<span class="token operator">:</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> TypeEnum<span class="token punctuation">;</span> obj<span class="token operator">:</span> <span class="token constant">A</span> <span class="token operator">|</span> <span class="token constant">B</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-fn2({
-  type: TypeEnum.A,
-  obj: {
-    a: '',
-  },
-})
+<span class="token function">fn2</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">,</span>
+  obj<span class="token operator">:</span> <span class="token punctuation">{</span>
+    a<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">//endregion</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>很遗憾的是，这是行不通的，即便是下面的这种变体，仍然是不可行的。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145908.png" srcset="/img/loading.gif" lazyload alt="继承"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface Base&lt;T extends TypeEnum&gt; {
-  type: T
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">Base<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> TypeEnum<span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  type<span class="token operator">:</span> <span class="token constant">T</span>
+<span class="token punctuation">}</span>
 
-interface IA extends Base&lt;TypeEnum.A&gt; {
-  obj: A
-}
-interface IB extends Base&lt;TypeEnum.B&gt; {
-  obj: B
-}
+<span class="token keyword">interface</span> <span class="token class-name"><span class="token constant">IA</span></span> <span class="token keyword">extends</span> <span class="token class-name">Base<span class="token operator">&lt;</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  obj<span class="token operator">:</span> <span class="token constant">A</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">interface</span> <span class="token class-name"><span class="token constant">IB</span></span> <span class="token keyword">extends</span> <span class="token class-name">Base<span class="token operator">&lt;</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">B</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  obj<span class="token operator">:</span> <span class="token constant">B</span>
+<span class="token punctuation">}</span>
 
-function fn2(arg: IA | IB) {}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">function</span> <span class="token function">fn2</span><span class="token punctuation">(</span>arg<span class="token operator">:</span> <span class="token constant">IA</span> <span class="token operator">|</span> <span class="token constant">IB</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><p>事实上，使用泛型确实可以做到让 ts 的类型更加 <strong>正确</strong>。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145745.png" srcset="/img/loading.gif" lazyload alt="泛型"></p>
@@ -386,21 +386,21 @@ function fn2(arg: IA | IB) {}<span aria-hidden="true" class="line-numbers-rows">
 <li>不能使用 ts 的重载</li>
 <li>需要函数的作者改变思维</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 泛型
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">//region 泛型</span>
 
-type EnumTypeMapGen&lt;T extends string[], M extends { [P in TypeEnum]: any }&gt; = []
-type TypeMap = {
-  [TypeEnum.A]: A
-  [TypeEnum.B]: B
-}
+<span class="token keyword">type</span> <span class="token class-name">EnumTypeMapGen<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">M</span> <span class="token keyword">extends</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token constant">P</span> <span class="token keyword">in</span> TypeEnum<span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">}</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token keyword">type</span> <span class="token class-name">TypeMap</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">[</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">A</span>
+  <span class="token punctuation">[</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">B</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">B</span>
+<span class="token punctuation">}</span>
 
-function fn3&lt;T extends TypeEnum, Arg extends TypeMap[T]&gt;(type: T, obj: Arg) {}
+<span class="token keyword">function</span> <span class="token generic-function"><span class="token function">fn3</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> TypeEnum<span class="token punctuation">,</span> Arg <span class="token keyword">extends</span> TypeMap<span class="token punctuation">[</span><span class="token constant">T</span><span class="token punctuation">]</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>type<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> obj<span class="token operator">:</span> Arg<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-fn3(TypeEnum.A, {
-  a: '',
-})
+<span class="token function">fn3</span><span class="token punctuation">(</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  a<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">//endregion</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h3><p>最后，高阶函数可以简单的解决这个问题，它将一次调用更改为两次调用，第一次调用返回的函数便已经确认了类型。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145633.png" srcset="/img/loading.gif" lazyload alt="高阶函数"></p>
@@ -408,17 +408,17 @@ fn3(TypeEnum.A, {
 <ul>
 <li>需要使用者接收这种 <strong>函数式</strong> 的调用方式</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 高阶函数
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">//region 高阶函数</span>
 
-function fn4(type: TypeEnum.A): (obj: A) =&gt; void
-function fn4(type: TypeEnum.B): (obj: B) =&gt; void
-function fn4(type: TypeEnum): any {}
+<span class="token keyword">function</span> <span class="token function">fn4</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token constant">A</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn4</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">.</span><span class="token constant">B</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token constant">B</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">void</span>
+<span class="token keyword">function</span> <span class="token function">fn4</span><span class="token punctuation">(</span>type<span class="token operator">:</span> TypeEnum<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-fn4(TypeEnum.A)({
-  a: '',
-})
+<span class="token function">fn4</span><span class="token punctuation">(</span>TypeEnum<span class="token punctuation">.</span><span class="token constant">A</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  a<span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token comment">//endregion</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的而言，泛型和高阶函数都能解决这个问题，吾辈个人倾向于泛型，因为它并未改变调用者的使用方式，而是让作者去改变，避免改变函数的接口本身。</p>
 

@@ -318,48 +318,48 @@
 <p>大概就是这样的一个错误，关键词是 <strong>Access-Control-Allow-Origin</strong>，一般出现这个都是跨域问题。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>解决跨域问题的方式有很多，但这里之说 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS">Cors</a> 的方案。</p>
 <p>在后台添加一个 <code>Filter</code> 过滤器</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * 使用自定义的 Filter 拦截器实现跨域请求、
  * 适用于所有的 Java Web 项目并且不局限于某个框架
  * 注：此处的 @Component 仅为让 Spring 知道这个 Bean, 不然拦截器不会加载
  *
  * @author rxliuli
- */
-public class CustomCorsFilterConfig implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) {
-    }
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CustomCorsFilterConfig</span> <span class="token keyword">implements</span> <span class="token class-name">Filter</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token class-name">FilterConfig</span> filterConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        //允许所有来源
-        String allowOrigin = "*";
-        //允许以下请求方法
-        String allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
-        //允许以下请求头
-        String allowHeaders = "Content-Type,X-Token,Authorization";
-        //允许有认证信息（cookie）
-        String allowCredentials = "true";
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doFilter</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> servletRequest<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> servletResponse<span class="token punctuation">,</span> <span class="token class-name">FilterChain</span> filterChain<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span><span class="token punctuation">,</span> <span class="token class-name">ServletException</span> <span class="token punctuation">{</span>
+        <span class="token comment">//允许所有来源</span>
+        <span class="token class-name">String</span> allowOrigin <span class="token operator">=</span> <span class="token string">"*"</span><span class="token punctuation">;</span>
+        <span class="token comment">//允许以下请求方法</span>
+        <span class="token class-name">String</span> allowMethods <span class="token operator">=</span> <span class="token string">"GET,POST,PUT,DELETE,OPTIONS"</span><span class="token punctuation">;</span>
+        <span class="token comment">//允许以下请求头</span>
+        <span class="token class-name">String</span> allowHeaders <span class="token operator">=</span> <span class="token string">"Content-Type,X-Token,Authorization"</span><span class="token punctuation">;</span>
+        <span class="token comment">//允许有认证信息（cookie）</span>
+        <span class="token class-name">String</span> allowCredentials <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
 
-        String origin = request.getHeader("Origin");
-        //此处是为了兼容需要认证信息(cookie)的时候不能设置为 * 的问题
-        response.setHeader("Access-Control-Allow-Origin", origin == null ? allowOrigin : origin);
-        response.setHeader("Access-Control-Allow-Methods", allowMethods);
-        response.setHeader("Access-Control-Allow-Credentials", allowCredentials);
-        response.setHeader("Access-Control-Allow-Headers", allowHeaders);
+        <span class="token class-name">String</span> origin <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"Origin"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//此处是为了兼容需要认证信息(cookie)的时候不能设置为 * 的问题</span>
+        response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Origin"</span><span class="token punctuation">,</span> origin <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> allowOrigin <span class="token operator">:</span> origin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Methods"</span><span class="token punctuation">,</span> allowMethods<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Credentials"</span><span class="token punctuation">,</span> allowCredentials<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Headers"</span><span class="token punctuation">,</span> allowHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        //处理 OPTIONS 的请求
-        if ("OPTIONS".equals(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
-        filterChain.doFilter(request, response);
-    }
+        <span class="token comment">//处理 OPTIONS 的请求</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"OPTIONS"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            response<span class="token punctuation">.</span><span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token class-name">HttpServletResponse</span><span class="token punctuation">.</span><span class="token constant">SC_OK</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    @Override
-    public void destroy() {
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在 <code>web.xml</code> 文件中添加拦截器配置（注：如果可能就配置成第一个 <code>Filter</code>）</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!--cors 跨域访问--&gt;</span>
@@ -373,39 +373,39 @@ public class CustomCorsFilterConfig implements Filter {
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-mapping</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="Spring-Web-的解决方案"><a href="#Spring-Web-的解决方案" class="headerlink" title="Spring Web 的解决方案"></a>Spring Web 的解决方案</h2><p>配置一个每次请求都过滤一次的 <code>Filter</code> 就好了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Configuration
-public class CorsConfig {
-    @Bean
-    public OncePerRequestFilter corsFilter() {
-        return new OncePerRequestFilter() {
-            @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-                //允许所有来源
-                String allowOrigin = "*";
-                //允许以下请求方法
-                String allowMethods = "GET,POST,PUT,DELETE,OPTIONS";
-                //允许以下请求头
-                String allowHeaders = "Content-Type,X-Token,Authorization";
-                //允许有认证信息（cookie）
-                String allowCredentials = "true";
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CorsConfig</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> <span class="token class-name">OncePerRequestFilter</span> <span class="token function">corsFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">OncePerRequestFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doFilterInternal</span><span class="token punctuation">(</span><span class="token class-name">HttpServletRequest</span> request<span class="token punctuation">,</span> <span class="token class-name">HttpServletResponse</span> response<span class="token punctuation">,</span> <span class="token class-name">FilterChain</span> filterChain<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">ServletException</span><span class="token punctuation">,</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+                <span class="token comment">//允许所有来源</span>
+                <span class="token class-name">String</span> allowOrigin <span class="token operator">=</span> <span class="token string">"*"</span><span class="token punctuation">;</span>
+                <span class="token comment">//允许以下请求方法</span>
+                <span class="token class-name">String</span> allowMethods <span class="token operator">=</span> <span class="token string">"GET,POST,PUT,DELETE,OPTIONS"</span><span class="token punctuation">;</span>
+                <span class="token comment">//允许以下请求头</span>
+                <span class="token class-name">String</span> allowHeaders <span class="token operator">=</span> <span class="token string">"Content-Type,X-Token,Authorization"</span><span class="token punctuation">;</span>
+                <span class="token comment">//允许有认证信息（cookie）</span>
+                <span class="token class-name">String</span> allowCredentials <span class="token operator">=</span> <span class="token string">"true"</span><span class="token punctuation">;</span>
 
-                String origin = request.getHeader("Origin");
-                //此处是为了兼容需要认证信息(cookie)的时候不能设置为 * 的问题
-                response.setHeader("Access-Control-Allow-Origin", origin == null ? allowOrigin : origin);
-                response.setHeader("Access-Control-Allow-Methods", allowMethods);
-                response.setHeader("Access-Control-Allow-Credentials", allowCredentials);
-                response.setHeader("Access-Control-Allow-Headers", allowHeaders);
+                <span class="token class-name">String</span> origin <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"Origin"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">//此处是为了兼容需要认证信息(cookie)的时候不能设置为 * 的问题</span>
+                response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Origin"</span><span class="token punctuation">,</span> origin <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> allowOrigin <span class="token operator">:</span> origin<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Methods"</span><span class="token punctuation">,</span> allowMethods<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Credentials"</span><span class="token punctuation">,</span> allowCredentials<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Headers"</span><span class="token punctuation">,</span> allowHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                //处理 OPTIONS 的请求
-                if ("OPTIONS".equals(request.getMethod())) {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    return;
-                }
-                filterChain.doFilter(request, response);
-            }
-        };
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+                <span class="token comment">//处理 OPTIONS 的请求</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"OPTIONS"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    response<span class="token punctuation">.</span><span class="token function">setStatus</span><span class="token punctuation">(</span><span class="token class-name">HttpServletResponse</span><span class="token punctuation">.</span><span class="token constant">SC_OK</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><p>下面是一些简单的使用 <code>fetch</code> 进行跨域请求的示例：</p>
 <ul>

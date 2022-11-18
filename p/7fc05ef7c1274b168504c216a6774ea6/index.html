@@ -326,110 +326,110 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
 <p>这个 cli 本身国际化配置的类型定义生成也是由 cli 完成的（自举）</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">i18next-dts-gen --dirs src/i18n # 扫描这个目录下的 json 文件并生成 index.d.ts 类型定义<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">i18next-dts-gen <span class="token parameter variable">--dirs</span> src/i18n <span class="token comment"># 扫描这个目录下的 json 文件并生成 index.d.ts 类型定义</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>详情</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ i18next-dts-gen -h
-Usage: bin [options]
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ i18next-dts-gen <span class="token parameter variable">-h</span>
+Usage: bin <span class="token punctuation">[</span>options<span class="token punctuation">]</span>
 
 根据 json 生成 .d.ts 类型定义
 
 Options:
-  -i, --dirs &lt;dirs...&gt;  包含一或多个翻译文件的目录
-  -w, --watch             是否使用监视模式
-  -h, --help              display help for command<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  -i, <span class="token parameter variable">--dirs</span> <span class="token operator">&lt;</span>dirs<span class="token punctuation">..</span>.<span class="token operator">&gt;</span>  包含一或多个翻译文件的目录
+  -w, <span class="token parameter variable">--watch</span>             是否使用监视模式
+  -h, <span class="token parameter variable">--help</span>              display <span class="token builtin class-name">help</span> <span class="token keyword">for</span> <span class="token builtin class-name">command</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>下面是在 nodejs 中使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/util/I18nextUtil.ts
-import i18next from 'i18next'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/util/I18nextUtil.ts</span>
+<span class="token keyword">import</span> i18next <span class="token keyword">from</span> <span class="token string">'i18next'</span>
 
-export enum LanguageEnum {
-  En = 'en',
-  ZhCN = 'zhCN',
-}
+<span class="token keyword">export</span> <span class="token keyword">enum</span> LanguageEnum <span class="token punctuation">{</span>
+  En <span class="token operator">=</span> <span class="token string">'en'</span><span class="token punctuation">,</span>
+  ZhCN <span class="token operator">=</span> <span class="token string">'zhCN'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
 
-export class I18nextUtil&lt;
-  T extends Record&lt;
-    string,
-    {
-      params: [key: string] | [key: string, params: object]
-      value: string
-    }
-  &gt;,
-&gt; {
-  constructor() {}
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">I18nextUtil<span class="token operator">&lt;</span>
+  <span class="token constant">T</span> <span class="token keyword">extends</span> Record<span class="token operator">&lt;</span>
+    <span class="token builtin">string</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      params<span class="token operator">:</span> <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> params<span class="token operator">:</span> object<span class="token punctuation">]</span>
+      value<span class="token operator">:</span> <span class="token builtin">string</span>
+    <span class="token punctuation">}</span>
+  <span class="token operator">&gt;</span><span class="token punctuation">,</span>
+<span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
+  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
 
-  async changeLang(lang: LanguageEnum) {
-    await i18next.changeLanguage(lang)
-  }
+  <span class="token keyword">async</span> <span class="token function">changeLang</span><span class="token punctuation">(</span>lang<span class="token operator">:</span> LanguageEnum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">await</span> i18next<span class="token punctuation">.</span><span class="token function">changeLanguage</span><span class="token punctuation">(</span>lang<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  /**
+  <span class="token comment">/**
    * 加载国际化
-   */
-  async init(resources: Record&lt;LanguageEnum, object&gt;, language: LanguageEnum) {
-    await i18next.init({
-      lng: language,
-      resources: Object.entries(resources).reduce((res, [k, v]) =&gt; {
-        Reflect.set(res, k, {
-          translation: v,
-        })
-        return res
-      }, {}),
-      keySeparator: false,
-    })
-  }
+   */</span>
+  <span class="token keyword">async</span> <span class="token function">init</span><span class="token punctuation">(</span>resources<span class="token operator">:</span> Record<span class="token operator">&lt;</span>LanguageEnum<span class="token punctuation">,</span> object<span class="token operator">&gt;</span><span class="token punctuation">,</span> language<span class="token operator">:</span> LanguageEnum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">await</span> i18next<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+      lng<span class="token operator">:</span> language<span class="token punctuation">,</span>
+      resources<span class="token operator">:</span> Object<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>resources<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> <span class="token punctuation">[</span>k<span class="token punctuation">,</span> v<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        Reflect<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> k<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+          translation<span class="token operator">:</span> v<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> res
+      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      keySeparator<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
 
-  /**
+  <span class="token comment">/**
    * 根据 key 获取翻译的文本
    * @param args
-   */
-  t&lt;K extends keyof T&gt;(...args: T[K]['params']): T[K]['value'] {
-    // @ts-ignore
-    return i18next.t(args[0], args[1])
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */</span>
+  <span class="token generic-function"><span class="token function">t</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">K</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'params'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'value'</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
+    <span class="token comment">// @ts-ignore</span>
+    <span class="token keyword">return</span> i18next<span class="token punctuation">.</span><span class="token function">t</span><span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> args<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/constants/i18n.ts
-import { TranslateType } from '../i18n'
-import osLocale from 'os-locale'
-import { I18nextUtil, LanguageEnum } from '../util/I18nextUtil'
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/constants/i18n.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> TranslateType <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../i18n'</span>
+<span class="token keyword">import</span> osLocale <span class="token keyword">from</span> <span class="token string">'os-locale'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> I18nextUtil<span class="token punctuation">,</span> LanguageEnum <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../util/I18nextUtil'</span>
 
-export async function getLanguage(): Promise&lt;LanguageEnum&gt; {
-  const language = await osLocale()
-  /**
+<span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">getLanguage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>LanguageEnum<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> language <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">osLocale</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">/**
    * os-locale =&gt; i18next 的语言类型字符串映射
-   */
-  const map: Record&lt;string, LanguageEnum&gt; = {
-    'zh-CN': LanguageEnum.ZhCN,
-    'en-US': LanguageEnum.En,
-  }
-  return map[language] || LanguageEnum.En
-}
+   */</span>
+  <span class="token keyword">const</span> map<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> LanguageEnum<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string-property property">'zh-CN'</span><span class="token operator">:</span> LanguageEnum<span class="token punctuation">.</span>ZhCN<span class="token punctuation">,</span>
+    <span class="token string-property property">'en-US'</span><span class="token operator">:</span> LanguageEnum<span class="token punctuation">.</span>En<span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> map<span class="token punctuation">[</span>language<span class="token punctuation">]</span> <span class="token operator">||</span> LanguageEnum<span class="token punctuation">.</span>En
+<span class="token punctuation">}</span>
 
-export const i18n = new I18nextUtil&lt;TranslateType&gt;()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<span class="token keyword">export</span> <span class="token keyword">const</span> i18n <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">I18nextUtil<span class="token operator">&lt;</span>TranslateType<span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/bin.ts
-async function main() {
-  await i18n.init({ en, zhCN }, await getLanguage())
-  console.log(i18n.t('hello', { name: 'liuli' }))
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/bin.ts</span>
+<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> i18n<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span> en<span class="token punctuation">,</span> zhCN <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">await</span> <span class="token function">getLanguage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i18n<span class="token punctuation">.</span><span class="token function">t</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'liuli'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>或者在浏览器中</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// App.tsx
-function getLanguage() {
-  return navigator.language.startsWith('zh')
-    ? LanguageEnum.ZhCN
-    : LanguageEnum.En
-}
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// App.tsx</span>
+<span class="token keyword">function</span> <span class="token function">getLanguage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> navigator<span class="token punctuation">.</span>language<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">'zh'</span><span class="token punctuation">)</span>
+    <span class="token operator">?</span> LanguageEnum<span class="token punctuation">.</span>ZhCN
+    <span class="token operator">:</span> LanguageEnum<span class="token punctuation">.</span>En
+<span class="token punctuation">}</span>
 
-export const App: React.FC&lt;AppProps&gt; = () =&gt; {
-  useMount(async () =&gt; {
-    await i18n.init({ en, zhCN }, getLanguage())
-    // 然后再做其它的事情，例如加载路由
-  })
+<span class="token keyword">export</span> <span class="token keyword">const</span> App<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>AppProps<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">useMount</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">await</span> i18n<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span> en<span class="token punctuation">,</span> zhCN <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token function">getLanguage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token comment">// 然后再做其它的事情，例如加载路由</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
 
-  return &lt;div /&gt;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/&gt;</span></span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>当然，如果你需要在其他环境中使用，应该仅需实现对应的 <code>getLanguage</code> 函数即可。</p>
 <h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><p>提示</p>
