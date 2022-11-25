@@ -316,28 +316,28 @@
 <p>这里的密钥对是 <code>Public key</code>，具体请参考 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh/%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86">公开密钥加密</a></p>
 </blockquote>
 <p>使用命令</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh-keygen <span class="token parameter variable">-t</span> rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh-keygen -t rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>接下来会提示让你输入一个路径来保存密钥对，默认在 <code>~/.ssh/id_rsa</code> 下面生成 <code>id_rsa</code>（私钥）和 <code>id_rsa.pub</code>（公钥），如果没什么特殊需求就直接默认就好。</p>
 <p>然后提示你输入密码（即本机使用 <code>SSH</code> 连接时的密码 #和服务器密码无关），也是直接回车默认为空即可。</p>
 <h2 id="将公钥上传到服务器上"><a href="#将公钥上传到服务器上" class="headerlink" title="将公钥上传到服务器上"></a>将公钥上传到服务器上</h2><p>这里以使用 <code>SCP</code> 为例，上传公钥 <code>id_rsa.pub</code> 到服务器上</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">scp</span> ~/.ssh/id_rsa.pub root@139.59.22.131:~<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">scp ~/.ssh/id_rsa.pub root@139.59.22.131:~<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="将公钥追加到服务器的认证密钥中"><a href="#将公钥追加到服务器的认证密钥中" class="headerlink" title="将公钥追加到服务器的认证密钥中"></a>将公钥追加到服务器的认证密钥中</h2><p>将上传到服务器上的 <code>id_rsa.pub</code> 公钥追加到 <code>authorized_keys</code> 文件中，命令是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> ~/id_rsa.pub <span class="token operator">&gt;&gt;</span> ~/.ssh/authorized_keys<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cat ~/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="修改服务器的配置以启用公钥认证"><a href="#修改服务器的配置以启用公钥认证" class="headerlink" title="修改服务器的配置以启用公钥认证"></a>修改服务器的配置以启用公钥认证</h2><p>修改 <code>vi /etc/ssh/sshd_config</code> 配置文件（如果有的话就进行修改，没有的话就添加进来）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">RSAAuthentication <span class="token function">yes</span>        <span class="token comment"># 启用 RSA 认证（默认是注释掉的，将注释去掉，如果不是 yes，改为 yes）</span>
-PubkeyAuthentication <span class="token function">yes</span>     <span class="token comment"># 启用公钥认证（默认是注释掉的，将注释去掉，如果不是 yes，改为 yes）</span>
-PasswordAuthentication no    <span class="token comment"># 禁止密码认证 (改为 no, 默认为 yes 是用密码认证)</span>
-StrictModes no               <span class="token comment"># 修改为 no, 默认为 yes. 如果不修改用 key 登陆是出现 server refused our key(如果 StrictModes 为 yes 必需保证存放公钥的文件夹的拥有与登陆用户名是相同的.“StrictModes” 设置 ssh 在接收登录请求之前是否检查用户家目录和 rhosts 文件的权限和所有权。这通常是必要的，因为新手经常会把自己的目录和文件设成任何人都有写权限。)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">RSAAuthentication yes        # 启用 RSA 认证（默认是注释掉的，将注释去掉，如果不是 yes，改为 yes）
+PubkeyAuthentication yes     # 启用公钥认证（默认是注释掉的，将注释去掉，如果不是 yes，改为 yes）
+PasswordAuthentication no    # 禁止密码认证 (改为 no, 默认为 yes 是用密码认证)
+StrictModes no               # 修改为 no, 默认为 yes. 如果不修改用 key 登陆是出现 server refused our key(如果 StrictModes 为 yes 必需保证存放公钥的文件夹的拥有与登陆用户名是相同的.“StrictModes” 设置 ssh 在接收登录请求之前是否检查用户家目录和 rhosts 文件的权限和所有权。这通常是必要的，因为新手经常会把自己的目录和文件设成任何人都有写权限。)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h2 id="重启-SSH-服务"><a href="#重启-SSH-服务" class="headerlink" title="重启 SSH 服务"></a>重启 <code>SSH</code> 服务</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">service</span> sshd restart
-<span class="token comment"># 或者</span>
+<h2 id="重启-SSH-服务"><a href="#重启-SSH-服务" class="headerlink" title="重启 SSH 服务"></a>重启 <code>SSH</code> 服务</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">service sshd restart
+# 或者
 /etc/init.d/ssh restart<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="最后验证一下"><a href="#最后验证一下" class="headerlink" title="最后验证一下"></a>最后验证一下</h2><p>连接服务器，这里以 <code>SSH</code> 客户端为例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> root@139.59.22.131<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh root@139.59.22.131<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>然后，就直接连上了，不需要输入密码了呢 Ｏ(≧▽≦)Ｏ</p>
 

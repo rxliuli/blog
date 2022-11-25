@@ -322,7 +322,7 @@
 <p>选择一个便携版本下载（<code>.zip</code> 结尾），例如吾辈选择的就是 <a target="_blank" rel="noopener" href="http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-ssl-4.0.1.zip">win32/mongodb-win32-x86_64-2008plus-ssl-4.0.1.zip</a></p>
 <h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>下载完成后解压到本地，将 <code>/bin/</code> 目录添加环境变量 <code>Path</code> 中以方便使用 <code>mongodb</code> 的命令。</p>
 <p>配置完成后验证一下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongo <span class="token parameter variable">-version</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongo -version<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>如果环境变量配置正确的话会有类似于下面的这种输出</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">MongoDB shell version v4.0.1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
@@ -340,17 +340,17 @@
 </li>
 </ul>
 <p>指定日志文件的位置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod <span class="token parameter variable">--logpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>指定数据存放的目录</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod <span class="token parameter variable">--dbpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>输出</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">2018</span>-08-08T22:26:35.411+0800 I CONTROL  <span class="token punctuation">[</span>main<span class="token punctuation">]</span> Automatically disabling TLS <span class="token number">1.0</span>, to force-enable TLS <span class="token number">1.0</span> specify <span class="token parameter variable">--sslDisabledProtocols</span> <span class="token string">'none'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">2018-08-08T22:26:35.411+0800 I CONTROL  [main] Automatically disabling TLS 1.0, to force-enable TLS 1.0 specify --sslDisabledProtocols 'none'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>然后，就停住了，其实这里并未发生错误，仔细看最后一行 <code>NETWORK [listener] connection accepted from 127.0.0.1:12598</code>，指的是正在监听连接 <code>127.0.0.1:12598</code>。所以这个时候在开一个新的 <code>cmd</code> 标签输入 <code>mongo</code> 命令就进入到 <code>mongo shell</code> 里面玩耍啦</p>
 <h2 id="安装服务"><a href="#安装服务" class="headerlink" title="安装服务"></a>安装服务</h2><p>每次打开都要手动输入命令指定数据目录并启动 <code>mongod</code> 未免麻烦，我们可以将之添加到系统服务中，以后需要的时候只要启动服务就好了，也能设置自动启动什么的了呢</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod <span class="token parameter variable">--dbpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data"</span> <span class="token parameter variable">--logpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"</span> <span class="token parameter variable">--auth</span> <span class="token parameter variable">--install</span> <span class="token parameter variable">--serviceName</span> <span class="token string">"MongoDB"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongod --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data" --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log" --auth --install --serviceName "MongoDB"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>检查一下系统服务里面是否有 <code>MongoDB</code>，如果没有的话使用管理员权限打开 <code>cmd</code> 再执行一次上面的命令就好了，如果服务没有启动的话就启动它。</p>
 <p>这样便安装完成了，在命令行输入 <code>mongo</code> 就可以啦</p>

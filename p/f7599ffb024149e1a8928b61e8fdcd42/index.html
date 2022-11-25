@@ -352,42 +352,42 @@
 </li>
 </ul>
 <p>异步组件和 vue 稍微有点差别，虽然也是需要 <code>import()</code> 语法，但却需要使用高阶组件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React from 'react'
 
-<span class="token keyword">function</span> <span class="token function">AsyncRoute</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">importComponent</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> PromiseLike<span class="token operator">&lt;</span><span class="token punctuation">{</span> <span class="token keyword">default</span><span class="token operator">:</span> any <span class="token punctuation">}</span><span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token punctuation">{</span> <span class="token keyword">default</span><span class="token operator">:</span> any <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">class</span> <span class="token class-name">AsyncComponent</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span><span class="token operator">&lt;</span>any<span class="token punctuation">,</span> any<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter"><span class="token literal-property property">props</span><span class="token operator">:</span> any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">{</span>
-        <span class="token literal-property property">component</span><span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+function AsyncRoute(
+  importComponent: () =&gt; PromiseLike&lt;{ default: any }&gt; | { default: any },
+) {
+  class AsyncComponent extends React.Component&lt;any, any&gt; {
+    constructor(props: any) {
+      super(props)
+      this.state = {
+        component: null,
+      }
+    }
 
-    <span class="token keyword">async</span> <span class="token function">componentDidMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> <span class="token punctuation">{</span> <span class="token keyword">default</span><span class="token operator">:</span> component <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">importComponent</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        <span class="token literal-property property">component</span><span class="token operator">:</span> component<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+    async componentDidMount() {
+      const { default: component } = await importComponent()
+      this.setState({
+        component: component,
+      })
+    }
 
-    <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> <span class="token constant">C</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>component
-      <span class="token keyword">return</span> <span class="token constant">C</span> <span class="token operator">?</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">C</span></span> <span class="token spread"><span class="token punctuation">{</span><span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span> <span class="token operator">:</span> <span class="token keyword">null</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+    render() {
+      const C = this.state.component
+      return C ? &lt;C {...this.props} /&gt; : null
+    }
+  }
 
-  <span class="token keyword">return</span> AsyncComponent
-<span class="token punctuation">}</span>
+  return AsyncComponent
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> AsyncRoute<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default AsyncRoute<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后使用高阶组件包装即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Route</span></span>
-  <span class="token attr-name">path</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">'/system/task'</span><span class="token punctuation">}</span></span>
-  <span class="token attr-name">component</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">AsyncRoute</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'../../index/HelloWorld'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
-<span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">&lt;Route
+  path={'/system/task'}
+  component={AsyncRoute(() =&gt; import('../../index/HelloWorld'))}
+/&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注：高阶组件和高阶函数类似，指的是接收一个组件/返回一个组件的组件。</p>
@@ -445,23 +445,23 @@ module<span class="token punctuation">.</span><span class="token function-variab
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h2><h3 id="this-的值"><a href="#this-的值" class="headerlink" title="this 的值"></a>this 的值</h3><p>在 <code>class</code> 中使用箭头函数以直接绑定当前组件的实例，尽量不要使用 <code>function</code>，否则 <code>this</code> 可能是不明确的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> Component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React, { Component } from 'react'
 
-<span class="token keyword">class</span> <span class="token class-name">HelloWorld</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span> <span class="token punctuation">{</span>
-  <span class="token function-variable function">logMsg</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'msg'</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">hello world</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token keyword">this</span><span class="token punctuation">.</span>logMsg<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">打印</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-    <span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+class HelloWorld extends Component {
+  logMsg = () =&gt; {
+    console.log('msg')
+  }
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;hello world&lt;/h1&gt;
+        &lt;button onClick={this.logMsg}&gt;打印&lt;/button&gt;
+      &lt;/div&gt;
+    )
+  }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> HelloWorld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default HelloWorld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="CSS-样式隔离"><a href="#CSS-样式隔离" class="headerlink" title="CSS 样式隔离"></a>CSS 样式隔离</h3><p>cra 创建的项目默认支持 css module，是 react 项目流行的一种 CSS 隔离方案。</p>
 <p>使用步骤</p>
@@ -475,11 +475,11 @@ module<span class="token punctuation">.</span><span class="token function-variab
   <span class="token property">background-color</span><span class="token punctuation">:</span> #000<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">'HelloWorld.module.css'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import styles from 'HelloWorld.module.css'
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">HelloWorld</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>helloWorld<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">hello world</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default function HelloWorld() {
+  return &lt;div className={styles.helloWorld}&gt;hello world&lt;/div&gt;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>注：</p>
 <ul>
@@ -488,18 +488,18 @@ module<span class="token punctuation">.</span><span class="token function-variab
 <li>CSS 只要被引入了，就不会被删除，即便组件被销毁了亦然，所以页面内的 CSS 只会增加，不会减少</li>
 </ul>
 <p>如何添加多个，默认使用 cra 创建的项目支持使用模板字符串</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">className<span class="token operator">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>styles<span class="token punctuation">.</span>className1<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>styles<span class="token punctuation">.</span>className2<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">className={`${styles.className1} ${styles.className2}`}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>看起来很丑？可以试试 <a target="_blank" rel="noopener" href="https://github.com/JedWatson/classnames">classnames</a></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import classNames from 'classnames'
 
-className<span class="token operator">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">(</span>globalStyles<span class="token punctuation">.</span>global<span class="token punctuation">,</span> globalStyles<span class="token punctuation">.</span>margin<span class="token punctuation">)</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+className={classNames(globalStyles.global, globalStyles.margin)}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>但仍然很丑，正如 Sindre Sorhus 所说：<a target="_blank" rel="noopener" href="https://twitter.com/sindresorhus/status/1001355913930858502">React 把简单的事情变复杂，复杂的事情变简单</a></p>
 <p>另一种个 API 是 <code>classNames.bind</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> classNames <span class="token keyword">from</span> <span class="token string">'classnames'</span>
-<span class="token keyword">const</span> cx<span class="token operator">=</span><span class="token punctuation">{</span><span class="token function">classNames</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>globalStyles<span class="token punctuation">)</span><span class="token punctuation">}</span>
-className<span class="token operator">=</span><span class="token punctuation">{</span><span class="token function">cx</span><span class="token punctuation">(</span><span class="token string">'global'</span><span class="token punctuation">,</span> <span class="token string">'margin'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import classNames from 'classnames'
+const cx={classNames.bind(globalStyles)}
+className={cx('global', 'margin')}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>但这会让 WebStorm 损失所有的 CSS 关联，影响了包括代码提示/跳转/重构等功能，考虑到维护成本实在得不偿失。</p>
 <p>还有人提出了 typed css module，为所有的 <code>.module.css</code> 生成 <code>.d.ts</code> 类型定义，但这会和 css in js 一样丧失 css 预处理器的优势 —- 并且，所有的工具链都需要重新支持这种关联，将之认为是 css。</p>
@@ -513,18 +513,18 @@ className<span class="token operator">=</span><span class="token punctuation">{<
 </blockquote>
 <h3 id="引入图片"><a href="#引入图片" class="headerlink" title="引入图片"></a>引入图片</h3><p>在任何一个项目中，都少不了引入图片的需求。而 React 中，并未像 Vue 对 <code>img, audio, video</code> 这些标签进行特殊处理，以支持直接使用路径即可将对应的媒体文件打包进来，React 需要使用 <code>import img from '*'</code> 的<strong>原始</strong>形式让 webpack <strong>知道</strong>这是一个需要打包的资源。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> img <span class="token keyword">from</span> <span class="token string">'img.png'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import img from 'img.png'
 
-<span class="token keyword">function</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">reutrn</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>img<span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>img<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+function render() {
+  reutrn(&lt;img src={img} alt="img" /&gt;)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>而对于 SVG 类型的图片，React 支持使用组件的形式引入。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">{</span> ReactComponent <span class="token keyword">as</span> IconAudio <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../assets/icon/icon-audio.svg'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import { ReactComponent as IconAudio } from '../../assets/icon/icon-audio.svg'
 
-<span class="token keyword">function</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">reutrn</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">IconAudio</span></span> <span class="token punctuation">/&gt;</span></span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+function render() {
+  reutrn(&lt;IconAudio /&gt;)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="slot"><a href="#slot" class="headerlink" title="slot"></a>slot</h3><p>两种方案</p>
 <ol>
@@ -536,18 +536,18 @@ className<span class="token operator">=</span><span class="token punctuation">{<
 <p>吐槽：函数式已经是政治正确了。</p>
 </blockquote>
 <p>使用函数式的 <code>slot</code> 时必须检查函数是否存在，如果不存在则不要调用，不像是 vue 中的 <code>slot</code> 是自动处理这一步的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token punctuation">{</span>
-  <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>tableOperate <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">tableOperate</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>innerValue<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">{
+  this.props.tableOperate &amp;&amp; this.props.tableOperate(this.state.innerValue)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="watch-监听-props"><a href="#watch-监听-props" class="headerlink" title="watch 监听 props"></a>watch 监听 props</h3><figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">componentDidUpdate</span><span class="token punctuation">(</span><span class="token parameter"><span class="token literal-property property">prevProps</span><span class="token operator">:</span> PropsType</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 典型用法（不要忘记比较 props）：</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>value <span class="token operator">!==</span> prevProps<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      <span class="token literal-property property">innerValue</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>value<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="watch-监听-props"><a href="#watch-监听-props" class="headerlink" title="watch 监听 props"></a>watch 监听 props</h3><figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">componentDidUpdate(prevProps: PropsType) {
+  // 典型用法（不要忘记比较 props）：
+  if (this.props.value !== prevProps.value) {
+    this.setState({
+      innerValue: this.props.value,
+    })
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>相比于 Vue 的生命周期，React 显然更加<strong>复杂</strong>与<strong>混乱</strong>，而且，老实说有时候真的很难用。</p>
 <p>例如非常常见的生命周期 <code>componentWillUpdate</code>，它承担的责任实在是太多了，不仅 <code>watch</code> <code>state/props</code> 中的数据要用这个，连 React Router 的路由变化同样依赖于此。</p>
@@ -571,21 +571,21 @@ className<span class="token operator">=</span><span class="token punctuation">{<
 </ul>
 <h3 id="简化-state-修改"><a href="#简化-state-修改" class="headerlink" title="简化 state 修改"></a>简化 state 修改</h3><p>使用 <code>setState</code> 很烦的一点是当你需要深度为某个属性赋值的时候，要为该属性上面所有的对象全部使用 <code>...</code> 或者其他方式拷贝一遍。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  user<span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>user<span class="token punctuation">,</span>
-    address<span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">.</span>user<span class="token punctuation">.</span>address<span class="token punctuation">,</span>
-      city<span class="token operator">:</span> newCity<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">this.setState({
+  user: {
+    ...this.state.user,
+    address: {
+      ...this.state.user.address,
+      city: newCity,
+    },
+  },
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>当有多个属性需要赋值时就尤其的繁琐，而 <a target="_blank" rel="noopener" href="https://github.com/immerjs/immer">immerjs</a> 正好可以解决这种痛点</p>
 <p>使用 immer 重构之后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token function">produce</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">,</span> draft <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  draft<span class="token punctuation">.</span>user<span class="token punctuation">.</span>address<span class="token punctuation">.</span>city <span class="token operator">=</span> newCity
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">this.setState(produce(this.state, draft =&gt; {
+  draft.user.address.city = newCity
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>代码变得很简单了，虽然看起来是直接赋值，不过 immer 使用了 <code>Proxy</code> 和 <code>Object.freeze</code> 实现了对使用者友好的不可变数据修改，具体参考 。</p>
 <h3 id="React-Hooks"><a href="#React-Hooks" class="headerlink" title="React Hooks"></a>React Hooks</h3><p>React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，很多人又是吹的天花乱坠。老实说最开始 React Hooks 流行并且在各个地方大肆宣传时，吾辈非常讨厌它，因为它又向函数式靠近了一步—-函数式政治正确真的很讨厌！所以，自正式学习 React 以来，吾辈都没有接触过 React Hooks，都是用 Class Component 实现组件。<br>但现在，架不住好奇心和一些朋友的推荐，吾辈稍微看了一下这个新特性。</p>
@@ -595,57 +595,57 @@ className<span class="token operator">=</span><span class="token punctuation">{<
 <li><code>useEffect</code>：声明一些副作用代码</li>
 </ul>
 <p>使用看起来很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> React<span class="token punctuation">,</span> <span class="token punctuation">{</span> useEffect<span class="token punctuation">,</span> useRef<span class="token punctuation">,</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React, { useEffect, useRef, useState } from 'react'
 
-<span class="token keyword">const</span> <span class="token literal-property property">HelloHooks</span><span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">//region 计数器</span>
+const HelloHooks: React.FC = function() {
+  //region 计数器
 
-  <span class="token keyword">const</span> <span class="token punctuation">[</span>count<span class="token punctuation">,</span> setCount<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> <span class="token punctuation">[</span>list<span class="token punctuation">,</span> setList<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token operator">&lt;</span>string<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> <span class="token function-variable function">countAdd</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">setCount</span><span class="token punctuation">(</span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
-  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'count changed: '</span><span class="token punctuation">,</span> count<span class="token punctuation">)</span>
-    <span class="token function">setList</span><span class="token punctuation">(</span>
-      <span class="token function">Array</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">_<span class="token punctuation">,</span> i</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">第 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> 个元素</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token comment">//监听 count 变化</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>count<span class="token punctuation">]</span><span class="token punctuation">)</span>
+  const [count, setCount] = useState(1)
+  const [list, setList] = useState&lt;string[]&gt;([])
+  const countAdd = () =&gt; setCount(count + 1)
+  useEffect(() =&gt; {
+    console.log('count changed: ', count)
+    setList(
+      Array(count)
+        .fill(0)
+        .map((_, i) =&gt; `第 ${i + 1} 个元素`),
+    )
+    //监听 count 变化
+  }, [count])
 
-  <span class="token comment">//endregion</span>
+  //endregion
 
-  <span class="token comment">//region 自动聚焦输入框</span>
+  //region 自动聚焦输入框
 
-  <span class="token keyword">const</span> inputRef <span class="token operator">=</span> useRef<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HTMLInputElement</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">(null as any)
-  useEffect(() =&gt; </span><span class="token punctuation">{</span>
-    inputRef<span class="token punctuation">.</span>current<span class="token punctuation">.</span><span class="token function">focus</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token comment">//不监听任何值变化，只在第一次渲染运行</span>
-  <span class="token punctuation">}</span><span class="token plain-text">, [])
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null as any)
+  useEffect(() =&gt; {
+    inputRef.current.focus()
+    //不监听任何值变化，只在第一次渲染运行
+  }, [])
 
   //endregion
 
   return (
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span>
-          <span class="token attr-name">ref</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>inputRef<span class="token punctuation">}</span></span>
-          <span class="token attr-name">value</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>count<span class="token punctuation">}</span></span>
-          <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>number<span class="token punctuation">"</span></span>
-          <span class="token attr-name">onChange</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token parameter">e</span> <span class="token operator">=&gt;</span> <span class="token function">setCount</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
-        <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>countAdd<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">增加</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-        </span><span class="token punctuation">{</span>list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">v<span class="token punctuation">,</span> i</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>v<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
-        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;input
+          ref={inputRef}
+          value={count}
+          type="number"
+          onChange={e =&gt; setCount(parseInt(e.target.value))}
+        /&gt;
+        &lt;button onClick={countAdd}&gt;增加&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;ul&gt;
+        {list.map((v, i) =&gt; (
+          &lt;li key={i}&gt;{v}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
   )
 }
 
-export default HelloHooks</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default HelloHooks<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>可以看到，上面用 <code>useState/useEffect</code> 两个函数实现了一些常见的功能：<code>state, componentDidMount, componentDidUpdate</code>，<code>useEffect</code> 甚至默认支持类似 vue <code>watch</code> 的使用方式。</p>
 <p>同时，使用 Hooks 可以轻易地封装出 <code>useModel</code>, vue 中的 <code>watch/computed</code> 甚至原生自带了！</p>
@@ -728,41 +728,41 @@ React props 基本上能传递任何东西，所以承担了 vue 中的多个特
   <span class="token property">background-color</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token comment">// ComponentLoading.tsx</span>
-<span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> Spin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'antd'</span>
-<span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">'./ComponentLoading.module.css'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">// ComponentLoading.tsx
+import React from 'react'
+import { Spin } from 'antd'
+import styles from './ComponentLoading.module.css'
 
-type PropsType <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
+type PropsType = {
+  /**
    * 是否显示 loading?
-   */</span>
-  <span class="token literal-property property">isLoading</span><span class="token operator">:</span> boolean
-  tip<span class="token operator">?</span><span class="token operator">:</span> string
-<span class="token punctuation">}</span>
+   */
+  isLoading: boolean
+  tip?: string
+}
 
-<span class="token comment">/**
+/**
  * 控制 Ajax 请求未完成前某个区域不展示默认数据
  * @param props
  * @constructor
- */</span>
-<span class="token keyword">const</span> <span class="token literal-property property">ComponentLoading</span><span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">PropsType</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text"> = function(props) </span><span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">{</span> isLoading<span class="token punctuation">,</span> tip <span class="token operator">=</span> <span class="token string">'正在加载中。。。'</span> <span class="token punctuation">}</span> <span class="token operator">=</span> props
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> <span class="token literal-property property">position</span><span class="token operator">:</span> <span class="token string">'relative'</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token punctuation">{</span>isLoading <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>componentLoadingDialog<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Spin</span></span> <span class="token attr-name">tip</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>tip<span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
-        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-      <span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+ */
+const ComponentLoading: React.FC&lt;PropsType&gt; = function(props) {
+  const { isLoading, tip = '正在加载中。。。' } = props
+  return (
+    &lt;div style={{ position: 'relative' }}&gt;
+      {isLoading &amp;&amp; (
+        &lt;div className={styles.componentLoadingDialog}&gt;
+          &lt;Spin tip={tip} /&gt;
+        &lt;/div&gt;
+      )}
 
-      </span><span class="token punctuation">{</span><span class="token comment">/*注：默认会渲染 children 组件*/</span><span class="token punctuation">}</span><span class="token plain-text">
-      </span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>children<span class="token punctuation">}</span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token plain-text">
+      {/*注：默认会渲染 children 组件*/}
+      {props.children}
+    &lt;/div&gt;
+  )
+}
 
-export default ComponentLoading</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default ComponentLoading<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="React-和-vue-3-的对比"><a href="#React-和-vue-3-的对比" class="headerlink" title="React 和 vue 3 的对比"></a>React 和 vue 3 的对比</h3><p>vue 3 新增了 <code>Function-base</code> 的组件，看起来很像 React Hooks，但目前仍然无法在生产中实用。</p>
 <p>目前看来有以下缺点</p>
@@ -794,36 +794,36 @@ export default ComponentLoading</span><span aria-hidden="true" class="line-numbe
 <li><p>创建文件 <code>src/setupProxy.ts</code></p>
 </li>
 <li><p>编写配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> proxy <span class="token keyword">from</span> <span class="token string">'http-proxy-middleware'</span>
-<span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'fs-extra'</span><span class="token punctuation">)</span>
-<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import proxy from 'http-proxy-middleware'
+const fs = require('fs-extra')
+const path = require('path')
 
-<span class="token comment">/**
+/**
  * 开发环境代理
  * @param app
  * @return {string|*}
- */</span>
-module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>app<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> proxyConfig<span class="token operator">:</span> proxy<span class="token punctuation">.</span>Config <span class="token operator">=</span> <span class="token punctuation">{</span>
-    target<span class="token operator">:</span> <span class="token string">'https://localhost:8000'</span><span class="token punctuation">,</span>
-    changeOrigin<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    secure<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
-    ws<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    <span class="token function">pathRewrite</span><span class="token punctuation">(</span>api<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> mockApiList <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">readJSONSync</span><span class="token punctuation">(</span>
-        path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./config/mockApiList.json'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token punctuation">(</span>
-        api <span class="token operator">+</span>
-        <span class="token punctuation">(</span>mockApiList<span class="token punctuation">.</span><span class="token function">some</span><span class="token punctuation">(</span><span class="token punctuation">(</span>mockApi<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> api<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>mockApi<span class="token punctuation">)</span><span class="token punctuation">)</span>
-          <span class="token operator">?</span> <span class="token string">'?mock=default&amp;errCode=200'</span>
-          <span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">)</span>
-      <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
+ */
+module.exports = function (app: any) {
+  const proxyConfig: proxy.Config = {
+    target: 'https://localhost:8000',
+    changeOrigin: true,
+    secure: false,
+    ws: true,
+    pathRewrite(api: string) {
+      const mockApiList = fs.readJSONSync(
+        path.resolve(__dirname, './config/mockApiList.json'),
+      )
+      return (
+        api +
+        (mockApiList.some((mockApi: string) =&gt; api.includes(mockApi))
+          ? '?mock=default&amp;errCode=200'
+          : '')
+      )
+    },
+  }
 
-  app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token function">proxy</span><span class="token punctuation">(</span><span class="token string">'/api'</span><span class="token punctuation">,</span> proxyConfig<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+  app.use(proxy('/api', proxyConfig))
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 <blockquote>
 <p>参考：</p>
@@ -836,19 +836,19 @@ module<span class="token punctuation">.</span><span class="token function-variab
 <li><p>修改 <code>package.json</code> 中字段 <code>homepage</code> 的值为 <code>.</code></p>
 </li>
 <li><p>使用 react router 中的 hash mode，具体而言就是修改 <em>index.tsx</em> 中使用如下代码，关键是 <code>HashRouter</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span>
-<span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">'react-dom'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> HashRouter <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-router-dom'</span>
-<span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App.tsx'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import React from 'react'
+import ReactDOM from 'react-dom'
+import { HashRouter } from 'react-router-dom'
+import App from './App.tsx'
 
-ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/&gt;</span></span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">HashRouter</span></span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">&gt;</span></span><span class="token punctuation">,</span>
-  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'app'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+ReactDOM.render(
+  &lt;React.StrictMode&gt;
+    &lt;HashRouter&gt;
+      &lt;App /&gt;
+    &lt;/HashRouter&gt;
+  &lt;/React.StrictMode&gt;,
+  document.getElementById('app'),
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 <h3 id="为什么-react-hooks-总是有奇怪的问题"><a href="#为什么-react-hooks-总是有奇怪的问题" class="headerlink" title="为什么 react hooks 总是有奇怪的问题"></a>为什么 react hooks 总是有奇怪的问题</h3><p>根源在于 react 的 render 函数是多次执行，导致如果没有正确的声明依赖项或者顺序，就会导致出现奇怪的问题。</p>
 <p>典型的依赖声明问题</p>

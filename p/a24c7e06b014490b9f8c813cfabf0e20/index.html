@@ -317,24 +317,24 @@
 <p>字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。</p>
 </blockquote>
 <p>例如以下的表结构：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> test_table <span class="token punctuation">(</span>
-  id      <span class="token keyword">BIGINT</span>       <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'id'</span><span class="token punctuation">,</span>
-  int_str <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'使用 varchar 保存数字的列'</span>
-<span class="token punctuation">)</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'测试用的数据表'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">CREATE TABLE test_table (
+  id      BIGINT       NOT NULL
+  COMMENT 'id',
+  int_str VARCHAR(200) NOT NULL
+  COMMENT '使用 varchar 保存数字的列'
+)
+  COMMENT '测试用的数据表';<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>当吾辈想要查询 <code>big_int_column</code> 大于某个值的数据时，最初是这样写的：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
-<span class="token keyword">FROM</span> test_table
-<span class="token keyword">WHERE</span> int_str <span class="token operator">&gt;</span> ?<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
+FROM test_table
+WHERE int_str &gt; ?;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>但后来发现一个问题。。。</p>
 <p>其实很简单，因为字符串的比较规则和数字并不一样，虽然很多时候看起来好像没什么不同。</p>
 <p>例如下面的 SQL 语句：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token number">2</span> <span class="token operator">&gt;</span> <span class="token number">12</span><span class="token punctuation">;</span> <span class="token comment">#结果为 0(false)</span>
-<span class="token keyword">SELECT</span> <span class="token string">'2'</span> <span class="token operator">&gt;</span> <span class="token string">'12'</span><span class="token punctuation">;</span> <span class="token comment">#结果为 1(true)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT 2 &gt; 12; #结果为 0(false)
+SELECT '2' &gt; '12'; #结果为 1(true)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>只是类型变化了，但结果却截然相反，因为字符串是按照字符依次进行对比，而数字则是按照大小直接比较。</p>
 <blockquote>
@@ -343,42 +343,42 @@
 <p>所以后来去稍微查询了一下，发现了 MySQL 中的两个函数：</p>
 <ul>
 <li><p>cast()<br>标准语法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast<span class="token punctuation">(</span><span class="token keyword">value</span> <span class="token keyword">as</span> <span class="token keyword">type</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast(value as type)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>或者（不是重点）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast<span class="token punctuation">(</span><span class="token keyword">value</span> <span class="token keyword">AS</span> <span class="token keyword">CHAR</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> encoding<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast(value AS CHAR CHARACTER SET encoding)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>使用示例：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># 转换为整数(值区间 [-9223372036854775808 ~ 9223372036854775807])</span>
-cast<span class="token punctuation">(</span><span class="token string">'12'</span> <span class="token keyword">AS</span> SIGNED<span class="token punctuation">)</span>
-<span class="token comment"># 或者转换为无符号整数(值区间 [0 ~ 18446744073709551615])</span>
-cast<span class="token punctuation">(</span><span class="token string">'12'</span> <span class="token keyword">AS</span> <span class="token keyword">UNSIGNED</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"># 转换为整数(值区间 [-9223372036854775808 ~ 9223372036854775807])
+cast('12' AS SIGNED)
+# 或者转换为无符号整数(值区间 [0 ~ 18446744073709551615])
+cast('12' AS UNSIGNED)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>convert()</p>
 <p>标准语法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">convert</span><span class="token punctuation">(</span><span class="token keyword">value</span><span class="token punctuation">,</span> <span class="token keyword">type</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">convert(value, type)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>或者（不是重点）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">convert</span><span class="token punctuation">(</span><span class="token keyword">value</span> <span class="token keyword">using</span> <span class="token keyword">charset</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">convert(value using charset)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>使用示例：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># 转换为整数</span>
-<span class="token keyword">convert</span><span class="token punctuation">(</span><span class="token string">'12'</span><span class="token punctuation">,</span> SIGNED<span class="token punctuation">)</span>
-<span class="token comment"># 或者转换为无符号整数</span>
-<span class="token keyword">convert</span><span class="token punctuation">(</span><span class="token string">'12'</span><span class="token punctuation">,</span> <span class="token keyword">UNSIGNED</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"># 转换为整数
+convert('12', SIGNED)
+# 或者转换为无符号整数
+convert('12', UNSIGNED)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ul>
 <p>所以吾辈将查询的 SQL 语句修改成如下样子：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
-<span class="token keyword">FROM</span> test_table
-<span class="token keyword">WHERE</span> int_str <span class="token operator">&gt;</span> cast<span class="token punctuation">(</span>? <span class="token keyword">AS</span> <span class="token keyword">UNSIGNED</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
+FROM test_table
+WHERE int_str &gt; cast(? AS UNSIGNED);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>算是解决了一些问题，然而如果 <code>int_str</code> 的值大于 <code>UNSIGNED</code> 类型的最大值又会发生问题。。。</p>
 <p>然后从网络上看到了一种推荐的 SQL 的写法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token string">'12'</span> <span class="token operator">+</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT '12' + 0;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>但经过了测试，甚至比上面的 <code>cast()</code> 和 <code>convert()</code> 表现更糟。</p>
 <p>例如下面的 SQL：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token string">'9223372036854775807'</span> <span class="token operator">+</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">#结果是：9223372036854776000</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT '9223372036854775807' + 0; #结果是：9223372036854776000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>所以说，还是直接直接用数字存储数字最好啦！（＿´ω ｀）</p>
 

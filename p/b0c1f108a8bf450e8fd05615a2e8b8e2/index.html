@@ -313,10 +313,10 @@
               <div class="markdown-body">
                 
                 <p>刚刚在 Linux Centos 装完 MySQL 后，想试一下是否能正常使用，但在插入中文数据时发生了下面的这个错误。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token punctuation">[</span>HY000<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1366</span><span class="token punctuation">]</span> Incorrect string <span class="token keyword">value</span>: <span class="token string">'\xE7\x90\x89\xE7\x92\x83'</span> <span class="token keyword">for</span> <span class="token keyword">column</span> <span class="token string">'name'</span> at <span class="token keyword">row</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">[HY000][1366] Incorrect string value: '\xE7\x90\x89\xE7\x92\x83' for column 'name' at row 1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>感觉是 MySQL 编码问题，查看一下编码格式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> variables <span class="token operator">like</span> <span class="token string">'%char%'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">show variables like '%char%';<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>结果</p>
 <table>
@@ -368,16 +368,16 @@
 <p>有关编码格式请参考：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ISO/IEC_8859-1">latin1</a>, <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/UTF-8">utf8</a>, <code>utf8mb4</code> 与 <code>utf8</code> 区别可以参考 <a target="_blank" rel="noopener" href="https://my.oschina.net/xsh1208/blog/1052781">https://my.oschina.net/xsh1208/blog/1052781</a></p>
 </blockquote>
 <p>修改它们</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">set</span> character_set_client <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
-<span class="token keyword">set</span> character_set_connection <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
-<span class="token keyword">set</span> character_set_database <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
-<span class="token keyword">set</span> character_set_filesystem <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
-<span class="token keyword">set</span> character_set_results <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span>
-<span class="token keyword">set</span> character_set_server <span class="token operator">=</span> utf8mb4<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">set character_set_client = utf8mb4;
+set character_set_connection = utf8mb4;
+set character_set_database = utf8mb4;
+set character_set_filesystem = utf8mb4;
+set character_set_results = utf8mb4;
+set character_set_server = utf8mb4;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后再次尝试插入中文数据，好像还是不行呀，怎么办呢？实际上上面修改的是数据库默认的编码格式，对于已经存在的表和列并未生效</p>
 <p>查看一下数据表编码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> <span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token keyword">user</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">show create table user;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <table>
 <thead>
@@ -392,7 +392,7 @@
 </tr>
 </tbody></table>
 <p>查看全部列编码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> <span class="token keyword">full</span> <span class="token keyword">columns</span> <span class="token keyword">from</span> <span class="token keyword">user</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">show full columns from user;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <table>
 <thead>
@@ -456,9 +456,9 @@
 <ol>
 <li>删除重建数据库的话只需要将数据库导出 sql 脚本，然后重新执行即可（如果存在很多数据/数据库正在使用则此方法不适用）</li>
 <li>手动修改编码<ol>
-<li>修改数据库编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">alter</span> <span class="token keyword">database</span> <span class="token operator">&lt;</span>db_name<span class="token operator">&gt;</span> <span class="token keyword">character</span> <span class="token keyword">set</span> utf8mb4<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
-<li>修改数据表编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">alter</span> <span class="token keyword">table</span> <span class="token operator">&lt;</span>table_name<span class="token operator">&gt;</span> <span class="token keyword">character</span> <span class="token keyword">set</span> utf8mb4<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
-<li>修改字段编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> <span class="token operator">&lt;</span>table_name<span class="token operator">&gt;</span> <span class="token keyword">MODIFY</span> <span class="token keyword">COLUMN</span> <span class="token operator">&lt;</span>field_name<span class="token operator">&gt;</span> <span class="token operator">&lt;</span>field_type<span class="token operator">&gt;</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> utf8mb4 <span class="token keyword">COLLATE</span> utf8mb4_unicode_ci<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
+<li>修改数据库编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">alter database &lt;db_name&gt; character set utf8mb4;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
+<li>修改数据表编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">alter table &lt;table_name&gt; character set utf8mb4;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
+<li>修改字段编码<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">ALTER TABLE &lt;table_name&gt; MODIFY COLUMN &lt;field_name&gt; &lt;field_type&gt; CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
 </ol>
 </li>
 </ol>

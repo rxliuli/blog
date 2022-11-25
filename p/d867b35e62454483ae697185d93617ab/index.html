@@ -318,168 +318,168 @@
 <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。</p>
 <p>我们通常使用以下两种方式访问环境变量</p>
 <p>在 vite 中使用 <code>import.meta.env</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import.meta.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>在 vite importMeta.d.ts 中的类型定义为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">ImportMeta</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 其他属性。。。</span>
-  <span class="token keyword">readonly</span> env<span class="token operator">:</span> ImportMetaEnv
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface ImportMeta {
+  // 其他属性。。。
+  readonly env: ImportMetaEnv
+}
 
-<span class="token keyword">interface</span> <span class="token class-name">ImportMetaEnv</span> <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">any</span>
-  <span class="token constant">BASE_URL</span><span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token constant">MODE</span><span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token constant">DEV</span><span class="token operator">:</span> <span class="token builtin">boolean</span>
-  <span class="token constant">PROD</span><span class="token operator">:</span> <span class="token builtin">boolean</span>
-  <span class="token constant">SSR</span><span class="token operator">:</span> <span class="token builtin">boolean</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+interface ImportMetaEnv {
+  [key: string]: any
+  BASE_URL: string
+  MODE: string
+  DEV: boolean
+  PROD: boolean
+  SSR: boolean
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>或者在普通 nodejs 项目中使用 <code>process.env</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">process.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>在 nodejs process.d.ts 中的类型定义为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">Dict<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token operator">|</span> <span class="token keyword">undefined</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface Dict&lt;T&gt; {
+  [key: string]: T | undefined
+}
 
-<span class="token keyword">interface</span> <span class="token class-name">ProcessEnv</span> <span class="token keyword">extends</span> <span class="token class-name">Dict<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
+interface ProcessEnv extends Dict&lt;string&gt; {
+  /**
    * Can be used to change the default timezone at runtime
-   */</span>
-  <span class="token constant">TZ</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */
+  TZ?: string
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>但无论如何，它们都不能定义一些项目中定制的环境变量，这需要我们手动完成。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>这里使用 vite 举例，如果需要在代码中使用 <code>import.meta.env</code> 时能够提示自定义的环境变量的话，需要在 <em>vite-env.d.ts</em> 中添加 <code>ImportMetaEnv</code>。<br>例如添加环境变量 VITE_PORT/VITE_AUTH_TOKEN 的类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">ImportMetaEnv</span> <span class="token punctuation">{</span>
-  <span class="token constant">VITE_PORT</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token constant">VITE_AUTH_TOKEN</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface ImportMetaEnv {
+  VITE_PORT?: string
+  VITE_AUTH_TOKEN?: string
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在，使用环境变量的流程变成：<strong>在 .env 中添加环境变量</strong> =&gt; <strong>在 vite-env.d.ts 中添加类型定义</strong> =&gt; <strong>在代码中使用环境变量</strong>，可以看到，我们基本上重复添加了两次环境变量，只是使用了不同的语法，这正是我们要解决的问题，从环境变量自动生成类型定义。</p>
 <p><img src="/resources/3f4cd03fa7564d6a99abab7d2c11d826.svg" srcset="/img/loading.gif" lazyload alt="从环境变量生成类型定义.drawio.svg"></p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>获取环境变量的路径（vite 的环境变量类型定义文件发生过一次变化，需要做下兼容）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">getEnvPath</span><span class="token punctuation">(</span>cwd<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> envPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> <span class="token string">'src/vite-env.d.ts'</span><span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function getEnvPath(cwd: string) {
+  let envPath = path.resolve(cwd, 'src/vite-env.d.ts')
 
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">pathExists</span><span class="token punctuation">(</span>envPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> envPath
-  <span class="token punctuation">}</span>
+  if (await pathExists(envPath)) {
+    return envPath
+  }
 
-  envPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>cwd<span class="token punctuation">,</span> <span class="token string">'src/env.d.ts'</span><span class="token punctuation">)</span>
+  envPath = path.resolve(cwd, 'src/env.d.ts')
 
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">pathExists</span><span class="token punctuation">(</span>envPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> envPath
-  <span class="token punctuation">}</span>
+  if (await pathExists(envPath)) {
+    return envPath
+  }
 
-  <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'未找到环境变量配置文件'</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  throw new Error('未找到环境变量配置文件')
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>扫描所有的环境变量</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">scan</span><span class="token punctuation">(</span>dir<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> files <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">FastGlob</span><span class="token punctuation">(</span><span class="token string">'.env*'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    cwd<span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>dir<span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function scan(dir: string): Promise&lt;string[]&gt; {
+  const files = await FastGlob('.env*', {
+    cwd: path.resolve(dir),
+  })
 
-  <span class="token keyword">const</span> configs <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>
-    files<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">readFile</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>dir<span class="token punctuation">,</span> file<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token function">uniqueBy</span><span class="token punctuation">(</span>configs<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span><span class="token function">parse</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  const configs = await Promise.all(
+    files.map((file) =&gt; readFile(path.resolve(dir, file), 'utf-8')),
+  )
+  return uniqueBy(configs.map((s) =&gt; Object.keys(parse(s))).flat())
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>对比环境变量与类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">eq</span><span class="token punctuation">(</span>a<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token function-variable function">f</span> <span class="token operator">=</span> <span class="token punctuation">(</span>a<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a<span class="token punctuation">.</span><span class="token function">localeCompare</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>a<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>b<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>f<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function eq(a: string[], b: string[]): boolean {
+  const f = (a: string, b: string) =&gt; a.localeCompare(b)
+  return JSON.stringify([...a].sort(f)) === JSON.stringify([...b].sort(f))
+}
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">getEnvs</span><span class="token punctuation">(</span>ast<span class="token operator">:</span> n<span class="token punctuation">.</span>ASTNode<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> CodeUtil<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> n<span class="token punctuation">.</span>TSInterfaceDeclaration<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>id <span class="token keyword">as</span> n<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name <span class="token operator">===</span> <span class="token string">'ImportMetaEnv'</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> CodeUtil<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> n<span class="token punctuation">.</span>TSPropertySignature<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> CodeUtil<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> n<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> item<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function getEnvs(ast: n.ASTNode): string[] {
+  return CodeUtil.iterator(ast, n.TSInterfaceDeclaration)
+    .filter((item) =&gt; (item.id as n.Identifier).name === 'ImportMetaEnv')
+    .flatMap((ast) =&gt; CodeUtil.iterator(ast, n.TSPropertySignature))
+    .flatMap((ast) =&gt; CodeUtil.iterator(ast, n.Identifier))
+    .map((item) =&gt; item.name)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>修改类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">convert</span><span class="token punctuation">(</span>ast<span class="token operator">:</span> n<span class="token punctuation">.</span>ASTNode<span class="token punctuation">,</span> envs<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> n<span class="token punctuation">.</span>ASTNode <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> envInterface <span class="token operator">=</span> CodeUtil<span class="token punctuation">.</span><span class="token function">iterator</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> n<span class="token punctuation">.</span>TSInterfaceDeclaration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>id <span class="token keyword">as</span> n<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name <span class="token operator">===</span> <span class="token string">'ImportMetaEnv'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function convert(ast: n.ASTNode, envs: string[]): n.ASTNode {
+  let envInterface = CodeUtil.iterator(ast, n.TSInterfaceDeclaration).find(
+    (item) =&gt; (item.id as n.Identifier).name === 'ImportMetaEnv',
+  )
 
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>envInterface<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    envInterface <span class="token operator">=</span> b<span class="token punctuation">.</span><span class="token function">tsInterfaceDeclaration</span><span class="token punctuation">(</span>
-      b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span><span class="token string">'ImportMetaEnv'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      b<span class="token punctuation">.</span><span class="token function">tsInterfaceBody</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token punctuation">;</span><span class="token punctuation">(</span>ast <span class="token keyword">as</span> n<span class="token punctuation">.</span>File<span class="token punctuation">)</span><span class="token punctuation">.</span>program<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>envInterface<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+  if (!envInterface) {
+    envInterface = b.tsInterfaceDeclaration(
+      b.identifier('ImportMetaEnv'),
+      b.tsInterfaceBody([]),
+    )
+    ;(ast as n.File).program.body.push(envInterface)
+  }
 
-  envInterface<span class="token punctuation">.</span>body<span class="token punctuation">.</span>body <span class="token operator">=</span> envs<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-    b<span class="token punctuation">.</span>tsPropertySignature<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      key<span class="token operator">:</span> b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
-      typeAnnotation<span class="token operator">:</span> b<span class="token punctuation">.</span><span class="token function">tsTypeAnnotation</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">tsStringKeyword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token keyword">readonly</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
+  envInterface.body.body = envs.map((name) =&gt;
+    b.tsPropertySignature.from({
+      key: b.identifier(name),
+      typeAnnotation: b.tsTypeAnnotation(b.tsStringKeyword()),
+      readonly: true,
+    }),
+  )
 
-  <span class="token keyword">return</span> ast
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  return ast
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>最后，将它们连接起来</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">gen</span><span class="token punctuation">(</span>cwd<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token keyword">void</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> envPath <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">getEnvPath</span><span class="token punctuation">(</span>cwd<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> code <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>envPath<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> ast <span class="token operator">=</span> CodeUtil<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> envNames <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">scan</span><span class="token punctuation">(</span>cwd<span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function gen(cwd: string): Promise&lt;void&gt; {
+  const envPath = await getEnvPath(cwd)
+  const code = await readFile(envPath, 'utf-8')
+  const ast = CodeUtil.parse(code)
+  const envNames = await scan(cwd)
 
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">eq</span><span class="token punctuation">(</span>envNames<span class="token punctuation">,</span> <span class="token function">getEnvs</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span>
-  <span class="token punctuation">}</span>
+  if (eq(envNames, getEnvs(ast))) {
+    return
+  }
 
-  <span class="token keyword">await</span> <span class="token function">writeFile</span><span class="token punctuation">(</span>envPath<span class="token punctuation">,</span> CodeUtil<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token function">convert</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> envNames<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  await writeFile(envPath, CodeUtil.print(convert(ast, envNames)))
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>实现 vite 插件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vite'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> gen <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./gen'</span>
-<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'vite'
+import { gen } from './gen'
+import * as path from 'path'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">envDtsGen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> rootPath<span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'vite-plugin-env-dts-gen'</span><span class="token punctuation">,</span>
-    <span class="token function">configResolved</span><span class="token punctuation">(</span>resolveConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      rootPath <span class="token operator">=</span> resolveConfig<span class="token punctuation">.</span>root
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function">configureServer</span><span class="token punctuation">(</span>server<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      server<span class="token punctuation">.</span>watcher<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'.env*'</span><span class="token punctuation">)</span>
-      <span class="token keyword">const</span> <span class="token function-variable function">listener</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>filePath<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> relative <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">relative</span><span class="token punctuation">(</span>rootPath<span class="token punctuation">,</span> filePath<span class="token punctuation">)</span>
-        <span class="token comment">// console.log('filePath: ', relative)</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>relative<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">'.env'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">await</span> <span class="token function">gen</span><span class="token punctuation">(</span>rootPath<span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span>
-      server<span class="token punctuation">.</span>watcher<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
-      server<span class="token punctuation">.</span>watcher<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'add'</span><span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token keyword">async</span> <span class="token function">buildStart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">await</span> <span class="token function">gen</span><span class="token punctuation">(</span>rootPath<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function envDtsGen(): Plugin {
+  let rootPath: string
+  return {
+    name: 'vite-plugin-env-dts-gen',
+    configResolved(resolveConfig) {
+      rootPath = resolveConfig.root
+    },
+    configureServer(server) {
+      server.watcher.add('.env*')
+      const listener = async (filePath: string) =&gt; {
+        const relative = path.relative(rootPath, filePath)
+        // console.log('filePath: ', relative)
+        if (relative.startsWith('.env')) {
+          await gen(rootPath)
+        }
+      }
+      server.watcher.on('change', listener)
+      server.watcher.on('add', listener)
+    },
+    async buildStart() {
+      await gen(rootPath)
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>完整代码 ref: <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/blob/master/libs/vite-plugin-env-dts-gen">https://github.com/rxliuli/liuli-tools/blob/master/libs/vite-plugin-env-dts-gen</a></p>
 </blockquote>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vite'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> envDtsGen <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@liuli-util/vite-plugin-env-dts-gen'</span>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'vite'
+import { envDtsGen } from '@liuli-util/vite-plugin-env-dts-gen'
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">envDtsGen</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [envDtsGen()],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在，每当修改环境变量文件时，都会自动修改对应的类型定义，编写代码时也会有提示和校验了。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>之后，将演示两个现有的代码生成的实例。</p>

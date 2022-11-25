@@ -450,26 +450,26 @@
 <p>参考: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules">https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules</a></p>
 </blockquote>
 <h2 id="Live-Template-x2F-Postfix-Template-模板"><a href="#Live-Template-x2F-Postfix-Template-模板" class="headerlink" title="Live Template/Postfix Template 模板"></a>Live Template/Postfix Template 模板</h2><p>Live Template 模板就是那种在 Java 中输入 <code>sout</code> 就可以生成以下代码的模板功能，而这功能在 WebStorm 还可以自定义。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>$<span class="token constant">END</span>$<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">System.out.println($END$);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>例如吾辈就定义了 <code>autowired</code> 用于生成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span> <span class="token keyword">private</span> $<span class="token class-name">BeanClass</span>$ $<span class="token class-name">BeanName</span>$<span class="token punctuation">;</span>
-$<span class="token constant">END</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Autowired private $BeanClass$ $BeanName$;
+$END$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>或者 <code>thread</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-    $<span class="token constant">END</span>$
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">new Thread(() -&gt; {
+    $END$
+}).start();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>此功能使用得当甚至能大量减少重复编码。不过相比之下另外一个代码生成功能吾辈更加喜欢，但 WebStorm 在 2018.2 版本之前并不支持自定义，所以功能上来说就显得稍弱一些，当然吾辈也使用插件（Custom Postfix Templates <a target="_blank" rel="noopener" href="https://github.com/xylo/intellij-postfix-templates#download">GitHub</a>）实现了自定义的需求。最新版本 WebStorm 原生支持了自定义功能（<a target="_blank" rel="noopener" href="https://blog.jetbrains.com/idea/2014/03/postfix-completion/">WebStorm 官方介绍</a>），但实现尚不完善。</p>
 <p>此功能可以做到另外一种形式的模板字符串，例如输入 <code>"str".var</code> 然后回车会得到</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">String</span> $variableName$ <span class="token operator">=</span> <span class="token string">"str"</span><span class="token punctuation">;</span>$<span class="token constant">END</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>或者 <code>"str".sout</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">Sysout</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"str"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Sysout.out.println("str");<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>吾辈也自定义一些，例如输入了 <code>"str".val</code>，会生成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">String</span> $variableName$ <span class="token operator">=</span> <span class="token string">"str"</span><span class="token punctuation">;</span>$<span class="token constant">END</span>$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="一些有用的配置项"><a href="#一些有用的配置项" class="headerlink" title="一些有用的配置项"></a>一些有用的配置项</h2><h3 id="soft-wrap-强制换行"><a href="#soft-wrap-强制换行" class="headerlink" title="soft wrap 强制换行"></a>soft wrap 强制换行</h3><p>WebStorm 在一行过长时会出现横向滚动条，那我们不想要它出现以便于能直接使用键盘就能看完要怎么办呢？</p>
 <p>可以在 <em>Settings ⇒ Editor ⇒ General ⇒ Soft Wraps</em> 中找到设置，将 <strong>Soft-wrap files</strong> 的值修改为 <code>*</code> 即可。</p>

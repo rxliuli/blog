@@ -318,169 +318,169 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://esbuild.github.io/">esbuild</a> 是一个通用的代码编译器和构建工具，使用 golang 构建，它非常快，性能上比现有的 js 工具链高 1~2 个数量级。它目前还不是一个开箱即用的构建工具，但通过它的插件系统，我们已经可以做到许多事情。</p>
 <p><img src="/resources/006b4700843a4237a22056b3bd29a742.png" srcset="/img/loading.gif" lazyload alt="1653052756694"></p>
 <h2 id="自动排除所有依赖项"><a href="#自动排除所有依赖项" class="headerlink" title="自动排除所有依赖项"></a>自动排除所有依赖项</h2><p>在构建 lib 时，我们通常都不希望捆绑依赖的模块，希望能够默认排除掉所有的依赖项，这个插件就是用来实现这个功能的。它会将所有不是以 <code>.</code> 开头的导入模块设置为外部的，避免捆绑到最终构建产物中。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
 
-<span class="token comment">/**
+/**
  * 自动排除所有依赖项
  * golang 不支持 js 的一些正则表达式语法，参考 https://github.com/evanw/esbuild/issues/1634
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">autoExternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'autoExternal'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      build<span class="token punctuation">.</span><span class="token function">onResolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">.*</span><span class="token regex-delimiter">/</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">^\.{1,2}\/</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>args<span class="token punctuation">.</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">return</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token punctuation">{</span>
-          path<span class="token operator">:</span> args<span class="token punctuation">.</span>path<span class="token punctuation">,</span>
-          external<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function autoExternal(): Plugin {
+  return {
+    name: 'autoExternal',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, (args) =&gt; {
+        if (/^\.{1,2}\//.test(args.path)) {
+          return
+        }
+        return {
+          path: args.path,
+          external: true,
+        }
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>我们可以这样使用，例如 import esbuild，但它不会被捆绑进来。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> build <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build } from 'esbuild'
+console.log(build)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>会被编译成</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> build <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用环境变量"><a href="#使用环境变量" class="headerlink" title="使用环境变量"></a>使用环境变量</h2><p>有时候我们会需要针对不同的环境使用环境变量来区分，而使用插件也可以很简单的做到这一点。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
 
-<span class="token comment">/**
+/**
  * @param {string} str
- */</span>
-<span class="token keyword">function</span> <span class="token function">isValidId</span><span class="token punctuation">(</span>str<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">try</span> <span class="token punctuation">{</span>
-    <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Function</span></span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">var </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>str<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">;</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token boolean">false</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> <span class="token boolean">true</span>
-<span class="token punctuation">}</span>
+ */
+function isValidId(str: string) {
+  try {
+    new Function(`var ${str};`)
+  } catch (err) {
+    return false
+  }
+  return true
+}
 
-<span class="token comment">/**
+/**
  * Create a map of replacements for environment variables.
  * @return A map of variables.
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">defineProcessEnv</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
+ */
+export function defineProcessEnv() {
+  /**
    * @type {{ [key: string]: string }}
-   */</span>
-  <span class="token keyword">const</span> definitions<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  definitions<span class="token punctuation">[</span><span class="token string">'process.env.NODE_ENV'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>
-    process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">||</span> <span class="token string">'development'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isValidId</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      definitions<span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">process.env.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>key<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  definitions<span class="token punctuation">[</span><span class="token string">'process.env'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'{}'</span>
+   */
+  const definitions: Record&lt;string, string&gt; = {}
+  definitions['process.env.NODE_ENV'] = JSON.stringify(
+    process.env.NODE_ENV || 'development',
+  )
+  Object.keys(process.env).forEach((key) =&gt; {
+    if (isValidId(key)) {
+      definitions[`process.env.${key}`] = JSON.stringify(process.env[key])
+    }
+  })
+  definitions['process.env'] = '{}'
 
-  <span class="token keyword">return</span> definitions
-<span class="token punctuation">}</span>
+  return definitions
+}
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">defineImportEnv</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> definitions<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isValidId</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      definitions<span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">import.meta.env.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>key<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  definitions<span class="token punctuation">[</span><span class="token string">'import.meta.env'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'{}'</span>
-  <span class="token keyword">return</span> definitions
-<span class="token punctuation">}</span>
+export function defineImportEnv() {
+  const definitions: Record&lt;string, string&gt; = {}
+  Object.keys(process.env).forEach((key) =&gt; {
+    if (isValidId(key)) {
+      definitions[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
+    }
+  })
+  definitions['import.meta.env'] = '{}'
+  return definitions
+}
 
-<span class="token comment">/**
+/**
  * Pass environment variables to esbuild.
  * @return An esbuild plugin.
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">env</span><span class="token punctuation">(</span>options<span class="token operator">:</span> <span class="token punctuation">{</span> process<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token keyword">import</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'env'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> <span class="token punctuation">{</span> platform<span class="token punctuation">,</span> define <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">}</span> <span class="token operator">=</span> build<span class="token punctuation">.</span>initialOptions
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>platform <span class="token operator">===</span> <span class="token string">'node'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span>
-      <span class="token punctuation">}</span>
-      build<span class="token punctuation">.</span>initialOptions<span class="token punctuation">.</span>define <span class="token operator">=</span> define
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>import<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>build<span class="token punctuation">.</span>initialOptions<span class="token punctuation">.</span>define<span class="token punctuation">,</span> <span class="token function">defineImportEnv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>options<span class="token punctuation">.</span>process<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>build<span class="token punctuation">.</span>initialOptions<span class="token punctuation">.</span>define<span class="token punctuation">,</span> <span class="token function">defineProcessEnv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function env(options: { process?: boolean; import?: boolean }): Plugin {
+  return {
+    name: 'env',
+    setup(build) {
+      const { platform, define = {} } = build.initialOptions
+      if (platform === 'node') {
+        return
+      }
+      build.initialOptions.define = define
+      if (options.import) {
+        Object.assign(build.initialOptions.define, defineImportEnv())
+      }
+      if (options.process) {
+        Object.assign(build.initialOptions.define, defineProcessEnv())
+      }
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>使用插件之后，我们就可以在代码中使用环境变量了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">const</span> NodeEnv <span class="token operator">=</span> <span class="token keyword">import</span><span class="token punctuation">.</span>meta<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export const NodeEnv = import.meta.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>编译结果</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> NodeEnv <span class="token operator">=</span> <span class="token string">'test'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="在构建时输出日志"><a href="#在构建时输出日志" class="headerlink" title="在构建时输出日志"></a>在构建时输出日志</h2><p>有时候我们希望以监视模式构建某些东西，但 esbuild 不会在构建后输出消息，我们简单实现一个。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin<span class="token punctuation">,</span> PluginBuild <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin, PluginBuild } from 'esbuild'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'log'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>builder<span class="token operator">:</span> PluginBuild<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">let</span> start<span class="token operator">:</span> <span class="token builtin">number</span>
-      builder<span class="token punctuation">.</span><span class="token function">onStart</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        start <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      builder<span class="token punctuation">.</span><span class="token function">onEnd</span><span class="token punctuation">(</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>errors<span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'build failed'</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span>errors<span class="token punctuation">)</span>
-          <span class="token keyword">return</span>
-        <span class="token punctuation">}</span>
-        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">build complete, time </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> start<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">ms</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function log(): Plugin {
+  return {
+    name: 'log',
+    setup(builder: PluginBuild) {
+      let start: number
+      builder.onStart(() =&gt; {
+        start = Date.now()
+      })
+      builder.onEnd((result) =&gt; {
+        if (result.errors.length !== 0) {
+          console.error('build failed', result.errors)
+          return
+        }
+        console.log(`build complete, time ${Date.now() - start}ms`)
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>我们可以测试它是有效的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> mockLog <span class="token operator">=</span> jest<span class="token punctuation">.</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-jest<span class="token punctuation">.</span><span class="token function">spyOn</span><span class="token punctuation">(</span>global<span class="token punctuation">.</span><span class="token builtin">console</span><span class="token punctuation">,</span> <span class="token string">'log'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mockImplementation</span><span class="token punctuation">(</span>mockLog<span class="token punctuation">)</span>
-<span class="token keyword">await</span> <span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  stdin<span class="token operator">:</span> <span class="token punctuation">{</span>
-    contents<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">export const name = 'liuli'</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  write<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token function">expect</span><span class="token punctuation">(</span>mockLog<span class="token punctuation">.</span>mock<span class="token punctuation">.</span>calls<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const mockLog = jest.fn()
+jest.spyOn(global.console, 'log').mockImplementation(mockLog)
+await build({
+  stdin: {
+    contents: `export const name = 'liuli'`,
+  },
+  plugins: [log()],
+  write: false,
+})
+expect(mockLog.mock.calls.length).toBe(1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="自动排除-node-开头的依赖"><a href="#自动排除-node-开头的依赖" class="headerlink" title="自动排除 node: 开头的依赖"></a>自动排除 node: 开头的依赖</h2><p>有时候某些依赖的模块使用了 nodejs 的原生模块，但是以 <code>node:</code> 开头的的写法，这会导致 esbuild 无法识别，我们使用以下插件处理它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
 
-<span class="token comment">/**
+/**
  * 排除和替换 node 内置模块
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">nodeExternal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'nodeExternals'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      build<span class="token punctuation">.</span><span class="token function">onResolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">(^node:)</span><span class="token regex-delimiter">/</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-        path<span class="token operator">:</span> args<span class="token punctuation">.</span>path<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        external<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function nodeExternal(): Plugin {
+  return {
+    name: 'nodeExternals',
+    setup(build) {
+      build.onResolve({ filter: /(^node:)/ }, (args) =&gt; ({
+        path: args.path.slice(5),
+        external: true,
+      }))
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>我们的以下代码中的 node: 开头的原生模块会被排除</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> path <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'node:path'</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { path } from 'node:path'
+console.log(path.resolve(__dirname))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>编译结果</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// &lt;stdin&gt;</span>
@@ -488,141 +488,141 @@ jest<span class="token punctuation">.</span><span class="token function">spyOn</
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="通过-raw-捆绑文本文件"><a href="#通过-raw-捆绑文本文件" class="headerlink" title="通过 ?raw 捆绑文本文件"></a>通过 ?raw 捆绑文本文件</h2><p>如果使用过 vite 的话，可能会对它的 <code>?*</code> 功能印象深刻，它提供了各种各样的功能来以不同的方式导入文件，而在 esbuild 中，我们有时候也希望静态捆绑某些内容，例如 readme 文件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> readFile <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'fs-extra'</span>
-<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
+import { readFile } from 'fs-extra'
+import * as path from 'path'
 
-<span class="token comment">/**
+/**
  * 通过 ?raw 将资源作为字符串打包进来
  * @returns
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">raw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'raw'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      build<span class="token punctuation">.</span><span class="token function">onResolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\?raw$</span><span class="token regex-delimiter">/</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token punctuation">{</span>
-          path<span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token function">isAbsolute</span><span class="token punctuation">(</span>args<span class="token punctuation">.</span>path<span class="token punctuation">)</span>
-            <span class="token operator">?</span> args<span class="token punctuation">.</span>path
-            <span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>args<span class="token punctuation">.</span>resolveDir<span class="token punctuation">,</span> args<span class="token punctuation">.</span>path<span class="token punctuation">)</span><span class="token punctuation">,</span>
-          namespace<span class="token operator">:</span> <span class="token string">'raw-loader'</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      build<span class="token punctuation">.</span><span class="token function">onLoad</span><span class="token punctuation">(</span>
-        <span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\?raw$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">,</span> namespace<span class="token operator">:</span> <span class="token string">'raw-loader'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token keyword">async</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          <span class="token keyword">return</span> <span class="token punctuation">{</span>
-            contents<span class="token operator">:</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>args<span class="token punctuation">.</span>path<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\?raw$</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-            loader<span class="token operator">:</span> <span class="token string">'text'</span><span class="token punctuation">,</span>
-          <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function raw(): Plugin {
+  return {
+    name: 'raw',
+    setup(build) {
+      build.onResolve({ filter: /\?raw$/ }, (args) =&gt; {
+        return {
+          path: path.isAbsolute(args.path)
+            ? args.path
+            : path.join(args.resolveDir, args.path),
+          namespace: 'raw-loader',
+        }
+      })
+      build.onLoad(
+        { filter: /\?raw$/, namespace: 'raw-loader' },
+        async (args) =&gt; {
+          return {
+            contents: await readFile(args.path.replace(/\?raw$/, '')),
+            loader: 'text',
+          }
+        },
+      )
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>通过以下方式验证</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  stdin<span class="token operator">:</span> <span class="token punctuation">{</span>
-    contents<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const res = await build({
+  stdin: {
+    contents: `
         import readme from '../../README.md?raw'
         console.log(readme)
-      </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-    resolveDir<span class="token operator">:</span> __dirname<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">raw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  bundle<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-  write<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">.</span>outputFiles<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>text<span class="token punctuation">)</span>
-<span class="token function">expect</span><span class="token punctuation">(</span>
-  res<span class="token punctuation">.</span>outputFiles<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>text<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token string">'@liuli-util/esbuild-plugins'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeTruthy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+      `,
+    resolveDir: __dirname,
+  },
+  plugins: [raw()],
+  bundle: true,
+  write: false,
+})
+console.log(res.outputFiles[0].text)
+expect(
+  res.outputFiles[0].text.includes('@liuli-util/esbuild-plugins'),
+).toBeTruthy()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="重写一些模块"><a href="#重写一些模块" class="headerlink" title="重写一些模块"></a>重写一些模块</h2><p>有时候我们希望重写一些模块，例如将导入的 lodash 更改为 lodash-es 以实现 tree shaking，这时候我们可以通过以下插件办到这件事</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> build<span class="token punctuation">,</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
-<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build, Plugin } from 'esbuild'
+import path from 'path'
 
-<span class="token comment">/**
+/**
  * 将指定的 import 重写为另一个
  * @param entries
  * @returns
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">resolve</span><span class="token punctuation">(</span>entries<span class="token operator">:</span> <span class="token punctuation">[</span>from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'resolve'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      build<span class="token punctuation">.</span><span class="token function">onResolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">.*</span><span class="token regex-delimiter">/</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> findEntries <span class="token operator">=</span> entries<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">===</span> args<span class="token punctuation">.</span>path<span class="token punctuation">)</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>findEntries<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">return</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token keyword">await</span> build<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>findEntries<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function resolve(entries: [from: string, to: string][]): Plugin {
+  return {
+    name: 'resolve',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
+        const findEntries = entries.find((item) =&gt; item[0] === args.path)
+        if (!findEntries) {
+          return
+        }
+        return await build.resolve(findEntries[1])
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>我们可以使用以下配置将 lodash 替换为 lodash-es</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token string">'lodash'</span><span class="token punctuation">,</span> <span class="token string">'lodash-es'</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
+  plugins: [resolve([['lodash', 'lodash-es']])],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>源代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash'</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { uniq } from 'lodash'
+console.log(uniq([1, 2, 1]))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>编译结果</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash-es'</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="强制指定模块没有副作用"><a href="#强制指定模块没有副作用" class="headerlink" title="强制指定模块没有副作用"></a>强制指定模块没有副作用</h2><p>当我们的使用一个第三方的包时，有可能这个包依赖了一些其他的模块，如果这个模块没有声明 <code>sideEffect</code>，那么即便它没有副作用并且导出了 esm 的包，也会将依赖的模块 bundle 进来，但我们可以使用插件 api 强制指定模块没有副作用。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
 
-<span class="token comment">/**
+/**
  * 设置指定模块为没有副作用的包，由于 webpack/esbuild 的配置不兼容，所以先使用插件来完成这件事
  * @param packages
  * @returns
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">sideEffects</span><span class="token punctuation">(</span>packages<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'sideEffects'</span><span class="token punctuation">,</span>
-    <span class="token function">setup</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      build<span class="token punctuation">.</span><span class="token function">onResolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span> filter<span class="token operator">:</span> <span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">.*</span><span class="token regex-delimiter">/</span></span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>args<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>
-          args<span class="token punctuation">.</span>pluginData <span class="token operator">||</span> <span class="token comment">// Ignore this if we called ourselves</span>
-          <span class="token operator">!</span>packages<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>args<span class="token punctuation">.</span>path<span class="token punctuation">)</span>
-        <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">return</span>
-        <span class="token punctuation">}</span>
+ */
+export function sideEffects(packages: string[]): Plugin {
+  return {
+    name: 'sideEffects',
+    setup(build) {
+      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
+        if (
+          args.pluginData || // Ignore this if we called ourselves
+          !packages.includes(args.path)
+        ) {
+          return
+        }
 
-        <span class="token keyword">const</span> <span class="token punctuation">{</span> path<span class="token punctuation">,</span> <span class="token operator">...</span>rest <span class="token punctuation">}</span> <span class="token operator">=</span> args
-        rest<span class="token punctuation">.</span>pluginData <span class="token operator">=</span> <span class="token boolean">true</span> <span class="token comment">// Avoid infinite recursion</span>
-        <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token keyword">await</span> build<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> rest<span class="token punctuation">)</span>
+        const { path, ...rest } = args
+        rest.pluginData = true // Avoid infinite recursion
+        const result = await build.resolve(path, rest)
 
-        result<span class="token punctuation">.</span>sideEffects <span class="token operator">=</span> <span class="token boolean">false</span>
-        <span class="token keyword">return</span> result
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+        result.sideEffects = false
+        return result
+      })
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>我们以如下方式使用它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">sideEffects</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'lib'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
+  plugins: [sideEffects(['lib'])],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这时候，即便 lib-a 中某些代码依赖了 lib-b，但只要你的代码没有依赖到特定方法，那么它就会被正确的 tree shaking</p>
 <p>例如下面的代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> hello <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lib-a'</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+import { hello } from 'lib-a'
+console.log(hello('liuli'))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// lib-a/src/index.ts</span>
-<span class="token keyword">export</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token string">'lib-b'</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">hello</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// lib-a/src/index.ts
+export * from 'lib-b'
+export function hello(name: string) {
+  return `hello ${name}`
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>编译结果</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// dist/main.js</span>

@@ -327,21 +327,21 @@
 <h2 id="如何不打包成压缩格式-asar"><a href="#如何不打包成压缩格式-asar" class="headerlink" title="如何不打包成压缩格式 asar"></a>如何不打包成压缩格式 asar</h2><p>配置 electron-builder <code>"asar": false</code>。</p>
 <h2 id="second-instance-事件监听无效"><a href="#second-instance-事件监听无效" class="headerlink" title="second-instance 事件监听无效"></a><code>second-instance</code> 事件监听无效</h2><p>必须使用 <code>app.requestSingleInstanceLock()</code> 保持应用程序单例，才能正常监听到该事件。</p>
 <p>示例代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> gotTheLock <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">requestSingleInstanceLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>gotTheLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  app<span class="token punctuation">.</span><span class="token function">quit</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-  app<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'second-instance'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>event<span class="token punctuation">,</span> commandLine<span class="token punctuation">,</span> workingDirectory<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'second-instance'</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) =&gt; {
+    console.log('second-instance')
+  })
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>参考: <a target="_blank" rel="noopener" href="https://www.electronjs.org/docs/api/app#apprequestsingleinstancelock">https://www.electronjs.org/docs/api/app#apprequestsingleinstancelock</a></p>
 </blockquote>
 <h2 id="安装浏览器扩展报错"><a href="#安装浏览器扩展报错" class="headerlink" title="安装浏览器扩展报错"></a>安装浏览器扩展报错</h2><p>提示安装失败</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>node:23488<span class="token punctuation">)</span> ExtensionLoadWarning: Warnings loading extension at C:<span class="token punctuation">\</span>Users<span class="token punctuation">\</span>rxliuli<span class="token punctuation">\</span>AppData<span class="token punctuation">\</span>Roaming<span class="token punctuation">\</span>Electron<span class="token punctuation">\</span>extensions<span class="token punctuation">\</span>fmkadmapgofadopljbjfkapdkoienihi: Unrecognized manifest key <span class="token string">'browser_action'</span><span class="token builtin class-name">.</span> Unre
-cognized manifest key <span class="token string">'minimum_chrome_version'</span><span class="token builtin class-name">.</span> Unrecognized manifest key <span class="token string">'update_url'</span><span class="token builtin class-name">.</span> Cannot load extension with <span class="token function">file</span> or directory name _metadata. Filenames starting with <span class="token string">"_"</span> are reserved <span class="token keyword">for</span> use by
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">(node:23488) ExtensionLoadWarning: Warnings loading extension at C:\Users\rxliuli\AppData\Roaming\Electron\extensions\fmkadmapgofadopljbjfkapdkoienihi: Unrecognized manifest key 'browser_action'. Unre
+cognized manifest key 'minimum_chrome_version'. Unrecognized manifest key 'update_url'. Cannot load extension with file or directory name _metadata. Filenames starting with "_" are reserved for use by
  the system.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>其实答案是：扩展必须在 <code>app.ready</code> 之后，创建 BrowserWindow 窗口之前安装。</p>

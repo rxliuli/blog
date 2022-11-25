@@ -342,35 +342,35 @@
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><blockquote>
 <p>注：反射部分依赖于 <a target="_blank" rel="noopener" href="https://github.com/jOOQ/jOOR">joor</a>, JDK1.8 请使用 <a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/org.jooq/joor-java-8/0.9.7">joor-java-8</a></p>
 </blockquote>
-<h3 id="定义门面类-BeanCopyUtil-用以暴露出一些-API"><a href="#定义门面类-BeanCopyUtil-用以暴露出一些-API" class="headerlink" title="定义门面类 BeanCopyUtil 用以暴露出一些 API"></a>定义门面类 <code>BeanCopyUtil</code> 用以暴露出一些 API</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<h3 id="定义门面类-BeanCopyUtil-用以暴露出一些-API"><a href="#定义门面类-BeanCopyUtil-用以暴露出一些-API" class="headerlink" title="定义门面类 BeanCopyUtil 用以暴露出一些 API"></a>定义门面类 <code>BeanCopyUtil</code> 用以暴露出一些 API</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * java bean 复制操作的工具类
  *
  * @author rxliuli
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
-    <span class="token comment">/**
+ */
+public class BeanCopyUtil&lt;F, T&gt; {
+    /**
      * 源对象
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">F</span> from<span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private final F from;
+    /**
      * 目标对象
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">T</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private final T to;
+    /**
      * 拷贝的字段信息列表
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BeanCopyField</span><span class="token punctuation">&gt;</span></span> copyFieldList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private final List&lt;BeanCopyField&gt; copyFieldList = new LinkedList&lt;&gt;();
+    /**
      * 配置信息
-     */</span>
-    <span class="token keyword">private</span> <span class="token class-name">BeanCopyConfig</span> config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    private BeanCopyConfig config = new BeanCopyConfig();
 
-    <span class="token keyword">private</span> <span class="token class-name">BeanCopyUtil</span><span class="token punctuation">(</span><span class="token class-name">F</span> from<span class="token punctuation">,</span> <span class="token class-name">T</span> <span class="token keyword">to</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>from <span class="token operator">=</span> from<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token keyword">to</span> <span class="token operator">=</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    private BeanCopyUtil(F from, T to) {
+        this.from = from;
+        this.to = to;
+    }
 
-    <span class="token comment">/**
+    /**
      * 指定需要拷贝的源对象和目标对象
      *
      * @param from 源对象
@@ -378,533 +378,533 @@
      * @param &lt;F&gt;  源对象类型
      * @param &lt;T&gt;  目标对象类型
      * @return 一个 {@link BeanCopyUtil} 对象
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">copy</span><span class="token punctuation">(</span><span class="token class-name">F</span> from<span class="token punctuation">,</span> <span class="token class-name">T</span> <span class="token keyword">to</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public static &lt;F, T&gt; BeanCopyUtil&lt;F, T&gt; copy(F from, T to) {
+        return new BeanCopyUtil&lt;&gt;(from, to);
+    }
 
-    <span class="token comment">/**
+    /**
      * 拷贝指定对象的字段
      *
      * @param fromField 源对象中的字段名
      * @param toField   目标对象中的字段名
      * @param converter 将源对象中字段转换为目标对象字段类型的转换器
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">prop</span><span class="token punctuation">(</span><span class="token class-name">String</span> fromField<span class="token punctuation">,</span> <span class="token class-name">String</span> toField<span class="token punctuation">,</span> <span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        copyFieldList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeanCopyField</span><span class="token punctuation">(</span>fromField<span class="token punctuation">,</span> toField<span class="token punctuation">,</span> converter<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; prop(String fromField, String toField, Function&lt;? super Object, ? super Object&gt; converter) {
+        copyFieldList.add(new BeanCopyField(fromField, toField, converter));
+        return this;
+    }
 
-    <span class="token comment">/**
+    /**
      * 拷贝指定对象的字段
      *
      * @param fromField 源对象中的字段名
      * @param toField   目标对象中的字段名
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">prop</span><span class="token punctuation">(</span><span class="token class-name">String</span> fromField<span class="token punctuation">,</span> <span class="token class-name">String</span> toField<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">prop</span><span class="token punctuation">(</span>fromField<span class="token punctuation">,</span> toField<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; prop(String fromField, String toField) {
+        return prop(fromField, toField, null);
+    }
 
-    <span class="token comment">/**
+    /**
      * 拷贝指定对象的字段
      *
      * @param field     源对象中与目标对象中的字段名
      * @param converter 将源对象中字段转换为目标对象字段类型的转换器
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">prop</span><span class="token punctuation">(</span><span class="token class-name">String</span> field<span class="token punctuation">,</span> <span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">prop</span><span class="token punctuation">(</span>field<span class="token punctuation">,</span> field<span class="token punctuation">,</span> converter<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; prop(String field, Function&lt;? super Object, ? super Object&gt; converter) {
+        return prop(field, field, converter);
+    }
 
-    <span class="token comment">/**
+    /**
      * 拷贝指定对象的字段
      *
      * @param field 源对象中与目标对象中的字段名
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">prop</span><span class="token punctuation">(</span><span class="token class-name">String</span> field<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">prop</span><span class="token punctuation">(</span>field<span class="token punctuation">,</span> field<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; prop(String field) {
+        return prop(field, field, null);
+    }
 
-    <span class="token comment">/**
+    /**
      * 拷贝指定对象的多个字段
      *
      * @param fields 源对象中与目标对象中的多个字段名
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">props</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> fields<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">String</span> field <span class="token operator">:</span> fields<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">prop</span><span class="token punctuation">(</span>field<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; props(String... fields) {
+        for (String field : fields) {
+            prop(field);
+        }
+        return this;
+    }
 
-    <span class="token comment">/**
+    /**
      * 执行真正的拷贝操作
      *
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">new</span> <span class="token class-name">BeanCopyOperator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> <span class="token keyword">to</span><span class="token punctuation">,</span> copyFieldList<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public BeanCopyUtil&lt;F, T&gt; exec() {
+        new BeanCopyOperator&lt;&gt;(from, to, copyFieldList, config).copy();
+        return this;
+    }
 
-    <span class="token comment">/**
+    /**
      * 重新开始添加其他对象的属性
      * 用于在执行完 {@link #exec()} 之后还想复制其它对象的属性
      *
      * @param from 源对象
      * @param &lt;R&gt;  源对象类型
      * @return 一个新的 {@link BeanCopyUtil} 对象
-     */</span>
-    <span class="token keyword">public</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">R</span><span class="token punctuation">&gt;</span></span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">R</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">from</span><span class="token punctuation">(</span><span class="token class-name">R</span> from<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public &lt;R&gt; BeanCopyUtil&lt;R, T&gt; from(R from) {
+        return new BeanCopyUtil&lt;&gt;(from, to);
+    }
 
-    <span class="token comment">/**
+    /**
      * 返回当前的目标对象
      *
      * @return 当前的目标对象
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">T</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    public T get() {
+        return to;
+    }
 
-    <span class="token comment">/**
+    /**
      * 配置拷贝的一些策略
      *
      * @param config 拷贝配置对象
      * @return 返回 {@code this}
-     */</span>
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyUtil</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token function">config</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyConfig</span> config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config <span class="token operator">=</span> config<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+     */
+    public BeanCopyUtil&lt;F, T&gt; config(BeanCopyConfig config) {
+        this.config = config;
+        return this;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="定义每个字段的操作类-BeanCopyField，保存对每个字段的操作"><a href="#定义每个字段的操作类-BeanCopyField，保存对每个字段的操作" class="headerlink" title="定义每个字段的操作类 BeanCopyField，保存对每个字段的操作"></a>定义每个字段的操作类 <code>BeanCopyField</code>，保存对每个字段的操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<h3 id="定义每个字段的操作类-BeanCopyField，保存对每个字段的操作"><a href="#定义每个字段的操作类-BeanCopyField，保存对每个字段的操作" class="headerlink" title="定义每个字段的操作类 BeanCopyField，保存对每个字段的操作"></a>定义每个字段的操作类 <code>BeanCopyField</code>，保存对每个字段的操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 拷贝属性的每一个字段的选项
  *
  * @author rxliuli
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanCopyField</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> from<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> converter<span class="token punctuation">;</span>
+ */
+public class BeanCopyField {
+    private String from;
+    private String to;
+    private Function&lt;? super Object, ? super Object&gt; converter;
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyField</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyField() {
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyField</span><span class="token punctuation">(</span><span class="token class-name">String</span> from<span class="token punctuation">,</span> <span class="token class-name">String</span> <span class="token keyword">to</span><span class="token punctuation">,</span> <span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>from <span class="token operator">=</span> from<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token keyword">to</span> <span class="token operator">=</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>converter <span class="token operator">=</span> converter<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyField(String from, String to, Function&lt;? super Object, ? super Object&gt; converter) {
+        this.from = from;
+        this.to = to;
+        this.converter = converter;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getFrom</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> from<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public String getFrom() {
+        return from;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyField</span> <span class="token function">setFrom</span><span class="token punctuation">(</span><span class="token class-name">String</span> from<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>from <span class="token operator">=</span> from<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyField setFrom(String from) {
+        this.from = from;
+        return this;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getTo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public String getTo() {
+        return to;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyField</span> <span class="token function">setTo</span><span class="token punctuation">(</span><span class="token class-name">String</span> <span class="token keyword">to</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token keyword">to</span> <span class="token operator">=</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyField setTo(String to) {
+        this.to = to;
+        return this;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> <span class="token function">getConverter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> converter<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public Function&lt;? super Object, ? super Object&gt; getConverter() {
+        return converter;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyField</span> <span class="token function">setConverter</span><span class="token punctuation">(</span><span class="token class-name">Function</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">,</span> <span class="token operator">?</span> <span class="token keyword">super</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>converter <span class="token operator">=</span> converter<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    public BeanCopyField setConverter(Function&lt;? super Object, ? super Object&gt; converter) {
+        this.converter = converter;
+        return this;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="定义-BeanCopyConfig，用于配置拷贝属性的策略"><a href="#定义-BeanCopyConfig，用于配置拷贝属性的策略" class="headerlink" title="定义 BeanCopyConfig，用于配置拷贝属性的策略"></a>定义 <code>BeanCopyConfig</code>，用于配置拷贝属性的策略</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<h3 id="定义-BeanCopyConfig，用于配置拷贝属性的策略"><a href="#定义-BeanCopyConfig，用于配置拷贝属性的策略" class="headerlink" title="定义 BeanCopyConfig，用于配置拷贝属性的策略"></a>定义 <code>BeanCopyConfig</code>，用于配置拷贝属性的策略</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 拷贝属性的配置
  *
  * @author rxliuli
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanCopyConfig</span> <span class="token punctuation">{</span>
-    <span class="token comment">/**
+ */
+public class BeanCopyConfig {
+    /**
      * 同名的字段自动复制
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> same <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private boolean same = true;
+    /**
      * 覆盖同名的字段
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> override <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private boolean override = true;
+    /**
      * 忽略 {@code null} 的源对象属性
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> ignoreNull <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private boolean ignoreNull = true;
+    /**
      * 尝试进行自动转换
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> converter <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+     */
+    private boolean converter = true;
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyConfig() {
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> same<span class="token punctuation">,</span> <span class="token keyword">boolean</span> override<span class="token punctuation">,</span> <span class="token keyword">boolean</span> ignoreNull<span class="token punctuation">,</span> <span class="token keyword">boolean</span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>same <span class="token operator">=</span> same<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>override <span class="token operator">=</span> override<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreNull <span class="token operator">=</span> ignoreNull<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>converter <span class="token operator">=</span> converter<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyConfig(boolean same, boolean override, boolean ignoreNull, boolean converter) {
+        this.same = same;
+        this.override = override;
+        this.ignoreNull = ignoreNull;
+        this.converter = converter;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isSame</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> same<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public boolean isSame() {
+        return same;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span> <span class="token function">setSame</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> same<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>same <span class="token operator">=</span> same<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyConfig setSame(boolean same) {
+        this.same = same;
+        return this;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isOverride</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> override<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public boolean isOverride() {
+        return override;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span> <span class="token function">setOverride</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> override<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>override <span class="token operator">=</span> override<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyConfig setOverride(boolean override) {
+        this.override = override;
+        return this;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isIgnoreNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> ignoreNull<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public boolean isIgnoreNull() {
+        return ignoreNull;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span> <span class="token function">setIgnoreNull</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> ignoreNull<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>ignoreNull <span class="token operator">=</span> ignoreNull<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyConfig setIgnoreNull(boolean ignoreNull) {
+        this.ignoreNull = ignoreNull;
+        return this;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">isConverter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> converter<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public boolean isConverter() {
+        return converter;
+    }
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyConfig</span> <span class="token function">setConverter</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> converter<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>converter <span class="token operator">=</span> converter<span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    public BeanCopyConfig setConverter(boolean converter) {
+        this.converter = converter;
+        return this;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="定义-BeanCopyOperator-作为拷贝的真正实现"><a href="#定义-BeanCopyOperator-作为拷贝的真正实现" class="headerlink" title="定义 BeanCopyOperator 作为拷贝的真正实现"></a>定义 <code>BeanCopyOperator</code> 作为拷贝的真正实现</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<h3 id="定义-BeanCopyOperator-作为拷贝的真正实现"><a href="#定义-BeanCopyOperator-作为拷贝的真正实现" class="headerlink" title="定义 BeanCopyOperator 作为拷贝的真正实现"></a>定义 <code>BeanCopyOperator</code> 作为拷贝的真正实现</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 真正执行 copy 属性的类
  *
  * @author rxliuli
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanCopyOperator</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">F</span><span class="token punctuation">,</span> <span class="token class-name">T</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">F</span> from<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">T</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">BeanCopyConfig</span> config<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BeanCopyField</span><span class="token punctuation">&gt;</span></span> copyFieldList<span class="token punctuation">;</span>
+ */
+public class BeanCopyOperator&lt;F, T&gt; {
+    private static final Logger log = LoggerFactory.getLogger(BeanCopyUtil.class);
+    private final F from;
+    private final T to;
+    private final BeanCopyConfig config;
+    private List&lt;BeanCopyField&gt; copyFieldList;
 
-    <span class="token keyword">public</span> <span class="token class-name">BeanCopyOperator</span><span class="token punctuation">(</span><span class="token class-name">F</span> from<span class="token punctuation">,</span> <span class="token class-name">T</span> <span class="token keyword">to</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BeanCopyField</span><span class="token punctuation">&gt;</span></span> copyFieldList<span class="token punctuation">,</span> <span class="token class-name">BeanCopyConfig</span> config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>from <span class="token operator">=</span> from<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token keyword">to</span> <span class="token operator">=</span> <span class="token keyword">to</span><span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>copyFieldList <span class="token operator">=</span> copyFieldList<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>config <span class="token operator">=</span> config<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    public BeanCopyOperator(F from, T to, List&lt;BeanCopyField&gt; copyFieldList, BeanCopyConfig config) {
+        this.from = from;
+        this.to = to;
+        this.copyFieldList = copyFieldList;
+        this.config = config;
+    }
 
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">copy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//获取到两个对象所有的属性</span>
-        <span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Reflect</span><span class="token punctuation">&gt;</span></span> fromFields <span class="token operator">=</span> <span class="token class-name">Reflect</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fields</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token class-name">Reflect</span> <span class="token keyword">to</span> <span class="token operator">=</span> <span class="token class-name">Reflect</span><span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Reflect</span><span class="token punctuation">&gt;</span></span> toFields <span class="token operator">=</span> <span class="token keyword">to</span><span class="token punctuation">.</span><span class="token function">fields</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//过滤出所有相同字段名的字段并进行拷贝</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span><span class="token function">isSame</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">ListUtil<span class="token punctuation">.</span>ListDiffState</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> different <span class="token operator">=</span> <span class="token class-name">ListUtil</span><span class="token punctuation">.</span><span class="token function">different</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>fromFields<span class="token punctuation">.</span><span class="token function">keySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span>toFields<span class="token punctuation">.</span><span class="token function">keySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            copyFieldList <span class="token operator">=</span> <span class="token class-name">Stream</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>different<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">ListUtil<span class="token punctuation">.</span>ListDiffState</span><span class="token punctuation">.</span>common<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>s <span class="token operator">-&gt;</span> <span class="token keyword">new</span> <span class="token class-name">BeanCopyField</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> s<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> copyFieldList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                    <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token comment">//根据拷贝字段列表进行拷贝</span>
-        copyFieldList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token comment">//忽略空值</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>beanCopyField <span class="token operator">-&gt;</span> <span class="token operator">!</span>config<span class="token punctuation">.</span><span class="token function">isIgnoreNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> fromFields<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>beanCopyField<span class="token punctuation">.</span><span class="token function">getFrom</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-                <span class="token comment">//覆盖属性</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>beanCopyField <span class="token operator">-&gt;</span> config<span class="token punctuation">.</span><span class="token function">isOverride</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> toFields<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>beanCopyField<span class="token punctuation">.</span><span class="token function">getTo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
-                <span class="token comment">//如果没有转换器，则使用默认的转换器</span>
-                <span class="token punctuation">.</span><span class="token function">peek</span><span class="token punctuation">(</span>beanCopyField <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">if</span> <span class="token punctuation">(</span>beanCopyField<span class="token punctuation">.</span><span class="token function">getConverter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        beanCopyField<span class="token punctuation">.</span><span class="token function">setConverter</span><span class="token punctuation">(</span><span class="token class-name">Function</span><span class="token punctuation">.</span><span class="token function">identity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>beanCopyField <span class="token operator">-&gt;</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">final</span> <span class="token class-name">String</span> fromField <span class="token operator">=</span> beanCopyField<span class="token punctuation">.</span><span class="token function">getFrom</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">final</span> <span class="token class-name">F</span> from <span class="token operator">=</span> fromFields<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>fromField<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">final</span> <span class="token class-name">String</span> toField <span class="token operator">=</span> beanCopyField<span class="token punctuation">.</span><span class="token function">getTo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-                        <span class="token keyword">to</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>toField<span class="token punctuation">,</span> beanCopyField<span class="token punctuation">.</span><span class="token function">getConverter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ReflectException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"Copy field failed, from {} to {}, exception is {}"</span><span class="token punctuation">,</span> fromField<span class="token punctuation">,</span> toField<span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    public void copy() {
+        //获取到两个对象所有的属性
+        final Map&lt;String, Reflect&gt; fromFields = Reflect.on(from).fields();
+        final Reflect to = Reflect.on(this.to);
+        final Map&lt;String, Reflect&gt; toFields = to.fields();
+        //过滤出所有相同字段名的字段并进行拷贝
+        if (config.isSame()) {
+            final Map&lt;ListUtil.ListDiffState, List&lt;String&gt;&gt; different = ListUtil.different(new ArrayList&lt;&gt;(fromFields.keySet()), new ArrayList&lt;&gt;(toFields.keySet()));
+            copyFieldList = Stream.concat(different.get(ListUtil.ListDiffState.common).stream()
+                    .map(s -&gt; new BeanCopyField(s, s, null)), copyFieldList.stream())
+                    .collect(Collectors.toList());
+        }
+        //根据拷贝字段列表进行拷贝
+        copyFieldList.stream()
+                //忽略空值
+                .filter(beanCopyField -&gt; !config.isIgnoreNull() || fromFields.get(beanCopyField.getFrom()).get() != null)
+                //覆盖属性
+                .filter(beanCopyField -&gt; config.isOverride() || toFields.get(beanCopyField.getTo()).get() == null)
+                //如果没有转换器，则使用默认的转换器
+                .peek(beanCopyField -&gt; {
+                    if (beanCopyField.getConverter() == null) {
+                        beanCopyField.setConverter(Function.identity());
+                    }
+                })
+                .forEach(beanCopyField -&gt; {
+                    final String fromField = beanCopyField.getFrom();
+                    final F from = fromFields.get(fromField).get();
+                    final String toField = beanCopyField.getTo();
+                    try {
+                        to.set(toField, beanCopyField.getConverter().apply(from));
+                    } catch (ReflectException e) {
+                        log.warn("Copy field failed, from {} to {}, exception is {}", fromField, toField, e.getMessage());
+                    }
+                });
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="使用流程图"><a href="#使用流程图" class="headerlink" title="使用流程图"></a>使用流程图</h3><p><img src="https://img.rxliuli.com/20190228000845.png" srcset="/img/loading.gif" lazyload alt="使用流程图"></p>
 <h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>代码写完了，让我们测试一下！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeanCopyUtilTest</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">Student</span> student<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">Teacher</span> teacher<span class="token punctuation">;</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public class BeanCopyUtilTest {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private Student student;
+    private Teacher teacher;
 
-    <span class="token annotation punctuation">@Before</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">before</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        student <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token string">"琉璃"</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token string">"女"</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        teacher <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Before
+    public void before() {
+        student = new Student("琉璃", 10, "女", 4);
+        teacher = new Teacher();
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">copy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//简单的复制（类似于 BeanUtils.copyProperties）</span>
-        <span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> teacher<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"teacher: {}"</span><span class="token punctuation">,</span> teacher<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span>teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"age"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span>student<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void copy() {
+        //简单的复制（类似于 BeanUtils.copyProperties）
+        BeanCopyUtil.copy(student, teacher).exec();
+        log.info("teacher: {}", teacher);
+        assertThat(teacher)
+                .extracting("age")
+                .containsOnlyOnce(student.getAge());
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">prop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//不同名字的属性</span>
-        <span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"sex"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">,</span> sex <span class="token operator">-&gt;</span> <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>sex<span class="token punctuation">,</span> <span class="token string">"男"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"realname"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span>teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"age"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span>student<span class="token punctuation">.</span><span class="token function">getRealname</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> student<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void prop() {
+        //不同名字的属性
+        BeanCopyUtil.copy(student, teacher)
+                .prop("sex", "sex", sex -&gt; Objects.equals(sex, "男"))
+                .prop("realname", "name")
+                .exec();
+        assertThat(teacher)
+                .extracting("name", "age", "sex")
+                .containsOnlyOnce(student.getRealname(), student.getAge(), false);
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">prop1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//不存的属性</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"sex"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">,</span> sex <span class="token operator">-&gt;</span> <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>sex<span class="token punctuation">,</span> <span class="token string">"男"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"realname"</span><span class="token punctuation">,</span> <span class="token string">"name2"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"age"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span>student<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void prop1() {
+        //不存的属性
+        assertThat(BeanCopyUtil.copy(student, teacher)
+                .prop("sex", "sex", sex -&gt; Objects.equals(sex, "男"))
+                .prop("realname", "name2")
+                .exec()
+                .get())
+                .extracting("age", "sex")
+                .containsOnlyOnce(student.getAge(), false);
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> <span class="token class-name">Teacher</span> lingMeng <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"灵梦"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">setAge</span><span class="token punctuation">(</span><span class="token number">17</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//测试 from 是否覆盖</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"sex"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">,</span> sex <span class="token operator">-&gt;</span> <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>sex<span class="token punctuation">,</span> <span class="token string">"男"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"realname"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>lingMeng<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"age"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span>lingMeng<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> lingMeng<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void from() {
+        final Teacher lingMeng = new Teacher()
+                .setName("灵梦")
+                .setAge(17);
+        //测试 from 是否覆盖
+        assertThat(BeanCopyUtil.copy(student, teacher)
+                .prop("sex", "sex", sex -&gt; Objects.equals(sex, "男"))
+                .prop("realname", "name")
+                .exec()
+                .from(lingMeng)
+                .exec()
+                .get())
+                .extracting("name", "age", "sex")
+                .containsOnlyOnce(lingMeng.getName(), lingMeng.getAge(), false);
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//测试 get 是否有效</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> teacher<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"sex"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">,</span> sex <span class="token operator">-&gt;</span> <span class="token class-name">Objects</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>sex<span class="token punctuation">,</span> <span class="token string">"男"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">prop</span><span class="token punctuation">(</span><span class="token string">"realname"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"age"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span>student<span class="token punctuation">.</span><span class="token function">getRealname</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> student<span class="token punctuation">.</span><span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void get() {
+        //测试 get 是否有效
+        assertThat(BeanCopyUtil.copy(student, teacher)
+                .prop("sex", "sex", sex -&gt; Objects.equals(sex, "男"))
+                .prop("realname", "name")
+                .exec()
+                .get())
+                .extracting("name", "age", "sex")
+                .containsOnlyOnce(student.getRealname(), student.getAge(), false);
+    }
 
-    <span class="token annotation punctuation">@Test</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">config</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//不自动复制同名属性</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAge</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">config</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setSame</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"age"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyNulls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//不覆盖不为空的属性</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAge</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAge</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">config</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setOverride</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"age"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyOnce</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//不忽略源对象不为空的属性</span>
-        <span class="token function">assertThat</span><span class="token punctuation">(</span><span class="token class-name">BeanCopyUtil</span><span class="token punctuation">.</span><span class="token function">copy</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> student<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">config</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeanCopyConfig</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setIgnoreNull</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">extracting</span><span class="token punctuation">(</span><span class="token string">"realname"</span><span class="token punctuation">,</span> <span class="token string">"age"</span><span class="token punctuation">,</span> <span class="token string">"sex"</span><span class="token punctuation">,</span> <span class="token string">"grade"</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">containsOnlyNulls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Test
+    public void config() {
+        //不自动复制同名属性
+        assertThat(BeanCopyUtil.copy(new Student().setAge(15), new Teacher())
+                .config(new BeanCopyConfig().setSame(false))
+                .exec()
+                .get())
+                .extracting("age")
+                .containsOnlyNulls();
+        //不覆盖不为空的属性
+        assertThat(BeanCopyUtil.copy(new Student().setAge(15), new Teacher().setAge(10))
+                .config(new BeanCopyConfig().setOverride(false))
+                .exec()
+                .get())
+                .extracting("age")
+                .containsOnlyOnce(10);
+        //不忽略源对象不为空的属性
+        assertThat(BeanCopyUtil.copy(new Student(), student)
+                .config(new BeanCopyConfig().setIgnoreNull(false))
+                .exec()
+                .get())
+                .extracting("realname", "age", "sex", "grade")
+                .containsOnlyNulls();
+    }
 
-    <span class="token comment">/**
+    /**
      * 测试学生类
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Student</span> <span class="token punctuation">{</span>
-        <span class="token comment">/**
+     */
+    private static class Student {
+        /**
          * 姓名
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">String</span> realname<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private String realname;
+        /**
          * 年龄
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">Integer</span> age<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private Integer age;
+        /**
          * 性别，男/女
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">String</span> sex<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private String sex;
+        /**
          * 年级，1 - 6
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">Integer</span> grade<span class="token punctuation">;</span>
+         */
+        private Integer grade;
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token punctuation">}</span>
+        public Student() {
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span><span class="token punctuation">(</span><span class="token class-name">String</span> realname<span class="token punctuation">,</span> <span class="token class-name">Integer</span> age<span class="token punctuation">,</span> <span class="token class-name">String</span> sex<span class="token punctuation">,</span> <span class="token class-name">Integer</span> grade<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>realname <span class="token operator">=</span> realname<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>sex <span class="token operator">=</span> sex<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>grade <span class="token operator">=</span> grade<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Student(String realname, Integer age, String sex, Integer grade) {
+            this.realname = realname;
+            this.age = age;
+            this.sex = sex;
+            this.grade = grade;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getRealname</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        public String getRealname() {
 
-            <span class="token keyword">return</span> realname<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+            return realname;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span> <span class="token function">setRealname</span><span class="token punctuation">(</span><span class="token class-name">String</span> realname<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>realname <span class="token operator">=</span> realname<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Student setRealname(String realname) {
+            this.realname = realname;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Integer</span> <span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> age<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Integer getAge() {
+            return age;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span> <span class="token function">setAge</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> age<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Student setAge(Integer age) {
+            this.age = age;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> sex<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public String getSex() {
+            return sex;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span> <span class="token function">setSex</span><span class="token punctuation">(</span><span class="token class-name">String</span> sex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>sex <span class="token operator">=</span> sex<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Student setSex(String sex) {
+            this.sex = sex;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Integer</span> <span class="token function">getGrade</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> grade<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Integer getGrade() {
+            return grade;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Student</span> <span class="token function">setGrade</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> grade<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>grade <span class="token operator">=</span> grade<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Student setGrade(Integer grade) {
+            this.grade = grade;
+            return this;
+        }
 
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token class-name">ToStringBuilder</span><span class="token punctuation">.</span><span class="token function">reflectionToString</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }
+    }
 
-    <span class="token comment">/**
+    /**
      * 测试教师类
-     */</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">Teacher</span> <span class="token punctuation">{</span>
-        <span class="token comment">/**
+     */
+    private static class Teacher {
+        /**
          * 姓名
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private String name;
+        /**
          * 年龄
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">Integer</span> age<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private Integer age;
+        /**
          * 性别，true 男，false 女
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">Boolean</span> sex<span class="token punctuation">;</span>
-        <span class="token comment">/**
+         */
+        private Boolean sex;
+        /**
          * 职位
-         */</span>
-        <span class="token keyword">private</span> <span class="token class-name">String</span> post<span class="token punctuation">;</span>
+         */
+        private String post;
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token punctuation">}</span>
+        public Teacher() {
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">,</span> <span class="token class-name">Integer</span> age<span class="token punctuation">,</span> <span class="token class-name">Boolean</span> sex<span class="token punctuation">,</span> <span class="token class-name">String</span> post<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>sex <span class="token operator">=</span> sex<span class="token punctuation">;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>post <span class="token operator">=</span> post<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Teacher(String name, Integer age, Boolean sex, String post) {
+            this.name = name;
+            this.age = age;
+            this.sex = sex;
+            this.post = post;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> name<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public String getName() {
+            return name;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span> <span class="token function">setName</span><span class="token punctuation">(</span><span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Teacher setName(String name) {
+            this.name = name;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Integer</span> <span class="token function">getAge</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> age<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Integer getAge() {
+            return age;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span> <span class="token function">setAge</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> age<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>age <span class="token operator">=</span> age<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Teacher setAge(Integer age) {
+            this.age = age;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Boolean</span> <span class="token function">getSex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> sex<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Boolean getSex() {
+            return sex;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span> <span class="token function">setSex</span><span class="token punctuation">(</span><span class="token class-name">Boolean</span> sex<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>sex <span class="token operator">=</span> sex<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Teacher setSex(Boolean sex) {
+            this.sex = sex;
+            return this;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">getPost</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> post<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public String getPost() {
+            return post;
+        }
 
-        <span class="token keyword">public</span> <span class="token class-name">Teacher</span> <span class="token function">setPost</span><span class="token punctuation">(</span><span class="token class-name">String</span> post<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>post <span class="token operator">=</span> post<span class="token punctuation">;</span>
-            <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        public Teacher setPost(String post) {
+            this.post = post;
+            return this;
+        }
 
-        <span class="token annotation punctuation">@Override</span>
-        <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token class-name">ToStringBuilder</span><span class="token punctuation">.</span><span class="token function">reflectionToString</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如果没有发生什么意外，那么一切将能够正常运行！</p>
 <hr>

@@ -366,76 +366,76 @@
 
 <p>vscode vetur 和 jetbrians(web-types) 为了解决开发体验的问题选择了两条不同的道路，但都存在一些问题，参考：<a target="_blank" rel="noopener" href="https://github.com/vueComponent/ant-design-vue/issues/4467">web-types.json 目前仍然有问题，包括某些 slot/item 仍然是错误的</a>，可以想见，既然连 antdv 这么流行的 vue ui 组件库都无法保证没有问题，更别提整个 vue 生态中的其他 ui 组件库了。</p>
 <h3 id="props-和-ts-结合还有什么问题？"><a href="#props-和-ts-结合还有什么问题？" class="headerlink" title="props 和 ts 结合还有什么问题？"></a>props 和 ts 结合还有什么问题？</h3><p>props 在 vue3 的 ts 有所增强，至少能够使用 <code>PropType</code> 复杂类型了，例如下面</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> defineComponent<span class="token punctuation">,</span> PropType <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vue'</span>
-<span class="token keyword">interface</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token builtin">string</span>
-  age<span class="token operator">:</span> <span class="token builtin">number</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineComponent, PropType } from 'vue'
+interface User {
+  name: string
+  age: number
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineComponent</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token string">'List'</span><span class="token punctuation">,</span>
-  props<span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 使用 PropType 定义复杂类型</span>
-    list<span class="token operator">:</span> <span class="token builtin">Array</span> <span class="token keyword">as</span> PropType<span class="token operator">&lt;</span>User<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token function">setup</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 这儿的 props 类型是正确的</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>list<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineComponent({
+  name: 'List',
+  props: {
+    // 使用 PropType 定义复杂类型
+    list: Array as PropType&lt;User[]&gt;,
+  },
+  setup(props) {
+    // 这儿的 props 类型是正确的
+    console.log(props.list)
+    return {}
+  },
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>但它仍然存在一些问题</p>
 <p><strong>无法复用现有的类型</strong>。例如当我们已经有一个后端返回的数据结构类型了，而我们希望组件仅需要其中的部分字段，而这无法使用 ts 的类型操作完成。究其原因，还是因为 vue 的 props 定义仍然是值而非类型。<br><strong>无法使用 ts 的可选属性</strong>。vue props 仍保留定义 <code>required/default/validator</code> 的功能，所以并不能使用 ts 的可选属性。下面的示例代码将上面限制表现的的淋漓尽致</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// react</span>
-<span class="token keyword">interface</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token builtin">string</span>
-  age<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token comment">// 利用了 ts 的可选属性</span>
-  address<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
-<span class="token comment">// 使用 ts 的类型操作，只取 name/age 字段</span>
-<span class="token keyword">const</span> User<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token constant">FC</span><span class="token operator">&lt;</span>Pick<span class="token operator">&lt;</span>User<span class="token punctuation">,</span> <span class="token string">'name'</span> <span class="token operator">|</span> <span class="token string">'age'</span><span class="token operator">&gt;&gt;</span> <span class="token operator">=</span> <span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span><span class="token plain-text">
-      </span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token plain-text"> </span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>age<span class="token punctuation">}</span><span class="token plain-text">
-    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-<span class="token comment">// vue</span>
-<span class="token function">defineComponent</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token string">'User'</span><span class="token punctuation">,</span>
-  props<span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 重新定义，和 ts 格格不入</span>
-    name<span class="token operator">:</span> <span class="token punctuation">{</span>
-      type<span class="token operator">:</span> String<span class="token punctuation">,</span>
-      required<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    age<span class="token operator">:</span> Number<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// react
+interface User {
+  name: string
+  age?: number // 利用了 ts 的可选属性
+  address: string
+}
+// 使用 ts 的类型操作，只取 name/age 字段
+const User: React.FC&lt;Pick&lt;User, 'name' | 'age'&gt;&gt; = (props) =&gt; {
+  return (
+    &lt;div&gt;
+      {props.name} {props.age}
+    &lt;/div&gt;
+  )
+}
+// vue
+defineComponent({
+  name: 'User',
+  props: {
+    // 重新定义，和 ts 格格不入
+    name: {
+      type: String,
+      required: true,
+    },
+    age: Number,
+  },
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p><strong>无法使用泛型</strong>。最典型的莫过于 List 组件，我们希望传入的 data 数据决定 slot 中参数的类型，目前这是不可能的。下面是 react 中的泛型组件示例（本质上是泛型函数，对 <code>state=&gt;ui</code> 的抽象是真的彻底）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 定义泛型函数</span>
-<span class="token keyword">function</span> <span class="token generic-function"><span class="token function">List</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>props<span class="token operator">:</span> <span class="token punctuation">{</span>
-  list<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token function">renderItem</span><span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> i<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> ReactNode
-<span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>props<span class="token punctuation">.</span>list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>renderItem<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// 定义泛型函数
+function List&lt;T&gt;(props: {
+  list: T[]
+  renderItem(item: T, i: number): ReactNode
+}) {
+  return &lt;ul&gt;{props.list.map(props.renderItem)}&lt;/ul&gt;
+}
 
-<span class="token keyword">interface</span> <span class="token class-name">User</span> <span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token builtin">string</span>
-  age<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span>
-<span class="token punctuation">}</span>
+interface User {
+  name: string
+  age?: number
+}
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> Hello<span class="token operator">:</span> React<span class="token punctuation">.</span><span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span>
-      <span class="token attr-name">list</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">[</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'琉璃'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token keyword">as</span> User<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">}</span></span>
-      <span class="token attr-name">renderItem</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span>item<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">}</span></span>
-    <span class="token punctuation">/&gt;</span></span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export const Hello: React.FC = () =&gt; {
+  return (
+    &lt;List
+      list={[{ name: '琉璃' }] as User[]}
+      renderItem={(item, i) =&gt; &lt;li key={i}&gt;{item.name}&lt;/li&gt;}
+    /&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="模板中只能编写-js，但-vue-tsc-会使用-tsc-检查，这会导致一些奇怪的问题很难解决"><a href="#模板中只能编写-js，但-vue-tsc-会使用-tsc-检查，这会导致一些奇怪的问题很难解决" class="headerlink" title="模板中只能编写 js，但 vue-tsc 会使用 tsc 检查，这会导致一些奇怪的问题很难解决"></a>模板中只能编写 js，但 vue-tsc 会使用 tsc 检查，这会导致一些奇怪的问题很难解决</h3><p>模板里不能使用 ts，但 vue-tsc 却会检查 ts，然后就 GG 了</p>
 <p><img src="/resources/de927ddb9b34400fb8ac6d4e675e1b87.png" srcset="/img/loading.gif" lazyload alt="1628152139838"></p>
@@ -446,17 +446,17 @@
 
 <p>需要更换 vue-tsc 为 vls，配置 vite 插件 vite-plugin-checker</p>
 <p>更新依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> <span class="token function">add</span> <span class="token parameter variable">-D</span> vls vite-plugin-checker
-<span class="token function">yarn</span> remove vue-tsc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn add -D vls vite-plugin-checker
+yarn remove vue-tsc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>配置 vite.config.ts</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vite'</span>
-<span class="token keyword">import</span> vue <span class="token keyword">from</span> <span class="token string">'@vitejs/plugin-vue'</span>
-<span class="token keyword">import</span> checker <span class="token keyword">from</span> <span class="token string">'vite-plugin-checker'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import checker from 'vite-plugin-checker'
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">vue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">checker</span><span class="token punctuation">(</span><span class="token punctuation">{</span> typescript<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> vls<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [vue(), checker({ typescript: true, vls: true })],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如果遇到下面这个错误</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">src<span class="token operator">/</span>main<span class="token punctuation">.</span>ts<span class="token operator">:</span><span class="token number">2</span><span class="token operator">:</span><span class="token number">17</span> <span class="token operator">-</span> error <span class="token constant">TS2307</span><span class="token operator">:</span> Cannot find module <span class="token string">'./App.vue'</span> or its corresponding type declarations<span class="token punctuation">.</span>
@@ -464,12 +464,12 @@
 <span class="token number">2</span> <span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App.vue'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>请在 vite-env.d.ts 或 env.d.ts 中声明 vue 文件的类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">declare</span> <span class="token keyword">module</span> <span class="token string">'*.vue'</span> <span class="token punctuation">{</span>
-  <span class="token keyword">import</span> <span class="token punctuation">{</span> DefineComponent <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vue'</span>
-  <span class="token comment">// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types</span>
-  <span class="token keyword">const</span> component<span class="token operator">:</span> DefineComponent<span class="token operator">&lt;</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token builtin">any</span><span class="token operator">&gt;</span>
-  <span class="token keyword">export</span> <span class="token keyword">default</span> component
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">declare module '*.vue' {
+  import { DefineComponent } from 'vue'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+  const component: DefineComponent&lt;{}, {}, any&gt;
+  export default component
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="webstorm-x2F-vscode-对-vue3-ts-的支持比较糟糕"><a href="#webstorm-x2F-vscode-对-vue3-ts-的支持比较糟糕" class="headerlink" title="webstorm/vscode 对 vue3+ts 的支持比较糟糕"></a>webstorm/vscode 对 vue3+ts 的支持比较糟糕</h2><p>具体表现在提示、导航和重构。吾辈在想，是不是 vue 的开发者都习惯了这种问题，代码导航靠 C-F 一个个查找，重构时 CS-F 一个个手动替换（群友吐槽说：“不然怎样，就 vue 那个框架设计，完全不考虑静态分析好吧……估计反馈给 yyx，得到的回答是：这么爱静态分析，滚去用 angular”）</p>
 <ul>
@@ -491,12 +491,12 @@
 </blockquote>
 <ol>
 <li><p>全局注册所有异步组件（能够以编程的方式注册的方法）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> components<span class="token operator">:</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> Lazy<span class="token operator">&lt;</span>Component<span class="token operator">&gt;&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token function-variable function">hello</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span>
-<span class="token punctuation">;</span><span class="token punctuation">[</span><span class="token operator">...</span>Object<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>components<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">[</span>k<span class="token punctuation">,</span> v<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  app<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span>k<span class="token punctuation">,</span> <span class="token function">defineAsyncComponent</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const components: Record&lt;string, Lazy&lt;Component&gt;&gt; = {
+  hello: () =&gt; import('hello'),
+}
+;[...Object.entries(components)].forEach(([k, v]) =&gt; {
+  app.component(k, defineAsyncComponent(v))
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>通过 <code>component</code> 组件渲染</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>component</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hello<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure></li>
@@ -505,61 +505,61 @@
 <hr>
 <p>更新</p>
 <p>使用 <code>defineAsyncComponent</code> 包裹之后就像普通组件一样使用就好了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> AsyncHelloWorld <span class="token operator">=</span> <span class="token function">defineAsyncComponent</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./HelloWorld.vue'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const AsyncHelloWorld = defineAsyncComponent(() =&gt; import('./HelloWorld.vue'))
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">AsyncHelloWorld</span></span> <span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+&lt;AsyncHelloWorld /&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用-provide-x2F-inject-模拟-react-context"><a href="#使用-provide-x2F-inject-模拟-react-context" class="headerlink" title="使用 provide/inject 模拟 react context"></a>使用 provide/inject 模拟 react context</h3><p>为什么要模拟 react context？<br>因为 vue3 仍然基于字符串实现的 provide/inject，而字符串可以任意写且不包含类型。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> inject<span class="token punctuation">,</span> provide <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vue'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { inject, provide } from 'vue'
 
-<span class="token comment">// context 实例本身就已经包含了 key 与值的类型了</span>
-<span class="token keyword">interface</span> <span class="token class-name">Context<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
-  key<span class="token operator">:</span> Symbol
-  init<span class="token operator">?</span><span class="token operator">:</span> <span class="token constant">T</span>
-<span class="token punctuation">}</span>
+// context 实例本身就已经包含了 key 与值的类型了
+interface Context&lt;T&gt; {
+  key: Symbol
+  init?: T
+}
 
-<span class="token comment">/**
+/**
  * 创建一个上下文，用于在当前组件的所有子孙组件共享状态
  * 基于 provide/inject 实现，但支持强类型，而且使用 Symbol，永不重复而且无需考虑命名问题
  * @param init
  * @param key
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">createContext</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>init<span class="token operator">?</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> key<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> Context<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    key<span class="token operator">:</span> <span class="token function">Symbol</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span>
-    init<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+ */
+export function createContext&lt;T&gt;(init?: T, key?: string): Context&lt;T&gt; {
+  return {
+    key: Symbol(key),
+    init,
+  }
+}
 
-<span class="token comment">/**
+/**
  * 为所有子孙组件注入状态
  * @param context
  * @param value
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">useProvide</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>context<span class="token operator">:</span> Context<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">provide</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+ */
+export function useProvide&lt;T&gt;(context: Context&lt;T&gt;, value: T) {
+  provide(context.key, value)
+}
 
-<span class="token comment">/**
+/**
  * 使用祖先节点注入的状态，可能为 null/undefined
  * @param context
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">useInject</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>context<span class="token operator">:</span> Context<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token operator">|</span> <span class="token keyword">undefined</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token function">inject</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span>key<span class="token punctuation">,</span> context<span class="token punctuation">.</span>init<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function useInject&lt;T&gt;(context: Context&lt;T&gt;): T | undefined {
+  return inject(context.key, context.init)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> stringContext <span class="token operator">=</span> <span class="token function">createContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token function">useProvide</span><span class="token punctuation">(</span>stringContext<span class="token punctuation">,</span> <span class="token string">'hello'</span><span class="token punctuation">)</span>
-<span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token function">useInject</span><span class="token punctuation">(</span>stringContext<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const stringContext = createContext()
+useProvide(stringContext, 'hello')
+const value = useInject(stringContext)
+console.log(value)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>关于这点，官方提出了自己的解决方案，参考: <a target="_blank" rel="noopener" href="https://v3.cn.vuejs.org/api/composition-api.html#provide-inject">https://v3.cn.vuejs.org/api/composition-api.html#provide-inject</a></p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> key<span class="token operator">:</span> InjectionKey<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token function">provide</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token string">'foo'</span><span class="token punctuation">)</span> <span class="token comment">// 若提供非字符串值将出错</span>
-<span class="token keyword">const</span> foo <span class="token operator">=</span> <span class="token function">inject</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span> <span class="token comment">// foo 的类型: string | undefined</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const key: InjectionKey&lt;string&gt; = Symbol()
+provide(key, 'foo') // 若提供非字符串值将出错
+const foo = inject(key) // foo 的类型: string | undefined<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>上面只是吾辈的一些吐槽，但考虑到成本问题，在公司推广 react 短期来看仍然是不现实的（vue3、ts 甚至 esnext 都有人未能基本掌握）。</p>
 

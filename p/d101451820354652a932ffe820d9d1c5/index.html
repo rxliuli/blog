@@ -326,31 +326,31 @@
 </blockquote>
 <h3 id="模板字符串类型"><a href="#模板字符串类型" class="headerlink" title="模板字符串类型"></a>模板字符串类型</h3><p>尤其适合在 CSS Properties 相关的类型定义中使用，例如 css 的 <code>width</code>，就可以使用模板字符串进行检查避免低级错误。</p>
 <p>之前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">Width</span> <span class="token operator">=</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token builtin">string</span>
-<span class="token keyword">const</span> i<span class="token operator">:</span> Width <span class="token operator">=</span> <span class="token string">'1px'</span>
-<span class="token keyword">const</span> i2<span class="token operator">:</span> Width <span class="token operator">=</span> <span class="token string">'1px2'</span> <span class="token comment">// 不会报错</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Width = number | string
+const i: Width = '1px'
+const i2: Width = '1px2' // 不会报错<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">Unit</span> <span class="token operator">=</span> <span class="token string">'px'</span> <span class="token operator">|</span> <span class="token string">'%'</span> <span class="token operator">|</span> <span class="token string">'em'</span> <span class="token operator">|</span> <span class="token string">'rem'</span>
-<span class="token keyword">type</span> <span class="token class-name">Width</span> <span class="token operator">=</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>number<span class="token interpolation-punctuation punctuation">}</span></span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Unit<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token keyword">const</span> i<span class="token operator">:</span> Width <span class="token operator">=</span> <span class="token string">'1px'</span>
-<span class="token keyword">const</span> i2<span class="token operator">:</span> Width <span class="token operator">=</span> <span class="token string">'1px2'</span> <span class="token comment">// TS2322: Type '"1px2"' is not assignable to type 'Width'.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Unit = 'px' | '%' | 'em' | 'rem'
+type Width = number | `${number}${Unit}`
+const i: Width = '1px'
+const i2: Width = '1px2' // TS2322: Type '"1px2"' is not assignable to type 'Width'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>该特性在 Grid 组件进行了实用，能够避免一些低级错误。</p>
 </blockquote>
 <h3 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h3><p>事实上，递归类型的需求由来已久。例如典型的 <code>Array.prototype.flat</code> 函数的类型定义，或是函数式中部分应用函数的类型定义。</p>
 <p>下面是一个将嵌套数组亚平的函数的类型定义示例（来自 TypeScript 官网）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">ElementType<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token class-name">ReadonlyArray<span class="token operator">&lt;</span><span class="token keyword">infer</span> <span class="token constant">U</span><span class="token operator">&gt;</span></span> <span class="token operator">?</span> ElementType<span class="token operator">&lt;</span><span class="token constant">U</span><span class="token operator">&gt;</span> <span class="token operator">:</span> <span class="token constant">T</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ElementType&lt;T&gt; = T extends ReadonlyArray&lt;infer U&gt; ? ElementType&lt;U&gt; : T
 
-<span class="token keyword">function</span> <span class="token generic-function"><span class="token function">deepFlatten</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token keyword">readonly</span> <span class="token builtin">unknown</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token operator">:</span> ElementType<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">throw</span> <span class="token string">'not implemented'</span>
-<span class="token punctuation">}</span>
+function deepFlatten&lt;T extends readonly unknown[]&gt;(x: T): ElementType&lt;T&gt;[] {
+  throw 'not implemented'
+}
 
-<span class="token comment">// All of these return the type 'number[]':</span>
-<span class="token function">deepFlatten</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token function">deepFlatten</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token function">deepFlatten</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+// All of these return the type 'number[]':
+deepFlatten([1, 2, 3])
+deepFlatten([[1], [2, 3]])
+deepFlatten([[1], [[2]], [[[3]]]])<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="实际的使用场景"><a href="#实际的使用场景" class="headerlink" title="实际的使用场景"></a>实际的使用场景</h2><h3 id="在-i18next-中根据-key-获取翻译字符串"><a href="#在-i18next-中根据-key-获取翻译字符串" class="headerlink" title="在 i18next 中根据 key 获取翻译字符串"></a>在 i18next 中根据 key 获取翻译字符串</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://stackoverflow.com/a/58308279/8409380">i18next 的类型定义</a></p>
@@ -363,110 +363,110 @@
 <li>根据 key 获取文本并进行参数注入</li>
 </ul>
 <p>下面是吾辈对 i18next 的封装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> zhCN <span class="token keyword">from</span> <span class="token string">'../i18n/zhCN'</span>
-<span class="token keyword">import</span> en <span class="token keyword">from</span> <span class="token string">'../i18n/en'</span>
-<span class="token keyword">import</span> i18next<span class="token punctuation">,</span> <span class="token punctuation">{</span> TOptions <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'i18next'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import zhCN from '../i18n/zhCN'
+import en from '../i18n/en'
+import i18next, { TOptions } from 'i18next'
 
-<span class="token comment">//region 类型定义</span>
+//region 类型定义
 
-<span class="token comment">// returns the same string literal T, if props match, else never</span>
-<span class="token keyword">type</span> <span class="token class-name">CheckDictString<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">B</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token constant">A</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-    <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Extract<span class="token operator">&lt;</span>CheckDictString<span class="token operator">&lt;</span><span class="token constant">B</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token punctuation">[</span><span class="token constant">A</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> string<span class="token operator">&gt;</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-    <span class="token operator">:</span> <span class="token builtin">never</span>
-  <span class="token operator">:</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-  <span class="token operator">?</span> <span class="token constant">T</span>
-  <span class="token operator">:</span> <span class="token builtin">never</span>
+// returns the same string literal T, if props match, else never
+type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
+    : never
+  : T extends keyof O
+  ? T
+  : never
 
-<span class="token comment">// returns the property value from object O given property path T</span>
-<span class="token keyword">type</span> <span class="token class-name">GetDictValue<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">B</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token constant">A</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-    <span class="token operator">?</span> GetDictValue<span class="token operator">&lt;</span><span class="token constant">B</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token punctuation">[</span><span class="token constant">A</span><span class="token punctuation">]</span><span class="token operator">&gt;</span>
-    <span class="token operator">:</span> <span class="token builtin">never</span>
-  <span class="token operator">:</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-  <span class="token operator">?</span> <span class="token constant">O</span><span class="token punctuation">[</span><span class="token constant">T</span><span class="token punctuation">]</span>
-  <span class="token operator">:</span> <span class="token builtin">never</span>
+// returns the property value from object O given property path T
+type GetDictValue&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? GetDictValue&lt;B, O[A]&gt;
+    : never
+  : T extends keyof O
+  ? O[T]
+  : never
 
-<span class="token comment">// retrieves all variable placeholder names as tuple</span>
-<span class="token keyword">type</span> <span class="token class-name">Keys<span class="token operator">&lt;</span><span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token string">''</span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token operator">:</span> <span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> _<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">{{</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">B</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">}}</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">C</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token constant">B</span><span class="token punctuation">,</span> <span class="token operator">...</span>Keys<span class="token operator">&lt;</span><span class="token constant">C</span><span class="token operator">&gt;</span><span class="token punctuation">]</span>
-  <span class="token operator">:</span> <span class="token builtin">never</span>
+// retrieves all variable placeholder names as tuple
+type Keys&lt;S extends string&gt; = S extends ''
+  ? []
+  : S extends `${infer _}{{${infer B}}}${infer C}`
+  ? [B, ...Keys&lt;C&gt;]
+  : never
 
-<span class="token comment">// substitutes placeholder variables with input values</span>
-<span class="token keyword">type</span> <span class="token class-name">Interpolate<span class="token operator">&lt;</span>
-  <span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  <span class="token constant">I</span> <span class="token keyword">extends</span> Record<span class="token operator">&lt;</span>Keys<span class="token operator">&lt;</span><span class="token constant">S</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span>
-<span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token string">''</span>
-  <span class="token operator">?</span> <span class="token string">''</span>
-  <span class="token operator">:</span> <span class="token constant">S</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">{{</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">B</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">}}</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">C</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">I</span><span class="token punctuation">[</span>Extract<span class="token operator">&lt;</span><span class="token constant">B</span><span class="token punctuation">,</span> <span class="token keyword">keyof</span> <span class="token constant">I</span><span class="token operator">&gt;</span><span class="token punctuation">]</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Interpolate<span class="token operator">&lt;</span><span class="token constant">C</span><span class="token punctuation">,</span> <span class="token constant">I</span><span class="token operator">&gt;</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">:</span> <span class="token builtin">never</span>
+// substitutes placeholder variables with input values
+type Interpolate&lt;
+  S extends string,
+  I extends Record&lt;Keys&lt;S&gt;[number], string&gt;
+&gt; = S extends ''
+  ? ''
+  : S extends `${infer A}{{${infer B}}}${infer C}`
+  ? `${A}${I[Extract&lt;B, keyof I&gt;]}${Interpolate&lt;C, I&gt;}`
+  : never
 
-<span class="token comment">//endregion</span>
+//endregion
 
-<span class="token keyword">type</span> <span class="token class-name">Dict</span> <span class="token operator">=</span> <span class="token keyword">typeof</span> zhCN <span class="token operator">|</span> <span class="token keyword">typeof</span> en
+type Dict = typeof zhCN | typeof en
 
-<span class="token keyword">export</span> <span class="token keyword">enum</span> LanguageEnum <span class="token punctuation">{</span>
-  ZhCN <span class="token operator">=</span> <span class="token string">'zhCN'</span><span class="token punctuation">,</span>
-  En <span class="token operator">=</span> <span class="token string">'en'</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span>
+export enum LanguageEnum {
+  ZhCN = 'zhCN',
+  En = 'en',
+}
 
-<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">I18nLoader</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+export class I18nLoader {
+  constructor() {}
 
-  <span class="token comment">/**
+  /**
    * 加载国际化
-   */</span>
+   */
 
-  <span class="token keyword">async</span> <span class="token function">load</span><span class="token punctuation">(</span>language<span class="token operator">:</span> LanguageEnum<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">await</span> i18next<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      lng<span class="token operator">:</span> language<span class="token punctuation">,</span>
-      resources<span class="token operator">:</span> <span class="token punctuation">{</span>
-        en<span class="token operator">:</span> <span class="token punctuation">{</span>
-          translation<span class="token operator">:</span> en<span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        zhCN<span class="token operator">:</span> <span class="token punctuation">{</span>
-          translation<span class="token operator">:</span> zhCN<span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+  async load(language: LanguageEnum) {
+    await i18next.init({
+      lng: language,
+      resources: {
+        en: {
+          translation: en,
+        },
+        zhCN: {
+          translation: zhCN,
+        },
+      },
+    })
+  }
 
-  <span class="token comment">/**
+  /**
    * 根据 key 获取翻译的文本
    * @param key
-   */</span>
-  <span class="token generic-function"><span class="token function">getText</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">K</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-    key<span class="token operator">:</span> <span class="token keyword">keyof</span> Dict <span class="token operator">|</span> <span class="token punctuation">(</span><span class="token constant">K</span> <span class="token operator">&amp;</span> CheckDictString<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> Dict<span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> GetDictValue<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> Dict<span class="token operator">&gt;</span>
-  <span class="token generic-function"><span class="token function">getText</span><span class="token generic class-name"><span class="token operator">&lt;</span>
-    <span class="token constant">D</span> <span class="token keyword">extends</span> Dict <span class="token operator">&amp;</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    <span class="token constant">K</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">D</span><span class="token punctuation">,</span>
-    <span class="token constant">I</span> <span class="token keyword">extends</span> Record<span class="token operator">&lt;</span>Keys<span class="token operator">&lt;</span><span class="token constant">D</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token operator">&gt;</span>
-  <span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>k<span class="token operator">:</span> <span class="token constant">K</span><span class="token punctuation">,</span> args<span class="token operator">:</span> <span class="token constant">I</span><span class="token punctuation">)</span><span class="token operator">:</span> Interpolate<span class="token operator">&lt;</span><span class="token constant">D</span><span class="token punctuation">[</span><span class="token constant">K</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token constant">I</span><span class="token operator">&gt;</span>
-  <span class="token generic-function"><span class="token function">getText</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">K</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-    key<span class="token operator">:</span> <span class="token keyword">keyof</span> Dict <span class="token operator">|</span> <span class="token punctuation">(</span><span class="token constant">K</span> <span class="token operator">&amp;</span> CheckDictString<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> Dict<span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    args<span class="token operator">?</span><span class="token operator">:</span> TOptions<span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> GetDictValue<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> Dict<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> i18next<span class="token punctuation">.</span><span class="token function">t</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> args<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+   */
+  getText&lt;K extends string&gt;(
+    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
+  ): GetDictValue&lt;K, Dict&gt;
+  getText&lt;
+    D extends Dict &amp; Record&lt;string, string&gt;,
+    K extends keyof D,
+    I extends Record&lt;Keys&lt;D[K]&gt;[number], string&gt;
+  &gt;(k: K, args: I): Interpolate&lt;D[K], I&gt;
+  getText&lt;K extends string&gt;(
+    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
+    args?: TOptions,
+  ): GetDictValue&lt;K, Dict&gt; {
+    return i18next.t(key, args)
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>使用起来很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> i18nLoader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">I18nLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">await</span> i18nLoader<span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span>LanguageEnum<span class="token punctuation">.</span>ZhCN<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i18nLoader<span class="token punctuation">.</span><span class="token function">getText</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// 你好</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const i18nLoader = new I18nLoader()
+await i18nLoader.load(LanguageEnum.ZhCN)
+console.log(i18nLoader.getText('hello')) // 你好<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>接下来，我们分析以下 <code>CheckDictString</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">CheckDictString<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> <span class="token constant">B</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token constant">A</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-    <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">A</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Extract<span class="token operator">&lt;</span>CheckDictString<span class="token operator">&lt;</span><span class="token constant">B</span><span class="token punctuation">,</span> <span class="token constant">O</span><span class="token punctuation">[</span><span class="token constant">A</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> string<span class="token operator">&gt;</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-    <span class="token operator">:</span> <span class="token builtin">never</span>
-  <span class="token operator">:</span> <span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token keyword">keyof</span> <span class="token constant">O</span>
-  <span class="token operator">?</span> <span class="token constant">T</span>
-  <span class="token operator">:</span> <span class="token builtin">never</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
+  ? A extends keyof O
+    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
+    : never
+  : T extends keyof O
+  ? T
+  : never<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <ol>
 <li>传入泛型参数 <code>T</code> 和 <code>O</code>，<code>T</code> 必须继承自 <code>string</code></li>
@@ -527,69 +527,69 @@
 </tr>
 </tbody></table>
 <h3 id="使用类型系统解析-json-字符串（好玩性质）"><a href="#使用类型系统解析-json-字符串（好玩性质）" class="headerlink" title="使用类型系统解析 json 字符串（好玩性质）"></a>使用类型系统解析 json 字符串（好玩性质）</h3><p><a target="_blank" rel="noopener" href="https://twitter.com/buildsghost/status/1301976526603206657">twitter 上</a> 甚至有人使用 TypeScript 的模板字符串和递归类型解析了 json 字符串。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">type</span> <span class="token class-name">ParserError<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span> error<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span> <span class="token operator">&amp;</span> <span class="token constant">T</span>
-<span class="token keyword">type</span> <span class="token class-name">EatWhitespace<span class="token operator">&lt;</span>State <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token keyword">extends</span> <span class="token class-name">State</span>
-  <span class="token operator">?</span> ParserError<span class="token operator">&lt;</span><span class="token string">'EatWhitespace got generic string type'</span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> State <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span> <span class="token operator">|</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">\n</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span>
-  <span class="token operator">:</span> State
-<span class="token keyword">type</span> <span class="token class-name">AddKeyValue<span class="token operator">&lt;</span>
-  Memo <span class="token keyword">extends</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  Key <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  Value <span class="token keyword">extends</span> <span class="token builtin">any</span>
-<span class="token operator">&gt;</span></span> <span class="token operator">=</span> Memo <span class="token operator">&amp;</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token constant">K</span> <span class="token keyword">in</span> Key<span class="token punctuation">]</span><span class="token operator">:</span> Value <span class="token punctuation">}</span>
-<span class="token keyword">type</span> <span class="token class-name">ParseJsonObject<span class="token operator">&lt;</span>
-  State <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  Memo <span class="token keyword">extends</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">any</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token keyword">extends</span> <span class="token class-name">State</span>
-  <span class="token operator">?</span> ParserError<span class="token operator">&lt;</span><span class="token string">'ParseJsonObject got generic string type'</span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">}</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span>Memo<span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">"</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> Key<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">:</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-    <span class="token operator">?</span> ParseJsonValue<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token punctuation">[</span><span class="token keyword">infer</span> Value<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span>
-      <span class="token operator">?</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-        <span class="token operator">?</span> ParseJsonObject<span class="token operator">&lt;</span>State<span class="token punctuation">,</span> AddKeyValue<span class="token operator">&lt;</span>Memo<span class="token punctuation">,</span> Key<span class="token punctuation">,</span> Value<span class="token operator">&gt;&gt;</span>
-        <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">}</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-        <span class="token operator">?</span> <span class="token punctuation">[</span>AddKeyValue<span class="token operator">&lt;</span>Memo<span class="token punctuation">,</span> Key<span class="token punctuation">,</span> Value<span class="token operator">&gt;</span><span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-        <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonObject received unexpected token: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-      <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonValue returned unexpected value for: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-    <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonObject received unexpected token: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonObject received unexpected token: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-<span class="token keyword">type</span> <span class="token class-name">ParseJsonArray<span class="token operator">&lt;</span>
-  State <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  Memo <span class="token keyword">extends</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-<span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token keyword">extends</span> <span class="token class-name">State</span>
-  <span class="token operator">?</span> ParserError<span class="token operator">&lt;</span><span class="token string">'ParseJsonArray got generic string type'</span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">]</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span>Memo<span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-  <span class="token operator">:</span> ParseJsonValue<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token punctuation">[</span><span class="token keyword">infer</span> Value<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span>
-  <span class="token operator">?</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">,</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-    <span class="token operator">?</span> ParseJsonArray<span class="token operator">&lt;</span>EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token operator">...</span>Memo<span class="token punctuation">,</span> Value<span class="token punctuation">]</span><span class="token operator">&gt;</span>
-    <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">]</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-    <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">...</span>Memo<span class="token punctuation">,</span> Value<span class="token punctuation">]</span><span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-    <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonArray received unexpected token: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonValue returned unexpected value for: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-<span class="token keyword">type</span> <span class="token class-name">ParseJsonValue<span class="token operator">&lt;</span>State <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token builtin">string</span> <span class="token keyword">extends</span> <span class="token class-name">State</span>
-  <span class="token operator">?</span> ParserError<span class="token operator">&lt;</span><span class="token string">'ParseJsonValue got generic string type'</span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">null</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token keyword">null</span><span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">"</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> Value<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">"</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> <span class="token punctuation">[</span>Value<span class="token punctuation">,</span> State<span class="token punctuation">]</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">[</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> ParseJsonArray<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span>
-  <span class="token operator">:</span> EatWhitespace<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">{</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">infer</span> State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-  <span class="token operator">?</span> ParseJsonObject<span class="token operator">&lt;</span>State<span class="token operator">&gt;</span>
-  <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">ParseJsonValue received unexpected token: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>State<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token operator">&gt;</span>
-<span class="token keyword">type</span> <span class="token class-name">ParseJson<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">string</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> ParseJsonValue<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token keyword">extends</span> <span class="token class-name"><span class="token keyword">infer</span></span> Result
-  <span class="token operator">?</span> Result <span class="token keyword">extends</span> <span class="token punctuation">[</span><span class="token keyword">infer</span> Value<span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span>
-    <span class="token operator">?</span> Value
-    <span class="token operator">:</span> Result <span class="token keyword">extends</span> <span class="token class-name">ParserError<span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span></span>
-    <span class="token operator">?</span> Result
-    <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token string">'ParseJsonValue returned unexpected Result'</span><span class="token operator">&gt;</span>
-  <span class="token operator">:</span> ParserError<span class="token operator">&lt;</span><span class="token string">'ParseJsonValue returned uninferrable Result'</span><span class="token operator">&gt;</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ParserError&lt;T extends string&gt; = { error: true } &amp; T
+type EatWhitespace&lt;State extends string&gt; = string extends State
+  ? ParserError&lt;'EatWhitespace got generic string type'&gt;
+  : State extends ` ${infer State}` | `\n${infer State}`
+  ? EatWhitespace&lt;State&gt;
+  : State
+type AddKeyValue&lt;
+  Memo extends Record&lt;string, any&gt;,
+  Key extends string,
+  Value extends any
+&gt; = Memo &amp; { [K in Key]: Value }
+type ParseJsonObject&lt;
+  State extends string,
+  Memo extends Record&lt;string, any&gt; = {}
+&gt; = string extends State
+  ? ParserError&lt;'ParseJsonObject got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `}${infer State}`
+  ? [Memo, State]
+  : EatWhitespace&lt;State&gt; extends `"${infer Key}"${infer State}`
+  ? EatWhitespace&lt;State&gt; extends `:${infer State}`
+    ? ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
+      ? EatWhitespace&lt;State&gt; extends `,${infer State}`
+        ? ParseJsonObject&lt;State, AddKeyValue&lt;Memo, Key, Value&gt;&gt;
+        : EatWhitespace&lt;State&gt; extends `}${infer State}`
+        ? [AddKeyValue&lt;Memo, Key, Value&gt;, State]
+        : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+      : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
+    : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+  : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
+type ParseJsonArray&lt;
+  State extends string,
+  Memo extends any[] = []
+&gt; = string extends State
+  ? ParserError&lt;'ParseJsonArray got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `]${infer State}`
+  ? [Memo, State]
+  : ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
+  ? EatWhitespace&lt;State&gt; extends `,${infer State}`
+    ? ParseJsonArray&lt;EatWhitespace&lt;State&gt;, [...Memo, Value]&gt;
+    : EatWhitespace&lt;State&gt; extends `]${infer State}`
+    ? [[...Memo, Value], State]
+    : ParserError&lt;`ParseJsonArray received unexpected token: ${State}`&gt;
+  : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
+type ParseJsonValue&lt;State extends string&gt; = string extends State
+  ? ParserError&lt;'ParseJsonValue got generic string type'&gt;
+  : EatWhitespace&lt;State&gt; extends `null${infer State}`
+  ? [null, State]
+  : EatWhitespace&lt;State&gt; extends `"${infer Value}"${infer State}`
+  ? [Value, State]
+  : EatWhitespace&lt;State&gt; extends `[${infer State}`
+  ? ParseJsonArray&lt;State&gt;
+  : EatWhitespace&lt;State&gt; extends `{${infer State}`
+  ? ParseJsonObject&lt;State&gt;
+  : ParserError&lt;`ParseJsonValue received unexpected token: ${State}`&gt;
+type ParseJson&lt;T extends string&gt; = ParseJsonValue&lt;T&gt; extends infer Result
+  ? Result extends [infer Value, string]
+    ? Value
+    : Result extends ParserError&lt;any&gt;
+    ? Result
+    : ParserError&lt;'ParseJsonValue returned unexpected Result'&gt;
+  : ParserError&lt;'ParseJsonValue returned uninferrable Result'&gt;
 
-<span class="token keyword">type</span> <span class="token class-name">Json</span> <span class="token operator">=</span> ParseJson<span class="token operator">&lt;</span><span class="token string">'{ "key1": ["value1", null], "key2": "value2" }'</span><span class="token operator">&gt;</span> <span class="token comment">// type Json = { key1: ["value1", null]; } &amp; { key2: "value2"; }</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+type Json = ParseJson&lt;'{ "key1": ["value1", null], "key2": "value2" }'&gt; // type Json = { key1: ["value1", null]; } &amp; { key2: "value2"; }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>我想后端语言（Java/GoLang）至今也没有出现如此复杂的类型定义。</p>

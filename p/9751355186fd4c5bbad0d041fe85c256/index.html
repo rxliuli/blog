@@ -490,95 +490,95 @@
 </tr>
 </tbody></table>
 <p>可以看到，最终我们成功将圆盘从 a 移动到了 b，这里的关键点是将一个复杂操作分为几步，直到能够执行某些基本操作为止。下面是吾辈使用 ts 实现的最初版本</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">hanoi</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> res<span class="token operator">:</span> <span class="token punctuation">[</span>from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token keyword">function</span> <span class="token function">hanoi</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> stage<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      res<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token punctuation">[</span>from<span class="token punctuation">,</span> to<span class="token punctuation">]</span><span class="token punctuation">)</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token function">hanoi</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
-    <span class="token function">hanoi</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">)</span>
-    <span class="token function">hanoi</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">,</span> from<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoi(n: number) {
+  const res: [from: string, to: string][] = []
+  function hanoi(n: number, from: string, to: string, stage: string) {
+    if (n === 1) {
+      res.push([from, to])
+      return
+    }
+    hanoi(n - 1, from, stage, to)
+    hanoi(1, from, to, stage)
+    hanoi(n - 1, stage, to, from)
+  }
 
-  <span class="token function">hanoi</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> res
-<span class="token punctuation">}</span>
+  hanoi(n, 'a', 'b', 'c')
+  return res
+}
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hanoi</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(hanoi(4))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>下面则使用更加函数式的风格来完成</p>
 <blockquote>
 <p>改进：实际上汉诺塔是先移动上层的所有圆盘到临时柱，然后移动最下层的圆盘到目标柱，最终将临时圆盘上的所有圆盘移动到目标柱。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">hanoi</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">function</span> <span class="token function">iter</span><span class="token punctuation">(</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-    to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-    stage<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>from<span class="token punctuation">,</span> to<span class="token punctuation">]</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token function">iter</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token function">iter</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token function">iter</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">,</span> from<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> <span class="token function">hanoi</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoi(n: number) {
+  function iter(
+    n: number,
+    from: string,
+    to: string,
+    stage: string,
+  ): [string, string][] {
+    if (n === 1) {
+      return [[from, to]]
+    }
+    return iter(n - 1, from, stage, to)
+      .concat(iter(1, from, to, stage))
+      .concat(iter(n - 1, stage, to, from))
+  }
+  return hanoi(n, 'a', 'b', 'c')
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="计算步数"><a href="#计算步数" class="headerlink" title="计算步数"></a>计算步数</h2><p>计算步数更加简单，甚至可以写成一个数学函数</p>
 <p>$$<br>f(1)=1 \<br>f(n)=2f(n-1)+1<br>$$</p>
 <p>如果画成图，就是求一棵树的所有叶子节点</p>
 <p><img src="/resources/a08e9f5d95a541f7b016a7cce631662c.png" srcset="/img/loading.gif" lazyload alt="1654526921100"></p>
 <p>下面使用 ts 非常简单的实现了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
  * 计算移动汉诺塔从 a =&gt; b 的步数，本质上公式非常简单
  * @param n
  * @returns
- */</span>
-<span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> n <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token function">fn</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">fn</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+function fn(n: number) {
+  return n === 1 ? 1 : fn(n - 1) + fn(1) + fn(n - 1)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如果使用缓存，则效率可以高得多</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>map<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> n <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token function">fn</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">fn</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const map = new Map&lt;number, number&gt;()
+function fn(n: number) {
+  if (!map.has(n)) {
+    map.set(n, n === 1 ? 1 : fn(n - 1) + fn(1) + fn(n - 1))
+  }
+  return map.get(n)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用迭代的方式求解"><a href="#使用迭代的方式求解" class="headerlink" title="使用迭代的方式求解"></a>使用迭代的方式求解</h2><p>看起来似乎无法使用迭代的方式去解决这个问题，核心是不知道前面还有多少步，或者说没有办法保存当前的移动信息<br>或许有办法，使用一个对象，通过三个字段的数组保存当前汉诺塔的状态，只要递归函数能<strong>智能</strong>移动一步，就可以以尾递归（迭代）的方式来解决这个问题，就像人的做法一样，能根据上下文做出合理的移动。</p>
 <p>创建一个 HanoiGame 类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">class</span> <span class="token class-name">HanoiGame</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token keyword">public</span> state<span class="token operator">:</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> b<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span> c<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  <span class="token function">check</span><span class="token punctuation">(</span>from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
-      <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>to<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">move</span><span class="token punctuation">(</span>from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> to<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>
-        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">invalid move </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">from</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>to<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">unshift</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">shift</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">get</span><span class="token punctuation">(</span>from<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class HanoiGame {
+  constructor(public state: { a: number[]; b: number[]; c: number[] }) {}
+  check(from: string, to: string) {
+    return (
+      this.state[from].length !== 0 &amp;&amp;
+      (this.state[to].length === 0 || this.get(from) &lt; this.get(to))
+    )
+  }
+  move(from: string, to: string) {
+    if (!this.check(from, to)) {
+      throw new Error(
+        `invalid move ${JSON.stringify(this.state)} ${from} ${to}`,
+      )
+    }
+    this.state[to].unshift(this.state[from].shift())
+  }
+  get(from: string) {
+    return this.state[from][0]
+  }
+}
 
-<span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token keyword">const</span> steps <span class="token operator">=</span> <span class="token function">hanoi</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>
-steps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+const game = new HanoiGame({ a: [1, 2, 3, 4], b: [], c: [] })
+const steps = hanoi(4)
+steps.forEach((item) =&gt; game.move(...item))
+console.log(game.state)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="初始想法"><a href="#初始想法" class="headerlink" title="初始想法"></a>初始想法</h3><p>下面是想到的一种迭代式的非最佳走法</p>
 <p>基本思路如下</p>
@@ -594,56 +594,56 @@ steps<span class="token punctuation">.</span><span class="token function">forEac
 <li>传递当前状态进行下一次移动</li>
 </ol>
 <p><img src="/resources/00007b59e8bb4315a0defa9d591bb4e8.png" srcset="/img/loading.gif" lazyload alt="演示的示例"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">sortBy</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token operator">...</span>arr<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">fn</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token function">fn</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function sortBy&lt;T&gt;(arr: T[], fn: (item: T) =&gt; number): T[] {
+  return [...arr].sort((a, b) =&gt; fn(a) - fn(b))
+}
 
-<span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    a<span class="token operator">:</span> <span class="token function">Array</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> res<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token keyword">function</span> <span class="token function">f</span><span class="token punctuation">(</span>game<span class="token operator">:</span> HanoiGame<span class="token punctuation">,</span> last<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>
-      game<span class="token punctuation">.</span>state<span class="token punctuation">.</span>a<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
-      <span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">.</span>b<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">||</span> game<span class="token punctuation">.</span>state<span class="token punctuation">.</span>c<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">const</span> steps <span class="token operator">=</span> <span class="token punctuation">(</span>
-      <span class="token punctuation">[</span>
-        <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
-    <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-      <span class="token punctuation">(</span><span class="token punctuation">[</span>from<span class="token punctuation">,</span> to<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> to<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> game<span class="token punctuation">.</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">!==</span> last<span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token function">sortBy</span><span class="token punctuation">(</span>steps<span class="token punctuation">,</span> <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      Math<span class="token punctuation">.</span><span class="token function">abs</span><span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">[</span>item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span> <span class="token operator">-</span> game<span class="token punctuation">.</span>state<span class="token punctuation">[</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token keyword">const</span> step <span class="token operator">=</span> list<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    res<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span>
-    game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>list<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token function">f</span><span class="token punctuation">(</span>game<span class="token punctuation">,</span> game<span class="token punctuation">.</span>state<span class="token punctuation">[</span>step<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">f</span><span class="token punctuation">(</span>game<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> res
-<span class="token punctuation">}</span>
+function fn(n: number) {
+  const game = new HanoiGame({
+    a: Array(n)
+      .fill(0)
+      .map((_, i) =&gt; i + 1),
+    b: [],
+    c: [],
+  })
+  const res: [string, string][] = []
+  function f(game: HanoiGame, last: number) {
+    if (
+      game.state.a.length === 0 &amp;&amp;
+      (game.state.b.length === 0 || game.state.c.length === 0)
+    ) {
+      return
+    }
+    const steps = (
+      [
+        ['a', 'b'],
+        ['a', 'c'],
+        ['c', 'b'],
+        ['b', 'c'],
+        ['b', 'a'],
+        ['c', 'a'],
+      ] as [string, string][]
+    ).filter(
+      ([from, to]) =&gt; game.check(from, to) &amp;&amp; game.state[from][0] !== last,
+    )
+    const list = sortBy(steps, (item) =&gt;
+      Math.abs(game.state[item[0]][0] ?? 0 - game.state[item[1]][0] ?? 0),
+    )
+    const step = list[0]
+    res.push(step)
+    game.move(...list[0])
+    f(game, game.state[step[1]][0])
+  }
+  f(game, 0)
+  return res
+}
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(fn(1).length)
+console.log(fn(2).length)
+console.log(fn(3).length)
+console.log(fn(4).length)
+console.log(fn(5).length)
+console.log(fn(6).length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>这个实现有 bug，当 n = 10 时，会无限递归调用导致堆栈溢出</p>
@@ -653,12 +653,12 @@ steps<span class="token punctuation">.</span><span class="token function">forEac
 <li>如果按照最佳走法，那么第一步和汉诺塔的层级决定了最终的 target。具体规则是 <code>n % 2 = 0, target != first step to; n % 2 =1, target = first step to</code></li>
 </ul>
 <h3 id="使用迭代的方式计算步数"><a href="#使用迭代的方式计算步数" class="headerlink" title="使用迭代的方式计算步数"></a>使用迭代的方式计算步数</h3><p>换个思路求解步数也可以简化为尾递归的形式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">hanoiCountByIter</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-  <span class="token keyword">function</span> <span class="token function">f</span><span class="token punctuation">(</span>i<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> sum<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> i <span class="token operator">&gt;</span> n <span class="token operator">?</span> sum <span class="token operator">:</span> <span class="token function">f</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> sum <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> <span class="token function">f</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoiCountByIter(n: number): number {
+  function f(i: number, n: number, sum: number) {
+    return i &gt; n ? sum : f(i + 1, n, sum * 2 + 1)
+  }
+  return f(1, n, 0)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用迭代的方式计算移动步骤"><a href="#使用迭代的方式计算移动步骤" class="headerlink" title="使用迭代的方式计算移动步骤"></a>使用迭代的方式计算移动步骤</h3><p>下面是一个迭代实现，基本思路</p>
 <ul>
@@ -667,99 +667,99 @@ steps<span class="token punctuation">.</span><span class="token function">forEac
 <li>使用链表保存所有的操作，每次递归调用时，都替换其中一个复合操作为 3 个基本操作，并且修改当前操作为要替换的 3 个操作的第一个，直到遇到基本操作</li>
 <li>如果还有下一个操作，则继续处理，否则终止迭代</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
-  prev<span class="token operator">?</span><span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-  next<span class="token operator">?</span><span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-  value<span class="token operator">:</span> <span class="token constant">T</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface LinkNode&lt;T&gt; {
+  prev?: LinkNode&lt;T&gt;
+  next?: LinkNode&lt;T&gt;
+  value: T
+}
 
-<span class="token keyword">class</span> <span class="token class-name">LinkedList<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span> <span class="token punctuation">{</span>
-  first<span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span>first<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>first <span class="token operator">=</span> <span class="token punctuation">{</span> value<span class="token operator">:</span> first <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">replace</span><span class="token punctuation">(</span>old<span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> _nodes<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> nodes<span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> _nodes<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span> value <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    nodes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      item<span class="token punctuation">.</span>next <span class="token operator">=</span> nodes<span class="token punctuation">[</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">]</span>
-      item<span class="token punctuation">.</span>prev <span class="token operator">=</span> nodes<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    nodes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>prev <span class="token operator">=</span> old<span class="token punctuation">.</span>prev
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>old<span class="token punctuation">.</span>prev<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      old<span class="token punctuation">.</span>prev<span class="token punctuation">.</span>next <span class="token operator">=</span> nodes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>first <span class="token operator">=</span> nodes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
+class LinkedList&lt;T&gt; {
+  first: LinkNode&lt;T&gt;
+  constructor(first: T) {
+    this.first = { value: first }
+  }
+  replace(old: LinkNode&lt;T&gt;, _nodes: T[]) {
+    const nodes: LinkNode&lt;T&gt;[] = _nodes.map((value) =&gt; ({ value }))
+    nodes.forEach((item, i) =&gt; {
+      item.next = nodes[i + 1]
+      item.prev = nodes[i - 1]
+    })
+    nodes[0].prev = old.prev
+    if (old.prev) {
+      old.prev.next = nodes[0]
+    } else {
+      this.first = nodes[0]
+    }
 
-    <span class="token keyword">const</span> last <span class="token operator">=</span> nodes<span class="token punctuation">[</span>nodes<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-    last<span class="token punctuation">.</span>next <span class="token operator">=</span> old<span class="token punctuation">.</span>next
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>old<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      old<span class="token punctuation">.</span>prev <span class="token operator">=</span> last
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> nodes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
+    const last = nodes[nodes.length - 1]
+    last.next = old.next
+    if (old.next) {
+      old.prev = last
+    }
+    return nodes[0]
+  }
 
-  <span class="token operator">*</span><span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>iterator<span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">let</span> current<span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token keyword">undefined</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>first
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>current<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">yield</span> current<span class="token punctuation">.</span>value
-      current <span class="token operator">=</span> current<span class="token punctuation">.</span>next
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  *[Symbol.iterator]() {
+    let current: LinkNode&lt;T&gt; | undefined = this.first
+    while (current) {
+      yield current.value
+      current = current.next
+    }
+  }
+}
 
-<span class="token keyword">interface</span> <span class="token class-name">HanoiItem</span> <span class="token punctuation">{</span>
-  value<span class="token operator">:</span> <span class="token builtin">number</span>
-  from<span class="token operator">:</span> <span class="token builtin">string</span>
-  to<span class="token operator">:</span> <span class="token builtin">string</span>
-  stage<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
+interface HanoiItem {
+  value: number
+  from: string
+  to: string
+  stage: string
+}
 
-<span class="token keyword">function</span> <span class="token function">hanoiForIter</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LinkedList<span class="token operator">&lt;</span>HanoiItem<span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    value<span class="token operator">:</span> n<span class="token punctuation">,</span>
-    from<span class="token operator">:</span> <span class="token string">'a'</span><span class="token punctuation">,</span>
-    to<span class="token operator">:</span> <span class="token string">'b'</span><span class="token punctuation">,</span>
-    stage<span class="token operator">:</span> <span class="token string">'c'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">function</span> <span class="token function">f</span><span class="token punctuation">(</span>node<span class="token operator">:</span> LinkNode<span class="token operator">&lt;</span>HanoiItem<span class="token operator">&gt;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> current <span class="token operator">=</span> node<span class="token punctuation">.</span>value
-    <span class="token comment">// 如果可以直接移动，则必须返回</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>current<span class="token punctuation">.</span>value <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token comment">// 如果没有处理到最后一个节点，则继续处理下一个</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>next<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">f</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>next<span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 替换当前复合操作为 3 个子操作</span>
-    <span class="token keyword">const</span> newNode <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span>
-        value<span class="token operator">:</span> current<span class="token punctuation">.</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span>
-        from<span class="token operator">:</span> current<span class="token punctuation">.</span>from<span class="token punctuation">,</span>
-        to<span class="token operator">:</span> current<span class="token punctuation">.</span>stage<span class="token punctuation">,</span>
-        stage<span class="token operator">:</span> current<span class="token punctuation">.</span>to<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">{</span>
-        value<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
-        from<span class="token operator">:</span> current<span class="token punctuation">.</span>from<span class="token punctuation">,</span>
-        to<span class="token operator">:</span> current<span class="token punctuation">.</span>to<span class="token punctuation">,</span>
-        stage<span class="token operator">:</span> current<span class="token punctuation">.</span>stage<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">{</span>
-        value<span class="token operator">:</span> current<span class="token punctuation">.</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span>
-        from<span class="token operator">:</span> current<span class="token punctuation">.</span>stage<span class="token punctuation">,</span>
-        to<span class="token operator">:</span> current<span class="token punctuation">.</span>to<span class="token punctuation">,</span>
-        stage<span class="token operator">:</span> current<span class="token punctuation">.</span>from<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token function">f</span><span class="token punctuation">(</span>newNode<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">f</span><span class="token punctuation">(</span>list<span class="token punctuation">.</span>first<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token operator">...</span>list<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>item<span class="token punctuation">.</span>from<span class="token punctuation">,</span> item<span class="token punctuation">.</span>to<span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+function hanoiForIter(n: number) {
+  const list = new LinkedList&lt;HanoiItem&gt;({
+    value: n,
+    from: 'a',
+    to: 'b',
+    stage: 'c',
+  })
+  function f(node: LinkNode&lt;HanoiItem&gt;) {
+    const current = node.value
+    // 如果可以直接移动，则必须返回
+    if (current.value === 1) {
+      // 如果没有处理到最后一个节点，则继续处理下一个
+      if (node.next) {
+        f(node.next)
+      }
+      return
+    }
+    // 替换当前复合操作为 3 个子操作
+    const newNode = list.replace(node, [
+      {
+        value: current.value - 1,
+        from: current.from,
+        to: current.stage,
+        stage: current.to,
+      },
+      {
+        value: 1,
+        from: current.from,
+        to: current.to,
+        stage: current.stage,
+      },
+      {
+        value: current.value - 1,
+        from: current.stage,
+        to: current.to,
+        stage: current.from,
+      },
+    ])
+    f(newNode)
+  }
+  f(list.first)
+  return [...list].map((item) =&gt; [item.from, item.to] as [string, string])
+}
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hanoiForIter</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(hanoiForIter(4))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>最终，吾辈也是用迭代的方式计算得到了结果（虽然这种方式看起来非常不优雅）</p>
 <h2 id="处理任意状态的汉诺塔"><a href="#处理任意状态的汉诺塔" class="headerlink" title="处理任意状态的汉诺塔"></a>处理任意状态的汉诺塔</h2><p>以上都在处理从零开始移动汉诺塔，但实际上我们也可以处理任意状态的汉诺塔，以下是吾辈想到的一些处理任意汉诺塔的思路</p>
@@ -773,380 +773,380 @@ steps<span class="token punctuation">.</span><span class="token function">forEac
 <p>有什么简单的迭代方式去处理树结构么？</p>
 <h3 id="2-优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤"><a href="#2-优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤" class="headerlink" title="2. 优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤"></a>2. 优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤</h3><p>下面是使用第二种方式实现处理任意状态的汉诺塔</p>
 <p>这种方式最大的优点是比较简单，因为它可以像处理一个初始的汉诺塔一样处理任意状态的汉诺塔，只需要将一些有序的圆盘移动到另一个柱子上，而不需要考虑另一个柱子的状态。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
  * 处理任意状态下的汉诺塔
  * @param state
  * @returns
- */</span>
-<span class="token keyword">function</span> <span class="token function">hanoiAny</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">function</span> <span class="token function">findPos</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> HanoiPos <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> arr<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-    <span class="token keyword">const</span> res <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> state<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> arr<span class="token punctuation">[</span>res<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">findContinuousCount</span><span class="token punctuation">(</span>arr<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-    <span class="token keyword">function</span> <span class="token function">f</span><span class="token punctuation">(</span>i<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> last<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!==</span> last <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">?</span> i <span class="token operator">:</span> <span class="token function">f</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token function">f</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">calcSteps</span><span class="token punctuation">(</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    stage<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">===</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>from<span class="token punctuation">,</span> to<span class="token punctuation">]</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token function">calcSteps</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token function">calcSteps</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span><span class="token function">calcSteps</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> stage<span class="token punctuation">,</span> to<span class="token punctuation">,</span> from<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">findStage</span><span class="token punctuation">(</span>from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span> to<span class="token operator">:</span> HanoiPos<span class="token punctuation">)</span><span class="token operator">:</span> HanoiPos <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> arr<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> i <span class="token operator">!==</span> from <span class="token operator">&amp;&amp;</span> i <span class="token operator">!==</span> to<span class="token punctuation">)</span><span class="token operator">!</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">move</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    stage<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-      <span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token operator">:</span> state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>state<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token operator">:</span> state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">[</span>stage<span class="token punctuation">]</span><span class="token operator">:</span> state<span class="token punctuation">[</span>stage<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span> <span class="token keyword">as</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">count</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> arr<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> state<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a <span class="token operator">+</span> b<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">iter</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 寻找小的连续圆盘</span>
-    <span class="token keyword">const</span> from <span class="token operator">=</span> <span class="token function">findPos</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token keyword">const</span> n <span class="token operator">=</span> <span class="token function">findContinuousCount</span><span class="token punctuation">(</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token comment">// 判断是否到最终状态了</span>
-    <span class="token comment">// 返回所有步骤</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">===</span> <span class="token function">count</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 否则移动所有连续的圆盘到另一个柱子</span>
-    <span class="token comment">// 找到移动的目标</span>
-    <span class="token keyword">const</span> to <span class="token operator">=</span> <span class="token function">findPos</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">[</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token keyword">const</span> stage <span class="token operator">=</span> <span class="token function">findStage</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
-    <span class="token comment">// 移动</span>
-    <span class="token keyword">return</span> <span class="token function">calcSteps</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>
-      <span class="token function">iter</span><span class="token punctuation">(</span><span class="token function">move</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> n<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> <span class="token function">iter</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+ */
+function hanoiAny(state: Record&lt;HanoiPos, number[]&gt;): [HanoiPos, HanoiPos][] {
+  function findPos(state: Record&lt;HanoiPos, number[]&gt;, value: number): HanoiPos {
+    const arr: HanoiPos[] = ['a', 'b', 'c']
+    const res = arr.map((i) =&gt; state[i][0])
+    return arr[res.indexOf(value)]
+  }
+  function findContinuousCount(arr: number[]): number {
+    function f(i: number, last: number): number {
+      return arr[i] !== last + 1 ? i : f(i + 1, arr[i])
+    }
+    return f(1, arr[0])
+  }
+  function calcSteps(
+    n: number,
+    from: HanoiPos,
+    to: HanoiPos,
+    stage: HanoiPos,
+  ): [HanoiPos, HanoiPos][] {
+    if (n === 1) {
+      return [[from, to]]
+    }
+    return calcSteps(n - 1, from, stage, to)
+      .concat(calcSteps(1, from, to, stage))
+      .concat(calcSteps(n - 1, stage, to, from))
+  }
+  function findStage(from: HanoiPos, to: HanoiPos): HanoiPos {
+    const arr: HanoiPos[] = ['a', 'b', 'c']
+    return arr.find((i) =&gt; i !== from &amp;&amp; i !== to)!
+  }
+  function move(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    n: number,
+    from: HanoiPos,
+    to: HanoiPos,
+    stage: HanoiPos,
+  ): Record&lt;HanoiPos, number[]&gt; {
+    return {
+      [to]: state[from].slice(0, n).concat(state[to]),
+      [from]: state[from].slice(n),
+      [stage]: state[stage],
+    } as Record&lt;HanoiPos, number[]&gt;
+  }
+  function count(state: Record&lt;HanoiPos, number[]&gt;): number {
+    const arr: HanoiPos[] = ['a', 'b', 'c']
+    return arr.map((i) =&gt; state[i].length).reduce((a, b) =&gt; a + b)
+  }
+  function iter(state: Record&lt;HanoiPos, number[]&gt;): [HanoiPos, HanoiPos][] {
+    // 寻找小的连续圆盘
+    const from = findPos(state, 1)
+    const n = findContinuousCount(state[from])
+    // 判断是否到最终状态了
+    // 返回所有步骤
+    if (n === count(state)) {
+      return []
+    }
+    // 否则移动所有连续的圆盘到另一个柱子
+    // 找到移动的目标
+    const to = findPos(state, state[from][n - 1] + 1)
+    const stage = findStage(from, to)
+    // 移动
+    return calcSteps(n, from, to, stage).concat(
+      iter(move(state, n, from, to, stage)),
+    )
+  }
+  return iter(state)
+}
 
-<span class="token keyword">const</span> state <span class="token operator">=</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
-<span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-<span class="token keyword">const</span> steps <span class="token operator">=</span> <span class="token function">hanoiAny</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-steps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">)</span> <span class="token comment">// { a: [], b: [], c: [ 1, 2, 3, 4, 5 ] }</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+const state = { a: [1, 4], b: [2], c: [3, 5] }
+const game = new HanoiGame(state)
+const steps = hanoiAny(state)
+steps.forEach((item) =&gt; game.move(...item))
+console.log(game.state) // { a: [], b: [], c: [ 1, 2, 3, 4, 5 ] }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>以上方法都是指数增长 <code>2^n-1</code>，或许有某种线性增长的方法？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">hanoiCount</span><span class="token punctuation">(</span>n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> n <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token function">hanoiCount</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token number">1</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoiCount(n: number): number {
+  return n === 1 ? 1 : hanoiCount(n - 1) * 2 + 1
+}
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>
-  <span class="token function">Array</span><span class="token punctuation">(</span><span class="token number">64</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>_<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">hanoiCount</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(
+  Array(64)
+    .fill(0)
+    .map((_, i) =&gt; hanoiCount(i + 1)),
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p><img src="/resources/f6ee862e41844284a6ca0bbb1513ccdc.png" srcset="/img/loading.gif" lazyload alt="汉诺塔层级-移动次数关系"></p>
 <h3 id="3-穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）–-性能存在问题，无法排除掉大量无效解"><a href="#3-穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）–-性能存在问题，无法排除掉大量无效解" class="headerlink" title="3. 穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）– 性能存在问题，无法排除掉大量无效解"></a>3. 穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）– 性能存在问题，无法排除掉大量无效解</h3><p>使用穷举法实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
  * 使用穷举的方式尝试所有可能的走法，找出最优解
  * 深度优先递归的问题是前期会做大量浪费的计算，实际上最优解可能并不在前面，或许应该尝试一下广度优先递归
  * @param state
  * @returns
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">hanoiAnyByReduce</span><span class="token punctuation">(</span>
-  state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> min <span class="token operator">=</span> <span class="token function">hanoiAny</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-  <span class="token keyword">function</span> <span class="token function">isComplete</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> v<span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">1</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">const</span> steps<span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span><span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span>
-  <span class="token keyword">function</span> <span class="token function">calcSteps</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    prev<span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> steps<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span><span class="token operator">...</span>step<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">move</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-      <span class="token operator">...</span>state<span class="token punctuation">,</span>
-      <span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token operator">:</span> state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>state<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token operator">:</span> state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">isSuccess</span><span class="token punctuation">(</span>steps<span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>steps<span class="token punctuation">.</span>length <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token boolean">true</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">const</span> last <span class="token operator">=</span> steps<span class="token punctuation">[</span>steps<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-    <span class="token keyword">const</span> prev <span class="token operator">=</span> steps<span class="token punctuation">[</span>steps<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">]</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>prev<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">===</span> last<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> prev<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">===</span> last<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token boolean">false</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token boolean">true</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">const</span> arr<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token keyword">function</span> <span class="token function">iter</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    prev<span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 判断当前是否出现了环</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isSuccess</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">const</span> prevString <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>prev<span class="token punctuation">)</span>
-    arr<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>prevString<span class="token punctuation">)</span>
-    <span class="token comment">// 判断当前步数是否已经超过了最佳步数（或者之后可以使用 map 判断相同状态是否已经有更好的走法了）</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>prev<span class="token punctuation">.</span>length <span class="token operator">&gt;=</span> min<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isComplete</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>prev<span class="token punctuation">.</span>length <span class="token operator">&lt;</span> min<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        min <span class="token operator">=</span> prev
-      <span class="token punctuation">}</span>
-      <span class="token keyword">return</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 否则找到所有可行步骤，执行它们</span>
-    <span class="token function">calcSteps</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> prev<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token function">iter</span><span class="token punctuation">(</span><span class="token function">move</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token operator">...</span>step<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token operator">...</span>prev<span class="token punctuation">,</span> step<span class="token punctuation">]</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">iter</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token comment">// writeFileSync(path.resolve(__dirname, 'test.json'), JSON.stringify(arr))</span>
-  <span class="token keyword">return</span> min
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function hanoiAnyByReduce(
+  state: Record&lt;HanoiPos, number[]&gt;,
+): [HanoiPos, HanoiPos][] {
+  let min = hanoiAny(state)
+  function isComplete(state: Record&lt;HanoiPos, number[]&gt;): boolean {
+    return Object.values(state).filter((v) =&gt; v.length !== 0).length === 1
+  }
+  const steps: [HanoiPos, HanoiPos][] = [
+    ['a', 'b'],
+    ['a', 'c'],
+    ['b', 'a'],
+    ['b', 'c'],
+    ['c', 'a'],
+    ['c', 'b'],
+  ]
+  function calcSteps(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    prev: [HanoiPos, HanoiPos][],
+  ): [HanoiPos, HanoiPos][] {
+    const game = new HanoiGame(state)
+    return steps.filter((step) =&gt; game.check(...step))
+  }
+  function move(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    from: HanoiPos,
+    to: HanoiPos,
+  ): Record&lt;HanoiPos, number[]&gt; {
+    return {
+      ...state,
+      [to]: state[from].slice(0, 1).concat(state[to]),
+      [from]: state[from].slice(1),
+    }
+  }
+  function isSuccess(steps: [HanoiPos, HanoiPos][]): boolean {
+    if (steps.length &lt; 2) {
+      return true
+    }
+    const last = steps[steps.length - 1]
+    const prev = steps[steps.length - 2]
+    if (prev[0] === last[1] &amp;&amp; prev[1] === last[0]) {
+      return false
+    }
+    return true
+  }
+  const arr: string[] = []
+  function iter(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    prev: [HanoiPos, HanoiPos][],
+  ) {
+    // 判断当前是否出现了环
+    if (!isSuccess(prev)) {
+      return
+    }
+    const prevString = JSON.stringify(prev)
+    arr.push(prevString)
+    // 判断当前步数是否已经超过了最佳步数（或者之后可以使用 map 判断相同状态是否已经有更好的走法了）
+    if (prev.length &gt;= min.length) {
+      return
+    }
+    if (isComplete(state)) {
+      if (prev.length &lt; min.length) {
+        min = prev
+      }
+      return
+    }
+    // 否则找到所有可行步骤，执行它们
+    calcSteps(state, prev).forEach((step) =&gt; {
+      iter(move(state, ...step), [...prev, step])
+    })
+  }
+  iter(state, [])
+  // writeFileSync(path.resolve(__dirname, 'test.json'), JSON.stringify(arr))
+  return min
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="1-优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）"><a href="#1-优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）" class="headerlink" title="1. 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）"></a>1. 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）</h3><p>使用第一种方法实现，但最终结果和穷举法相同，似乎这就是最优解</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
  * 处理任意状态下的汉诺塔
  * 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">hanoiAnyByDepth</span><span class="token punctuation">(</span>
-  state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">function</span> <span class="token function">findPosByNumber</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> HanoiPos <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">entries</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">[</span>_k<span class="token punctuation">,</span> v<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      v<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span><span class="token operator">?.</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token keyword">as</span> HanoiPos
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">isMove</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> game<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span> <span class="token operator">===</span> n <span class="token operator">&amp;&amp;</span> game<span class="token punctuation">.</span><span class="token function">check</span><span class="token punctuation">(</span>from<span class="token punctuation">,</span> to<span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">move</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    steps<span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    steps<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>step<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> game<span class="token punctuation">.</span>state
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">findStage</span><span class="token punctuation">(</span>from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span> to<span class="token operator">:</span> HanoiPos<span class="token punctuation">)</span><span class="token operator">:</span> HanoiPos <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> arr<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-    <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> i <span class="token operator">!==</span> from <span class="token operator">&amp;&amp;</span> i <span class="token operator">!==</span> to<span class="token punctuation">)</span><span class="token operator">!</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">function</span> <span class="token function">iter</span><span class="token punctuation">(</span>
-    state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-    from<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    to<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    stage<span class="token operator">:</span> HanoiPos<span class="token punctuation">,</span>
-    n<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token punctuation">[</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">===</span> to<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> nextFrom <span class="token operator">=</span> <span class="token function">findPosByNumber</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token function">iter</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> nextFrom<span class="token punctuation">,</span> to<span class="token punctuation">,</span> <span class="token function">findStage</span><span class="token punctuation">(</span>nextFrom<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">,</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 移动 from =&gt; to 的一个指定值</span>
-    <span class="token comment">// 如果可以直接移动，则直接移动</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isMove</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>from<span class="token punctuation">,</span> to<span class="token punctuation">]</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 否则找到上面影响移动的最大圆盘到临时柱，递归调用该方法</span>
-    <span class="token keyword">const</span> values <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span>state<span class="token punctuation">[</span>from<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">...</span>state<span class="token punctuation">[</span>to<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a <span class="token operator">-</span> b<span class="token punctuation">)</span>
-    <span class="token keyword">const</span> nextN <span class="token operator">=</span> values<span class="token punctuation">[</span>values<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
-    <span class="token keyword">const</span> nextForm <span class="token operator">=</span> <span class="token function">findPosByNumber</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> nextN<span class="token punctuation">)</span>
-    <span class="token comment">// 应用上面的移动步骤，然后递归调用该方法</span>
-    <span class="token comment">// 移动上面阻碍它移动的圆盘到临时柱</span>
-    <span class="token keyword">const</span> before <span class="token operator">=</span> <span class="token function">iter</span><span class="token punctuation">(</span>
-      state<span class="token punctuation">,</span>
-      nextForm<span class="token punctuation">,</span>
-      stage<span class="token punctuation">,</span>
-      <span class="token function">findStage</span><span class="token punctuation">(</span>nextForm<span class="token punctuation">,</span> stage<span class="token punctuation">)</span><span class="token punctuation">,</span>
-      nextN<span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token keyword">let</span> nextState <span class="token operator">=</span> <span class="token function">move</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> before<span class="token punctuation">)</span>
-    <span class="token comment">// 移动当前圆盘</span>
-    <span class="token keyword">const</span> current <span class="token operator">=</span> <span class="token function">iter</span><span class="token punctuation">(</span>nextState<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> stage<span class="token punctuation">,</span> n<span class="token punctuation">)</span>
-    nextState <span class="token operator">=</span> <span class="token function">move</span><span class="token punctuation">(</span>nextState<span class="token punctuation">,</span> current<span class="token punctuation">)</span>
-    <span class="token keyword">const</span> next <span class="token operator">=</span> <span class="token function">findPosByNumber</span><span class="token punctuation">(</span>nextState<span class="token punctuation">,</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token comment">// 继续下一次迭代移动上面的一个圆盘</span>
-    <span class="token keyword">const</span> after <span class="token operator">=</span> <span class="token function">iter</span><span class="token punctuation">(</span>nextState<span class="token punctuation">,</span> next<span class="token punctuation">,</span> to<span class="token punctuation">,</span> <span class="token function">findStage</span><span class="token punctuation">(</span>next<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">,</span> n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token operator">...</span>before<span class="token punctuation">,</span> <span class="token operator">...</span>current<span class="token punctuation">,</span> <span class="token operator">...</span>after<span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">const</span> initN <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length
-  <span class="token keyword">const</span> initForm <span class="token operator">=</span> <span class="token function">findPosByNumber</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> initN<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token function">iter</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> initForm<span class="token punctuation">,</span> to<span class="token punctuation">,</span> <span class="token function">findStage</span><span class="token punctuation">(</span>initForm<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">,</span> initN<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function hanoiAnyByDepth(
+  state: Record&lt;HanoiPos, number[]&gt;,
+  to: HanoiPos,
+): [HanoiPos, HanoiPos][] {
+  function findPosByNumber(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    n: number,
+  ): HanoiPos {
+    return Object.entries(state).find(([_k, v]) =&gt;
+      v.includes(n),
+    )?.[0] as HanoiPos
+  }
+  function isMove(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    from: HanoiPos,
+    to: HanoiPos,
+    n: number,
+  ) {
+    const game = new HanoiGame(state)
+    return game.get(from) === n &amp;&amp; game.check(from, to)
+  }
+  function move(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    steps: [HanoiPos, HanoiPos][],
+  ): Record&lt;HanoiPos, number[]&gt; {
+    const game = new HanoiGame(JSON.parse(JSON.stringify(state)))
+    steps.forEach((step) =&gt; game.move(...step))
+    return game.state
+  }
+  function findStage(from: HanoiPos, to: HanoiPos): HanoiPos {
+    const arr: HanoiPos[] = ['a', 'b', 'c']
+    return arr.find((i) =&gt; i !== from &amp;&amp; i !== to)!
+  }
+  function iter(
+    state: Record&lt;HanoiPos, number[]&gt;,
+    from: HanoiPos,
+    to: HanoiPos,
+    stage: HanoiPos,
+    n: number,
+  ): [HanoiPos, HanoiPos][] {
+    if (from === to) {
+      const nextFrom = findPosByNumber(state, n - 1)
+      return iter(state, nextFrom, to, findStage(nextFrom, to), n - 1)
+    }
+    // 移动 from =&gt; to 的一个指定值
+    // 如果可以直接移动，则直接移动
+    if (isMove(state, from, to, n)) {
+      return [[from, to]]
+    }
+    // 否则找到上面影响移动的最大圆盘到临时柱，递归调用该方法
+    const values = [...state[from], ...state[to]].sort((a, b) =&gt; a - b)
+    const nextN = values[values.indexOf(n) - 1]
+    const nextForm = findPosByNumber(state, nextN)
+    // 应用上面的移动步骤，然后递归调用该方法
+    // 移动上面阻碍它移动的圆盘到临时柱
+    const before = iter(
+      state,
+      nextForm,
+      stage,
+      findStage(nextForm, stage),
+      nextN,
+    )
+    let nextState = move(state, before)
+    // 移动当前圆盘
+    const current = iter(nextState, from, to, stage, n)
+    nextState = move(nextState, current)
+    const next = findPosByNumber(nextState, n - 1)
+    // 继续下一次迭代移动上面的一个圆盘
+    const after = iter(nextState, next, to, findStage(next, to), n - 1)
+    return [...before, ...current, ...after]
+  }
+  const initN = Object.values(state).flat().length
+  const initForm = findPosByNumber(state, initN)
+  return iter(state, initForm, to, findStage(initForm, to), initN)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>使用基本的单元测试验证它是有效的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">describe</span><span class="token punctuation">(</span><span class="token string">'hanoiAnyByDepth'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'basic'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-      a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hanoiAnyByDepth</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hanoiAny</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span>
-    <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span>
-    <span class="token function">hanoiAnyByDepth</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>step<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token function">expect</span><span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">[</span><span class="token string">'b'</span><span class="token punctuation">]</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">describe('hanoiAnyByDepth', () =&gt; {
+  it('basic', () =&gt; {
+    const state: Record&lt;HanoiPos, number[]&gt; = {
+      a: [1, 3, 5],
+      b: [],
+      c: [2, 4, 6],
+    }
+    console.log(hanoiAnyByDepth(state, 'c').length)
+    console.log(hanoiAny(state).length)
+    const game = new HanoiGame(state)
+    hanoiAnyByDepth(state, 'b').forEach((step) =&gt; game.move(...step))
+    expect(game.state['b'].length).toBe(6)
+  })
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>大多数情况下，它计算得到的步数要比使用方法 2 得到的步骤少得多，我们可以验证这一点</p>
 <blockquote>
 <p><code>upset</code> 是一个将汉诺塔状态随机打乱的函数</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">findMax</span><span class="token punctuation">(</span>state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> pos<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-  <span class="token keyword">return</span> <span class="token function">sortBy</span><span class="token punctuation">(</span>
-    pos<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-      k<span class="token punctuation">,</span>
-      v<span class="token operator">:</span> state<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">[</span>state<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token number">0</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token operator">-</span>item<span class="token punctuation">.</span>v<span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>k
-<span class="token punctuation">}</span>
-<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'findMax'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">findMax</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">findMax</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'perf'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token function">Array</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> state <span class="token operator">=</span> <span class="token function">upset</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token punctuation">{</span>
-        first<span class="token operator">:</span> <span class="token function">hanoiAny</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">,</span>
-        second<span class="token operator">:</span> <span class="token function">hanoiAnyByDepth</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token function">findMax</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">await</span> <span class="token function">mkdirp</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'.temp/'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token keyword">await</span> <span class="token function">writeJson</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'.temp/test.json'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      name<span class="token operator">:</span> <span class="token string">'hanoiAny'</span><span class="token punctuation">,</span>
-      type<span class="token operator">:</span> <span class="token string">'line'</span><span class="token punctuation">,</span>
-      data<span class="token operator">:</span> list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> item<span class="token punctuation">.</span>first<span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      name<span class="token operator">:</span> <span class="token string">'hanoiAnyByDepth'</span><span class="token punctuation">,</span>
-      type<span class="token operator">:</span> <span class="token string">'line'</span><span class="token punctuation">,</span>
-      data<span class="token operator">:</span> list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> item<span class="token punctuation">.</span>second<span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function findMax(state: Record&lt;HanoiPos, number[]&gt;) {
+  const pos: HanoiPos[] = ['a', 'b', 'c']
+  return sortBy(
+    pos.map((k) =&gt; ({
+      k,
+      v: state[k][state[k].length - 1] ?? 0,
+    })),
+    (item) =&gt; -item.v,
+  )[0].k
+}
+it('findMax', () =&gt; {
+  console.log(findMax({ a: [1, 3], b: [], c: [2, 4] }))
+  console.log(findMax({ a: [1, 2, 3, 4], b: [], c: [] }))
+})
+it('perf', async () =&gt; {
+  const list = Array(100)
+    .fill(0)
+    .map(() =&gt; {
+      const state = upset(10)
+      return {
+        first: hanoiAny(state).length,
+        second: hanoiAnyByDepth(state, findMax(state)).length,
+      }
+    })
+  await mkdirp(path.resolve(__dirname, '.temp/'))
+  await writeJson(path.resolve(__dirname, '.temp/test.json'), [
+    {
+      name: 'hanoiAny',
+      type: 'line',
+      data: list.map((item) =&gt; item.first),
+    },
+    {
+      name: 'hanoiAnyByDepth',
+      type: 'line',
+      data: list.map((item) =&gt; item.second),
+    },
+  ])
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>下面是测试用例的结果的可视化图表</p>
 <p><img src="/resources/77f4b3628080446a99c703301062bec2.png" srcset="/img/loading.gif" lazyload alt="1654530232450"></p>
 <h3 id="4-算出一个汉诺塔从-0-开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤"><a href="#4-算出一个汉诺塔从-0-开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤" class="headerlink" title="4. 算出一个汉诺塔从 0 开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤"></a>4. 算出一个汉诺塔从 0 开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤</h3><p>实际上不可能，事实上可以找到反例，例如以下状态就不会在最佳走法的任意一步状态中</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-  a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const state: Record&lt;HanoiPos, number[]&gt; = {
+  a: [1, 3],
+  b: [],
+  c: [2, 4],
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>验证它也很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">eq</span><span class="token punctuation">(</span>
-  a<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  b<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token boolean">false</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> arr<span class="token operator">:</span> HanoiPos<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-  <span class="token keyword">const</span> bs <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    res<span class="token punctuation">[</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>b<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> i
-    <span class="token keyword">return</span> res
-  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token keyword">as</span> Record<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> HanoiPos<span class="token operator">&gt;</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> res<span class="token operator">:</span> <span class="token punctuation">(</span>HanoiPos <span class="token operator">|</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> bs<span class="token punctuation">[</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">??</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>res<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token boolean">false</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> res<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> v<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    res<span class="token punctuation">[</span>arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> v<span class="token operator">!</span>
-    <span class="token keyword">return</span> res
-  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token keyword">as</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> HanoiPos<span class="token operator">&gt;</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'eq'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token function">expect</span><span class="token punctuation">(</span>
-    <span class="token function">eq</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeTruthy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token function">expect</span><span class="token punctuation">(</span>
-    <span class="token function">eq</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeTruthy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token function">expect</span><span class="token punctuation">(</span>
-    <span class="token function">eq</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeTruthy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token function">expect</span><span class="token punctuation">(</span>
-    <span class="token function">eq</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeFalsy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token function">it</span><span class="token punctuation">(</span><span class="token string">'hanoiByStream'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> state<span class="token operator">:</span> Record<span class="token operator">&lt;</span>HanoiPos<span class="token punctuation">,</span> <span class="token builtin">number</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
-    a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">const</span> game <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HanoiGame</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    a<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    b<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-    c<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> i <span class="token operator">=</span> <span class="token function">hanoi</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">findIndex</span><span class="token punctuation">(</span><span class="token punctuation">(</span>step<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token function">eq</span><span class="token punctuation">(</span>game<span class="token punctuation">.</span>state<span class="token punctuation">,</span> state<span class="token punctuation">)</span>
-    game<span class="token punctuation">.</span><span class="token function">move</span><span class="token punctuation">(</span><span class="token operator">...</span>step<span class="token punctuation">)</span>
-    <span class="token keyword">return</span> res
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function eq(
+  a: Record&lt;HanoiPos, number[]&gt;,
+  b: Record&lt;HanoiPos, number[]&gt;,
+): Record&lt;HanoiPos, HanoiPos&gt; | false {
+  const arr: HanoiPos[] = ['a', 'b', 'c']
+  const bs = arr.reduce((res, i) =&gt; {
+    res[JSON.stringify(b[i])] = i
+    return res
+  }, {} as Record&lt;string, HanoiPos&gt;)
+  const res: (HanoiPos | null)[] = arr.map(
+    (i) =&gt; bs[JSON.stringify(a[i])] ?? null,
+  )
+  if (res.includes(null)) {
+    return false
+  }
+  return res.reduce((res, v, i) =&gt; {
+    res[arr[i]] = v!
+    return res
+  }, {} as Record&lt;HanoiPos, HanoiPos&gt;)
+}
+it('eq', () =&gt; {
+  expect(
+    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [1, 3], b: [2, 4], c: [] }),
+  ).toBeTruthy()
+  expect(
+    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [], b: [2, 4], c: [1, 3] }),
+  ).toBeTruthy()
+  expect(
+    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [2, 4], b: [], c: [1, 3] }),
+  ).toBeTruthy()
+  expect(
+    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [2], b: [], c: [1, 3] }),
+  ).toBeFalsy()
+})
+it('hanoiByStream', () =&gt; {
+  const state: Record&lt;HanoiPos, number[]&gt; = {
+    a: [1, 3],
+    b: [],
+    c: [2, 4],
+  }
+  const game = new HanoiGame({
+    a: [1, 2, 3, 4],
+    b: [],
+    c: [],
+  })
+  const i = hanoi(4).findIndex((step) =&gt; {
+    const res = eq(game.state, state)
+    game.move(...step)
+    return res
+  })
+  console.log(i)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>吾辈最终也实现了一个汉诺塔的在线小游戏，参考：<a target="_blank" rel="noopener" href="https://rxliuli.github.io/hanoi/">https://rxliuli.github.io/hanoi/</a></p>
 <blockquote>

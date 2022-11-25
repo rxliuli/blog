@@ -316,35 +316,35 @@
               <div class="markdown-body">
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>由于生产应用希望在有新版本时，自动为用户推送更新，所以此处便写一下如何让 electron 程序自动更新。</p>
-<h2 id="安装-npm-包"><a href="#安装-npm-包" class="headerlink" title="安装 npm 包"></a>安装 npm 包</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> apps/main/ <span class="token operator">&amp;&amp;</span> <span class="token function">yarn</span> <span class="token function">add</span> electron-updater<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<h2 id="安装-npm-包"><a href="#安装-npm-包" class="headerlink" title="安装 npm 包"></a>安装 npm 包</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cd apps/main/ &amp;&amp; yarn add electron-updater<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="配置-electron-builder"><a href="#配置-electron-builder" class="headerlink" title="配置 electron-builder"></a>配置 electron-builder</h2><blockquote>
 <p>参考: <a target="_blank" rel="noopener" href="https://www.electron.build/auto-update">https://www.electron.build/auto-update</a></p>
 </blockquote>
 <p>其实本质上就是配置一个网络可以访问到的静态资源目录，这里使用了一个本地的静态资源服务器，指向目录是 <em>apps/main/release</em>（即打包而进程程序的目录）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"build"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"publish"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span>
-        <span class="token property">"provider"</span><span class="token operator">:</span> <span class="token string">"generic"</span><span class="token punctuation">,</span>
-        <span class="token property">"url"</span><span class="token operator">:</span> <span class="token string">"http://localhost:8080/"</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "build": {
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://localhost:8080/"
+      }
+    ]
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="启动时检查更新"><a href="#启动时检查更新" class="headerlink" title="启动时检查更新"></a>启动时检查更新</h2><p>在主进程添加检查更新的代码，并自定义提示文案。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">await</span> autoUpdater<span class="token punctuation">.</span><span class="token function">checkForUpdates</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-autoUpdater<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token string">'update-downloaded'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>info<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">new</span> <span class="token class-name">Notification</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    title<span class="token operator">:</span> <span class="token string">'更新提醒'</span><span class="token punctuation">,</span>
-    body<span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">新版本 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>info<span class="token punctuation">.</span>version<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> 已经准备好，点击立刻更新！</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      autoUpdater<span class="token punctuation">.</span><span class="token function">quitAndInstall</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">await autoUpdater.checkForUpdates()
+autoUpdater.addListener('update-downloaded', (info) =&gt; {
+  new Notification({
+    title: '更新提醒',
+    body: `新版本 ${info.version} 已经准备好，点击立刻更新！`,
+  })
+    .addListener('click', () =&gt; {
+      autoUpdater.quitAndInstall()
+    })
+    .show()
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>现在，你可以启动一个本地静态服务器指向 <em>apps/main/release</em>，例如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/live-server">live-server</a>，然后打包一个新版本，再启动旧的程序就可以了。</p>
 <p><img src="/resources/6a33797917e34056b95238471ff0c06b.gif" srcset="/img/loading.gif" lazyload alt="效果"></p>

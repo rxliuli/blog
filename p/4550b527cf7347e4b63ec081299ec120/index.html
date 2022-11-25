@@ -314,22 +314,22 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>吾辈在使用 Java8 的 <code>LocalDateTime</code> 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！</p>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>想要格式化一个字符串为日期时间。例如常见的 <code>yyyy-MM-dd hh:mm:ss</code> 格式的 <code>2017-12-11 10:11:05</code>，吾辈习惯性的写出以下代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">String</span> text <span class="token operator">=</span> <span class="token string">"2017-12-11 10:11:05"</span><span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">String</span> pattern <span class="token operator">=</span> <span class="token string">"yyyy-MM-dd hh:mm:ss"</span><span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> dateTime <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>text<span class="token punctuation">,</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token function">ofPattern</span><span class="token punctuation">(</span>pattern<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>dateTime<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2017-12-11 10:11:05";
+final String pattern = "yyyy-MM-dd hh:mm:ss";
+final LocalDateTime dateTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));
+System.out.println(dateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>谜之音：<strong>JVM</strong> 不想理你，并抛给了你一个 <strong>Error</strong></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">java.time.format.DateTimeParseException: Text <span class="token string">'2017-12-11 10:11:05'</span> could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: <span class="token punctuation">{</span>MinuteOfHour<span class="token operator">=</span><span class="token number">11</span>, <span class="token assign-left variable">MilliOfSecond</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">MicroOfSecond</span><span class="token operator">=</span><span class="token number">0</span>, <span class="token assign-left variable">SecondOfMinute</span><span class="token operator">=</span><span class="token number">5</span>, <span class="token assign-left variable">HourOfAmPm</span><span class="token operator">=</span><span class="token number">10</span>, <span class="token assign-left variable">NanoOfSecond</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">}</span>,ISO resolved to <span class="token number">2017</span>-12-11 of <span class="token builtin class-name">type</span> java.time.format.Parsed<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">java.time.format.DateTimeParseException: Text '2017-12-11 10:11:05' could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: {MinuteOfHour=11, MilliOfSecond=0, MicroOfSecond=0, SecondOfMinute=5, HourOfAmPm=10, NanoOfSecond=0},ISO resolved to 2017-12-11 of type java.time.format.Parsed<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>大意便是无法解析，去 Google 了一下，在 StackOverflow 上发现了这个问题：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/43732751/">DateTimeParseException: Text could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor
 </a></p>
 <p>里面的答案说是使用 <code>HH</code>（每小时）而非 <code>hh</code>（每小时上午时钟），所以吾辈修改了代码，变成了下面这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">String</span> text <span class="token operator">=</span> <span class="token string">"2017-12-11 10:11:05"</span><span class="token punctuation">;</span>
-<span class="token comment">// 只改了这里的格式</span>
-<span class="token keyword">final</span> <span class="token class-name">String</span> pattern <span class="token operator">=</span> <span class="token string">"yyyy-MM-dd HH:mm:ss"</span><span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> dateTime <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>text<span class="token punctuation">,</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token function">ofPattern</span><span class="token punctuation">(</span>pattern<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>dateTime<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2017-12-11 10:11:05";
+// 只改了这里的格式
+final String pattern = "yyyy-MM-dd HH:mm:ss";
+final LocalDateTime dateTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));
+System.out.println(dateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然而确实能正常解析了！？？**#黑人问号**</p>
 <h2 id="根源"><a href="#根源" class="headerlink" title="根源"></a>根源</h2><p>去看了一下 Java8 的 <code>DateTimeFormatter</code> 日期时间格式化类，发现了 class 上一段有趣的注释</p>
@@ -585,11 +585,11 @@
 <li>标准的日期时间：<code>DateTimeFormatter.ISO_DATE_TIME</code>（Java8 time 库中已存在）</li>
 </ul>
 <p>将字符串转换为日期时间大致有两种方式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">String</span> text <span class="token operator">=</span> <span class="token string">"2019-02-12T01:24:07.425Z"</span><span class="token punctuation">;</span>
-<span class="token comment">// 先解析为时间在转换为具体的日期时间类</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> from <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token constant">ISO_DATE_TIME</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 直接根据指定的格式解析字符串为具体的日期时间类</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> parse <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>text<span class="token punctuation">,</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token constant">ISO_DATE_TIME</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2019-02-12T01:24:07.425Z";
+// 先解析为时间在转换为具体的日期时间类
+final LocalDateTime from = LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(text));
+// 直接根据指定的格式解析字符串为具体的日期时间类
+final LocalDateTime parse = LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <hr>
 <p>那么，<code>Java8</code> 的踩坑之路还在继续，不知还有多少人在用 <code>Java7-</code> 呢？＼（＠￣ ∇ ￣＠）／</p>

@@ -329,27 +329,27 @@
 <blockquote>
 <p>这种 monorepo 中 lib 无构建的优化方式在 <a href="/p/f35319c382cf488082a1df13dad35005">如何减少 monorepo 中 lib 的初始化时间</a> 提到过</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"lib-a"</span><span class="token punctuation">,</span>
-  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span><span class="token punctuation">,</span>
-  <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span><span class="token punctuation">,</span>
-  <span class="token property">"types"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "name": "lib-a",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>而当发布后，则需要修改为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"lib-a"</span><span class="token punctuation">,</span>
-  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"dist/index.js"</span><span class="token punctuation">,</span>
-  <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"dist/index.esm.js"</span><span class="token punctuation">,</span>
-  <span class="token property">"types"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "name": "lib-a",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "src/index.ts"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这就导致我们至少需要添加一个 setup 脚本，以供第一次拉取项目的人批量执行所有模块的初始化动作。例如 pnpm 的命令可能是 <code>pnpm --filter . run setup</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"setup"</span><span class="token operator">:</span> <span class="token string">"npm run build"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "scripts": {
+    "setup": "npm run build"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如果模块只有一两个，那么可能不会花太多时间。但如果模块有几十个（我们的生产项目中，大约有 37 个），就算一个模块的初始化构建仅需要几秒钟，那么累积起来也需要几分钟。目前有许多做法</p>
 <ul>
@@ -360,74 +360,74 @@
 </ul>
 <p>由于吾辈大部分 web 项目均基于 vite 开发，所以便考虑使用创建一个 vite/rollup 插件来重写 module resolve，将 import 的模块直接重写指向源码而非 dist/index.js，即便这样会增加每个模块开发时的时间，但平均到每个模块中依赖的其他 lib 不超过 10 个，额外增加的时间几乎是微不足道的（主要是在一个 nodejs 进程并且使用 esbuild 编译）。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>在自行实现之前，吾辈也检索过现有的插件，例如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@rollup/plugin-alias">@rollup/plugin-alias</a>，但它的配置是静态的，例如吾辈需要配置 <code>@liuli-util/*</code> 全部指向 <code>@liuli-util/*/src/index.ts</code>，这需要为每个模块单独配置。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup'</span>
-<span class="token keyword">import</span> alias <span class="token keyword">from</span> <span class="token string">'@rollup/plugin-alias'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'rollup'
+import alias from '@rollup/plugin-alias'
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token function">alias</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      entries<span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token punctuation">{</span>
-          find<span class="token operator">:</span> <span class="token string">'@liuli-util/async'</span><span class="token punctuation">,</span>
-          replacement<span class="token operator">:</span> <span class="token string">'@liuli-util/async/src/index.ts'</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">{</span>
-          find<span class="token operator">:</span> <span class="token string">'@liuli-util/array'</span><span class="token punctuation">,</span>
-          replacement<span class="token operator">:</span> <span class="token string">'@liuli-util/array/src/index.ts'</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token comment">// 可能还有更多</span>
-      <span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [
+    alias({
+      entries: [
+        {
+          find: '@liuli-util/async',
+          replacement: '@liuli-util/async/src/index.ts',
+        },
+        {
+          find: '@liuli-util/array',
+          replacement: '@liuli-util/array/src/index.ts',
+        },
+        // 可能还有更多
+      ],
+    }),
+  ],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>而吾辈期望专注于做这件事情，所以便单独开发了一个插件 <code>rollup-plugin-ts-alias</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Plugin<span class="token punctuation">,</span> ResolveIdResult <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> pathExists <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'fs-extra'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin, ResolveIdResult } from 'rollup'
+import { pathExists } from 'fs-extra'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">tsAlias</span><span class="token punctuation">(</span>
-  includes<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token operator">|</span> RegExp<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  excludes<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token operator">|</span> RegExp<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token operator">&amp;</span> <span class="token punctuation">{</span> enforce<span class="token operator">:</span> <span class="token string">'pre'</span> <span class="token operator">|</span> <span class="token string">'post'</span> <span class="token punctuation">}</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'rollup-plugin-ts-alias'</span><span class="token punctuation">,</span>
-    enforce<span class="token operator">:</span> <span class="token string">'pre'</span><span class="token punctuation">,</span>
-    <span class="token keyword">async</span> <span class="token function">resolveId</span><span class="token punctuation">(</span>source<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>ResolveIdResult<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-      excludes<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\/.*\/</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">)</span>
-      <span class="token keyword">const</span> <span class="token function-variable function">predicate</span> <span class="token operator">=</span> <span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> RegExp<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-        <span class="token keyword">typeof</span> item <span class="token operator">===</span> <span class="token string">'string'</span> <span class="token operator">?</span> source<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">:</span> item<span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>includes<span class="token punctuation">.</span><span class="token function">some</span><span class="token punctuation">(</span>predicate<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>excludes<span class="token punctuation">.</span><span class="token function">some</span><span class="token punctuation">(</span>predicate<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">let</span> res<span class="token operator">:</span> <span class="token builtin">string</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-          res <span class="token operator">=</span> <span class="token keyword">require</span><span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>source <span class="token operator">+</span> <span class="token string">'/src/index.ts'</span><span class="token punctuation">)</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token keyword">return</span> <span class="token keyword">null</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">pathExists</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">'path not exists: '</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span>
-          <span class="token keyword">return</span> <span class="token keyword">null</span>
-        <span class="token punctuation">}</span>
-        <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'rewrite: '</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span>
-        <span class="token keyword">return</span> res
-      <span class="token punctuation">}</span>
-      <span class="token keyword">return</span> <span class="token keyword">null</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function tsAlias(
+  includes: (string | RegExp)[],
+  excludes: (string | RegExp)[] = [],
+): Plugin &amp; { enforce: 'pre' | 'post' } {
+  return {
+    name: 'rollup-plugin-ts-alias',
+    enforce: 'pre',
+    async resolveId(source: string): Promise&lt;ResolveIdResult&gt; {
+      excludes.push(/\/.*\//)
+      const predicate = (item: string | RegExp) =&gt;
+        typeof item === 'string' ? source.startsWith(item) : item.test(source)
+      if (includes.some(predicate) &amp;&amp; !excludes.some(predicate)) {
+        let res: string
+        try {
+          res = require.resolve(source + '/src/index.ts')
+        } catch (e) {
+          return null
+        }
+        if (!(await pathExists(res))) {
+          console.warn('path not exists: ', res)
+          return null
+        }
+        console.log('rewrite: ', res)
+        return res
+      }
+      return null
+    },
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
 <p>该插件已发布至 npm <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/rollup-plugin-ts-alias">@liuli-util/rollup-plugin-ts-alias</a></p>
 </blockquote>
 <p>安装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">pnpm</span> i <span class="token parameter variable">-D</span> @liuli-util/rollup-plugin-ts-alias<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pnpm i -D @liuli-util/rollup-plugin-ts-alias<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// vite.config.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> tsAlias <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@liuli-util/rollup-plugin-ts-alias'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// vite.config.ts
+import { tsAlias } from '@liuli-util/rollup-plugin-ts-alias'
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">tsAlias</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'@liuli-util/'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [tsAlias(['@liuli-util/'])],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>之后，在 monorepo 直接修改 lib 的源码便能热更新，不需要启动额外的 terminal，也不再需要添加 <code>setup</code> 命令供全部初始化。下面可以看到，依赖的 lib <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/react-router">@liuli-util/react-router</a> 已经被指向源码了</p>
 <p><img src="/resources/7c84fdda7f6d4e74943e7bde752176c1.png" srcset="/img/loading.gif" lazyload alt="1642080421952"></p>

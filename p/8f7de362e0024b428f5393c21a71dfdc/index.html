@@ -314,22 +314,22 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在项目中的实体类里面使用了 <code>Java8</code> 新的时间 API，例如 <code>LocalDate</code>, <code>LocalTime</code>, <code>LocalDateTime</code> 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。</p>
 <p>嗯，大概就是下面这种样子的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"dayOfMonth"</span><span class="token operator">:</span> <span class="token number">27</span><span class="token punctuation">,</span>
-  <span class="token property">"dayOfWeek"</span><span class="token operator">:</span> <span class="token string">"MONDAY"</span><span class="token punctuation">,</span>
-  <span class="token property">"dayOfYear"</span><span class="token operator">:</span> <span class="token number">239</span><span class="token punctuation">,</span>
-  <span class="token property">"month"</span><span class="token operator">:</span> <span class="token string">"AUGUST"</span><span class="token punctuation">,</span>
-  <span class="token property">"monthValue"</span><span class="token operator">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
-  <span class="token property">"year"</span><span class="token operator">:</span> <span class="token number">2018</span><span class="token punctuation">,</span>
-  <span class="token property">"hour"</span><span class="token operator">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
-  <span class="token property">"minute"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
-  <span class="token property">"nano"</span><span class="token operator">:</span> <span class="token number">370000000</span><span class="token punctuation">,</span>
-  <span class="token property">"second"</span><span class="token operator">:</span> <span class="token number">52</span><span class="token punctuation">,</span>
-  <span class="token property">"chronology"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"ISO"</span><span class="token punctuation">,</span>
-    <span class="token property">"calendarType"</span><span class="token operator">:</span> <span class="token string">"iso8601"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "dayOfMonth": 27,
+  "dayOfWeek": "MONDAY",
+  "dayOfYear": 239,
+  "month": "AUGUST",
+  "monthValue": 8,
+  "year": 2018,
+  "hour": 10,
+  "minute": 0,
+  "nano": 370000000,
+  "second": 52,
+  "chronology": {
+    "id": "ISO",
+    "calendarType": "iso8601"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这是什么鬼的格式。。。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>添加依赖</p>
@@ -339,44 +339,44 @@
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>修改 <code>application.yml</code>，配置 <code>spring.jackson.serialization.write_dates_as_timestamps</code> 禁用 <em>打印日期为时间戳的功能</em>。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">spring</span><span class="token punctuation">:</span>
-  <span class="token key atrule">jackson</span><span class="token punctuation">:</span>
-    <span class="token key atrule">serialization</span><span class="token punctuation">:</span>
-      <span class="token key atrule">write_dates_as_timestamps</span><span class="token punctuation">:</span> <span class="token boolean important">false</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">spring:
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如此，在返回数据到前端的时候 SpringBoot 就会自动将日期格式化为 <code>yyyy-MM-ddThh:mm:ss</code></p>
 <p>然而，如果我们想要在程序中手动的序列化日期怎么办呢？实际上也很简单，使用代码 <code>.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)</code> 来禁止序列化时间为时间戳并注册 <code>jackson-datatype-jsr310</code> 中的 <code>JavaTimeModule</code> 模块。</p>
 <p>下面是吾辈在项目里使用的一个全局 <code>ObjectMapper</code> 对象</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
   * 提供一个全局可用的序列化 Bean
-  */</span>
-<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">ObjectMapper</span> <span class="token constant">OM</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ObjectMapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token comment">//Date 对象的格式</span>
-        <span class="token punctuation">.</span><span class="token function">setDateFormat</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SimpleDateFormat</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd hh:mm:ss"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-        <span class="token comment">//禁止序列化值为 null 的属性</span>
-        <span class="token punctuation">.</span><span class="token function">setSerializationInclusion</span><span class="token punctuation">(</span><span class="token class-name">JsonInclude<span class="token punctuation">.</span>Include</span><span class="token punctuation">.</span><span class="token constant">NON_NULL</span><span class="token punctuation">)</span>
-        <span class="token comment">//禁止序列化时间为时间戳</span>
-        <span class="token punctuation">.</span><span class="token function">disable</span><span class="token punctuation">(</span><span class="token class-name">SerializationFeature</span><span class="token punctuation">.</span><span class="token constant">WRITE_DATES_AS_TIMESTAMPS</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">registerModules</span><span class="token punctuation">(</span>
-                <span class="token comment">//注册 Jsr310（Java8 的时间兼容模块）</span>
-                <span class="token keyword">new</span> <span class="token class-name">JavaTimeModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                <span class="token comment">//序列化 Long 为 String</span>
-                <span class="token keyword">new</span> <span class="token class-name">SimpleModule</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                        <span class="token comment">//大数字直接序列化为 String</span>
-                        <span class="token punctuation">.</span><span class="token function">addSerializer</span><span class="token punctuation">(</span><span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ToStringSerializer</span><span class="token punctuation">.</span>instance<span class="token punctuation">)</span>
-                        <span class="token punctuation">.</span><span class="token function">addSerializer</span><span class="token punctuation">(</span><span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token constant">TYPE</span><span class="token punctuation">,</span> <span class="token class-name">ToStringSerializer</span><span class="token punctuation">.</span>instance<span class="token punctuation">)</span>
-                        <span class="token punctuation">.</span><span class="token function">addSerializer</span><span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ToStringSerializer</span><span class="token punctuation">.</span>instance<span class="token punctuation">)</span>
-                        <span class="token punctuation">.</span><span class="token function">addSerializer</span><span class="token punctuation">(</span><span class="token class-name">BigInteger</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token class-name">ToStringSerializer</span><span class="token punctuation">.</span>instance<span class="token punctuation">)</span>
-                        <span class="token comment">//大浮点数直接序列化为 String</span>
-                        <span class="token punctuation">.</span><span class="token function">addSerializer</span><span class="token punctuation">(</span><span class="token class-name">BigDecimal</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">JsonSerializer</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BigDecimal</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                            <span class="token annotation punctuation">@Override</span>
-                            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">serialize</span><span class="token punctuation">(</span><span class="token class-name">BigDecimal</span> value<span class="token punctuation">,</span> <span class="token class-name">JsonGenerator</span> gen<span class="token punctuation">,</span> <span class="token class-name">SerializerProvider</span> serializers<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
-                                gen<span class="token punctuation">.</span><span class="token function">writeString</span><span class="token punctuation">(</span>value<span class="token punctuation">.</span><span class="token function">setScale</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token class-name">BigDecimal</span><span class="token punctuation">.</span><span class="token constant">ROUND_HALF_UP</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toPlainString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                            <span class="token punctuation">}</span>
-                        <span class="token punctuation">}</span><span class="token punctuation">)</span>
-        <span class="token punctuation">)</span>
-        <span class="token comment">//JSON 序列化移除 transient 修饰的 Page 无关紧要的返回属性(Mybatis Plus)</span>
-        <span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span><span class="token class-name">MapperFeature</span><span class="token punctuation">.</span><span class="token constant">PROPAGATE_TRANSIENT_MARKER</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  */
+public static final ObjectMapper OM = new ObjectMapper()
+        //Date 对象的格式
+        .setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"))
+        //禁止序列化值为 null 的属性
+        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        //禁止序列化时间为时间戳
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        .registerModules(
+                //注册 Jsr310（Java8 的时间兼容模块）
+                new JavaTimeModule(),
+                //序列化 Long 为 String
+                new SimpleModule()
+                        //大数字直接序列化为 String
+                        .addSerializer(Long.class, ToStringSerializer.instance)
+                        .addSerializer(Long.TYPE, ToStringSerializer.instance)
+                        .addSerializer(long.class, ToStringSerializer.instance)
+                        .addSerializer(BigInteger.class, ToStringSerializer.instance)
+                        //大浮点数直接序列化为 String
+                        .addSerializer(BigDecimal.class, new JsonSerializer&lt;BigDecimal&gt;() {
+                            @Override
+                            public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+                                gen.writeString(value.setScale(10, BigDecimal.ROUND_HALF_UP).toPlainString());
+                            }
+                        })
+        )
+        //JSON 序列化移除 transient 修饰的 Page 无关紧要的返回属性(Mybatis Plus)
+        .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>那么，以上就是 SpringBoot 序列化 Java8 时间 API 的问题和解决方案啦 ヾ(@^▽^@)ノ</p>
 

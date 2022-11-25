@@ -315,57 +315,57 @@
                 <blockquote>
 <p>如果还没有安装 MongoDB 可以参考：<a href="/p/bef08cec63cd48fca96fec5a049ab920">Windows 下 MongoDB 便携版安装与初始化</a></p>
 </blockquote>
-<h2 id="启动-mongod-和-mongo-shell-服务"><a href="#启动-mongod-和-mongo-shell-服务" class="headerlink" title="启动 mongod 和 mongo shell 服务"></a>启动 <code>mongod</code> 和 <code>mongo shell</code> 服务</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 启动 mongodb 服务</span>
-mongod <span class="token parameter variable">--port</span> <span class="token number">27017</span> <span class="token parameter variable">--dbpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data"</span> <span class="token parameter variable">--logpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"</span>
+<h2 id="启动-mongod-和-mongo-shell-服务"><a href="#启动-mongod-和-mongo-shell-服务" class="headerlink" title="启动 mongod 和 mongo shell 服务"></a>启动 <code>mongod</code> 和 <code>mongo shell</code> 服务</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 启动 mongodb 服务
+mongod --port 27017 --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data" --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"
 
-<span class="token comment"># 启动 mongo shell</span>
-mongo <span class="token parameter variable">--port</span> <span class="token number">27017</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+# 启动 mongo shell
+mongo --port 27017<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注：mongodb 的默认 port 就是 27017，所以也可以省略不写</p>
 </blockquote>
-<h2 id="创建管理员用户"><a href="#创建管理员用户" class="headerlink" title="创建管理员用户"></a>创建管理员用户</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 切换到 admin 数据库</span>
-use admin<span class="token punctuation">;</span>
-<span class="token comment"># 创建用户 root, 密码是 root 的 admin 账号了</span>
-db.createUser<span class="token punctuation">(</span>
-  <span class="token punctuation">{</span>
-    user: <span class="token string">"root"</span>,
-    pwd: <span class="token string">"root"</span>,
-    roles: <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span>role: <span class="token string">"root"</span>, db: <span class="token string">"admin"</span><span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="创建管理员用户"><a href="#创建管理员用户" class="headerlink" title="创建管理员用户"></a>创建管理员用户</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 切换到 admin 数据库
+use admin;
+# 创建用户 root, 密码是 root 的 admin 账号了
+db.createUser(
+  {
+    user: "root",
+    pwd: "root",
+    roles: [
+      {role: "root", db: "admin"}
+    ]
+  }
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="验证用户登录"><a href="#验证用户登录" class="headerlink" title="验证用户登录"></a>验证用户登录</h2><ol>
 <li>重启一下 <code>mongod</code> 服务</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 这里的 --auth 选项就代表着启用身份认证</span>
-mongod <span class="token parameter variable">--auth</span> <span class="token parameter variable">--port</span> <span class="token number">27017</span> <span class="token parameter variable">--dbpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data"</span> <span class="token parameter variable">--logpath</span> <span class="token string">"D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 这里的 --auth 选项就代表着启用身份认证
+mongod --auth --port 27017 --dbpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\data" --logpath "D:\Program\mongodb-win32-x86_64-2008plus-ssl-4.0.1\mongodb_data\log\mongodb.log"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <ol start="2">
 <li>测试 root 用户是否能正常登录</li>
 </ol>
 <ul>
-<li>使用用户名/密码认证连接 mongodb<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 这里添加了 --authenticationDatabase 设置认证的数据库</span>
-mongo <span class="token parameter variable">--port</span> <span class="token number">27017</span> <span class="token parameter variable">-u</span> <span class="token string">"root"</span> <span class="token parameter variable">-p</span> <span class="token string">"root"</span> <span class="token parameter variable">--authenticationDatabase</span> <span class="token string">"admin"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure></li>
-<li>连接到 mongo 客户端后验证<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongo <span class="token parameter variable">--port</span> <span class="token number">27017</span>
-use admin<span class="token punctuation">;</span>
-db.auth<span class="token punctuation">(</span><span class="token string">"root"</span>, <span class="token string">"root"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<li>使用用户名/密码认证连接 mongodb<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 这里添加了 --authenticationDatabase 设置认证的数据库
+mongo --port 27017 -u "root" -p "root" --authenticationDatabase "admin"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure></li>
+<li>连接到 mongo 客户端后验证<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mongo --port 27017
+use admin;
+db.auth("root", "root");<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ul>
-<h2 id="创建普通用户"><a href="#创建普通用户" class="headerlink" title="创建普通用户"></a>创建普通用户</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 切换到 test 数据库</span>
-use <span class="token builtin class-name">test</span><span class="token punctuation">;</span>
-<span class="token comment"># 创建用户 test, 密码是 test 的普通账号了</span>
-<span class="token comment"># 主要变化在于 role，修改为对数据库 [test] 拥有 [可读写] 权限</span>
-db.createUser<span class="token punctuation">(</span>
-  <span class="token punctuation">{</span>
-    user: <span class="token string">"test"</span>,
-    pwd: <span class="token string">"test"</span>,
-    roles: <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span> role: <span class="token string">"readWrite"</span>, db: <span class="token string">"yapi"</span> <span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="创建普通用户"><a href="#创建普通用户" class="headerlink" title="创建普通用户"></a>创建普通用户</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 切换到 test 数据库
+use test;
+# 创建用户 test, 密码是 test 的普通账号了
+# 主要变化在于 role，修改为对数据库 [test] 拥有 [可读写] 权限
+db.createUser(
+  {
+    user: "test",
+    pwd: "test",
+    roles: [
+      { role: "readWrite", db: "yapi" }
+    ]
+  }
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>使用 test 这个普通用户在登陆后能看到的也只有自己的数据库呢（如果数据库存在的话）</p>
 <h2 id="内建权限"><a href="#内建权限" class="headerlink" title="内建权限"></a>内建权限</h2><p>下面是一些常用的权限</p>
@@ -381,41 +381,41 @@ db.createUser<span class="token punctuation">(</span>
 <li>dbAdminAnyDatabase：只在 admin 数据库中可用，赋予用户所有数据库的 dbAdmin 权限。</li>
 <li>root：只在 admin 数据库中可用。超级账号，超级权限</li>
 </ul>
-<h2 id="使用-url-访问"><a href="#使用-url-访问" class="headerlink" title="使用 url 访问"></a>使用 url 访问</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 不使用用户认证</span>
+<h2 id="使用-url-访问"><a href="#使用-url-访问" class="headerlink" title="使用 url 访问"></a>使用 url 访问</h2><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 不使用用户认证
 mongodb://ip:port/db
-<span class="token comment"># 使用用户认证</span>
+# 使用用户认证
 mongodb://username:password@ip:port/db<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="查看用户"><a href="#查看用户" class="headerlink" title="查看用户"></a>查看用户</h2><ul>
 <li><p>查看全局的所有账号</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">use admin<span class="token punctuation">;</span>
-db.system.users.find<span class="token punctuation">(</span><span class="token punctuation">)</span>.pretty<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">use admin;
+db.system.users.find().pretty()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>查看当前库下的用户</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">use admin<span class="token punctuation">;</span>
-show <span class="token function">users</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">use admin;
+show users;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure></li>
 </ul>
 <h2 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h2><ul>
 <li><p>追加</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 给用户 test 追加新的权限</span>
-db.grantRolesToUser<span class="token punctuation">(</span>
-  <span class="token string">"test"</span>,
-  <span class="token punctuation">[</span><span class="token punctuation">{</span>role:<span class="token string">"readWrite"</span>, db:<span class="token string">"test"</span><span class="token punctuation">}</span><span class="token punctuation">]</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 给用户 test 追加新的权限
+db.grantRolesToUser(
+  "test",
+  [{role:"readWrite", db:"test"}]
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>替换</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 替换用户 test 的权限</span>
-db.updateUser<span class="token punctuation">(</span>
-  <span class="token string">"test"</span>,
-  <span class="token punctuation">{</span>
-    roles: <span class="token punctuation">[</span>
-      <span class="token punctuation">{</span>role:<span class="token string">"read"</span>, db:<span class="token string">"test"</span><span class="token punctuation">}</span>
-    <span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"># 替换用户 test 的权限
+db.updateUser(
+  "test",
+  {
+    roles: [
+      {role:"read", db:"test"}
+    ]
+  }
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ul>
 <h2 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h2><p>删除掉名为 test 的用户</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">db.dropUser<span class="token punctuation">(</span><span class="token string">'test'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">db.dropUser('test')<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
                 
               </div>

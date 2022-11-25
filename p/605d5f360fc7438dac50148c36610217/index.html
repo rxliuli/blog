@@ -370,23 +370,23 @@
 <li>ui 库不支持 tree shaking，导致 bundle 比较大，项目占比 <strong>439.98kb/74.79%</strong></li>
 </ul>
 <p>依赖树实在可怕，正因如此，吾辈才没有去替换 react =&gt; preact</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@vscode/codicons <span class="token number">0.0</span>.29
-@vscode/webview-ui-toolkit <span class="token number">0.9</span>.3
-├── @microsoft/fast-element <span class="token number">1.8</span>.0
-├─┬ @microsoft/fast-foundation <span class="token number">2.37</span>.2
-│ ├── @microsoft/fast-element <span class="token number">1.8</span>.0
-│ ├── @microsoft/fast-web-utilities <span class="token number">5.1</span>.0
-│ ├── tabbable <span class="token number">5.2</span>.1
-│ └── tslib <span class="token number">1.14</span>.1
-├─┬ @microsoft/fast-react-wrapper <span class="token number">0.1</span>.43
-│ ├── @microsoft/fast-element <span class="token number">1.8</span>.0
-│ ├─┬ @microsoft/fast-foundation <span class="token number">2.37</span>.2
-│ │ ├── @microsoft/fast-element <span class="token number">1.8</span>.0
-│ │ ├── @microsoft/fast-web-utilities <span class="token number">5.1</span>.0
-│ │ ├── tabbable <span class="token number">5.2</span>.1
-│ │ └── tslib <span class="token number">1.14</span>.1
-│ └── react <span class="token number">17.0</span>.2 peer
-└── react <span class="token number">17.0</span>.2 peer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@vscode/codicons 0.0.29
+@vscode/webview-ui-toolkit 0.9.3
+├── @microsoft/fast-element 1.8.0
+├─┬ @microsoft/fast-foundation 2.37.2
+│ ├── @microsoft/fast-element 1.8.0
+│ ├── @microsoft/fast-web-utilities 5.1.0
+│ ├── tabbable 5.2.1
+│ └── tslib 1.14.1
+├─┬ @microsoft/fast-react-wrapper 0.1.43
+│ ├── @microsoft/fast-element 1.8.0
+│ ├─┬ @microsoft/fast-foundation 2.37.2
+│ │ ├── @microsoft/fast-element 1.8.0
+│ │ ├── @microsoft/fast-web-utilities 5.1.0
+│ │ ├── tabbable 5.2.1
+│ │ └── tslib 1.14.1
+│ └── react 17.0.2 peer
+└── react 17.0.2 peer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p><img src="/resources/8cb9112697704e6699908d0537c647fe.png" srcset="/img/loading.gif" lazyload alt="Snipaste\_2022-03-29\_22-24-32"></p>
 <h2 id="如何实现渲染层与主线程通信"><a href="#如何实现渲染层与主线程通信" class="headerlink" title="如何实现渲染层与主线程通信"></a>如何实现渲染层与主线程通信</h2><p>由于核心是通过 <code>postMessage/onmessage</code> 实现，所以与 web worker 或 iframe 通信非常相似。由于代码比较简单，所以吾辈并未封装复杂的通信逻辑。</p>
@@ -397,84 +397,84 @@
 </ol>
 <p>关键代码</p>
 <p>主线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span></span> <span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-webview<span class="token punctuation">.</span><span class="token function">onDidReceiveMessage</span><span class="token punctuation">(</span>
-  <span class="token keyword">async</span> <span class="token punctuation">(</span>message<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> <span class="token punctuation">{</span> command<span class="token punctuation">,</span> data <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> callback <span class="token punctuation">}</span> <span class="token operator">=</span> message
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>map<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">找不到命令 </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>command<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> map<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token operator">!</span><span class="token punctuation">(</span><span class="token operator">...</span>data<span class="token punctuation">)</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'callback: '</span><span class="token punctuation">,</span> callback<span class="token punctuation">)</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>_panel<span class="token punctuation">.</span>webview<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        command<span class="token operator">:</span> callback<span class="token punctuation">,</span>
-        data<span class="token operator">:</span> <span class="token punctuation">[</span>res<span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token keyword">undefined</span><span class="token punctuation">,</span>
-  <span class="token keyword">this</span><span class="token punctuation">.</span>_disposables<span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const map = new Map&lt;string, (...args: any[]) =&gt; any&gt;()
+map.set('hello', (name: string) =&gt; `hello ${name}`)
+webview.onDidReceiveMessage(
+  async (message: any) =&gt; {
+    const { command, data = [], callback } = message
+    if (!map.has(command)) {
+      throw new Error(`找不到命令 ${command}`)
+    }
+    const res = await map.get(command)!(...data)
+    if (callback) {
+      console.log('callback: ', callback)
+      this._panel.webview.postMessage({
+        command: callback,
+        data: [res],
+      })
+    }
+  },
+  undefined,
+  this._disposables,
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>渲染线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> WebviewApi <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vscode-webview'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type { WebviewApi } from 'vscode-webview'
 
-<span class="token keyword">class</span> <span class="token class-name">VSCodeAPIWrapper</span> <span class="token punctuation">{</span>
-  <span class="token keyword">private</span> <span class="token keyword">readonly</span> vsCodeApi<span class="token operator">:</span> WebviewApi<span class="token operator">&lt;</span><span class="token builtin">unknown</span><span class="token operator">&gt;</span> <span class="token operator">|</span> <span class="token keyword">undefined</span>
+class VSCodeAPIWrapper {
+  private readonly vsCodeApi: WebviewApi&lt;unknown&gt; | undefined
 
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> acquireVsCodeApi <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>vsCodeApi <span class="token operator">=</span> <span class="token function">acquireVsCodeApi</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+  constructor() {
+    if (typeof acquireVsCodeApi === 'function') {
+      this.vsCodeApi = acquireVsCodeApi()
+    }
+  }
 
-  <span class="token keyword">public</span> <span class="token function">postMessage</span><span class="token punctuation">(</span>message<span class="token operator">:</span> <span class="token builtin">unknown</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>vsCodeApi<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>vsCodeApi<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+  public postMessage(message: unknown) {
+    if (this.vsCodeApi) {
+      this.vsCodeApi.postMessage(message)
+    } else {
+      console.log(message)
+    }
+  }
 
-  <span class="token keyword">async</span> <span class="token function">invoke</span><span class="token punctuation">(</span>options<span class="token operator">:</span> <span class="token punctuation">{</span>
-    command<span class="token operator">:</span> <span class="token builtin">string</span>
-    <span class="token keyword">default</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">any</span>
-    args<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> acquireVsCodeApi <span class="token operator">!==</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">resolve</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>default<span class="token punctuation">)</span>
-        <span class="token keyword">return</span>
-      <span class="token punctuation">}</span>
-      <span class="token keyword">const</span> id <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'_'</span> <span class="token operator">+</span> Math<span class="token punctuation">.</span><span class="token function">random</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token keyword">const</span> <span class="token function-variable function">listener</span> <span class="token operator">=</span> <span class="token punctuation">(</span>message<span class="token operator">:</span> MessageEvent<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> data <span class="token operator">=</span> message<span class="token punctuation">.</span>data
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token punctuation">.</span>command <span class="token operator">===</span> id<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token function">resolve</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>data<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-          window<span class="token punctuation">.</span><span class="token function">removeEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span>
-      window<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'message'</span><span class="token punctuation">,</span> listener<span class="token punctuation">)</span>
-      vscode<span class="token punctuation">.</span><span class="token function">postMessage</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        command<span class="token operator">:</span> options<span class="token punctuation">.</span>command<span class="token punctuation">,</span>
-        data<span class="token operator">:</span> options<span class="token punctuation">.</span>args<span class="token punctuation">,</span>
-        callback<span class="token operator">:</span> id<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  async invoke(options: {
+    command: string
+    default?: any
+    args?: any[]
+  }): Promise&lt;any&gt; {
+    return await new Promise&lt;string&gt;((resolve) =&gt; {
+      if (typeof acquireVsCodeApi !== 'function') {
+        resolve(options.default)
+        return
+      }
+      const id = Date.now() + '_' + Math.random()
+      const listener = (message: MessageEvent) =&gt; {
+        const data = message.data
+        if (data.command === id) {
+          resolve(data.data[0])
+          window.removeEventListener('message', listener)
+        }
+      }
+      window.addEventListener('message', listener)
+      vscode.postMessage({
+        command: options.command,
+        data: options.args,
+        callback: id,
+      })
+    })
+  }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> vscode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VSCodeAPIWrapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+export const vscode = new VSCodeAPIWrapper()
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">await</span> vscode<span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token punctuation">{</span> command<span class="token operator">:</span> <span class="token string">'world'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// hello world</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(await vscode.invoke({ command: 'world' })) // hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="使用-npm-create-还是-npx"><a href="#使用-npm-create-还是-npx" class="headerlink" title="使用 npm create 还是 npx"></a>使用 npm create 还是 npx</h2><p>例如使用 vite 创建一个 react 项目的命令是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx <span class="token parameter variable">--yes</span> <span class="token parameter variable">--package</span> create-vite create-vite path <span class="token parameter variable">--template</span><span class="token operator">=</span>react-ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx --yes --package create-vite create-vite path --template=react-ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>使用 create-react-app 创建一个项目的命令是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx <span class="token parameter variable">--yes</span> <span class="token parameter variable">--package</span> create-react-app create-react-app path <span class="token parameter variable">--template</span><span class="token operator">=</span>typescript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx --yes --package create-react-app create-react-app path --template=typescript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>可能有人会问了：“为什么没有使用类似 <code>npm create</code> 这个命令来创建项目呢？”<br>这背后确有缘由，乍看上去 <code>create</code> 命令已经被主流的包管理器 <code>npm/yarn/pnpm</code> 都支持了，但它有一些局限性</p>
 <ol>
@@ -490,41 +490,41 @@ webview<span class="token punctuation">.</span><span class="token function">onDi
 </ol>
 <p>因而吾辈选择使用 <code>context.globalState</code> 持久化数据</p>
 <p>主线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 其他代码。。。</span>
-map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'getState'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>globalState<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span>
-map<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">'setState'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> value<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-  <span class="token keyword">this</span><span class="token punctuation">.</span>globalState<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 其他代码。。。
+map.set('getState', (key: string) =&gt; this.globalState.get(key))
+map.set('setState', (key: string, value: any) =&gt;
+  this.globalState.update(key, value),
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>渲染线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> WebviewApi <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vscode-webview'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type { WebviewApi } from 'vscode-webview'
 
-<span class="token keyword">class</span> <span class="token class-name">VSCodeAPIWrapper</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 其他代码。。。</span>
-  <span class="token keyword">async</span> <span class="token function">getState</span><span class="token punctuation">(</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">unknown</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>vsCodeApi<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token punctuation">{</span> command<span class="token operator">:</span> <span class="token string">'getState'</span><span class="token punctuation">,</span> args<span class="token operator">:</span> <span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> state <span class="token operator">=</span> localStorage<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
-      <span class="token keyword">return</span> state <span class="token operator">?</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token keyword">undefined</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
+class VSCodeAPIWrapper {
+  // 其他代码。。。
+  async getState(key: string): Promise&lt;unknown | undefined&gt; {
+    if (this.vsCodeApi) {
+      return await this.invoke({ command: 'getState', args: [key] })
+    } else {
+      const state = localStorage.getItem(key)
+      return state ? JSON.parse(state) : undefined
+    }
+  }
 
-  <span class="token keyword">async</span> <span class="token generic-function"><span class="token function">setState</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token builtin">unknown</span> <span class="token operator">|</span> <span class="token keyword">undefined</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-    key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-    newState<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token keyword">void</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>vsCodeApi<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span><span class="token punctuation">{</span> command<span class="token operator">:</span> <span class="token string">'setState'</span><span class="token punctuation">,</span> args<span class="token operator">:</span> <span class="token punctuation">[</span>key<span class="token punctuation">,</span> newState<span class="token punctuation">]</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-      localStorage<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>newState<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  async setState&lt;T extends unknown | undefined&gt;(
+    key: string,
+    newState: T,
+  ): Promise&lt;void&gt; {
+    if (this.vsCodeApi) {
+      return await this.invoke({ command: 'setState', args: [key, newState] })
+    } else {
+      localStorage.setItem(key, JSON.stringify(newState))
+    }
+  }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> vscode <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VSCodeAPIWrapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+export const vscode = new VSCodeAPIWrapper()
 
-<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">await</span> vscode<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token punctuation">{</span> location<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+const store = (await vscode.getState(props.id)) as { location: string }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在可以支持选择的生成器和配置项在下次使用时仍然会被缓存，这对于需要使用相同的生成器创建项目确实很方便，尤其是生成器选项比较多的情况下。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>vscode 目前在一些方面仍然比不上 webstorm，但其流行趋势简直势不可挡，许多前端项目甚至官方仅支持 vscode 编辑器，这让在某些时候变得没有选择（例如 vue3、nx）。所以与其抱怨，还不如尝试让它变得更好。</p>

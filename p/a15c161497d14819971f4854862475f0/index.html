@@ -700,33 +700,33 @@
 <td></td>
 </tr>
 </tbody></table>
-<h2 id="一些示例"><a href="#一些示例" class="headerlink" title="一些示例"></a>一些示例</h2><h3 id="常见-Stream-操作"><a href="#常见-Stream-操作" class="headerlink" title="常见 Stream 操作"></a>常见 Stream 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span></span> collect <span class="token operator">=</span> <span class="token class-name">Stream</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"12"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"123"</span><span class="token punctuation">,</span> <span class="token string">"2"</span><span class="token punctuation">,</span> <span class="token string">"12"</span><span class="token punctuation">,</span> <span class="token string">"321"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
-                <span class="token comment">//过滤</span>
-                <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>s <span class="token operator">-&gt;</span> <span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token comment">//提取出组成字符串的字符</span>
-                <span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span>s <span class="token operator">-&gt;</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token comment">//去重</span>
-                <span class="token punctuation">.</span><span class="token function">distinct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token comment">//转换为集合</span>
-                <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>collect<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//结果是 [1, 2, 3]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="一些示例"><a href="#一些示例" class="headerlink" title="一些示例"></a>一些示例</h2><h3 id="常见-Stream-操作"><a href="#常见-Stream-操作" class="headerlink" title="常见 Stream 操作"></a>常见 Stream 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final List&lt;String&gt; collect = Stream.of("1", "12", "", "123", "2", "12", "321", "")
+                //过滤
+                .filter(s -&gt; !s.isEmpty())
+                //提取出组成字符串的字符
+                .flatMap(s -&gt; Arrays.stream(s.split("")))
+                //去重
+                .distinct()
+                //转换为集合
+                .collect(Collectors.toList());
+System.out.println(collect); //结果是 [1, 2, 3]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h3 id="常见-Collectors-操作"><a href="#常见-Collectors-操作" class="headerlink" title="常见 Collectors 操作"></a>常见 Collectors 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Integer</span><span class="token punctuation">,</span> <span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span><span class="token punctuation">&gt;</span></span> collect <span class="token operator">=</span> <span class="token class-name">Stream</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">,</span> <span class="token string">"12"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"123"</span><span class="token punctuation">,</span> <span class="token string">"2"</span><span class="token punctuation">,</span> <span class="token string">"13"</span><span class="token punctuation">,</span> <span class="token string">"321"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>
-                <span class="token comment">//分组</span>
-                <span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">groupingBy</span><span class="token punctuation">(</span>
-                        <span class="token comment">//分组条件</span>
-                        <span class="token class-name">String</span><span class="token operator">::</span><span class="token function">length</span><span class="token punctuation">,</span>
-                        <span class="token comment">//分组之前对每个元素进行映射</span>
-                        <span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">mapping</span><span class="token punctuation">(</span>
-                                <span class="token comment">//映射函数</span>
-                                s <span class="token operator">-&gt;</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">asList</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                                <span class="token comment">//最后将 Stream 转换为 List</span>
-                                <span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                        <span class="token punctuation">)</span>
-                <span class="token punctuation">)</span>
-        <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>collect<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [1, 3]], 3=[[1, 2, 3], [3, 2, 1]]}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="常见-Collectors-操作"><a href="#常见-Collectors-操作" class="headerlink" title="常见 Collectors 操作"></a>常见 Collectors 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final Map&lt;Integer, List&lt;List&lt;String&gt;&gt;&gt; collect = Stream.of("1", "12", "", "123", "2", "13", "321", "")
+        .collect(
+                //分组
+                Collectors.groupingBy(
+                        //分组条件
+                        String::length,
+                        //分组之前对每个元素进行映射
+                        Collectors.mapping(
+                                //映射函数
+                                s -&gt; Arrays.asList(s.split("")),
+                                //最后将 Stream 转换为 List
+                                Collectors.toList()
+                        )
+                )
+        );
+System.out.println(collect); //结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [1, 3]], 3=[[1, 2, 3], [3, 2, 1]]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <hr>
 <p>最后，Java8 有很多有趣的功能，或许我们所使用的不过是其中一个很小的子集，然而了解的越多越是觉得 Java8 的改进很多呢</p>

@@ -385,11 +385,11 @@
 
 <p>如果不是用绿色标出来，你能注意到这三行代码被注释掉了么？</p>
 <h3 id="用连接符隐藏变量"><a href="#用连接符隐藏变量" class="headerlink" title="用连接符隐藏变量"></a>用连接符隐藏变量</h3><p>对于下面的定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">local_var</span> <span class="token expression">xy_z</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">#define local_var xy_z<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>可以把 “xy_z” 打散到两行里：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">local_var</span> <span class="token expression">xy</span><span class="token punctuation">\</span>
-<span class="token expression">_z </span><span class="token comment">// local_var OK</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">#define local_var xy\
+_z // local_var OK<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>这样全局搜索 xy_z 的操作在这个文件里就一无所获了。 对于 C 预处理器来说，第一行最后的 “” 表示继续拼接下一行的内容。</p>
 <h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><blockquote>
@@ -405,14 +405,14 @@
 <h3 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h3><p>永远不要记录代码中的坑。如果你怀疑某个类里可能有 bug，天知地知你知就好。如果你想到了重构或重写代码的思路，看在老天爷的份上，千万别写出来。切记电影《小鹿斑比》里那句台词 “如果你不能说好听的话，那就什么也不要说。”。万一这段代码的原作者看到你的注释怎么办？万一老板看到了怎么办？万一客户看到了怎么办？搞不好最后你自己被解雇了。一句” 这里需要修改 “的匿名注释就好多了，尤其是当看不清这句注释指的是哪里需要修改的情况下。切记难得糊涂四个字，这样大家都不会感觉受到了批评。</p>
 <h3 id="说明变量"><a href="#说明变量" class="headerlink" title="说明变量"></a>说明变量</h3><p>永远不要 对变量声明加注释。有关变量使用的方式、边界值、合法值、小数点后的位数、计量单位、显示格式、数据录入规则等等，后继者完全可以自己从程序代码中去理解和整理嘛。如果老板强迫你写注释，就把方法体代码混进去，但绝对不要对变量声明写注释，即使是临时变量！</p>
 <h3 id="在注释里挑拨离间"><a href="#在注释里挑拨离间" class="headerlink" title="在注释里挑拨离间"></a>在注释里挑拨离间</h3><p>为了阻挠任何雇佣外部维护承包商的倾向，可以在代码中散布针对其他同行软件公司的攻击和抹黑，特别是可能接替你工作的其中任何一家。例如：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/* 优化后的内层循环
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/* 优化后的内层循环
 这套技巧对于 SSI 软件服务公司的那帮蠢材来说太高深了，他们只会
 用 &lt;math.h&gt; 里的笨例程，消耗 50 倍的内存和处理时间。
-*/</span>
-<span class="token keyword">class</span> clever_SSInc
-    <span class="token punctuation">{</span>
-    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+*/
+class clever_SSInc
+    {
+    ...
+    }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>可能的话，除了注释之外，这些攻击抹黑的内容也要掺到代码里的重要部分，这样如果管理层想清理掉这些攻击性的言论然后发给外部承包商去维护，就会破坏代码结构。</p>
 <h2 id="程序设计"><a href="#程序设计" class="headerlink" title="程序设计"></a>程序设计</h2><blockquote>
@@ -420,10 +420,10 @@
 </blockquote>
 <h3 id="Java-类型"><a href="#Java-类型" class="headerlink" title="Java 类型"></a>Java 类型</h3><p>Java 的类型机制是上帝的礼物。你可以问心无愧地使用它，因为 Java 语言本身就需要它。每次你从一个 Collection 里获取一个对象，你都必须把它造型为原始类型。这样这个变量的类型就必须在无数地方表述。如果后来类型变了，所有的造型都要修改才能匹配。如果倒霉的维护代码的程序员没有找全（或者修改太多），编译器能不能检测到也不好说。类似的，如果变量类型从 <code>short</code> 变成 <code>int</code>，所有匹配的造型也都要从 <code>(short)</code>改成 <code>(int)</code>。</p>
 <h3 id="利用-Java-的冗余"><a href="#利用-Java-的冗余" class="headerlink" title="利用 Java 的冗余"></a>利用 Java 的冗余</h3><p>Java 要求你给每个变量的类型写两次表述。 Java 程序员已经习惯了这种冗余，他们不会注意到你的两次表述有细微的差别，例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">Bubblegum</span> b <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Bubblegom</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Bubblegum b = new Bubblegom();<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>不幸的是 ++ 操作符的盛行让下面这种伪冗余代码得手的难度变大了：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">swimmer <span class="token operator">=</span> swimner <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">swimmer = swimner + 1;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h3 id="永远不做校验"><a href="#永远不做校验" class="headerlink" title="永远不做校验"></a>永远不做校验</h3><p>永远不要对输入数据做任何的正确性或差异性检查。这样能表现你对公司设备的绝对信任，以及你是一位信任所有项目伙伴和系统管理员的团队合作者。总是返回合理的值，即使数据输入有问题或者错误。</p>
 <h3 id="有礼貌，无断言"><a href="#有礼貌，无断言" class="headerlink" title="有礼貌，无断言"></a>有礼貌，无断言</h3><p>避免使用 assert() 机制，因为它可能把三天的 debug 盛宴变成 10 分钟的快餐。</p>
@@ -433,11 +433,11 @@
 <h3 id="傻瓜接口"><a href="#傻瓜接口" class="headerlink" title="傻瓜接口"></a>傻瓜接口</h3><p>编写一个名为 “WrittenByMe” 之类的空接口，然后让你的所有类都实现它。然后给所有你用到的 Java 内置类编写包装类。这里的思想是确保你程序里的每个对象都实现这个接口。最后，编写所有的方法，让它们的参数和返回类型都是这个 WrittenByMe。这样就几乎不可能搞清楚某个方法的功能是什么，并且所有类型都需要好玩的造型方法。更出格的玩法是，让每个团队成员编写它们自己的接口 (例如 WrittenByJoe)，程序员用到的任何类都要实现他自己的接口。这样你就可以在大量无意义接口中随便找一个来引用对象了。</p>
 <h3 id="巨型监听器"><a href="#巨型监听器" class="headerlink" title="巨型监听器"></a>巨型监听器</h3><p>永远不要为每个组件创建分开的监听器。对所有按钮总是用同一个监听器，只要用大量的 if…else 来判断是哪一个按钮被点击就行了。</p>
 <p>好事成堆 TM<br>狂野地使用封装和 OO 思想。例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">myPanel<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span> <span class="token function">getMyButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">private</span> <span class="token class-name">JButton</span> <span class="token function">getMyButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> myButton<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">myPanel.add( getMyButton() );
+private JButton getMyButton()
+    {
+    return myButton;
+    }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这段很可能看起来不怎么好笑。别担心，只是时候未到而已。</p>
 <h3 id="友好的朋友"><a href="#友好的朋友" class="headerlink" title="友好的朋友"></a>友好的朋友</h3><p>在 C++ 里尽量多使用 friend 声明。再把创建类的指针传递给已创建类。现在你不用浪费时间去考虑接口了。另外，你应该用上关键字 private 和 protected 来表明你的类封装得很好。</p>
@@ -454,48 +454,48 @@
 <h3 id="子类"><a href="#子类" class="headerlink" title="子类"></a>子类</h3><p>对于编写无法维护代码的任务来说，面向对象编程的思想简直是天赐之宝。如果你有一个类，里边有 10 个属性（成员 / 方法），可以考虑写一个基类，里面只有一个属性，然后产生 9 层的子类，每层增加一个属性。等你访问到最终的子类时，你才能得到全部 10 个属性。如果可能，把每个类的声明都放在不同的文件里。</p>
 <h2 id="编码迷局"><a href="#编码迷局" class="headerlink" title="编码迷局"></a>编码迷局</h2><h3 id="迷惑-C"><a href="#迷惑-C" class="headerlink" title="迷惑 C"></a>迷惑 C</h3><p>从互联网上的各种混乱 C 语言竞赛中学习，追随大师们的脚步。</p>
 <h3 id="追求极致"><a href="#追求极致" class="headerlink" title="追求极致"></a>追求极致</h3><p>总是追求用最迷惑的方式来做普通的任务。例如，要用数组来把整数转换为相应的字符串，可以这么做：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">char</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>
-<span class="token keyword">switch</span> <span class="token punctuation">(</span>n<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-<span class="token keyword">case</span> <span class="token number">1</span><span class="token operator">:</span>
-    p <span class="token operator">=</span> <span class="token string">"one"</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token keyword">case</span> <span class="token number">2</span><span class="token operator">:</span>
-    p <span class="token operator">=</span> <span class="token string">"two"</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token keyword">case</span> <span class="token number">3</span><span class="token operator">:</span>
-    p <span class="token operator">=</span> <span class="token string">"three"</span><span class="token punctuation">;</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s"</span><span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">break</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">char *p;
+switch (n)
+{
+case 1:
+    p = "one";
+    if (0)
+case 2:
+    p = "two";
+    if (0)
+case 3:
+    p = "three";
+    printf("%s", p);
+    break;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="一致性的小淘气"><a href="#一致性的小淘气" class="headerlink" title="一致性的小淘气"></a>一致性的小淘气</h3><p>当你需要一个字符常量的时候，可以用多种不同格式： ‘ ‘, 32, 0x20, 040。在 C 或 Java 里 10 和 010 是不同的数（0 开头的表示 16 进制），你也可以充分利用这个特性。</p>
 <h3 id="造型"><a href="#造型" class="headerlink" title="造型"></a>造型</h3><p>把所有数据都以 void * 形式传递，然后再造型为合适的结构。不用结构而是通过位移字节数来造型也很好玩。</p>
 <h3 id="嵌套-Switch"><a href="#嵌套-Switch" class="headerlink" title="嵌套 Switch"></a>嵌套 Switch</h3><p>Switch 里边还有 Switch，这种嵌套方式是人类大脑难以破解的。</p>
 <h3 id="利用隐式转化"><a href="#利用隐式转化" class="headerlink" title="利用隐式转化"></a>利用隐式转化</h3><p>牢记编程语言中所有的隐式转化细节。充分利用它们。数组的索引要用浮点变量，循环计数器用字符，对数字执行字符串函数调用。不管怎么说，所有这些操作都是合法的，它们无非是让源代码更简洁而已。任何尝试理解它们的维护者都会对你感激不尽，因为他们必须阅读和学习整个关于隐式数据类型转化的章节，而这个章节很可能是他们来维护你的代码之前完全忽略了的。</p>
 <h3 id="分号"><a href="#分号" class="headerlink" title="分号"></a>分号</h3><p>在所有语法允许的地方都加上分号，例如：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">if</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">else</span><span class="token punctuation">;</span>
-    <span class="token punctuation">{</span>
-    <span class="token keyword">int</span> d<span class="token punctuation">;</span>
-    d <span class="token operator">=</span> c<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">if(a);
+else;
+    {
+    int d;
+    d = c;
+    }
+    ;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用八进制数"><a href="#使用八进制数" class="headerlink" title="使用八进制数"></a>使用八进制数</h3><p>把八进制数混到十进制数列表里，就像这样：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">array <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-    <span class="token punctuation">{</span>
-    <span class="token number">111</span><span class="token punctuation">,</span>
-    <span class="token number">120</span><span class="token punctuation">,</span>
-    <span class="token number">013</span><span class="token punctuation">,</span>
-    <span class="token number">121</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">array = new int []
+    {
+    111,
+    120,
+    013,
+    121,
+    };<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><p>尽可能深地嵌套。优秀的程序员能在一行代码里写 10 层 ()，在一个方法里写 20 层 {}。</p>
 <h3 id="C-数组"><a href="#C-数组" class="headerlink" title="C 数组"></a>C 数组</h3><p>C 编译器会把 <code>myArray[i]</code> 转换成 <code>_(myArray + i)</code>，它等同于 <code>_(i + myArray)</code> 也等同于 <code>i[myArray]</code>。 高手都知道怎么用好这个招。可以用下面的函数来产生索引，这样就把代码搞乱了：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">myfunc</span><span class="token punctuation">(</span><span class="token keyword">int</span> q<span class="token punctuation">,</span> <span class="token keyword">int</span> p<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> p<span class="token operator">%</span>q<span class="token punctuation">;</span> <span class="token punctuation">}</span>
-<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token function">myfunc</span><span class="token punctuation">(</span><span class="token number">6291</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">[</span>Array<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">int myfunc(int q, int p) { return p%q; }
+...
+myfunc(6291, 8)[Array];<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>遗憾的是，这一招只能在本地 C 类里用，Java 还不行。</p>
 <h3 id="放长线钓大鱼"><a href="#放长线钓大鱼" class="headerlink" title="放长线钓大鱼"></a>放长线钓大鱼</h3><p>一行代码里堆的东西越多越好。这样可以省下临时变量的开销，去掉换行和空格还可以缩短源文件大小。记住，要去掉运算符两边的空格。优秀的程序员总是能突破某些编辑器对于 255 个字符行宽的限制。</p>
@@ -534,15 +534,15 @@
 <h3 id="8-只带一把锤子"><a href="#8-只带一把锤子" class="headerlink" title="8. 只带一把锤子"></a>8. 只带一把锤子</h3><p>一招鲜吃遍天，轻装前进。如果你手头只有一把锤子，那么所有的问题都是钉子。</p>
 <h3 id="9-规范体系"><a href="#9-规范体系" class="headerlink" title="9. 规范体系"></a>9. 规范体系</h3><p>有可能的话，忽略当前你的项目所用语言和环境中被普罗大众所接受的编程规范。比如，编写基于 MFC 的应用时，就坚持使用 STL 编码风格。</p>
 <h3 id="10-翻转通常的-True-False-惯例"><a href="#10-翻转通常的-True-False-惯例" class="headerlink" title="10. 翻转通常的 True False 惯例"></a>10. 翻转通常的 True False 惯例</h3><p>把常用的 true 和 false 的定义反过来用。这一招听起来平淡无奇，但是往往收获奇效。你可以先藏好下面的定义：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-d" data-language="d"><code class="language-d">#define TRUE <span class="token number">0</span>
-#define FALSE <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-d" data-language="d"><code class="language-d">#define TRUE 0
+#define FALSE 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>把这个定义深深地藏在代码中某个没人会再去看的文件里不易被发现的地方，然后让程序做下面这样的比较</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>var <span class="token operator">==</span> TRUE<span class="token punctuation">)</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span>var <span class="token operator">!=</span> FALSE<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">if (var == TRUE)
+if (var != FALSE)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>某些人肯定会迫不及待地跳出来 “修正” 这种明显的冗余，并且在其他地方照着常规去使用变量 var：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>var<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">if (var)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>还有一招是为 <code>TRUE</code> 和 <code>FALSE</code> 赋予相同的值，虽然大部分人可能会看穿这种骗局。给它们分别赋值 1 和 2 或者 -1 和 0 是让他们瞎忙乎的方式里更精巧的，而且这样做看起来也不失对他们的尊重。你在 Java 里也可以用这一招，定义一个叫 <code>TRUE</code> 的静态常量。在这种情况下，其他程序员更有可能怀疑你干的不是好事，因为 Java 里已经有了内建的标识符 <code>true</code>。</p>
 <h3 id="11-第三方库"><a href="#11-第三方库" class="headerlink" title="11. 第三方库"></a>11. 第三方库</h3><p>在你的项目里引入功能强大的第三方库，然后不要用它们。潜规则就是这样，虽然你对这些好的工具仍然一无所知，却还是可以在你简历的 “其他工具” 一节中写上这些没用过的库。</p>
@@ -565,17 +565,17 @@
 <h3 id="24-定制脚本语言"><a href="#24-定制脚本语言" class="headerlink" title="24. 定制脚本语言"></a>24. 定制脚本语言</h3><p>在你的 C/S 应用里嵌入一个在运行时按字节编译的脚本命令语言。</p>
 <h3 id="25-依赖于编译器的代码"><a href="#25-依赖于编译器的代码" class="headerlink" title="25. 依赖于编译器的代码"></a>25. 依赖于编译器的代码</h3><p>如果你发现在你的编译器或解释器里有个 bug，一定要确保这个 bug 的存在对于你的代码正常工作是至关重要的。毕竟你又不会使用其他的编译器，其他任何人也不允许！</p>
 <h3 id="26-一个货真价实的例子"><a href="#26-一个货真价实的例子" class="headerlink" title="26. 一个货真价实的例子"></a>26. 一个货真价实的例子</h3><p>下面是一位大师编写的真实例子。让我们来瞻仰一下他在这样短短几行 C 函数里展示的高超技巧。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span><span class="token operator">*</span> <span class="token function">Realocate</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span>buf<span class="token punctuation">,</span> <span class="token keyword">int</span> os<span class="token punctuation">,</span> <span class="token keyword">int</span> ns<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">void</span><span class="token operator">*</span>temp<span class="token punctuation">;</span>
-    temp <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span>os<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>temp<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>buf<span class="token punctuation">,</span> os<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">free</span><span class="token punctuation">(</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    buf <span class="token operator">=</span> <span class="token function">malloc</span><span class="token punctuation">(</span>ns<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">memset</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> ns<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>buf<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>temp<span class="token punctuation">,</span> ns<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> buf<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">void* Realocate(void*buf, int os, int ns)
+{
+    void*temp;
+    temp = malloc(os);
+    memcpy((void*)temp, (void*)buf, os);
+    free(buf);
+    buf = malloc(ns);
+    memset(buf, 0, ns);
+    memcpy((void*)buf, (void*)temp, ns);
+    return buf;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <ul>
 <li>重新发明了标准库里已有的简单函数。</li>
@@ -588,15 +588,15 @@
 <li>给 buf 分配内存之后，memset 初始化它为 0。不要使用 calloc ()，因为某些人会重写 ANSI 规范，这样将来保不齐 calloc () 往 buf 里填的就不是 0 了。（虽然我们复制过去的数据量和 buf 的大小是一样的，不需要初始化，不过这也无所谓啦）</li>
 </ul>
 <h3 id="27-如何修复-“unused-variable”-错误"><a href="#27-如何修复-“unused-variable”-错误" class="headerlink" title="27. 如何修复 “unused variable” 错误"></a>27. 如何修复 “unused variable” 错误</h3><p>如果你的编译器冒出了 “unused local variable” 警告，不要去掉那个变量。相反，要找个聪明的办法把它用起来。我最喜欢的方法是：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">i <span class="token operator">=</span> i<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">i = i;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h3 id="28-大小很关键"><a href="#28-大小很关键" class="headerlink" title="28. 大小很关键"></a>28. 大小很关键</h3><p>差点忘了说了，函数是越大越好。跳转和 GOTO 语句越多越好。那样的话，想做任何修改都需要分析很多场景。这会让维护代码的程序员陷入千头万绪之中。如果函数真的体型庞大的话，对于维护代码的程序员就是哥斯拉怪兽了，它会在他搞清楚情况之前就残酷无情地将他们踩翻在地。</p>
 <h3 id="29-一张图片顶-1000-句话，一个函数就是-1000-行"><a href="#29-一张图片顶-1000-句话，一个函数就是-1000-行" class="headerlink" title="29. 一张图片顶 1000 句话，一个函数就是 1000 行"></a>29. 一张图片顶 1000 句话，一个函数就是 1000 行</h3><p>把每个方法体写的尽可能的长 – 最好是你写的任何方法或函数都没有少于 1000 行代码的，而且里边深度嵌套，这是必须的。</p>
 <h3 id="30-少个文件"><a href="#30-少个文件" class="headerlink" title="30. 少个文件"></a>30. 少个文件</h3><p>一定要保证一个或多个关键文件是找不到的。利用 includes 里边再 includes 就能做到这一点。例如，在你的 main 模块里，你写上：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdcode.h&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">#include &lt;stdcode.h&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>Stdcode.h 是有的。但是在 stdcode.h 里，还有个引用：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"a:\\refcode.h"</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-c" data-language="c"><code class="language-c">#include "a:\\refcode.h"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>然后，refcode.h 就没地方能找到了。</p>
 <h3 id="31-到处可写，无处可读"><a href="#31-到处可写，无处可读" class="headerlink" title="31. 到处可写，无处可读"></a>31. 到处可写，无处可读</h3><p>至少要把一个变量弄成这样：到处被设置，但是几乎没有哪里用到它。不幸的是，现代编译器通常会阻止你做相反的事：到处读，没处写。不过你在 C 或 C++ 里还是可以这样做的。</p>

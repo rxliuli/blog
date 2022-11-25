@@ -348,26 +348,26 @@
   <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// App.tsx</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> useReducer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
-<span class="token keyword">import</span> css <span class="token keyword">from</span> <span class="token string">'./App.module.css'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// App.tsx
+import { useReducer } from 'react'
+import css from './App.module.css'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">[</span>hide<span class="token punctuation">,</span> toggle<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useReducer</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token operator">!</span>s<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span>
-      <span class="token operator">&lt;</span>button onClick<span class="token operator">=</span><span class="token punctuation">{</span>toggle<span class="token punctuation">}</span><span class="token operator">&gt;</span>toggle<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
-      <span class="token operator">&lt;</span>p className<span class="token operator">=</span><span class="token punctuation">{</span>hide <span class="token operator">?</span> css<span class="token punctuation">.</span>hide <span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">}</span><span class="token operator">&gt;</span>test<span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
-    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function App() {
+  const [hide, toggle] = useReducer((s) =&gt; !s, false)
+  return (
+    &lt;div&gt;
+      &lt;button onClick={toggle}&gt;toggle&lt;/button&gt;
+      &lt;p className={hide ? css.hide : ''}&gt;test&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>如果我们在 App.module.css 旁边放一个 App.module.css.d.ts 文件，那么在 ts 中使用时就会很快乐</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> css<span class="token operator">:</span> <span class="token punctuation">{</span>
-  hide<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const css: {
+  hide: string
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> css<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default css<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>当然，在 ide 中也可以完成这个功能，但每个 ide 都需要实现一遍这个功能，这正是问题所在，插件无法跨 ide 使用，但基于 TypeScript 的代码提示可以做到跨 ide 使用，包括 vscode、jetbrains ide、vim 等等。</p>
 <h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p>正如上面所言，想要生成代码，在这里需要得到 css ast 和转换 css ast 为 ts ast，而这就需要选择一个合适的解析器来解析 css 得到 ast 以及生成 ts ast 并转换为代码了。</p>
@@ -382,67 +382,67 @@
 <p>Tip: 代码的 ast 可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">https://astexplorer.net/</a> 以可视化的方式检查<br><img src="/resources/bef3bb2bf40f43dd87c724d4cfc70bdc.png" srcset="/img/loading.gif" lazyload alt="1664382002113.png"></p>
 </blockquote>
 <h3 id="解析-css"><a href="#解析-css" class="headerlink" title="解析 css"></a>解析 css</h3><p>首先，解析 css 得到 ast，并从中过滤出所有 class 选择器类名</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> ast <span class="token operator">=</span> csstree<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> r<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  csstree<span class="token punctuation">.</span><span class="token function">walk</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> <span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'ClassSelector'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      r<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>node<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> r
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function parse(code: string): string[] {
+  const ast = csstree.parse(code)
+  const r: string[] = []
+  csstree.walk(ast, (node) =&gt; {
+    if (node.type === 'ClassSelector') {
+      r.push(node.name)
+    }
+  })
+  return r
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后将 css 类名列表转换为 ast</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">convert</span><span class="token punctuation">(</span>classes<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> n<span class="token punctuation">.</span>Program <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> b<span class="token punctuation">.</span><span class="token function">program</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
-    b<span class="token punctuation">.</span><span class="token function">variableDeclaration</span><span class="token punctuation">(</span><span class="token string">'const'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
-      b<span class="token punctuation">.</span><span class="token function">variableDeclarator</span><span class="token punctuation">(</span>
-        b<span class="token punctuation">.</span>identifier<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-          name<span class="token operator">:</span> <span class="token string">'css'</span><span class="token punctuation">,</span>
-          typeAnnotation<span class="token operator">:</span> b<span class="token punctuation">.</span><span class="token function">tsTypeAnnotation</span><span class="token punctuation">(</span>
-            b<span class="token punctuation">.</span><span class="token function">tsTypeLiteral</span><span class="token punctuation">(</span>
-              classes<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-                b<span class="token punctuation">.</span><span class="token function">tsPropertySignature</span><span class="token punctuation">(</span>
-                  b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span>
-                  b<span class="token punctuation">.</span><span class="token function">tsTypeAnnotation</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">tsStringKeyword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                <span class="token punctuation">)</span><span class="token punctuation">,</span>
-              <span class="token punctuation">)</span><span class="token punctuation">,</span>
-            <span class="token punctuation">)</span><span class="token punctuation">,</span>
-          <span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    b<span class="token punctuation">.</span><span class="token function">exportDefaultDeclaration</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function convert(classes: string[]): n.Program {
+  return b.program([
+    b.variableDeclaration('const', [
+      b.variableDeclarator(
+        b.identifier.from({
+          name: 'css',
+          typeAnnotation: b.tsTypeAnnotation(
+            b.tsTypeLiteral(
+              classes.map((s) =&gt;
+                b.tsPropertySignature(
+                  b.identifier(s),
+                  b.tsTypeAnnotation(b.tsStringKeyword()),
+                ),
+              ),
+            ),
+          ),
+        }),
+      ),
+    ]),
+    b.exportDefaultDeclaration(b.identifier('css')),
+  ])
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>最后，将 ast 转换为 ts 代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">format</span><span class="token punctuation">(</span>ast<span class="token operator">:</span> n<span class="token punctuation">.</span>ASTNode<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token function">prettyPrint</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span><span class="token punctuation">.</span>code
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function format(ast: n.ASTNode): string {
+  return prettyPrint(ast).code
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>结合一下 3 个方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">generate</span><span class="token punctuation">(</span>cssCode<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> classes <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span>cssCode<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> ast <span class="token operator">=</span> <span class="token function">convert</span><span class="token punctuation">(</span>classes<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token function">format</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function generate(cssCode: string): string {
+  const classes = parse(cssCode)
+  const ast = convert(classes)
+  return format(ast)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>做个最简单的测试</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>
-  <span class="token function">generate</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">/* App.module.css */
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(
+  generate(`/* App.module.css */
 .hide {
   display: none;
 }
-</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span>
-<span class="token comment">// 会得到以下代码</span>
-<span class="token comment">// const css: {</span>
-<span class="token comment">//     hide: string</span>
-<span class="token comment">// };</span>
+`),
+)
+// 会得到以下代码
+// const css: {
+//     hide: string
+// };
 
-<span class="token comment">// export default css;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+// export default css;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>看起来我们完成了基本的从 css 到 dts 的代码生成，但如果希望实用，它还需要一些额外的步骤</p>
 <ol>
@@ -450,63 +450,63 @@
 <li>发布为 npm 包，或者使用某种形式的 monorepo 便于在多个项目复用</li>
 </ol>
 <p>下面使用 vite 插件作为演示</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig<span class="token punctuation">,</span> Plugin<span class="token punctuation">,</span> ResolvedConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vite'</span>
-<span class="token keyword">import</span> react <span class="token keyword">from</span> <span class="token string">'@vitejs/plugin-react'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> globby <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'globby'</span>
-<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
-<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> csstree <span class="token keyword">from</span> <span class="token string">'css-tree'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> namedTypes <span class="token keyword">as</span> n<span class="token punctuation">,</span> builders <span class="token keyword">as</span> b <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'ast-types'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> prettyPrint <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'recast'</span>
-<span class="token keyword">import</span> fsExtra <span class="token keyword">from</span> <span class="token string">'fs-extra'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> watch <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'chokidar'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig, Plugin, ResolvedConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { globby } from 'globby'
+import path from 'path'
+import * as csstree from 'css-tree'
+import { namedTypes as n, builders as b } from 'ast-types'
+import { prettyPrint } from 'recast'
+import fsExtra from 'fs-extra'
+import { watch } from 'chokidar'
 
-<span class="token comment">// 上面的代码。。。</span>
+// 上面的代码。。。
 
-<span class="token keyword">const</span> <span class="token punctuation">{</span> pathExists<span class="token punctuation">,</span> readFile<span class="token punctuation">,</span> remove<span class="token punctuation">,</span> writeFile <span class="token punctuation">}</span> <span class="token operator">=</span> fsExtra
+const { pathExists, readFile, remove, writeFile } = fsExtra
 
-<span class="token keyword">function</span> <span class="token function">cssdts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> config<span class="token operator">:</span> ResolvedConfig
-  <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">generateByPath</span><span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> cssPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>root<span class="token punctuation">,</span> item<span class="token punctuation">)</span>
-    <span class="token keyword">const</span> code <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>cssPath<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span>
-    <span class="token keyword">await</span> <span class="token function">writeFile</span><span class="token punctuation">(</span>cssPath <span class="token operator">+</span> <span class="token string">'.d.ts'</span><span class="token punctuation">,</span> <span class="token function">generate</span><span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+function cssdts(): Plugin {
+  let config: ResolvedConfig
+  async function generateByPath(item: string) {
+    const cssPath = path.resolve(config.root, item)
+    const code = await readFile(cssPath, 'utf-8')
+    await writeFile(cssPath + '.d.ts', generate(code))
+  }
 
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'vite-plugin-cssdts'</span><span class="token punctuation">,</span>
-    <span class="token function">configResolved</span><span class="token punctuation">(</span>_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      config <span class="token operator">=</span> _config
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token keyword">async</span> <span class="token function">buildStart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">globby</span><span class="token punctuation">(</span><span class="token string">'src/**/*.module.css'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-        cwd<span class="token operator">:</span> config<span class="token punctuation">.</span>root<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      <span class="token keyword">await</span> <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>
-        list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          <span class="token keyword">const</span> cssPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>root<span class="token punctuation">,</span> item<span class="token punctuation">)</span>
-          <span class="token keyword">await</span> <span class="token function">generateByPath</span><span class="token punctuation">(</span>cssPath<span class="token punctuation">)</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function">configureServer</span><span class="token punctuation">(</span>server<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">watch</span><span class="token punctuation">(</span><span class="token string">'src/**/*.module.css'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> cwd<span class="token operator">:</span> config<span class="token punctuation">.</span>root <span class="token punctuation">}</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'add'</span><span class="token punctuation">,</span> generateByPath<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> generateByPath<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'unlink'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>cssPath<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          <span class="token keyword">if</span> <span class="token punctuation">(</span>cssPath<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">'.module.css'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">const</span> dtsPath <span class="token operator">=</span> cssPath <span class="token operator">+</span> <span class="token string">'.d.ts'</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">pathExists</span><span class="token punctuation">(</span>dtsPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-              <span class="token keyword">await</span> <span class="token function">remove</span><span class="token punctuation">(</span>dtsPath<span class="token punctuation">)</span>
-            <span class="token punctuation">}</span>
-          <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  return {
+    name: 'vite-plugin-cssdts',
+    configResolved(_config) {
+      config = _config
+    },
+    async buildStart() {
+      const list = await globby('src/**/*.module.css', {
+        cwd: config.root,
+      })
+      await Promise.all(
+        list.map(async (item) =&gt; {
+          const cssPath = path.resolve(config.root, item)
+          await generateByPath(cssPath)
+        }),
+      )
+    },
+    configureServer(server) {
+      watch('src/**/*.module.css', { cwd: config.root })
+        .on('add', generateByPath)
+        .on('change', generateByPath)
+        .on('unlink', async (cssPath) =&gt; {
+          if (cssPath.endsWith('.module.css')) {
+            const dtsPath = cssPath + '.d.ts'
+            if (await pathExists(dtsPath)) {
+              await remove(dtsPath)
+            }
+          }
+        })
+    },
+  }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">cssdts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [react(), cssdts()],
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在，每当启动 vite 时都会自动扫描所有的 *.module.css 生成对应的类型定义，在开发模式下还会持续监听文件的变化。</p>
 <p><img src="/resources/13cdf71f96e549c9bb21188dd051a81b.gif" srcset="/img/loading.gif" lazyload alt="代码提示.gif"></p>
@@ -514,169 +514,169 @@
 <p>效果</p>
 <p><img src="/resources/07d7086ae24e496ca1dcd291668a36ac.gif" srcset="/img/loading.gif" lazyload alt="跳转.gif"></p>
 <p>完整代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> SourceMapGenerator<span class="token punctuation">,</span> SourceNode <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'source-map'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> defineConfig<span class="token punctuation">,</span> Plugin<span class="token punctuation">,</span> ResolvedConfig <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vite'</span>
-<span class="token keyword">import</span> react <span class="token keyword">from</span> <span class="token string">'@vitejs/plugin-react'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> globby <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'globby'</span>
-<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
-<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> csstree <span class="token keyword">from</span> <span class="token string">'css-tree'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> namedTypes <span class="token keyword">as</span> n<span class="token punctuation">,</span> builders <span class="token keyword">as</span> b <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'ast-types'</span>
-<span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> recast <span class="token keyword">from</span> <span class="token string">'recast'</span>
-<span class="token keyword">import</span> fsExtra <span class="token keyword">from</span> <span class="token string">'fs-extra'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> watch <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'chokidar'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> keyBy <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash-es'</span>
-<span class="token keyword">import</span> tsParser <span class="token keyword">from</span> <span class="token string">'recast/parsers/typescript.js'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { SourceMapGenerator, SourceNode } from 'source-map'
+import { defineConfig, Plugin, ResolvedConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { globby } from 'globby'
+import path from 'path'
+import * as csstree from 'css-tree'
+import { namedTypes as n, builders as b } from 'ast-types'
+import * as recast from 'recast'
+import fsExtra from 'fs-extra'
+import { watch } from 'chokidar'
+import { keyBy } from 'lodash-es'
+import tsParser from 'recast/parsers/typescript.js'
 
-<span class="token keyword">function</span> <span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span><span class="token operator">:</span> csstree<span class="token punctuation">.</span>ClassSelector<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> ast <span class="token operator">=</span> csstree<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">,</span> <span class="token punctuation">{</span> positions<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> r<span class="token operator">:</span> csstree<span class="token punctuation">.</span>ClassSelector<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  csstree<span class="token punctuation">.</span><span class="token function">walk</span><span class="token punctuation">(</span>ast<span class="token punctuation">,</span> <span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'ClassSelector'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      r<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> r
-<span class="token punctuation">}</span>
+function parse(code: string): csstree.ClassSelector[] {
+  const ast = csstree.parse(code, { positions: true })
+  const r: csstree.ClassSelector[] = []
+  csstree.walk(ast, (node) =&gt; {
+    if (node.type === 'ClassSelector') {
+      r.push(node)
+    }
+  })
+  return r
+}
 
-<span class="token keyword">function</span> <span class="token function">convert</span><span class="token punctuation">(</span>classes<span class="token operator">:</span> csstree<span class="token punctuation">.</span>ClassSelector<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> n<span class="token punctuation">.</span>Program <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> r <span class="token operator">=</span> b<span class="token punctuation">.</span><span class="token function">variableDeclaration</span><span class="token punctuation">(</span><span class="token string">'const'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
-    b<span class="token punctuation">.</span><span class="token function">variableDeclarator</span><span class="token punctuation">(</span>
-      b<span class="token punctuation">.</span>identifier<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        name<span class="token operator">:</span> <span class="token string">'css'</span><span class="token punctuation">,</span>
-        typeAnnotation<span class="token operator">:</span> b<span class="token punctuation">.</span><span class="token function">tsTypeAnnotation</span><span class="token punctuation">(</span>
-          b<span class="token punctuation">.</span><span class="token function">tsTypeLiteral</span><span class="token punctuation">(</span>
-            classes<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-              b<span class="token punctuation">.</span><span class="token function">tsPropertySignature</span><span class="token punctuation">(</span>
-                b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
-                b<span class="token punctuation">.</span><span class="token function">tsTypeAnnotation</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">tsStringKeyword</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-              <span class="token punctuation">)</span><span class="token punctuation">,</span>
-            <span class="token punctuation">)</span><span class="token punctuation">,</span>
-          <span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token punctuation">;</span><span class="token punctuation">(</span>r <span class="token keyword">as</span> <span class="token builtin">unknown</span> <span class="token keyword">as</span> n<span class="token punctuation">.</span>TSTypeAliasDeclaration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token keyword">declare</span> <span class="token operator">=</span> <span class="token boolean">true</span>
-  <span class="token keyword">return</span> b<span class="token punctuation">.</span><span class="token function">program</span><span class="token punctuation">(</span><span class="token punctuation">[</span>r<span class="token punctuation">,</span> b<span class="token punctuation">.</span><span class="token function">exportDefaultDeclaration</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+function convert(classes: csstree.ClassSelector[]): n.Program {
+  const r = b.variableDeclaration('const', [
+    b.variableDeclarator(
+      b.identifier.from({
+        name: 'css',
+        typeAnnotation: b.tsTypeAnnotation(
+          b.tsTypeLiteral(
+            classes.map((s) =&gt;
+              b.tsPropertySignature(
+                b.identifier(s.name),
+                b.tsTypeAnnotation(b.tsStringKeyword()),
+              ),
+            ),
+          ),
+        ),
+      }),
+    ),
+  ])
+  ;(r as unknown as n.TSTypeAliasDeclaration).declare = true
+  return b.program([r, b.exportDefaultDeclaration(b.identifier('css'))])
+}
 
-<span class="token keyword">function</span> <span class="token function">format</span><span class="token punctuation">(</span>ast<span class="token operator">:</span> n<span class="token punctuation">.</span>ASTNode<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> recast<span class="token punctuation">.</span><span class="token function">prettyPrint</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span><span class="token punctuation">.</span>code
-<span class="token punctuation">}</span>
+function format(ast: n.ASTNode): string {
+  return recast.prettyPrint(ast).code
+}
 
-<span class="token keyword">function</span> <span class="token function">sourcemap</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  code<span class="token punctuation">,</span>
-  classes<span class="token punctuation">,</span>
-  source<span class="token punctuation">,</span>
-  target<span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-  code<span class="token operator">:</span> <span class="token builtin">string</span>
-  classes<span class="token operator">:</span> csstree<span class="token punctuation">.</span>ClassSelector<span class="token punctuation">[</span><span class="token punctuation">]</span>
-  source<span class="token operator">:</span> <span class="token builtin">string</span>
-  target<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> root <span class="token operator">=</span> recast<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>code<span class="token punctuation">,</span> <span class="token punctuation">{</span> parser<span class="token operator">:</span> tsParser <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> cssSelectorsMap <span class="token operator">=</span> <span class="token function">keyBy</span><span class="token punctuation">(</span>classes<span class="token punctuation">,</span> <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> item<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SourceMapGenerator</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    file<span class="token operator">:</span> target<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  recast<span class="token punctuation">.</span><span class="token function">visit</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    <span class="token function">visitTSPropertySignature</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> name <span class="token operator">=</span> <span class="token punctuation">(</span>path<span class="token punctuation">.</span>node<span class="token punctuation">.</span>key <span class="token keyword">as</span> n<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name
-      <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span>node<span class="token punctuation">.</span>key <span class="token keyword">as</span> n<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-      <span class="token keyword">const</span> css <span class="token operator">=</span> cssSelectorsMap<span class="token punctuation">[</span>name<span class="token punctuation">]</span>
-      <span class="token keyword">interface</span> <span class="token class-name">Pos</span> <span class="token punctuation">{</span>
-        line<span class="token operator">:</span> <span class="token builtin">number</span>
-        column<span class="token operator">:</span> <span class="token builtin">number</span>
-      <span class="token punctuation">}</span>
+function sourcemap({
+  code,
+  classes,
+  source,
+  target,
+}: {
+  code: string
+  classes: csstree.ClassSelector[]
+  source: string
+  target: string
+}) {
+  const root = recast.parse(code, { parser: tsParser })
+  const cssSelectorsMap = keyBy(classes, (item) =&gt; item.name)
+  const map = new SourceMapGenerator({
+    file: target,
+  })
+  recast.visit(root, {
+    visitTSPropertySignature(path) {
+      const name = (path.node.key as n.Identifier).name
+      console.log((path.node.key as n.Identifier).name)
+      const css = cssSelectorsMap[name]
+      interface Pos {
+        line: number
+        column: number
+      }
 
-      <span class="token keyword">function</span> <span class="token function">add</span><span class="token punctuation">(</span>original<span class="token operator">:</span> Pos<span class="token punctuation">,</span> generated<span class="token operator">:</span> Pos<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        map<span class="token punctuation">.</span><span class="token function">addMapping</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-          source<span class="token operator">:</span> source<span class="token punctuation">,</span>
-          original<span class="token operator">:</span> <span class="token punctuation">{</span>
-            line<span class="token operator">:</span> original<span class="token punctuation">.</span>line<span class="token punctuation">,</span>
-            column<span class="token operator">:</span> original<span class="token punctuation">.</span>column<span class="token punctuation">,</span>
-          <span class="token punctuation">}</span><span class="token punctuation">,</span>
-          generated<span class="token operator">:</span> <span class="token punctuation">{</span>
-            line<span class="token operator">:</span> generated<span class="token punctuation">.</span>line<span class="token punctuation">,</span>
-            column<span class="token operator">:</span> generated<span class="token punctuation">.</span>column<span class="token punctuation">,</span>
-          <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-      <span class="token function">add</span><span class="token punctuation">(</span>css<span class="token punctuation">.</span>loc<span class="token operator">!</span><span class="token punctuation">.</span>start<span class="token punctuation">,</span> path<span class="token punctuation">.</span>node<span class="token operator">!</span><span class="token punctuation">.</span>key<span class="token punctuation">.</span>loc<span class="token operator">!</span><span class="token punctuation">.</span>start<span class="token punctuation">)</span>
-      <span class="token function">add</span><span class="token punctuation">(</span>css<span class="token punctuation">.</span>loc<span class="token operator">!</span><span class="token punctuation">.</span>end<span class="token punctuation">,</span> path<span class="token punctuation">.</span>node<span class="token operator">!</span><span class="token punctuation">.</span>key<span class="token punctuation">.</span>loc<span class="token operator">!</span><span class="token punctuation">.</span>end<span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token boolean">false</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> map<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+      function add(original: Pos, generated: Pos) {
+        map.addMapping({
+          source: source,
+          original: {
+            line: original.line,
+            column: original.column,
+          },
+          generated: {
+            line: generated.line,
+            column: generated.column,
+          },
+        })
+      }
+      add(css.loc!.start, path.node!.key.loc!.start)
+      add(css.loc!.end, path.node!.key.loc!.end)
+      return false
+    },
+  })
+  return map.toString()
+}
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">generate</span><span class="token punctuation">(</span>
-  cssCode<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  source<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-  target<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> classes <span class="token operator">=</span> <span class="token function">parse</span><span class="token punctuation">(</span>cssCode<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> ast <span class="token operator">=</span> <span class="token function">convert</span><span class="token punctuation">(</span>classes<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> code <span class="token operator">=</span> <span class="token function">format</span><span class="token punctuation">(</span>ast<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> mapCode <span class="token operator">=</span> <span class="token function">sourcemap</span><span class="token punctuation">(</span><span class="token punctuation">{</span> code<span class="token punctuation">,</span> classes<span class="token punctuation">,</span> source<span class="token punctuation">,</span> target <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    code <span class="token operator">+</span>
-    <span class="token string">'\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,'</span> <span class="token operator">+</span>
-    <span class="token function">btoa</span><span class="token punctuation">(</span>mapCode<span class="token punctuation">)</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+export function generate(
+  cssCode: string,
+  source: string,
+  target: string,
+): string {
+  const classes = parse(cssCode)
+  const ast = convert(classes)
+  const code = format(ast)
+  const mapCode = sourcemap({ code, classes, source, target })
+  return (
+    code +
+    '\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,' +
+    btoa(mapCode)
+  )
+}
 
-<span class="token keyword">const</span> <span class="token punctuation">{</span> pathExists<span class="token punctuation">,</span> readFile<span class="token punctuation">,</span> remove<span class="token punctuation">,</span> writeFile <span class="token punctuation">}</span> <span class="token operator">=</span> fsExtra
+const { pathExists, readFile, remove, writeFile } = fsExtra
 
-<span class="token keyword">function</span> <span class="token function">cssdts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> Plugin <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> config<span class="token operator">:</span> ResolvedConfig
-  <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">generateByPath</span><span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> cssPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>root<span class="token punctuation">,</span> item<span class="token punctuation">)</span>
-    <span class="token keyword">const</span> code <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">readFile</span><span class="token punctuation">(</span>cssPath<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">)</span>
-    <span class="token keyword">const</span> dtsPath <span class="token operator">=</span> cssPath <span class="token operator">+</span> <span class="token string">'.d.ts'</span>
-    <span class="token keyword">await</span> <span class="token function">writeFile</span><span class="token punctuation">(</span>dtsPath<span class="token punctuation">,</span> <span class="token function">generate</span><span class="token punctuation">(</span>code<span class="token punctuation">,</span> cssPath<span class="token punctuation">,</span> dtsPath<span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+function cssdts(): Plugin {
+  let config: ResolvedConfig
+  async function generateByPath(item: string) {
+    const cssPath = path.resolve(config.root, item)
+    const code = await readFile(cssPath, 'utf-8')
+    const dtsPath = cssPath + '.d.ts'
+    await writeFile(dtsPath, generate(code, cssPath, dtsPath))
+  }
 
-  <span class="token keyword">return</span> <span class="token punctuation">{</span>
-    name<span class="token operator">:</span> <span class="token string">'vite-plugin-cssdts'</span><span class="token punctuation">,</span>
-    <span class="token function">configResolved</span><span class="token punctuation">(</span>_config<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      config <span class="token operator">=</span> _config
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token keyword">async</span> <span class="token function">buildStart</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">globby</span><span class="token punctuation">(</span><span class="token string">'src/**/*.module.css'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-        cwd<span class="token operator">:</span> config<span class="token punctuation">.</span>root<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      <span class="token keyword">await</span> <span class="token builtin">Promise</span><span class="token punctuation">.</span><span class="token function">all</span><span class="token punctuation">(</span>
-        list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          <span class="token keyword">const</span> cssPath <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>root<span class="token punctuation">,</span> item<span class="token punctuation">)</span>
-          <span class="token keyword">await</span> <span class="token function">generateByPath</span><span class="token punctuation">(</span>cssPath<span class="token punctuation">)</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function">configureServer</span><span class="token punctuation">(</span>server<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">watch</span><span class="token punctuation">(</span><span class="token string">'src/**/*.module.css'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> cwd<span class="token operator">:</span> config<span class="token punctuation">.</span>root <span class="token punctuation">}</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'add'</span><span class="token punctuation">,</span> generateByPath<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> generateByPath<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'unlink'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>cssPath<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          <span class="token keyword">if</span> <span class="token punctuation">(</span>cssPath<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">'.module.css'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">const</span> dtsPath <span class="token operator">=</span> cssPath <span class="token operator">+</span> <span class="token string">'.d.ts'</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">pathExists</span><span class="token punctuation">(</span>dtsPath<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-              <span class="token keyword">await</span> <span class="token function">remove</span><span class="token punctuation">(</span>dtsPath<span class="token punctuation">)</span>
-            <span class="token punctuation">}</span>
-          <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+  return {
+    name: 'vite-plugin-cssdts',
+    configResolved(_config) {
+      config = _config
+    },
+    async buildStart() {
+      const list = await globby('src/**/*.module.css', {
+        cwd: config.root,
+      })
+      await Promise.all(
+        list.map(async (item) =&gt; {
+          const cssPath = path.resolve(config.root, item)
+          await generateByPath(cssPath)
+        }),
+      )
+    },
+    configureServer(server) {
+      watch('src/**/*.module.css', { cwd: config.root })
+        .on('add', generateByPath)
+        .on('change', generateByPath)
+        .on('unlink', async (cssPath) =&gt; {
+          if (cssPath.endsWith('.module.css')) {
+            const dtsPath = cssPath + '.d.ts'
+            if (await pathExists(dtsPath)) {
+              await remove(dtsPath)
+            }
+          }
+        })
+    },
+  }
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  plugins<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token function">react</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">cssdts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  build<span class="token operator">:</span> <span class="token punctuation">{</span>
-    sourcemap<span class="token operator">:</span> <span class="token string">'inline'</span><span class="token punctuation">,</span>
-    minify<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default defineConfig({
+  plugins: [react(), cssdts()],
+  build: {
+    sourcemap: 'inline',
+    minify: false,
+  },
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>在之后的几篇文章中，吾辈将演示代码生成的实际用途，并实现一些简单的例子，也会给出现有的更完善的的工具（如果有的话）。</p>
 <ul>

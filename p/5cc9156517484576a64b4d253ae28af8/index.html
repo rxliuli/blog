@@ -326,45 +326,45 @@
 <p>步骤</p>
 <p>1、安装依赖</p>
 <p>cd 到 <em>apps/main</em> 目录</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> <span class="token function">add</span> <span class="token parameter variable">-D</span> electron-devtools-installer @types/electron-devtools-installer<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn add -D electron-devtools-installer @types/electron-devtools-installer<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>2、添加环境变量 <code>"NODE_ENV": "development"</code> 标识为开发环境</p>
 <p>修改 <em>.env-cmdrc.json</em> 配置文件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"dev"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"NODE_ENV"</span><span class="token operator">:</span> <span class="token string">"development"</span><span class="token punctuation">,</span>
-    <span class="token property">"ELECTRON_START_URL"</span><span class="token operator">:</span> <span class="token string">"http://localhost:3000/"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "dev": {
+    "NODE_ENV": "development",
+    "ELECTRON_START_URL": "http://localhost:3000/"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>3、修改 <code>main</code> 函数</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
-<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  app<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token string">'ready'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'development'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token comment">// 安装 devtool 扩展</span>
-      <span class="token keyword">await</span> <span class="token function">installExtension</span><span class="token punctuation">(</span><span class="token constant">REACT_DEVELOPER_TOOLS</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+async function main() {
+  app.addListener('ready', async () =&gt; {
+    if (process.env.NODE_ENV === 'development') {
+      // 安装 devtool 扩展
+      await installExtension(REACT_DEVELOPER_TOOLS)
+    }
 
-    <span class="token keyword">await</span> <span class="token function">createMainWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    await createMainWindow()
+  })
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>4、修改 <code>createMainWindow</code> 函数</p>
 <p>一般，我们在开发环境还习惯打开控制台，这里也可以在创建窗口后自动打开它。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
-<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">createMainWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 创建新的 electron 窗口</span>
-  <span class="token keyword">const</span> mainWindow <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BrowserWindow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token comment">// 载入生产环境的 url</span>
-  <span class="token keyword">await</span> mainWindow<span class="token punctuation">.</span><span class="token function">loadURL</span><span class="token punctuation">(</span>
-    process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">ELECTRON_START_URL</span> <span class="token operator">||</span>
-      path<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'./build/index.html'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'development'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    mainWindow<span class="token punctuation">.</span>webContents<span class="token punctuation">.</span><span class="token function">openDevTools</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+async function createMainWindow() {
+  // 创建新的 electron 窗口
+  const mainWindow = new BrowserWindow()
+  // 载入生产环境的 url
+  await mainWindow.loadURL(
+    process.env.ELECTRON_START_URL ||
+      path.join(__dirname, './build/index.html'),
+  )
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools()
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>可能的错误参考: <a href="/p/c68829779f5449d0afe0e67806dc7fc1">常见问题</a> <strong>安装浏览器扩展报错</strong></p>
@@ -378,13 +378,13 @@
 <p>核心依赖: <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/electron-reloader">electron-reloader</a></p>
 </blockquote>
 <p>1、安装依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> <span class="token function">add</span> <span class="token parameter variable">-D</span> electron-reloader<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn add -D electron-reloader<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>2、在主进程入口文件载入 electron-reloader</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">//添加热更新功能</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'development'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'electron-reloader'</span><span class="token punctuation">)</span><span class="token punctuation">(</span>module<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//添加热更新功能
+if (process.env.NODE_ENV === 'development') {
+  require('electron-reloader')(module)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>3、启动 electron 开发环境</p>
 <p><img src="/resources/d2a07efc8ff24354b49289c2d4210b79.gif" srcset="/img/loading.gif" lazyload alt="效果"></p>
@@ -397,16 +397,16 @@
 <h3 id="禁止-ts-x2F-babel-将代码编译为-ES5"><a href="#禁止-ts-x2F-babel-将代码编译为-ES5" class="headerlink" title="禁止 ts/babel 将代码编译为 ES5"></a>禁止 ts/babel 将代码编译为 ES5</h3><p>由于 electron 捆绑的浏览器和 nodejs 版本都比较新，所以实际上渲染层我们基本不需要 babel 转义，可以优化一些配置项。</p>
 <ul>
 <li><p>将 <code>browserslist</code> 设置为仅支持最后一个 chrome 版本</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"browserslist"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"last 1 chrome version"</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "browserslist": ["last 1 chrome version"]
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>修改 <em>tsconfig.json</em> 中的配置，将编译目标修改为 <code>ESNext</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"compilerOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"ESNext"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "compilerOptions": {
+    "target": "ESNext"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ul>
 <h3 id="使用-esbuild-编译-typescript-代码"><a href="#使用-esbuild-编译-typescript-代码" class="headerlink" title="使用 esbuild 编译 typescript 代码"></a>使用 esbuild 编译 typescript 代码</h3><blockquote>
 <p>核心依赖: <a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild">esbuild</a>, <a target="_blank" rel="noopener" href="https://github.com/gsoft-inc/craco">craco</a></p>
@@ -414,17 +414,17 @@
 <p>esbuild 是一个使用 golang 编写前端打包工具，官方在性能测试中提出比现有工具快 10-100 倍。</p>
 <p>在 cra 创建的项目中，我们可以通过 craco 将 esbuild 仅用作 ts 编译之用（不会检查类型）。</p>
 <p>1、安装依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> <span class="token function">add</span> <span class="token parameter variable">-D</span> @craco/craco craco-esbuild<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn add -D @craco/craco craco-esbuild<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>2、修改 npm script，使用 <code>craco</code> 替换 <code>react-scripts</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"start"</span><span class="token operator">:</span> <span class="token string">"craco start"</span><span class="token punctuation">,</span>
-    <span class="token property">"build:cra"</span><span class="token operator">:</span> <span class="token string">"react-scripts build"</span><span class="token punctuation">,</span>
-    <span class="token property">"build"</span><span class="token operator">:</span> <span class="token string">"craco build"</span><span class="token punctuation">,</span>
-    <span class="token property">"test"</span><span class="token operator">:</span> <span class="token string">"craco test"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "scripts": {
+    "start": "craco start",
+    "build:cra": "react-scripts build",
+    "build": "craco build",
+    "test": "craco test"
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>生产项目中的对比测试结果（6000+ 行 ts 代码）</p>
 <table>

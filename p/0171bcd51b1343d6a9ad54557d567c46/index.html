@@ -325,62 +325,62 @@
 <h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><blockquote>
 <p>目前 vite 对此默认支持浏览器 worker，不再需要任何配置，仅使用 comlink 简化使用体验即可。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// hello.worker.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> expose <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'comlink'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// hello.worker.ts
+import { expose } from 'comlink'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">hello</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">}</span>
+export function hello(name: string) {
+  return `hello ${name}`
+}
 
-<span class="token function">expose</span><span class="token punctuation">(</span>hello<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+expose(hello)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
-<span class="token keyword">import</span> <span class="token keyword">type</span> <span class="token punctuation">{</span> hello <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./hello.worker'</span>
-<span class="token keyword">import</span> HelloWorker <span class="token keyword">from</span> <span class="token string">'./hello.worker?worker'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> wrap <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'comlink'</span>
-<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> asyncHello <span class="token operator">=</span> <span class="token generic-function"><span class="token function">wrap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token keyword">typeof</span> hello<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">HelloWorker</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token function">asyncHello</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+import type { hello } from './hello.worker'
+import HelloWorker from './hello.worker?worker'
+import { wrap } from 'comlink'
+;(async () =&gt; {
+  const asyncHello = wrap&lt;typeof hello&gt;(new HelloWorker())
+  const res = await asyncHello('liuli')
+  console.log(res)
+})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="nodejs"><a href="#nodejs" class="headerlink" title="nodejs"></a>nodejs</h2><h3 id="nodejs-本身提供的解决方案"><a href="#nodejs-本身提供的解决方案" class="headerlink" title="nodejs 本身提供的解决方案"></a>nodejs 本身提供的解决方案</h3><p>nodejs 仍然像浏览器一样基于文件系统使用 worker_threads，但官方确实提供了一种有趣的解决方案 – 在同一个文件中包含主线程与 worker 线程的代码，然后在其中使用逻辑判断。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// worker.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> isMainThread<span class="token punctuation">,</span> parentPort<span class="token punctuation">,</span> Worker <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'worker_threads'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> expose<span class="token punctuation">,</span> wrap <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'comlink'</span>
-<span class="token keyword">import</span> nodeEndpoint <span class="token keyword">from</span> <span class="token string">'comlink/dist/umd/node-adapter'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> wait <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@liuli-util/async'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> worker <span class="token keyword">as</span> helloType <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./worker'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// worker.ts
+import { isMainThread, parentPort, Worker } from 'worker_threads'
+import { expose, wrap } from 'comlink'
+import nodeEndpoint from 'comlink/dist/umd/node-adapter'
+import { wait } from '@liuli-util/async'
+import { worker as helloType } from './worker'
 
-<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">_hello</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">await</span> <span class="token function">wait</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">}</span>
+async function _hello(name: string) {
+  await wait(100)
+  return `hello ${name}`
+}
 
-<span class="token keyword">let</span> <span class="token function-variable function">hello</span><span class="token operator">:</span> <span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">string</span><span class="token operator">&gt;</span>
+let hello: (name: string) =&gt; Promise&lt;string&gt;
 
-<span class="token keyword">if</span> <span class="token punctuation">(</span>isMainThread<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function-variable function">hello</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> worker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Worker</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
-    <span class="token keyword">try</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> helloWorker <span class="token operator">=</span> <span class="token generic-function"><span class="token function">wrap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token keyword">typeof</span> helloType<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token function">nodeEndpoint</span><span class="token punctuation">(</span>worker<span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">helloWorker</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-      worker<span class="token punctuation">.</span><span class="token function">unref</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-  hello <span class="token operator">=</span> _hello
-  <span class="token function">expose</span><span class="token punctuation">(</span>_hello<span class="token punctuation">,</span> <span class="token function">nodeEndpoint</span><span class="token punctuation">(</span>parentPort<span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+if (isMainThread) {
+  hello = async (name: string) =&gt; {
+    const worker = new Worker(__filename)
+    try {
+      const helloWorker = wrap&lt;typeof helloType&gt;(nodeEndpoint(worker))
+      return await helloWorker(name)
+    } finally {
+      worker.unref()
+    }
+  }
+} else {
+  hello = _hello
+  expose(_hello, nodeEndpoint(parentPort!))
+}
 
-<span class="token keyword">export</span> <span class="token punctuation">{</span> hello <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export { hello }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// main.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> hello <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./worker.js'</span>
-<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">mixingThreadHello</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
+import { hello } from './worker.js'
+;(async () =&gt; {
+  console.log(await mixingThreadHello('liuli'))
+})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>看起来很简洁，但这种方案也并非尽善尽美，吾辈实际使用时发现以下问题</p>
 <ul>
@@ -409,50 +409,50 @@
 <p>目前没有找到满意的插件，后续可能不得不写一个 rollup 插件。还是那句话，没有对比就没有伤害，如果没有 vite 对 ts+worker 的良好支持，或许吾辈还能忍受这种糟糕的开发体验。</p>
 <p>尝试编写 rollup 插件 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/tree/master/libs/rollup-plugin-worker-threads">rollup-plugin-worker-threads</a>，以在 nodejs 中对 <code>worker_threads</code> 提供类似 vite 的开发体验。</p>
 <p>大致使用方式如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/util/wrapWorkerFunc.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> expose<span class="token punctuation">,</span> Remote<span class="token punctuation">,</span> wrap <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'comlink'</span>
-<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> isMainThread<span class="token punctuation">,</span> parentPort<span class="token punctuation">,</span> Worker <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'worker_threads'</span>
-<span class="token keyword">import</span> nodeEndpoint <span class="token keyword">from</span> <span class="token string">'comlink/dist/umd/node-adapter'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/util/wrapWorkerFunc.ts
+import { expose, Remote, wrap } from 'comlink'
+import path from 'path'
+import { isMainThread, parentPort, Worker } from 'worker_threads'
+import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 
-<span class="token comment">/**
+/**
  * 包装需要放到 worker 中执行的函数
  * 1. 当检查到当前文件不是 js 文件时会直接返回函数
  * 2. 当检查到在主线程时执行时，使用 Worker 包装并执行它
  * 3. 当检查到在 Worker 线程时，使用 expose 包装它然后执行
  * 注：目前是每次都创建新的 Worker，也许可以考虑支持复用 Worker
  * @param ep
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> wrapWorkerFunc<span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token keyword">extends</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>
-  ep<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Remote<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">extname</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token string">'.js'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> ep <span class="token keyword">as</span> Remote<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>isMainThread<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> worker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Worker</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
-      <span class="token keyword">const</span> fn <span class="token operator">=</span> <span class="token generic-function"><span class="token function">wrap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token function">nodeEndpoint</span><span class="token punctuation">(</span>worker<span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">finally</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> worker<span class="token punctuation">.</span><span class="token function">unref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token keyword">as</span> Remote<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-  <span class="token punctuation">}</span>
-  <span class="token function">expose</span><span class="token punctuation">(</span>ep<span class="token punctuation">,</span> <span class="token function">nodeEndpoint</span><span class="token punctuation">(</span>parentPort<span class="token operator">!</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> ep <span class="token keyword">as</span> Remote<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token operator">&gt;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+export function wrapWorkerFunc&lt;T extends (...args: any[]) =&gt; any&gt;(
+  ep: T,
+): Remote&lt;T&gt; {
+  if (path.extname(__filename) !== '.js') {
+    return ep as Remote&lt;T&gt;
+  }
+  if (isMainThread) {
+    return ((...args: any[]) =&gt; {
+      const worker = new Worker(__filename)
+      const fn = wrap&lt;T&gt;(nodeEndpoint(worker))
+      return (fn(...args) as Promise&lt;any&gt;).finally(() =&gt; worker.unref())
+    }) as Remote&lt;T&gt;
+  }
+  expose(ep, nodeEndpoint(parentPort!))
+  return ep as Remote&lt;T&gt;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// src/hello.worker.ts</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> wait <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@liuli-util/async'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> wrapWorkerFunc <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./util/wrapWorkerFunc'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/hello.worker.ts
+import { wait } from '@liuli-util/async'
+import { wrapWorkerFunc } from './util/wrapWorkerFunc'
 
-<span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">_hello</span><span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">await</span> <span class="token function">wait</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">}</span>
+async function _hello(name: string) {
+  await wait(100)
+  return `hello ${name}`
+}
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> hello <span class="token operator">=</span> <span class="token function">wrapWorkerFunc</span><span class="token punctuation">(</span>_hello<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export const hello = wrapWorkerFunc(_hello)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// index.ts</span>
-<span class="token keyword">export</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token string">'./hello.worker'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// index.ts
+export * from './hello.worker'<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://blog.logrocket.com/integrating-web-workers-in-a-react-app-with-comlink/">Integrating web workers in a React app with Comlink</a></li>

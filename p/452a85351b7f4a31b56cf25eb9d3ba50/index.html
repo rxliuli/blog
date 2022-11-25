@@ -24,7 +24,7 @@
 <meta property="og:description" content="场景 官方文档  在两年前，vue3 发布之后不久创建了一个 sfc 提案，它允许所有 script 中顶级变量默认绑定到模板，以消除和 react 的开发者体验的差距之一。 大概长这样 &lt;script setup&gt; &#x2F;&#x2F; imported components are also directly usable in template import Foo from &#39;.&#x2F;Foo.vu">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-11-10T11:16:46.652Z">
-<meta property="article:modified_time" content="2022-11-16T04:45:29.529Z">
+<meta property="article:modified_time" content="2022-11-18T15:11:07.966Z">
 <meta property="article:author" content="rxliuli">
 <meta property="article:tag" content="typescript">
 <meta property="article:tag" content="vue">
@@ -305,7 +305,7 @@
                 
                   
                     <!-- compatible with older versions-->
-                    本文最后更新于：2022年11月16日 下午
+                    本文最后更新于：2022年11月18日 晚上
                   
                 
               </p>
@@ -343,19 +343,19 @@ const inc = () =&gt; {
 </ul>
 <p>经过两年之后，它确实能够在生产中使用了，即便可能仍然不算完美，下面将描述它主要解决的两个问题以及与其他方法的差异</p>
 <h2 id="template-访问-js-值域"><a href="#template-访问-js-值域" class="headerlink" title="template 访问 js 值域"></a>template 访问 js 值域</h2><p>在 react 中，我们可以直接在 jsx 中访问任意 js 值域。例如 import 一个变量，并在 jsx 中使用。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> <span class="token punctuation">{</span> List <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'antd'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash-es'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import { List } from 'antd'
+import { uniq } from 'lodash-es'
+import { useState } from 'react'
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> <span class="token punctuation">[</span>list<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> <span class="token punctuation">(</span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span>
-      <span class="token attr-name">dataSource</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">uniq</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span><span class="token punctuation">}</span></span>
-      <span class="token attr-name">renderItem</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List.Item.Meta</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">}</span></span> <span class="token attr-name">title</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>item<span class="token punctuation">}</span></span> <span class="token punctuation">/&gt;</span></span><span class="token punctuation">}</span></span>
-    <span class="token punctuation">/&gt;</span></span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function App() {
+  const [list] = useState([1, 2, 1])
+  return (
+    &lt;List
+      dataSource={uniq(list)}
+      renderItem={(item) =&gt; &lt;List.Item.Meta key={item} title={item} /&gt;}
+    /&gt;
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在 vue2 中，template 能访问的值必须注册到 vue 中，不管是 <code>data/methods/components</code></p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-vue" data-language="vue"><code class="language-vue">&lt;script lang="ts"&gt;
@@ -485,15 +485,15 @@ __sfc__<span class="token punctuation">.</span>__file <span class="token operato
 </ul>
 <h2 id="defineProps-复用类型定义"><a href="#defineProps-复用类型定义" class="headerlink" title="defineProps 复用类型定义"></a>defineProps 复用类型定义</h2><p>在 tsx 中，另一个很有用的功能是可以直接复用 ts 类型定义，而不需要定义单独的 PropType。实际上，在 react 早期，它也包含内置的 PropType 支持，但最终它们采用了 ts 的类型定义，而 vue 则一直保留了下来，并不得不忍受 ts 类型与 props 类型无法共享的问题，即便它们都在 ts 中。</p>
 <p>例如在 tsx 中我们会这样编写类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">WindowMeta</span> <span class="token punctuation">{</span>
-  id<span class="token operator">:</span> <span class="token builtin">string</span>
-  title<span class="token operator">:</span> <span class="token builtin">string</span>
-  url<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">interface WindowMeta {
+  id: string
+  title: string
+  url: string
+}
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">Window</span><span class="token punctuation">(</span>props<span class="token operator">:</span> <span class="token punctuation">{</span> meta<span class="token operator">:</span> WindowMeta <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">{</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>meta<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">&gt;</span></span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function Window(props: { meta: WindowMeta }) {
+  return &lt;pre&gt;{JSON.stringify(props.meta, null, 2)}&lt;/pre&gt;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在 vue3 没有 defineProps 之前</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-vue" data-language="vue"><code class="language-vue">&lt;script lang="ts"&gt;
@@ -533,22 +533,22 @@ defineProps&lt;{
 &lt;/script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>可以看到，可以直接复用 ts 类型了，不再需要单独定义 vue PropType。你可能发现 defineProps 没有被导入，是的，它们实际上是宏，实际上它们在编译后就不存在了，甚至不会被编译为 vue PropType。下面是编译结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">/* Analyzed bindings: {
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/* Analyzed bindings: {
   "meta": "props"
-} */</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> defineComponent <span class="token keyword">as</span> _defineComponent <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'vue'</span>
+} */
+import { defineComponent as _defineComponent } from 'vue'
 
-<span class="token keyword">const</span> __sfc__ <span class="token operator">=</span> <span class="token comment">/*#__PURE__*/</span> <span class="token function">_defineComponent</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  __name<span class="token operator">:</span> <span class="token string">'App'</span><span class="token punctuation">,</span>
-  props<span class="token operator">:</span> <span class="token punctuation">{</span>
-    meta<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token function">setup</span><span class="token punctuation">(</span>__props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-__sfc__<span class="token punctuation">.</span>__file <span class="token operator">=</span> <span class="token string">'App.vue'</span>
-<span class="token keyword">export</span> <span class="token keyword">default</span> __sfc__<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+const __sfc__ = /*#__PURE__*/ _defineComponent({
+  __name: 'App',
+  props: {
+    meta: null,
+  },
+  setup(__props) {
+    return () =&gt; {}
+  },
+})
+__sfc__.__file = 'App.vue'
+export default __sfc__<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>局限性</p>
 <p>虽然看起来不错，但它确实有局限性，例如</p>
@@ -557,13 +557,13 @@ __sfc__<span class="token punctuation">.</span>__file <span class="token operato
 </ul>
 <h2 id="defineEmit-使用类型"><a href="#defineEmit-使用类型" class="headerlink" title="defineEmit 使用类型"></a>defineEmit 使用类型</h2><p>在 react 中不存在 emits/attrs/slots，它们都被整合到 props 中（这是一个非常优雅而强大的设计）。在 vue3 中，emits 可以定义类型，但在 defineEmits 之前，仍然要通过定义值来推导类型。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">WindowMeta</span> <span class="token punctuation">{</span>
-  id<span class="token operator">:</span> <span class="token builtin">string</span>
-  title<span class="token operator">:</span> <span class="token builtin">string</span>
-  url<span class="token operator">:</span> <span class="token builtin">string</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">interface WindowMeta {
+  id: string
+  title: string
+  url: string
+}
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span>props<span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token function">onClick</span><span class="token punctuation">(</span>item<span class="token operator">:</span> WindowMeta<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function App(props: { onClick(item: WindowMeta): void }) {}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>在 vue3 之前一般要这样写，定义对象并由 vue 根据值推断类型</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-vue" data-language="vue"><code class="language-vue">&lt;script lang="ts"&gt;
@@ -711,6 +711,12 @@ defineEmits&lt;
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/p/b7bf3d9e766e4829b32d915008e736c7/" title="windows 10 -- 广告系统">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">windows 10 -- 广告系统</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

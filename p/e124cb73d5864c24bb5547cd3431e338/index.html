@@ -327,84 +327,84 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>jscodeshift 支持多种解析器，包括常见的 babel、ts、tsx，也提供链式调用 API，类似于 jquery。在调研的过程中，吾辈还发现了一个非常好的工具 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a>，它可以非常方便的浏览一段代码的 ast，便于确认如何找到想要处理的 ast 节点。</p>
 <p><img src="/resources/cffe2a8a0f69452bbaca26977e4a9ade.png" srcset="/img/loading.gif" lazyload alt="1658135431847"></p>
 <p>jscodeshift 同时提供了 cli/lib 的使用方式，下面是基本的使用命令，它会在匹配的 ts 文件上运行转换脚本 transform.ts，<code>-d</code> 表示尝试运行并确定影响范围。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">jscodeshift <span class="token parameter variable">-t</span><span class="token operator">=</span>./transform.ts <span class="token parameter variable">--parser</span><span class="token operator">=</span>ts ./*.ts <span class="token parameter variable">-d</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">jscodeshift -t=./transform.ts --parser=ts ./*.ts -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h3 id="替换-import-导入的变量并替换所有使用到的-API"><a href="#替换-import-导入的变量并替换所有使用到的-API" class="headerlink" title="替换 import 导入的变量并替换所有使用到的 API"></a>替换 import 导入的变量并替换所有使用到的 API</h3><p>一种需求是将命名空间导入重构为命名导入，例如将 <code>import * as _ from 'lodash'</code> 转换为 <code>import { uniq } from 'lodash'</code> 便于构建工具能正确的 tree shaking。</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token operator">*</span> <span class="token keyword">as</span> _ <span class="token keyword">from</span> <span class="token string">'lodash'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import * as _ from 'lodash'
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>_<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>_<span class="token punctuation">.</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(_.sort(_.uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> sort<span class="token punctuation">,</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { sort, uniq } from 'lodash'
 
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+console.log(sort(uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这里只需要找到引用命名空间的所有调用，并分别替换<strong>导入</strong>与<strong>命名空间方法调用</strong>即可，以下是实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span>
-  Identifier<span class="token punctuation">,</span>
-  ImportDeclaration<span class="token punctuation">,</span>
-  MemberExpression<span class="token punctuation">,</span>
-  Transform<span class="token punctuation">,</span>
-<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'jscodeshift'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
+  Identifier,
+  ImportDeclaration,
+  MemberExpression,
+  Transform,
+} from 'jscodeshift'
 
-<span class="token keyword">const</span> replaceImport<span class="token operator">:</span> <span class="token function-variable function">Transform</span> <span class="token operator">=</span> <span class="token punctuation">(</span>fileInfo<span class="token punctuation">,</span> api<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> j <span class="token operator">=</span> api<span class="token punctuation">.</span>j
-  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">j</span><span class="token punctuation">(</span>fileInfo<span class="token punctuation">.</span>source<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> importNames <span class="token operator">=</span> root
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportDeclaration<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportNamespaceSpecifier<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>Identifier<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">nodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span>node <span class="token keyword">as</span> Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>importNames<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> list <span class="token operator">=</span> importNames<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-    name<span class="token punctuation">,</span>
-    list<span class="token operator">:</span> root
-      <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>MemberExpression<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-        object<span class="token operator">:</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">nodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>node <span class="token keyword">as</span> MemberExpression<span class="token punctuation">)</span><span class="token punctuation">.</span>property <span class="token keyword">as</span> Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>list<span class="token punctuation">)</span>
-  list<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token punctuation">,</span> list <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+const replaceImport: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
+  const importNames = root
+    .find(j.ImportDeclaration)
+    .find(j.ImportNamespaceSpecifier)
+    .find(j.Identifier)
+    .nodes()
+    .map((node) =&gt; (node as Identifier).name)
+  console.log(importNames)
+  const list = importNames.map((name) =&gt; ({
+    name,
+    list: root
+      .find(j.MemberExpression, {
+        object: { name },
+      })
+      .nodes()
+      .map((node) =&gt; ((node as MemberExpression).property as Identifier).name),
+  }))
+  console.log(list)
+  list.forEach(({ name, list }) =&gt; {
     root
-      <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportDeclaration<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-        specifiers<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'ImportNamespaceSpecifier'</span><span class="token punctuation">,</span> local<span class="token operator">:</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">replaceWith</span><span class="token punctuation">(</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">const</span> node <span class="token operator">=</span> path<span class="token punctuation">.</span>node <span class="token keyword">as</span> ImportDeclaration
-        node<span class="token punctuation">.</span>specifiers <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-          j<span class="token punctuation">.</span><span class="token function">importSpecifier</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token punctuation">)</span>
-        <span class="token keyword">return</span> node
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    list<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      .find(j.ImportDeclaration, {
+        specifiers: [{ type: 'ImportNamespaceSpecifier', local: { name } }],
+      })
+      .replaceWith((path) =&gt; {
+        const node = path.node as ImportDeclaration
+        node.specifiers = list.map((name) =&gt;
+          j.importSpecifier(j.identifier(name)),
+        )
+        return node
+      })
+    list.forEach((p) =&gt; {
       root
-        <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>MemberExpression<span class="token punctuation">,</span> <span class="token punctuation">{</span> object<span class="token operator">:</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span><span class="token punctuation">,</span> property<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> p <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">replaceWith</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> root<span class="token punctuation">.</span><span class="token function">toSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+        .find(j.MemberExpression, { object: { name }, property: { name: p } })
+        .replaceWith(j.identifier(p))
+    })
+  })
+  return root.toSource()
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> replaceImport<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default replaceImport<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="将废弃的-API-替换为新的-API-调用"><a href="#将废弃的-API-替换为新的-API-调用" class="headerlink" title="将废弃的 API 替换为新的 API 调用"></a>将废弃的 API 替换为新的 API 调用</h3><p>还有一些时候我们废弃了一些 API，但目前仍然有引用，为了避免堆叠兼容式的代码，需要将使用旧 API 的代码转换为使用新 API 的代码。<br>例如我们希望替换以下代码</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> RendererApiFactory <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'ipc-renderer'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { RendererApiFactory } from 'ipc-renderer'
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token punctuation">{</span> vmBasicMessageChannel <span class="token punctuation">}</span> <span class="token operator">=</span> RendererApiFactory<span class="token punctuation">.</span><span class="token function">createAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token punctuation">{</span> systemApi <span class="token punctuation">}</span> <span class="token operator">=</span> RendererApiFactory<span class="token punctuation">.</span><span class="token function">createAllIpcMainApi</span><span class="token punctuation">(</span>
-  vmBasicMessageChannel<span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export const { vmBasicMessageChannel } = RendererApiFactory.createAll()
+export const { systemApi } = RendererApiFactory.createAllIpcMainApi(
+  vmBasicMessageChannel,
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> ApiFactory <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'app-utils'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { ApiFactory } from 'app-utils'
 
-<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token punctuation">{</span> basicMessageChannel<span class="token punctuation">,</span> systemApi <span class="token punctuation">}</span> <span class="token operator">=</span>
-  ApiFactory<span class="token punctuation">.</span><span class="token function">createAll</span><span class="token punctuation">(</span>basicMessageChannel<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export const { basicMessageChannel, systemApi } =
+  ApiFactory.createAll(basicMessageChannel)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这里替换稍微复杂一点，涉及到以下几个操作</p>
 <ul>
@@ -414,127 +414,127 @@
 <li>创建新的导出</li>
 <li>清理空的导入、导出</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> Identifier<span class="token punctuation">,</span> ObjectProperty<span class="token punctuation">,</span> Transform <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'jscodeshift'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Identifier, ObjectProperty, Transform } from 'jscodeshift'
 
-<span class="token keyword">const</span> depretedApi<span class="token operator">:</span> <span class="token function-variable function">Transform</span> <span class="token operator">=</span> <span class="token punctuation">(</span>fileInfo<span class="token punctuation">,</span> api<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> j <span class="token operator">=</span> api<span class="token punctuation">.</span>j
-  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">j</span><span class="token punctuation">(</span>fileInfo<span class="token punctuation">.</span>source<span class="token punctuation">)</span>
+const depretedApi: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
 
-  <span class="token keyword">const</span> findImport <span class="token operator">=</span> root
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportDeclaration<span class="token punctuation">,</span> <span class="token punctuation">{</span> source<span class="token operator">:</span> <span class="token punctuation">{</span> value<span class="token operator">:</span> <span class="token string">'ipc-renderer'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-      <span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-        <span class="token function">j</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span>node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportSpecifier<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-          imported<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'RendererApiFactory'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>findImport<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span>
-  <span class="token punctuation">}</span>
+  const findImport = root
+    .find(j.ImportDeclaration, { source: { value: 'ipc-renderer' } })
+    .filter(
+      (path) =&gt;
+        j(path.node).find(j.ImportSpecifier, {
+          imported: { name: 'RendererApiFactory' },
+        }).length !== 0,
+    )
+  if (findImport.length === 0) {
+    return
+  }
   findImport
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportSpecifier<span class="token punctuation">,</span> <span class="token punctuation">{</span> imported<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'RendererApiFactory'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  findImport<span class="token punctuation">.</span><span class="token function">insertAfter</span><span class="token punctuation">(</span>
-    j<span class="token punctuation">.</span><span class="token function">importDeclaration</span><span class="token punctuation">(</span>
-      <span class="token punctuation">[</span>j<span class="token punctuation">.</span><span class="token function">importSpecifier</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span><span class="token string">'ApiFactory'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      j<span class="token punctuation">.</span><span class="token function">literal</span><span class="token punctuation">(</span><span class="token string">'app-utils'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>findImport<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ImportSpecifier<span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    findImport<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
+    .find(j.ImportSpecifier, { imported: { name: 'RendererApiFactory' } })
+    .remove()
+  findImport.insertAfter(
+    j.importDeclaration(
+      [j.importSpecifier(j.identifier('ApiFactory'))],
+      j.literal('app-utils'),
+    ),
+  )
+  if (findImport.find(j.ImportSpecifier).length === 0) {
+    findImport.remove()
+  }
 
   root
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ExportNamedDeclaration<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-      <span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-        <span class="token function">j</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span>node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>MemberExpression<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-          object<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'RendererApiFactory'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-          property<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'createAll'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> createAllIpcMainApi <span class="token operator">=</span> root<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ExportNamedDeclaration<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      <span class="token function">j</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span>node<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>MemberExpression<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-        object<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'RendererApiFactory'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        property<span class="token operator">:</span> <span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'createAllIpcMainApi'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length <span class="token operator">!==</span> <span class="token number">0</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">const</span> keys <span class="token operator">=</span> createAllIpcMainApi
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ObjectPattern<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ObjectProperty<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">nodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>node <span class="token keyword">as</span> ObjectProperty<span class="token punctuation">)</span><span class="token punctuation">.</span>key <span class="token keyword">as</span> Identifier<span class="token punctuation">)</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>keys<span class="token punctuation">)</span>
-  createAllIpcMainApi<span class="token punctuation">.</span><span class="token function">insertAfter</span><span class="token punctuation">(</span>
-    <span class="token function">j</span><span class="token punctuation">(</span>
-      <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">export const { </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token punctuation">[</span><span class="token string">'basicMessageChannel'</span><span class="token punctuation">,</span> <span class="token operator">...</span>keys<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>
-        <span class="token string">', '</span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> } = ApiFactory.createAll()</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>ExportNamedDeclaration<span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">nodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  createAllIpcMainApi<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span><span class="token function">toSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token keyword">return</span> root<span class="token punctuation">.</span><span class="token function">toSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+    .find(j.ExportNamedDeclaration)
+    .filter(
+      (path) =&gt;
+        j(path.node).find(j.MemberExpression, {
+          object: { name: 'RendererApiFactory' },
+          property: { name: 'createAll' },
+        }).length !== 0,
+    )
+    .remove()
+  const createAllIpcMainApi = root.find(j.ExportNamedDeclaration).filter(
+    (path) =&gt;
+      j(path.node).find(j.MemberExpression, {
+        object: { name: 'RendererApiFactory' },
+        property: { name: 'createAllIpcMainApi' },
+      }).length !== 0,
+  )
+  const keys = createAllIpcMainApi
+    .find(j.ObjectPattern)
+    .find(j.ObjectProperty)
+    .nodes()
+    .map((node) =&gt; ((node as ObjectProperty).key as Identifier).name)
+  console.log(keys)
+  createAllIpcMainApi.insertAfter(
+    j(
+      `export const { ${['basicMessageChannel', ...keys].join(
+        ', ',
+      )} } = ApiFactory.createAll()`,
+    )
+      .find(j.ExportNamedDeclaration)
+      .nodes()[0],
+  )
+  createAllIpcMainApi.remove()
+  console.log(root.toSource())
+  return root.toSource()
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> depretedApi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default depretedApi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这里可以看到，吾辈并未使用 jscodeshift 构建 ast 的 api，而是直接使用了字符串拼接的方法。主要是使用 jscodeshift 的 api 构建过于繁琐，所以直接拼接字符串然后解析可能更简单一点。</p>
 <h3 id="替换方法调用到多个参数与对象参数"><a href="#替换方法调用到多个参数与对象参数" class="headerlink" title="替换方法调用到多个参数与对象参数"></a>替换方法调用到多个参数与对象参数</h3><p>除此之外，我们还能变换方法调用的参数，例如将多个参数转换为对象参数（这在 ide 中是现成的功能）</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">,</span> <span class="token number">17</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show('liuli', 17, false)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">{</span> name<span class="token operator">:</span> <span class="token string">'liuli'</span><span class="token punctuation">,</span> age<span class="token operator">:</span> <span class="token number">17</span><span class="token punctuation">,</span> sex<span class="token operator">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show({ name: 'liuli', age: 17, sex: false })<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>这里我们仅需要找到需要处理的函数调用，然后转换其参数即可。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">import</span> <span class="token punctuation">{</span> CallExpression<span class="token punctuation">,</span> Identifier<span class="token punctuation">,</span> Transform <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'jscodeshift'</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { CallExpression, Identifier, Transform } from 'jscodeshift'
 
-<span class="token keyword">const</span> replaceParams<span class="token operator">:</span> <span class="token function-variable function">Transform</span> <span class="token operator">=</span> <span class="token punctuation">(</span>fileInfo<span class="token punctuation">,</span> api<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> j <span class="token operator">=</span> api<span class="token punctuation">.</span>j
-  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">j</span><span class="token punctuation">(</span>fileInfo<span class="token punctuation">.</span>source<span class="token punctuation">)</span>
+const replaceParams: Transform = (fileInfo, api) =&gt; {
+  const j = api.j
+  const root = j(fileInfo.source)
 
-  <span class="token keyword">const</span> names <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">,</span> <span class="token string">'age'</span><span class="token punctuation">,</span> <span class="token string">'sex'</span><span class="token punctuation">]</span>
+  const names = ['name', 'age', 'sex']
   root
-    <span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>CallExpression<span class="token punctuation">,</span> <span class="token punctuation">{</span> callee<span class="token operator">:</span> <span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'Identifier'</span><span class="token punctuation">,</span> name<span class="token operator">:</span> <span class="token string">'show'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">replaceWith</span><span class="token punctuation">(</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> node <span class="token operator">=</span> path<span class="token punctuation">.</span>node <span class="token keyword">as</span> CallExpression
-      <span class="token keyword">const</span> args <span class="token operator">=</span> node<span class="token punctuation">.</span>arguments
-      node<span class="token punctuation">.</span>arguments <span class="token operator">=</span> <span class="token punctuation">[</span>
-        j<span class="token punctuation">.</span><span class="token function">objectExpression</span><span class="token punctuation">(</span>
-          names<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-            j<span class="token punctuation">.</span><span class="token function">objectProperty</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span><span class="token function">identifier</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span> args<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">as</span> Identifier<span class="token punctuation">)</span><span class="token punctuation">,</span>
-          <span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">]</span>
-      <span class="token keyword">return</span> node
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    .find(j.CallExpression, { callee: { type: 'Identifier', name: 'show' } })
+    .replaceWith((path) =&gt; {
+      const node = path.node as CallExpression
+      const args = node.arguments
+      node.arguments = [
+        j.objectExpression(
+          names.map((name, i) =&gt;
+            j.objectProperty(j.identifier(name), args[i] as Identifier),
+          ),
+        ),
+      ]
+      return node
+    })
 
-  <span class="token keyword">return</span> root<span class="token punctuation">.</span><span class="token function">toSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
+  return root.toSource()
+}
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> replaceParams<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export default replaceParams<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="踩到的一些坑"><a href="#踩到的一些坑" class="headerlink" title="踩到的一些坑"></a>踩到的一些坑</h2><h3 id="使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大"><a href="#使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大" class="headerlink" title="使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大"></a>使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大</h3><p>ts 的 ast 非常特立独行，可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 看到。吾辈一般会选择使用 @typescript-eslint/parser，它既能解析 js/ts/tsx，又能与 jscodeshift 的 api 相结合判断如何检索节点。</p>
 <h3 id="无法直接按类型找到泛型参数"><a href="#无法直接按类型找到泛型参数" class="headerlink" title="无法直接按类型找到泛型参数"></a>无法直接按类型找到泛型参数</h3><p>例如可以在 ast viewer 中看到节点 TSTypeParameterInstantiation</p>
 <p><img src="/resources/48b7b59c126142358065492d2935f1cb.png" srcset="/img/loading.gif" lazyload alt="1658133727745"></p>
 <p>但却无法使用 jscodeshift 找到</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">j</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">wrap&lt;IHelloApi&gt;()</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-<span class="token function">expect</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>j<span class="token punctuation">.</span>TSTypeParameterInstantiation<span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBe</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const root = j(`wrap&lt;IHelloApi&gt;()`)
+expect(root.find(j.TSTypeParameterInstantiation).length).toBe(0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="string-prototype-replace-替换包含-的字符串时会出现奇怪的现象"><a href="#string-prototype-replace-替换包含-的字符串时会出现奇怪的现象" class="headerlink" title="string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象"></a>string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象</h3><p>运行下面这段代码，可能会得到让你意外的结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> s <span class="token operator">=</span> <span class="token string">'hell$$ w$$rld'</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// hell$ w$rld</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const s = 'hell$$ w$$rld'
+console.log(s.replaceAll(s, s)) // hell$ w$rld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>这与 string.prototype.replace 的一些奇怪实现有关，具体参考 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E4%BD%BF%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0">mdn</a>，目前 StackOverflow 上的推荐方法是先处理一次要替换的值</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> s<span class="token punctuation">.</span><span class="token function">replaceAll</span><span class="token punctuation">(</span><span class="token string">'$'</span><span class="token punctuation">,</span> <span class="token string">'$$$$'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(s.replaceAll(s, s.replaceAll('$', '$$$$')))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h3 id="glob-模式依赖于-bash"><a href="#glob-模式依赖于-bash" class="headerlink" title="glob 模式依赖于 bash"></a>glob 模式依赖于 bash</h3><p>这点很烦人，它并未使用 node-glob 之类的包来实现文件匹配，而是直接依赖于 shell 本身的 glob 匹配，而默认情况下并不支持 <code>**</code>。某种变通的方法是使用 <code>find + xargs</code> 来绕过</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">find <span class="token punctuation">.</span><span class="token comment">/*/src -iname '*.vue' -o -iname '*.ts' | xargs jscodeshift -t "./convertAppApi.ts" -d</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">find ./*/src -iname '*.vue' -o -iname '*.ts' | xargs jscodeshift -t "./convertAppApi.ts" -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://www.toptal.com/javascript/write-code-to-rewrite-your-code">https://www.toptal.com/javascript/write-code-to-rewrite-your-code</a></li>

@@ -342,83 +342,83 @@
 <li>TypeScript 的类型系统是把双刃剑，实在太复杂了，当然有理由认为是为了兼容 JavaScript。然而在 TypeScript 想要正确的表达类型也是一件相当困难的事情。</li>
 </ul>
 <h2 id="类型系统踩坑"><a href="#类型系统踩坑" class="headerlink" title="类型系统踩坑"></a>类型系统踩坑</h2><h3 id="如何声明参数与返回值类型相同？"><a href="#如何声明参数与返回值类型相同？" class="headerlink" title="如何声明参数与返回值类型相同？"></a>如何声明参数与返回值类型相同？</h3><p>例如一个函数接受一个参数，并返回一个完全相同类型的返回值。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">returnItself</span><span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> obj
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself(obj: any): any {
+  return obj
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>假使这样写的话，类型系统就不会发挥作用了，调用函数的结果将是 <code>any</code>，意味着类型系统将没有效果。</p>
 <p>例如下面的代码会被 ts 认为是错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 这段代码并不会有提示</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">returnItself</span><span class="token punctuation">(</span><span class="token string">'abc'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 这段代码并不会有提示
+console.log(returnItself('abc').length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>需要写成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">returnItself</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> obj
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself&lt;T = any&gt;(obj: T): T {
+  return obj
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>这里主要声明了参数和返回值是同一类型，默认为 any，但具体取决于参数的不同而使得返回值也不同，返回值不会丢失类型信息。</p>
 <h3 id="如何声明参数与返回值类型有关联？"><a href="#如何声明参数与返回值类型有关联？" class="headerlink" title="如何声明参数与返回值类型有关联？"></a>如何声明参数与返回值类型有关联？</h3><p>例如一个计算函数执行时间的函数 <code>timing</code>，接受一个函数参数，有可能是同步/异步的，所以要根据函数的返回值确定 <code>timing</code> 的返回值为 <code>number/Promise&lt;number&gt;</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> begin <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然而在使用时你会发现返回值类型不太对，因为 <code>timing</code> 的返回值是 <code>number | Promise&lt;number&gt;</code> 这种复合类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 这里会提示类型错误</span>
-<span class="token keyword">const</span> res<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">=</span> <span class="token function">timing</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token function">expect</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toBeGreaterThan</span><span class="token punctuation">(</span><span class="token number">99</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 这里会提示类型错误
+const res: number = timing(() =&gt; sleep(100))
+expect(res).toBeGreaterThan(99)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>解决方案有二</p>
 <ol>
 <li>使用函数声明重载</li>
 <li>使用类型判断</li>
 </ol>
-<h4 id="使用函数声明重载"><a href="#使用函数声明重载" class="headerlink" title="使用函数声明重载"></a>使用函数声明重载</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span><span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span><span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> begin <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h4 id="使用函数声明重载"><a href="#使用函数声明重载" class="headerlink" title="使用函数声明重载"></a>使用函数声明重载</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(fn: (...args: any[]) =&gt; Promise&lt;any&gt;): Promise&lt;number&gt;
+export function timing(fn: (...args: any[]) =&gt; any): number
+export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>感觉函数声明顺序有点奇怪是因为 <code>Promise&lt;any&gt;</code> 属于 <code>any</code> 的子类，而函数声明重载必须由具体到宽泛。当然，我们有方法可以在 <code>any</code> 中排除掉 <code>Promise&lt;any&gt;</code>，这样顺序就对了！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> Exclude<span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token punctuation">,</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span><span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> begin <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; Exclude&lt;any, Promise&lt;any&gt;&gt;,
+): number
+export function timing(fn: (...args: any[]) =&gt; Promise&lt;any&gt;): Promise&lt;number&gt;
+export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+): number | Promise&lt;number&gt; {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return performance.now() - begin
+  }
+  return result.then(() =&gt; performance.now() - begin)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
-<h4 id="使用类型判断"><a href="#使用类型判断" class="headerlink" title="使用类型判断"></a>使用类型判断</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">timing</span><span class="token punctuation">(</span>
-  <span class="token function-variable function">fn</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">any</span> <span class="token operator">|</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  <span class="token comment">// 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">R</span> <span class="token keyword">extends</span> <span class="token class-name"><span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span></span> <span class="token operator">?</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">number</span><span class="token operator">&gt;</span> <span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> begin <span class="token operator">=</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>result <span class="token keyword">instanceof</span> <span class="token class-name"><span class="token builtin">Promise</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span>performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">any</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> performance<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> begin<span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token builtin">any</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h4 id="使用类型判断"><a href="#使用类型判断" class="headerlink" title="使用类型判断"></a>使用类型判断</h4><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function timing(
+  fn: (...args: any[]) =&gt; any | Promise&lt;any&gt;,
+  // 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number
+): R extends Promise&lt;any&gt; ? Promise&lt;number&gt; : number {
+  const begin = performance.now()
+  const result = fn()
+  if (!(result instanceof Promise)) {
+    return (performance.now() - begin) as any
+  }
+  return result.then(() =&gt; performance.now() - begin) as any
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h4 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h4><p>可以看出来，第一种方式的优点在于可以很精细的控制每个不同参数对应的返回值，并且，可以处理特别复杂的情况，缺点则是如果写 doc 文档的话需要为每个声明都写上，即便，它们有大部分注释是相同的。<br>而第二种方式，则在代码量上有所减少，而且不必使用函数声明重载。缺点则是无法应对特别复杂的情况，另外一点就是使用了 <code>any</code>，可能会造成<strong>重构火葬场</strong>。</p>
 <h3 id="TypeScript-类型系统就是认为吾辈错了怎么办？"><a href="#TypeScript-类型系统就是认为吾辈错了怎么办？" class="headerlink" title="TypeScript 类型系统就是认为吾辈错了怎么办？"></a>TypeScript 类型系统就是认为吾辈错了怎么办？</h3><p>有时候，明明自己知道是正确的，但 TypeScript 偏偏认为你写错了。思考以下功能如何实现？</p>
@@ -428,81 +428,81 @@
 <li>将数组元素转换为 Map key 的函数</li>
 <li>将数组元素转换为 Map value 的函数，可选，默认为数组元素</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token generic-function"><span class="token function">returnItself</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span> <span class="token operator">=</span> <span class="token builtin">any</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> obj
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function returnItself&lt;T = any&gt;(obj: T): T {
+  return obj
+}
 
-<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">R</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">R</span>
+export type ArrayCallback&lt;T, R&gt; = (item: T, index: number, arr: T[]) =&gt; R
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">arrayToMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-  arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  kFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  vFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token operator">=</span> returnItself<span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>res<span class="token punctuation">,</span> item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      res<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token function">kFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">vFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>可能有以上代码，然而实际上 <code>returnItself</code> 无法直接赋值给 <code>ArrayCallback&lt;T, V&gt;</code>。当然，我们知道，这一定是可以赋值的，但 TypeScript 却无法编译通过！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">arrayToMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-  arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  kFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  <span class="token comment">// 是的，这里添加 as any 就好了</span>
-  vFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token operator">=</span> returnItself <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>res<span class="token punctuation">,</span> item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      res<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token function">kFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">vFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  // 是的，这里添加 as any 就好了
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself as any,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>或者，如果 <code>returnItself</code> 用的比较多的话（例如吾辈），可以使用另一种方式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token comment">// 修改 returnItself 的返回值</span>
-<span class="token keyword">function</span> <span class="token generic-function"><span class="token function">returnItself</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">R</span> <span class="token operator">=</span> <span class="token constant">T</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>obj<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">R</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> obj <span class="token keyword">as</span> <span class="token builtin">any</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 修改 returnItself 的返回值
+function returnItself&lt;T, R = T&gt;(obj: T): R {
+  return obj as any
+}
 
-<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">R</span><span class="token operator">&gt;</span></span> <span class="token operator">=</span> <span class="token punctuation">(</span>item<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> index<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">,</span> arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">R</span>
+export type ArrayCallback&lt;T, R&gt; = (item: T, index: number, arr: T[]) =&gt; R
 
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token generic-function"><span class="token function">arrayToMap</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>
-  arr<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  kFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">K</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
-  vFn<span class="token operator">:</span> ArrayCallback<span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token operator">=</span> returnItself<span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token operator">:</span> Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span>
-    <span class="token punctuation">(</span>res<span class="token punctuation">,</span> item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      res<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token function">kFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">vFn</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> index<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">new</span> <span class="token class-name">Map<span class="token operator">&lt;</span><span class="token constant">K</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export function arrayToMap&lt;T, K, V&gt;(
+  arr: T[],
+  kFn: ArrayCallback&lt;T, K&gt;,
+  vFn: ArrayCallback&lt;T, V&gt; = returnItself,
+): Map&lt;K, V&gt; {
+  return arr.reduce(
+    (res, item, index, arr) =&gt;
+      res.set(kFn(item, index, arr), vFn(item, index, arr)),
+    new Map&lt;K, V&gt;(),
+  )
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="如何强制调用非空时对象上的函数？"><a href="#如何强制调用非空时对象上的函数？" class="headerlink" title="如何强制调用非空时对象上的函数？"></a>如何强制调用非空时对象上的函数？</h3><p>当有时候你得到一个对象可能为空时，无法直接调用其上的函数，会提示函数不存在。<br>例如下面从数组中查询字符串，然后获取长度，在 TypeScript 中便会报错，因为 str 的类型为 string/undefined。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-<span class="token keyword">const</span> str <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>s <span class="token operator">=&gt;</span> s <span class="token operator">===</span> <span class="token string">'b'</span><span class="token punctuation">)</span>
-<span class="token comment">//</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+//
+console.log(str.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>之前使用 JavaScript 从未遇到过这种事情，事实上确实有可能为空，但 JavaScript 太过于动态，并不会提示错误，而 TypeScript 就会提示这种低级错误，因为类型系统。<br>但是啊，凡事都有例外，当吾辈确实想调用 string 上的函数时报错真的是有点讨厌，那么有什么办法呢？</p>
 <ol>
 <li><p>使用 <code>!</code> 强制调用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-<span class="token keyword">const</span> str <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>s <span class="token operator">=&gt;</span> s <span class="token operator">===</span> <span class="token string">'b'</span><span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token operator">!</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+console.log(str!.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>使用 <code>(str as any)</code> 转换为 any 类型之后再随意调用任何函数</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-<span class="token keyword">const</span> str <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>s <span class="token operator">=&gt;</span> s <span class="token operator">===</span> <span class="token string">'b'</span><span class="token punctuation">)</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">(</span>str <span class="token keyword">as</span> <span class="token builtin">any</span><span class="token punctuation">)</span><span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+console.log((str as any).length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 </li>
 <li><p>使用注释 <code>// @ts-ignore</code> 忽略错误（非常强力，少用）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">]</span>
-<span class="token keyword">const</span> str <span class="token operator">=</span> arr<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>s <span class="token operator">=&gt;</span> s <span class="token operator">===</span> <span class="token string">'b'</span><span class="token punctuation">)</span>
-<span class="token comment">// @ts-ignore</span>
-<span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const arr = ['a', 'b', 'c']
+const str = arr.find(s =&gt; s === 'b')
+// @ts-ignore
+console.log(str.length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 <p>注意: 三种方式推荐程度逐渐降低，因为后两种实际上都会忽略类型系统，导致编写代码没有提示！</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>截至目前为止，吾辈已经着手使用 TypeScript 重构工具函数库 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/rx-util">rx-util</a> 两周了，基本上打包配置，文档生成，类型定义基本上算是大致完成，感觉之后的公共项目大概都会用 TypeScript 实现了，毕竟前端主流开发工具 VSCode 对其的支持真的很好，而且 TypeScript 的接口这种概念真的太有用了！</p>
@@ -520,10 +520,10 @@
 
 <p>这么一个简单的方法，ts 写不出不丢失类型信息的实现。</p>
 <p>下面贴的是 typescript 源码中对 Object.assign 的声明，我相信都能看出有多傻：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token generic-function"><span class="token function">assign</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">U</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>target<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> source<span class="token operator">:</span> <span class="token constant">U</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token operator">&amp;</span> <span class="token constant">U</span><span class="token punctuation">;</span>
-<span class="token generic-function"><span class="token function">assign</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">U</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>target<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> source1<span class="token operator">:</span> <span class="token constant">U</span><span class="token punctuation">,</span> source2<span class="token operator">:</span> <span class="token constant">V</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token operator">&amp;</span> <span class="token constant">U</span> <span class="token operator">&amp;</span> <span class="token constant">V</span><span class="token punctuation">;</span>
-<span class="token generic-function"><span class="token function">assign</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token constant">T</span><span class="token punctuation">,</span> <span class="token constant">U</span><span class="token punctuation">,</span> <span class="token constant">V</span><span class="token punctuation">,</span> <span class="token constant">W</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span>target<span class="token operator">:</span> <span class="token constant">T</span><span class="token punctuation">,</span> source1<span class="token operator">:</span> <span class="token constant">U</span><span class="token punctuation">,</span> source2<span class="token operator">:</span> <span class="token constant">V</span><span class="token punctuation">,</span> source3<span class="token operator">:</span> <span class="token constant">W</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token constant">T</span> <span class="token operator">&amp;</span> <span class="token constant">U</span> <span class="token operator">&amp;</span> <span class="token operator">&amp;</span> <span class="token constant">W</span><span class="token punctuation">;</span>
-<span class="token function">assign</span><span class="token punctuation">(</span>target<span class="token operator">:</span> object<span class="token punctuation">,</span> <span class="token operator">...</span>sources<span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">any</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">assign&lt;T, U&gt;(target: T, source: U): T &amp; U;
+assign&lt;T, U, V&gt;(target: T, source1: U, source2: V): T &amp; U &amp; V;
+assign&lt;T, U, V, W&gt;(target: T, source1: U, source2: V, source3: W): T &amp; U &amp; &amp; W;
+assign(target: object, ...sources: any[]): any;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>按这个实现，多于 4 个参数就直接丢掉类型信息了，建议 ts 至少把 A-Z 都作为泛型量用上…</p>
 </li>
@@ -534,10 +534,10 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后看这样一段代码：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">function</span> <span class="token function">foo</span><span class="token punctuation">(</span>p<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">assert</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> p <span class="token operator">===</span> <span class="token string">'number'</span><span class="token punctuation">,</span> <span class="token string">'p is a number'</span><span class="token punctuation">)</span>
-  p<span class="token punctuation">.</span>length <span class="token comment">// 这里报错，ts 竟然不知道到这一步 p 必定是 string 类型</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function foo(p: number | string) {
+  assert(typeof p === 'number', 'p is a number')
+  p.length // 这里报错，ts 竟然不知道到这一步 p 必定是 string 类型
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
 </ol>
 
                 

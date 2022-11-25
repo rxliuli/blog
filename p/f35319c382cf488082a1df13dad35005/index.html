@@ -356,20 +356,20 @@ sys     0m0.214s<span aria-hidden="true" class="line-numbers-rows"><span></span>
 <h2 id="基于-esbuild"><a href="#基于-esbuild" class="headerlink" title="基于 esbuild"></a>基于 esbuild</h2><p>rollup 使用 js 编写，它在使用必须的插件之后打包非常缓慢（可能部分要归结于 tsc 本身也非常慢），而 esbuild 在官方性能测试中要快 10-100 倍，这为性能优化提供了一种思路：将 CPU 密集型的功能使用高性能的语言构建。在使用 esbuild 命令行时，基本上，lib/cli 都能在数百毫秒内完成构建，而其中实际运行构建代码的时间大约只有几十毫秒，大部分时间是在等待 cli 启动。</p>
 <p>下面是一个在单模块的性能测试</p>
 <p>esbuild cli</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">time</span> esbuild src/bin.ts <span class="token parameter variable">--bundle</span> <span class="token parameter variable">--external:esbuild</span> --external:@yarnpkg/cli <span class="token parameter variable">--platform</span><span class="token operator">=</span>node <span class="token parameter variable">--outfile</span><span class="token operator">=</span>dist/bin.js <span class="token parameter variable">--sourcemap</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">\</span>
-<span class="token function">time</span> esbuild src/index.ts <span class="token parameter variable">--bundle</span> <span class="token parameter variable">--external:esbuild</span> --external:@yarnpkg/cli --external:fs-extra <span class="token parameter variable">--platform</span><span class="token operator">=</span>node <span class="token parameter variable">--format</span><span class="token operator">=</span>cjs <span class="token parameter variable">--outfile</span><span class="token operator">=</span>dist/index.js <span class="token parameter variable">--sourcemap</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">\</span>
-<span class="token function">time</span> esbuild src/index.ts <span class="token parameter variable">--bundle</span> <span class="token parameter variable">--external:esbuild</span> --external:@yarnpkg/cli --external:fs-extra <span class="token parameter variable">--platform</span><span class="token operator">=</span>node <span class="token parameter variable">--format</span><span class="token operator">=</span>esm <span class="token parameter variable">--outfile</span><span class="token operator">=</span>dist/index.esm.js <span class="token parameter variable">--sourcemap</span>
-<span class="token comment"># 0m0.244s # 15ms</span>
-<span class="token comment"># 0m0.211s # 4ms</span>
-<span class="token comment"># 0m0.212s # 4ms</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">time esbuild src/bin.ts --bundle --external:esbuild --external:@yarnpkg/cli --platform=node --outfile=dist/bin.js --sourcemap &amp;&amp; \
+time esbuild src/index.ts --bundle --external:esbuild --external:@yarnpkg/cli --external:fs-extra --platform=node --format=cjs --outfile=dist/index.js --sourcemap &amp;&amp; \
+time esbuild src/index.ts --bundle --external:esbuild --external:@yarnpkg/cli --external:fs-extra --platform=node --format=esm --outfile=dist/index.esm.js --sourcemap
+# 0m0.244s # 15ms
+# 0m0.211s # 4ms
+# 0m0.212s # 4ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>esbuild base nodejs cli</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">time</span> liuli-cli build cli <span class="token comment"># 0m2.276s # 1988ms</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">time liuli-cli build cli # 0m2.276s # 1988ms<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h2 id="不构建-dts"><a href="#不构建-dts" class="headerlink" title="不构建 dts"></a>不构建 dts</h2><p>为什么不构建 dts？</p>
 <p>构建 dts 很慢，至于多慢呢？下面是一个构建 cli 的时间分析</p>
 <p>不生成类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">time</span> <span class="token function">yarn</span> build
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ time yarn build
 √ 构建 cli: 141ms
 √ 构建 esm: 18ms
 √ 构建 cjs: 17ms
@@ -380,7 +380,7 @@ user    0m0.075s
 sys     0m0.138s<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>生成类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">time</span> <span class="token function">yarn</span> build
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ time yarn build
 √ 构建 cli: 3598ms
 √ 构建 esm: 50ms
 √ 构建 cjs: 3587ms
@@ -398,11 +398,11 @@ sys     0m0.197s<span aria-hidden="true" class="line-numbers-rows"><span></span>
 </ul>
 <h2 id="不做任何打包"><a href="#不做任何打包" class="headerlink" title="不做任何打包"></a>不做任何打包</h2><p>虽然看起来不可思议，但在 monorepo 中，许多通用模块可能并不需要在 monorepo 之外使用到，所以对于有些不需要发布的模块，可以不做打包，而是直接在 package.json 中指向未打包的入口文件。</p>
 <p>下面是一个 lib 的不打包配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span><span class="token punctuation">,</span>
-  <span class="token property">"module"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span><span class="token punctuation">,</span>
-  <span class="token property">"types"</span><span class="token operator">:</span> <span class="token string">"src/index.ts"</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts"
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>当然，它也会带来一些副作用，例如</p>
 <ul>

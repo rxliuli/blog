@@ -354,7 +354,7 @@
 <blockquote>
 <p>下面的命令要求系统已经安装了 SSH 客户端，Linux 已经默认安装了，如果是 Windows 可以使用 Cmder 或 Git For Windows 之类的。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> <span class="token parameter variable">-o</span> <span class="token assign-left variable">ServerAliveInterval</span><span class="token operator">=</span><span class="token number">60</span> <span class="token parameter variable">-R</span> rx:80:localhost:8080 serveo.net<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh -o ServerAliveInterval=60 -R rx:80:localhost:8080 serveo.net<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>具体可以参考 <a target="_blank" rel="noopener" href="https://serveo.net/">官网</a> 或 <a href="/p/baff72b44ada421e8a5c28f1d4102110">使用 Serveo 进行内网穿透</a></p>
@@ -369,94 +369,94 @@
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>添加配置文件 <code>application.yml</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># 非必需，但这里还是设定一下端口，方便后面写启动脚本</span>
-<span class="token key atrule">server</span><span class="token punctuation">:</span>
-  <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
-<span class="token key atrule">custom</span><span class="token punctuation">:</span>
-  <span class="token key atrule">wx</span><span class="token punctuation">:</span>
-    <span class="token key atrule">mp</span><span class="token punctuation">:</span>
-      <span class="token comment"># 基本上都是微信公众号那边的设置（这里是测试的）</span>
-      <span class="token key atrule">appId</span><span class="token punctuation">:</span> appId
-      <span class="token key atrule">secret</span><span class="token punctuation">:</span> secret
-      <span class="token key atrule">token</span><span class="token punctuation">:</span> token
-      <span class="token key atrule">aesKey</span><span class="token punctuation">:</span> aesKey<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"># 非必需，但这里还是设定一下端口，方便后面写启动脚本
+server:
+  port: 8080
+custom:
+  wx:
+    mp:
+      # 基本上都是微信公众号那边的设置（这里是测试的）
+      appId: appId
+      secret: secret
+      token: token
+      aesKey: aesKey<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>将配置读取到 Java Bean 对象上方便在程序中使用 <code>WxMpPropertiesConfig</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信公众号属性配置
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@ConfigurationProperties</span><span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"custom.wx.mp"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpPropertiesConfig</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> appId<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> secret<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> token<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token class-name">String</span> aesKey<span class="token punctuation">;</span>
-    <span class="token comment">// getter() and setter()</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+@ConfigurationProperties(prefix = "custom.wx.mp")
+public class WxMpPropertiesConfig {
+    private String appId;
+    private String secret;
+    private String token;
+    private String aesKey;
+    // getter() and setter()
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>添加微信相关的主配置类 <code>WxMpMainConfig</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信公众号主要的配置类
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span><span class="token class-name">WxMpPropertiesConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpMainConfig</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">WxMpPropertiesConfig</span> wxMpPropertiesConfig<span class="token punctuation">;</span>
+ */
+@Configuration
+@EnableConfigurationProperties(WxMpPropertiesConfig.class)
+public class WxMpMainConfig {
+    private final WxMpPropertiesConfig wxMpPropertiesConfig;
 
-    <span class="token comment">/**
+    /**
      * 微信公众号的服务对象
      * 用户调用微信的各种 API, 例如获取 access_token
-     */</span>
-    <span class="token keyword">private</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">;</span>
+     */
+    private WxMpService wxMpService;
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpMainConfig</span><span class="token punctuation">(</span><span class="token class-name">WxMpPropertiesConfig</span> wxMpPropertiesConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>wxMpPropertiesConfig <span class="token operator">=</span> wxMpPropertiesConfig<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Autowired
+    public WxMpMainConfig(WxMpPropertiesConfig wxMpPropertiesConfig) {
+        this.wxMpPropertiesConfig = wxMpPropertiesConfig;
+    }
 
-    <span class="token comment">/**
+    /**
      * 初始化路由列表和微信服务 api 对象
-     */</span>
-    <span class="token annotation punctuation">@PostConstruct</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//配置微信 api 对象的策略（目前在内存中）</span>
-        <span class="token keyword">final</span> <span class="token class-name">WxMpInMemoryConfigStorage</span> storage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMpInMemoryConfigStorage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setAppId</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getAppId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setSecret</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getSecret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setAesKey</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getAesKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setToken</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//设置策略到服务对象中</span>
-        wxMpService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMpServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        wxMpService<span class="token punctuation">.</span><span class="token function">setWxMpConfigStorage</span><span class="token punctuation">(</span>storage<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    @PostConstruct
+    public void init() {
+        //配置微信 api 对象的策略（目前在内存中）
+        final WxMpInMemoryConfigStorage storage = new WxMpInMemoryConfigStorage();
+        storage.setAppId(wxMpPropertiesConfig.getAppId());
+        storage.setSecret(wxMpPropertiesConfig.getSecret());
+        storage.setAesKey(wxMpPropertiesConfig.getAesKey());
+        storage.setToken(wxMpPropertiesConfig.getToken());
+        //设置策略到服务对象中
+        wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(storage);
+    }
 
-    <span class="token annotation punctuation">@Bean</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpService</span> <span class="token function">wxMpService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> wxMpService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    @Bean
+    public WxMpService wxMpService() {
+        return wxMpService;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>添加一个窗口 api 用于给微信调用 <code>WxMpPortalApi</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信服务窗口 api
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@RestController</span>
-<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/wx/portal"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpPortalApi</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">;</span>
+ */
+@RestController
+@RequestMapping("/wx/portal")
+public class WxMpPortalApi {
+    private final WxMpService wxMpService;
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpPortalApi</span><span class="token punctuation">(</span><span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>wxMpService <span class="token operator">=</span> wxMpService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Autowired
+    public WxMpPortalApi(WxMpService wxMpService) {
+        this.wxMpService = wxMpService;
+    }
 
-    <span class="token comment">/**
+    /**
      * 微信认证当前服务可用
      *
      * @param signature 微信加密签名，signature 结合了开发者填写的 token 参数和请求中的 timestamp 参数、nonce 参数
@@ -464,47 +464,47 @@
      * @param nonce     随机数
      * @param echostr   成功后回传的随机字符串
      * @return {@code echostr}
-     */</span>
-    <span class="token annotation punctuation">@GetMapping</span>
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">authGet</span><span class="token punctuation">(</span>
-            <span class="token class-name">String</span> signature<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> timestamp<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> nonce<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> echostr
-    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isAnyEmpty</span><span class="token punctuation">(</span>signature<span class="token punctuation">,</span> timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> echostr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"请求非法参数!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>wxMpService<span class="token punctuation">.</span><span class="token function">checkSignature</span><span class="token punctuation">(</span>timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> signature<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> echostr<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token string">"非法请求"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+     */
+    @GetMapping
+    public String authGet(
+            String signature,
+            String timestamp,
+            String nonce,
+            String echostr
+    ) {
+        if (StringUtils.isAnyEmpty(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求非法参数!");
+        }
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+        return "非法请求";
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>重启项目，将 <a target="_blank" rel="noopener" href="https://rx.serveo.net/wx/portal">https://rx.serveo.net/wx/portal</a> 填到服务器配置中的 url 里面，点击 <strong>提交</strong>，应该可以看到 [修改成功] 的提示了。</p>
 <h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><p>很显然，如果我们只让微信认证我们的服务器的话是做不了什么的，所以我们需要监听并处理用户在微信公众号中的操作并返回结果。</p>
 <p>修改微信服务窗口 api <code>WxMpPortalApi</code>，添加对 <code>post</code> 请求的处理</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信服务窗口 api
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@RestController</span>
-<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/wx/portal"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpPortalApi</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+@RestController
+@RequestMapping("/wx/portal")
+public class WxMpPortalApi {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">WxMpMessageRouter</span> router<span class="token punctuation">;</span>
+    private final WxMpService wxMpService;
+    private final WxMpMessageRouter router;
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpPortalApi</span><span class="token punctuation">(</span><span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">,</span> <span class="token class-name">WxMpMessageRouter</span> router<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>wxMpService <span class="token operator">=</span> wxMpService<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>router <span class="token operator">=</span> router<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Autowired
+    public WxMpPortalApi(WxMpService wxMpService, WxMpMessageRouter router) {
+        this.wxMpService = wxMpService;
+        this.router = router;
+    }
 
-    <span class="token comment">/**
+    /**
      * 微信认证当前服务可用
      *
      * @param signature 微信加密签名，signature 结合了开发者填写的 token 参数和请求中的 timestamp 参数、nonce 参数
@@ -512,66 +512,66 @@
      * @param nonce     随机数
      * @param echostr   成功后回传的随机字符串
      * @return {@code echostr}
-     */</span>
-    <span class="token annotation punctuation">@GetMapping</span>
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">authGet</span><span class="token punctuation">(</span>
-            <span class="token class-name">String</span> signature<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> timestamp<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> nonce<span class="token punctuation">,</span>
-            <span class="token class-name">String</span> echostr
-    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isAnyEmpty</span><span class="token punctuation">(</span>signature<span class="token punctuation">,</span> timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> echostr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"请求非法参数!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>wxMpService<span class="token punctuation">.</span><span class="token function">checkSignature</span><span class="token punctuation">(</span>timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> signature<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> echostr<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> <span class="token string">"非法请求"</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    @GetMapping
+    public String authGet(
+            String signature,
+            String timestamp,
+            String nonce,
+            String echostr
+    ) {
+        if (StringUtils.isAnyEmpty(signature, timestamp, nonce, echostr)) {
+            throw new IllegalArgumentException("请求非法参数!");
+        }
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+            return echostr;
+        }
+        return "非法请求";
+    }
 
-    <span class="token comment">/**
+    /**
      * 对所有来自微信服务器的消息进行预处理
      *
      * @param requestBody 请求体（xml 格式）
      * @return 明文消息
-     */</span>
-    <span class="token annotation punctuation">@PostMapping</span>
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">authPost</span><span class="token punctuation">(</span>
-            <span class="token annotation punctuation">@RequestBody</span> <span class="token class-name">String</span> requestBody<span class="token punctuation">,</span>
-            <span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span><span class="token string">"signature"</span><span class="token punctuation">)</span> <span class="token class-name">String</span> signature<span class="token punctuation">,</span>
-            <span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span><span class="token string">"timestamp"</span><span class="token punctuation">)</span> <span class="token class-name">String</span> timestamp<span class="token punctuation">,</span>
-            <span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span><span class="token string">"nonce"</span><span class="token punctuation">)</span> <span class="token class-name">String</span> nonce<span class="token punctuation">,</span>
-            <span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"encrypt_type"</span><span class="token punctuation">,</span> required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token class-name">String</span> encType<span class="token punctuation">,</span>
-            <span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"msg_signature"</span><span class="token punctuation">,</span> required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token class-name">String</span> msgSignature
-    <span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">JsonProcessingException</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>wxMpService<span class="token punctuation">.</span><span class="token function">checkSignature</span><span class="token punctuation">(</span>timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> signature<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"非法请求, 并非微信发来的"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+     */
+    @PostMapping
+    public String authPost(
+            @RequestBody String requestBody,
+            @RequestParam("signature") String signature,
+            @RequestParam("timestamp") String timestamp,
+            @RequestParam("nonce") String nonce,
+            @RequestParam(name = "encrypt_type", required = false) String encType,
+            @RequestParam(name = "msg_signature", required = false) String msgSignature
+    ) throws JsonProcessingException {
+        if (!wxMpService.checkSignature(timestamp, nonce, signature)) {
+            throw new IllegalArgumentException("非法请求, 并非微信发来的");
+        }
 
-        <span class="token class-name">WxMpXmlMessage</span> inMessage <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>encType <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//明文传输</span>
-            inMessage <span class="token operator">=</span> <span class="token class-name">WxMpXmlMessage</span><span class="token punctuation">.</span><span class="token function">fromXml</span><span class="token punctuation">(</span>requestBody<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"aes"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>encType<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment">//aes 加密</span>
-            inMessage <span class="token operator">=</span> <span class="token class-name">WxMpXmlMessage</span><span class="token punctuation">.</span><span class="token function">fromEncryptedXml</span><span class="token punctuation">(</span>requestBody<span class="token punctuation">,</span> wxMpService<span class="token punctuation">.</span><span class="token function">getWxMpConfigStorage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> timestamp<span class="token punctuation">,</span> nonce<span class="token punctuation">,</span> msgSignature<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token class-name">WxMpXmlOutMessage</span> outMessage <span class="token operator">=</span> router<span class="token punctuation">.</span><span class="token function">route</span><span class="token punctuation">(</span>inMessage<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"客户端发送的消息: {}"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">ObjectMapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">writeValueAsString</span><span class="token punctuation">(</span>outMessage<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> outMessage <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">?</span> <span class="token string">""</span> <span class="token operator">:</span> outMessage<span class="token punctuation">.</span><span class="token function">toXml</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+        WxMpXmlMessage inMessage = null;
+        if (encType == null) {
+            //明文传输
+            inMessage = WxMpXmlMessage.fromXml(requestBody);
+        } else if ("aes".equals(encType)) {
+            //aes 加密
+            inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxMpService.getWxMpConfigStorage(), timestamp, nonce, msgSignature);
+        }
+        WxMpXmlOutMessage outMessage = router.route(inMessage);
+        log.info("客户端发送的消息: {}", new ObjectMapper().writeValueAsString(outMessage));
+        return outMessage == null ? "" : outMessage.toXml();
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>添加一个用户消息处理器</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 基础微信消息处理器
  *
  * @author rxliuli
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">BaseHandler</span> <span class="token keyword">implements</span> <span class="token class-name">WxMpMessageHandler</span> <span class="token punctuation">{</span>
-    <span class="token keyword">final</span> <span class="token class-name">Logger</span> log <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ */
+public abstract class BaseHandler implements WxMpMessageHandler {
+    final Logger log = LoggerFactory.getLogger(getClass());
 
-    <span class="token comment">/**
+    /**
      * 默认空实现
      *
      * @param wxMessage      微信的消息
@@ -579,134 +579,134 @@
      * @param wxMpService    微信 api 服务
      * @param sessionManager 会话管理
      * @return xml 格式的消息, 异步可返回 null
-     */</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpXmlOutMessage</span> <span class="token function">handle</span><span class="token punctuation">(</span><span class="token class-name">WxMpXmlMessage</span> wxMessage<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> context<span class="token punctuation">,</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">,</span> <span class="token class-name">WxSessionManager</span> sessionManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+     */
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage, Map&lt;String, Object&gt; context, WxMpService wxMpService, WxSessionManager sessionManager) {
+        return null;
+    }
+}
 
-<span class="token comment">/**
+/**
  * 用户发送消息的处理器
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@Component</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MsgHandler</span> <span class="token keyword">extends</span> <span class="token class-name">BaseHandler</span> <span class="token punctuation">{</span>
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpXmlOutMessage</span> <span class="token function">handle</span><span class="token punctuation">(</span><span class="token class-name">WxMpXmlMessage</span> wxMessage<span class="token punctuation">,</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">&gt;</span></span> context<span class="token punctuation">,</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">,</span> <span class="token class-name">WxSessionManager</span> sessionManager<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"接收到消息: {}"</span><span class="token punctuation">,</span> wxMessage<span class="token punctuation">.</span><span class="token function">getMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token class-name">String</span> content <span class="token operator">=</span> <span class="token string">"您发送的消息为: "</span> <span class="token operator">+</span> wxMessage<span class="token punctuation">.</span><span class="token function">getContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> <span class="token class-name">WxMpXmlOutMessage</span><span class="token punctuation">.</span><span class="token function">TEXT</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">content</span><span class="token punctuation">(</span>content<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">fromUser</span><span class="token punctuation">(</span>wxMessage<span class="token punctuation">.</span><span class="token function">getToUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">toUser</span><span class="token punctuation">(</span>wxMessage<span class="token punctuation">.</span><span class="token function">getFromUser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+ */
+@Component
+public class MsgHandler extends BaseHandler {
+    @Override
+    public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage, Map&lt;String, Object&gt; context, WxMpService wxMpService, WxSessionManager sessionManager) {
+        log.info("接收到消息: {}", wxMessage.getMsg());
+        final String content = "您发送的消息为: " + wxMessage.getContent();
+        return WxMpXmlOutMessage.TEXT().content(content)
+                .fromUser(wxMessage.getToUser())
+                .toUser(wxMessage.getFromUser())
+                .build();
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>修改微信公众号主要的配置类 <code>WxMpMainConfig</code>，添加路由管理器</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信公众号主要的配置类
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@Configuration</span>
-<span class="token annotation punctuation">@EnableConfigurationProperties</span><span class="token punctuation">(</span><span class="token class-name">WxMpPropertiesConfig</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpMainConfig</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">WxMpPropertiesConfig</span> wxMpPropertiesConfig<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">MsgHandler</span> msgHandler<span class="token punctuation">;</span>
-    <span class="token comment">/**
+ */
+@Configuration
+@EnableConfigurationProperties(WxMpPropertiesConfig.class)
+public class WxMpMainConfig {
+    private final WxMpPropertiesConfig wxMpPropertiesConfig;
+    private final MsgHandler msgHandler;
+    /**
      * 微信公众号监听管理路由映射表
      * 其实就是监听用户在公众号的操作罢了, 比如点击了某个菜单, 发送了一些消息
-     */</span>
-    <span class="token keyword">private</span> <span class="token class-name">WxMpMessageRouter</span> wxMpMessageRouter<span class="token punctuation">;</span>
-    <span class="token comment">/**
+     */
+    private WxMpMessageRouter wxMpMessageRouter;
+    /**
      * 微信公众号的服务对象
      * 用户调用微信的各种 API, 例如获取 access_token
-     */</span>
-    <span class="token keyword">private</span> <span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">;</span>
+     */
+    private WxMpService wxMpService;
 
-    <span class="token annotation punctuation">@Autowired</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpMainConfig</span><span class="token punctuation">(</span><span class="token class-name">WxMpPropertiesConfig</span> wxMpPropertiesConfig<span class="token punctuation">,</span> <span class="token class-name">MsgHandler</span> msgHandler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>wxMpPropertiesConfig <span class="token operator">=</span> wxMpPropertiesConfig<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>msgHandler <span class="token operator">=</span> msgHandler<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Autowired
+    public WxMpMainConfig(WxMpPropertiesConfig wxMpPropertiesConfig, MsgHandler msgHandler) {
+        this.wxMpPropertiesConfig = wxMpPropertiesConfig;
+        this.msgHandler = msgHandler;
+    }
 
-    <span class="token comment">/**
+    /**
      * 初始化路由列表和微信服务 api 对象
-     */</span>
-    <span class="token annotation punctuation">@PostConstruct</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">//配置微信 api 对象的策略（目前在内存中）</span>
-        <span class="token keyword">final</span> <span class="token class-name">WxMpInMemoryConfigStorage</span> storage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMpInMemoryConfigStorage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setAppId</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getAppId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setSecret</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getSecret</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setAesKey</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getAesKey</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        storage<span class="token punctuation">.</span><span class="token function">setToken</span><span class="token punctuation">(</span>wxMpPropertiesConfig<span class="token punctuation">.</span><span class="token function">getToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//设置策略到服务对象中</span>
-        wxMpService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMpServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        wxMpService<span class="token punctuation">.</span><span class="token function">setWxMpConfigStorage</span><span class="token punctuation">(</span>storage<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//添加路由</span>
-        wxMpMessageRouter <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">newRouter</span><span class="token punctuation">(</span>wxMpService<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    @PostConstruct
+    public void init() {
+        //配置微信 api 对象的策略（目前在内存中）
+        final WxMpInMemoryConfigStorage storage = new WxMpInMemoryConfigStorage();
+        storage.setAppId(wxMpPropertiesConfig.getAppId());
+        storage.setSecret(wxMpPropertiesConfig.getSecret());
+        storage.setAesKey(wxMpPropertiesConfig.getAesKey());
+        storage.setToken(wxMpPropertiesConfig.getToken());
+        //设置策略到服务对象中
+        wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(storage);
+        //添加路由
+        wxMpMessageRouter = this.newRouter(wxMpService);
+    }
 
-    <span class="token comment">/**
+    /**
      * 根据微信 api 服务对象创建一个微信监听路由
      *
      * @param wxMpService 微信 api 服务
      * @return 微信监听路由对象
-     */</span>
-    <span class="token keyword">private</span> <span class="token class-name">WxMpMessageRouter</span> <span class="token function">newRouter</span><span class="token punctuation">(</span><span class="token class-name">WxMpService</span> wxMpService<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token class-name">WxMpMessageRouter</span> router <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMpMessageRouter</span><span class="token punctuation">(</span>wxMpService<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment">//发送消息(默认)</span>
-        router<span class="token punctuation">.</span><span class="token function">rule</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">async</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">handler</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>msgHandler<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> router<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+     */
+    private WxMpMessageRouter newRouter(WxMpService wxMpService) {
+        WxMpMessageRouter router = new WxMpMessageRouter(wxMpService);
+        //发送消息(默认)
+        router.rule().async(false).handler(this.msgHandler).end();
+        return router;
+    }
 
-    <span class="token annotation punctuation">@Bean</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpService</span> <span class="token function">wxMpService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> wxMpService<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    @Bean
+    public WxMpService wxMpService() {
+        return wxMpService;
+    }
 
-    <span class="token annotation punctuation">@Bean</span>
-    <span class="token keyword">public</span> <span class="token class-name">WxMpMessageRouter</span> <span class="token function">wxMpMessageRouter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> wxMpMessageRouter<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+    @Bean
+    public WxMpMessageRouter wxMpMessageRouter() {
+        return wxMpMessageRouter;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>现在向公众号发送消息，就可以得到回复了（简单的）。还有日志，菜单，关注，取消关注等处理器这里就不赘述了</p>
 <h3 id="创建菜单"><a href="#创建菜单" class="headerlink" title="创建菜单"></a>创建菜单</h3><p>创建一个简单的公众号菜单 Api 对象</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
  * 微信公众号菜单
  *
  * @author rxliuli
- */</span>
-<span class="token annotation punctuation">@RestController</span>
-<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/wx/menu/"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">WxMpMenuApi</span> <span class="token keyword">extends</span> <span class="token class-name">WxMpBaseApi</span> <span class="token punctuation">{</span>
-    <span class="token comment">/**
+ */
+@RestController
+@RequestMapping("/wx/menu/")
+public class WxMpMenuApi extends WxMpBaseApi {
+    /**
      * 创建一个默认的菜单
      *
      * @return 菜单 id
-     */</span>
-    <span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"create"</span><span class="token punctuation">)</span>
-    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">createDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">WxErrorException</span> <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> <span class="token class-name">WxMenu</span> wxMenu <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">final</span> <span class="token class-name">WxMenuButton</span> buttonLeft <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMenuButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonLeft<span class="token punctuation">.</span><span class="token function">setType</span><span class="token punctuation">(</span><span class="token class-name">WxConsts<span class="token punctuation">.</span>MenuButtonType</span><span class="token punctuation">.</span><span class="token constant">CLICK</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonLeft<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"点击"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonLeft<span class="token punctuation">.</span><span class="token function">setKey</span><span class="token punctuation">(</span><span class="token class-name">IdWorker</span><span class="token punctuation">.</span><span class="token function">getIdStr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+     */
+    @GetMapping("create")
+    public String createDefault() throws WxErrorException {
+        final WxMenu wxMenu = new WxMenu();
+        final WxMenuButton buttonLeft = new WxMenuButton();
+        buttonLeft.setType(WxConsts.MenuButtonType.CLICK);
+        buttonLeft.setName("点击");
+        buttonLeft.setKey(IdWorker.getIdStr());
 
-        <span class="token keyword">final</span> <span class="token class-name">WxMenuButton</span> buttonRight <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WxMenuButton</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonRight<span class="token punctuation">.</span><span class="token function">setType</span><span class="token punctuation">(</span><span class="token class-name">WxConsts<span class="token punctuation">.</span>MenuButtonType</span><span class="token punctuation">.</span><span class="token constant">VIEW</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonRight<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span><span class="token string">"链接"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonRight<span class="token punctuation">.</span><span class="token function">setUrl</span><span class="token punctuation">(</span><span class="token string">"https://blog.rxliuli.com"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        buttonRight<span class="token punctuation">.</span><span class="token function">setKey</span><span class="token punctuation">(</span><span class="token class-name">IdWorker</span><span class="token punctuation">.</span><span class="token function">getIdStr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        wxMenu<span class="token punctuation">.</span><span class="token function">getButtons</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>buttonLeft<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        wxMenu<span class="token punctuation">.</span><span class="token function">getButtons</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>buttonRight<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">return</span> wxMpService<span class="token punctuation">.</span><span class="token function">getMenuService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">menuCreate</span><span class="token punctuation">(</span>wxMenu<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+        final WxMenuButton buttonRight = new WxMenuButton();
+        buttonRight.setType(WxConsts.MenuButtonType.VIEW);
+        buttonRight.setName("链接");
+        buttonRight.setUrl("https://blog.rxliuli.com");
+        buttonRight.setKey(IdWorker.getIdStr());
+        wxMenu.getButtons().add(buttonLeft);
+        wxMenu.getButtons().add(buttonRight);
+        return wxMpService.getMenuService().menuCreate(wxMenu);
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>访问 <a target="_blank" rel="noopener" href="https://rx.serveo.net/wx/menu/create">https://rx.serveo.net/wx/menu/create</a> 就可以为微信公众号创建一个简单的菜单了。点击左边的“点击”按钮会回复文字说点击了什么，右边的链接则会跳转到一个网页。</p>
 <blockquote>

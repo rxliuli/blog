@@ -315,31 +315,31 @@
                 <p>语法<br><code>if(condition, value_if_true, value_if_false)</code></p>
 <p>上面的三个参数的意思是，如果 <code>condition</code>（表达式）为 <code>true</code>，则执行表达式 <code>value_if_true</code>，否则执行表达式 <code>value_if_false</code>。</p>
 <p>例如有下面这个 <code>User</code> 用户表：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">User</span> <span class="token punctuation">(</span>
-  name <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'姓名'</span><span class="token punctuation">,</span>
-  age  <span class="token keyword">INT</span>         <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'年龄'</span><span class="token punctuation">,</span>
-  sex  <span class="token keyword">BOOLEAN</span>     <span class="token operator">NOT</span> <span class="token boolean">NULL</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'性别'</span>
-<span class="token punctuation">)</span>
-  <span class="token keyword">COMMENT</span> <span class="token string">'用户表'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">CREATE TABLE User (
+  name VARCHAR(10) NOT NULL
+  COMMENT '姓名',
+  age  INT         NOT NULL
+  COMMENT '年龄',
+  sex  BOOLEAN     NOT NULL
+  COMMENT '性别'
+)
+  COMMENT '用户表'<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>一个简单的根据属性查询列表的 SQL 语句大致如下：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
-<span class="token keyword">FROM</span> <span class="token keyword">User</span>
-<span class="token keyword">WHERE</span>
-  name <span class="token operator">=</span> ?
-  <span class="token operator">AND</span> age <span class="token operator">=</span> ?
-  <span class="token operator">AND</span> sex <span class="token operator">=</span> ?<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
+FROM User
+WHERE
+  name = ?
+  AND age = ?
+  AND sex = ?;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>那么，现在问题来了。我们有一个需求就是如果性别为空，就查询全部的性别，否则就根据性别进行查询。这时就可以使用 if 来进行判断了（吾辈的某位同事就是碰到了这个坑。。。），如果 <code>condition</code>(<code>sex = null</code>) 为 <code>true</code>，就直接执行表达式 <code>value_if_true</code>(<code>true</code>)，否则执行 <code>value_if_false</code>(<code>sex = ?</code>)。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SELECT</span> <span class="token operator">*</span>
-<span class="token keyword">FROM</span> <span class="token keyword">User</span>
-<span class="token keyword">WHERE</span>
-  name <span class="token operator">=</span> ?
-  <span class="token operator">AND</span> age <span class="token operator">=</span> ?
-  <span class="token operator">AND</span> <span class="token keyword">if</span><span class="token punctuation">(</span>sex <span class="token operator">=</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> sex <span class="token operator">=</span> ?<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
+FROM User
+WHERE
+  name = ?
+  AND age = ?
+  AND if(sex = NULL, TRUE, sex = ?);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注：这里不要使用 <code>1 = 1</code> 而直接使用 <code>true</code> 就好了。<br>PS：这难道就是所谓的习惯成自然么。。。<br>附：诚然，在使用了 ORM 框架(例如 Mybatis 后)，基本上都可以对传入的参数进行判空处理，然而有时候会出现一种情况：<br>某个属性经由其他属性统合计算而得到，并非是实体（或是其他的什么）传入进来的参数，那便是只能使用 SQL 的原生语法了呢</p>

@@ -317,26 +317,26 @@
 <p><a target="_blank" rel="noopener" href="https://www.notion.so/rxliuli/Yarn-link-45007161bbfd43b2beffac88a0bc69b0#396f98a450c445f29e6fff69202654f0">官网链接</a></p>
 </blockquote>
 <h3 id="链接包"><a href="#链接包" class="headerlink" title="链接包"></a>链接包</h3><p>在命令行运行即可将当前包链接安装到这个包中，即便你在 <code>package.json</code> 并不会找到显式的依赖。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> <span class="token function">link</span> <span class="token operator">&amp;&amp;</span> <span class="token function">yarn</span> <span class="token function">link</span> <span class="token string">"&lt;package.json 中的 name 字段&gt;"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn link &amp;&amp; yarn link "&lt;package.json 中的 name 字段&gt;"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注：如果当前包是 <code>cli</code>，即 <code>package.json</code> 中包含 <code>bin</code> 字段，则还会被链接到 yarn 的全局脚本目录中。<br>yarn 的全局脚本目录可以通过执行 <code>yarn global bin</code> 进行查看，如果要在全局执行，则需要将该目录设置到环境变量 <code>Path</code> 中，然后就可以全局运行命令了。</p>
 </blockquote>
 <p>然后，便可以在项目中使用了（测试）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">import</span> <span class="token operator">&lt;</span>pkgName<span class="token operator">&gt;</span> from <span class="token string">'pkgName'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">import &lt;pkgName&gt; from 'pkgName'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <h3 id="取消链接"><a href="#取消链接" class="headerlink" title="取消链接"></a>取消链接</h3><p>如果不需要了，则也可以轻易通过 <code>unlink</code> 移除。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">yarn</span> unlink <span class="token string">"&lt;package.json 中的 name 字段&gt;"</span> <span class="token operator">&amp;&amp;</span> <span class="token function">yarn</span> unlink<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn unlink "&lt;package.json 中的 name 字段&gt;" &amp;&amp; yarn unlink<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>注：同样的，如果当前包是 <code>cli</code>，则 yarn 全局 <code>bin</code> 目录中也会进行删除</p>
 </blockquote>
 <h3 id="通用-script"><a href="#通用-script" class="headerlink" title="通用 script"></a>通用 script</h3><p>每个项目都这样太麻烦了，可否添加一个通用 <code>script</code> 脚本呢？</p>
 <p>当然是可以的，通过 <code>%npm_package_name%</code> 我们便能在 <code>srcipt</code> 中访问到项目名</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token property">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-  <span class="token property">"link:add"</span><span class="token operator">:</span> <span class="token string">"yarn link &amp;&amp; yarn link %npm_package_name%"</span><span class="token punctuation">,</span>
-  <span class="token property">"link:remove"</span><span class="token operator">:</span> <span class="token string">"yarn unlink %npm_package_name% &amp;&amp; yarn unlink"</span>
-<span class="token punctuation">}</span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">"scripts": {
+  "link:add": "yarn link &amp;&amp; yarn link %npm_package_name%",
+  "link:remove": "yarn unlink %npm_package_name% &amp;&amp; yarn unlink"
+},<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://docs.npmjs.com/misc/scripts#packagejson-vars">https://docs.npmjs.com/misc/scripts#packagejson-vars</a></p>

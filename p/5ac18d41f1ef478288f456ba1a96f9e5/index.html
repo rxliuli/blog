@@ -314,11 +314,11 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在 Java 中使用 <code>LocalDateTime</code> 解析 <code>String</code> 失败</p>
 <p>代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> result <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token string">"2000-01-01"</span><span class="token punctuation">,</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token function">ofPattern</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"result: {}"</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime result = LocalDateTime.parse("2000-01-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+log.info("result: {}", result);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
 
 <p>抛出异常</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">java.time.format.DateTimeParseException: Text <span class="token string">'2000-01-01'</span> could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: <span class="token punctuation">{</span><span class="token punctuation">}</span>,ISO resolved to <span class="token number">2000</span>-01-01 of <span class="token builtin class-name">type</span> java.time.format.Parsed<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">java.time.format.DateTimeParseException: Text '2000-01-01' could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: {},ISO resolved to 2000-01-01 of type java.time.format.Parsed<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
 
 <p>吾辈也在 <a target="_blank" rel="noopener" href="https://segmentfault.com/q/1010000018526018">SegmentFault</a> 上提出了这个问题，然而直到写出这篇记录时然而没有人告诉吾辈答案。。。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="先转换为-LocalDate-再二次转换"><a href="#先转换为-LocalDate-再二次转换" class="headerlink" title="先转换为 LocalDate 再二次转换"></a>先转换为 LocalDate 再二次转换</h3><p>吾辈首先找到了一种笨方法</p>
@@ -326,41 +326,41 @@ log<span class="token punctuation">.</span><span class="token function">info</sp
 <li>先解析为 <code>LocalDate</code></li>
 <li>将 <code>LocalDate</code> 转换为 <code>LocalDateTime</code>。</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> localDateTime <span class="token operator">=</span> <span class="token class-name">LocalDate</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token string">"2018-12-11"</span><span class="token punctuation">,</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token constant">ISO_DATE</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">atStartOfDay</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token function">assertThat</span><span class="token punctuation">(</span>localDateTime<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">isNotNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final LocalDateTime localDateTime = LocalDate.parse("2018-12-11", DateTimeFormatter.ISO_DATE).atStartOfDay();
+assertThat(localDateTime)
+    .isNotNull();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用-DateTimeFormatter-先解析，然后转换为-LocalDateTime"><a href="#使用-DateTimeFormatter-先解析，然后转换为-LocalDateTime" class="headerlink" title="使用 DateTimeFormatter 先解析，然后转换为 LocalDateTime"></a>使用 DateTimeFormatter 先解析，然后转换为 LocalDateTime</h3><ol>
 <li>使用 <code>DateTimeFormatter.ISO_DATE</code> 解析文本并得到 <code>TemporalAccessor</code> 对象</li>
 <li>使用 <code>temporalAccessor.get</code> 方法获取指定属性</li>
 <li>使用 <code>LocalDateTime.of</code> 构造一个 <code>LocalDateTime</code> 对象</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">TemporalAccessor</span> temporalAccessor <span class="token operator">=</span> <span class="token class-name">DateTimeFormatter</span><span class="token punctuation">.</span><span class="token constant">ISO_DATE</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token string">"2018-12-11"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> localDateTime <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">YEAR</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">MONTH_OF_YEAR</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">DAY_OF_MONTH</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">HOUR_OF_DAY</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">MINUTE_OF_HOUR</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">SECOND_OF_MINUTE</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token function">secureGet</span><span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">NANO_OF_SECOND</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
-log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"localDateTime: {}"</span><span class="token punctuation">,</span> localDateTime<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final TemporalAccessor temporalAccessor = DateTimeFormatter.ISO_DATE.parse("2018-12-11");
+final LocalDateTime localDateTime = LocalDateTime.of(
+    secureGet(temporalAccessor, ChronoField.YEAR),
+    secureGet(temporalAccessor, ChronoField.MONTH_OF_YEAR),
+    secureGet(temporalAccessor, ChronoField.DAY_OF_MONTH),
+    secureGet(temporalAccessor, ChronoField.HOUR_OF_DAY),
+    secureGet(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+    secureGet(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
+    secureGet(temporalAccessor, ChronoField.NANO_OF_SECOND)
+);
+log.info("localDateTime: {}", localDateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p><code>secureGet</code> 是吾辈自定义的一个工具方法，具体看下面的代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
   * 安全获取时间的某个属性
   *
   * @param temporalAccessor 需要获取的时间对象
   * @param chronoField      需要获取的属性
   * @return 时间的值，如果无法获取则默认为 0
-  */</span>
-<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">secureGet</span><span class="token punctuation">(</span><span class="token class-name">TemporalAccessor</span> temporalAccessor<span class="token punctuation">,</span> <span class="token class-name">ChronoField</span> chronoField<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>temporalAccessor<span class="token punctuation">.</span><span class="token function">isSupported</span><span class="token punctuation">(</span>chronoField<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> temporalAccessor<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>chronoField<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+  */
+private static int secureGet(TemporalAccessor temporalAccessor, ChronoField chronoField) {
+    if (temporalAccessor.isSupported(chronoField)) {
+        return temporalAccessor.get(chronoField);
+    }
+    return 0;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h3 id="使用-DateTimeFormatterBuilder-构建器"><a href="#使用-DateTimeFormatterBuilder-构建器" class="headerlink" title="使用 DateTimeFormatterBuilder 构建器"></a>使用 DateTimeFormatterBuilder 构建器</h3><p>吾辈在 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/27454025">StackOverflow</a> 找到了一个好的方法</p>
 <ol>
@@ -368,16 +368,16 @@ log<span class="token punctuation">.</span><span class="token function">info</sp
 <li>赋予可选匹配项默认值（<strong>非常重要</strong>）</li>
 <li>使用 <code>LocalDateTime.parse</code> 进行解析</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">DateTimeFormatter</span> formatter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DateTimeFormatterBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">appendPattern</span><span class="token punctuation">(</span><span class="token string">"yyyy-MM-dd[['T'hh][:mm][:ss]]"</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">parseDefaulting</span><span class="token punctuation">(</span><span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">HOUR_OF_DAY</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">parseDefaulting</span><span class="token punctuation">(</span><span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">MINUTE_OF_HOUR</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">parseDefaulting</span><span class="token punctuation">(</span><span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">SECOND_OF_MINUTE</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">parseDefaulting</span><span class="token punctuation">(</span><span class="token class-name">ChronoField</span><span class="token punctuation">.</span><span class="token constant">MILLI_OF_SECOND</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">toFormatter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">LocalDateTime</span> localDateTime <span class="token operator">=</span> <span class="token class-name">LocalDateTime</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token string">"2018-12-11"</span><span class="token punctuation">,</span> formatter<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token function">assertThat</span><span class="token punctuation">(</span>localDateTime<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">isNotNull</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+    .appendPattern("yyyy-MM-dd[['T'hh][:mm][:ss]]")
+    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+    .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+    .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
+    .toFormatter();
+final LocalDateTime localDateTime = LocalDateTime.parse("2018-12-11", formatter);
+assertThat(localDateTime)
+    .isNotNull();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <hr>
 <p>最后一种方法满足了吾辈的需求，所以，也便是在这里记录一下啦</p>

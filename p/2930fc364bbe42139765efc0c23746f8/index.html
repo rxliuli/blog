@@ -323,136 +323,136 @@
 <li>创建时与内部支持的生成器走同一个流程</li>
 </ol>
 <h2 id="定义-schema"><a href="#定义-schema" class="headerlink" title="定义 schema"></a>定义 schema</h2><p>typescript interface</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">BaseConfig</span> <span class="token punctuation">{</span>
-  name<span class="token operator">:</span> <span class="token builtin">string</span>
-  label<span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token keyword">default</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">any</span>
-<span class="token punctuation">}</span>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface BaseConfig {
+  name: string
+  label: string
+  default?: any
+}
 
-<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">SelectConfig</span> <span class="token keyword">extends</span> <span class="token class-name">BaseConfig</span> <span class="token punctuation">{</span>
-  type<span class="token operator">:</span> <span class="token string">'select'</span>
-  options<span class="token operator">:</span> <span class="token punctuation">{</span>
-    label<span class="token operator">:</span> <span class="token builtin">string</span>
-    value<span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token punctuation">}</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
+export interface SelectConfig extends BaseConfig {
+  type: 'select'
+  options: {
+    label: string
+    value: string
+  }[]
+}
 
-<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">CheckboxConfig</span> <span class="token keyword">extends</span> <span class="token class-name">BaseConfig</span> <span class="token punctuation">{</span>
-  type<span class="token operator">:</span> <span class="token string">'checkbox'</span>
-<span class="token punctuation">}</span>
+export interface CheckboxConfig extends BaseConfig {
+  type: 'checkbox'
+}
 
-<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">InputConfig</span> <span class="token keyword">extends</span> <span class="token class-name">BaseConfig</span> <span class="token punctuation">{</span>
-  type<span class="token operator">:</span> <span class="token string">'input'</span>
-<span class="token punctuation">}</span>
+export interface InputConfig extends BaseConfig {
+  type: 'input'
+}
 
-<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Conifg</span> <span class="token operator">=</span> SelectConfig <span class="token operator">|</span> CheckboxConfig <span class="token operator">|</span> InputConfig
+export type Conifg = SelectConfig | CheckboxConfig | InputConfig
 
-<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">BootstrapConfig</span> <span class="token punctuation">{</span>
-  id<span class="token operator">:</span> <span class="token builtin">string</span>
-  title<span class="token operator">:</span> <span class="token builtin">string</span>
-  <span class="token keyword">package</span><span class="token operator">:</span> <span class="token builtin">string</span>
-  command<span class="token operator">:</span> <span class="token builtin">string</span>
-  configs<span class="token operator">:</span> Conifg<span class="token punctuation">[</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+export interface BootstrapConfig {
+  id: string
+  title: string
+  package: string
+  command: string
+  configs: Conifg[]
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>转换得到的 json schema</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"array"</span><span class="token punctuation">,</span>
-  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"List of generators to use"</span><span class="token punctuation">,</span>
-  <span class="token property">"items"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
-    <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"The id of the generator"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token property">"title"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"The title of the generator"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token property">"package"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"npm package"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token property">"command"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"command to run"</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token property">"configs"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"array"</span><span class="token punctuation">,</span>
-        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"configs to pass to the command"</span><span class="token punctuation">,</span>
-        <span class="token property">"items"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
-          <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-            <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-              <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-              <span class="token property">"enum"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"select"</span><span class="token punctuation">,</span> <span class="token string">"checkbox"</span><span class="token punctuation">,</span> <span class="token string">"input"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-              <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">""</span>
-            <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-              <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-              <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">""</span>
-            <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"label"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-              <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-              <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">""</span>
-            <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"default"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"options"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-              <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"array"</span><span class="token punctuation">,</span>
-              <span class="token property">"items"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
-                <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                  <span class="token property">"label"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-                    <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"option label"</span>
-                  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                  <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-                    <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"option value"</span>
-                  <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"label"</span><span class="token punctuation">,</span> <span class="token string">"value"</span><span class="token punctuation">]</span>
-              <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-          <span class="token punctuation">}</span><span class="token punctuation">,</span>
-          <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"type"</span><span class="token punctuation">,</span> <span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token string">"label"</span><span class="token punctuation">]</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"id"</span><span class="token punctuation">,</span> <span class="token string">"title"</span><span class="token punctuation">,</span> <span class="token string">"package"</span><span class="token punctuation">,</span> <span class="token string">"command"</span><span class="token punctuation">,</span> <span class="token string">"configs"</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "type": "array",
+  "description": "List of generators to use",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The id of the generator"
+      },
+      "title": {
+        "type": "string",
+        "description": "The title of the generator"
+      },
+      "package": {
+        "type": "string",
+        "description": "npm package"
+      },
+      "command": {
+        "type": "string",
+        "description": "command to run"
+      },
+      "configs": {
+        "type": "array",
+        "description": "configs to pass to the command",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["select", "checkbox", "input"],
+              "description": ""
+            },
+            "name": {
+              "type": "string",
+              "description": ""
+            },
+            "label": {
+              "type": "string",
+              "description": ""
+            },
+            "default": {},
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "description": "option label"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "option value"
+                  }
+                },
+                "required": ["label", "value"]
+              }
+            }
+          },
+          "required": ["type", "name", "label"]
+        }
+      }
+    },
+    "required": ["id", "title", "package", "command", "configs"]
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>接着我们就可以在 VSCode 中自定义生成器了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"newProject.generators"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"@liuli-util/cli"</span><span class="token punctuation">,</span>
-      <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"liuli-cli"</span><span class="token punctuation">,</span>
-      <span class="token property">"package"</span><span class="token operator">:</span> <span class="token string">"@liuli-util/cli"</span><span class="token punctuation">,</span>
-      <span class="token property">"command"</span><span class="token operator">:</span> <span class="token string">"liuli-cli generate"</span><span class="token punctuation">,</span>
-      <span class="token property">"configs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token punctuation">{</span>
-          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"select"</span><span class="token punctuation">,</span>
-          <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"template"</span><span class="token punctuation">,</span>
-          <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"Template"</span><span class="token punctuation">,</span>
-          <span class="token property">"default"</span><span class="token operator">:</span> <span class="token string">"lib"</span><span class="token punctuation">,</span>
-          <span class="token property">"options"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-            <span class="token punctuation">{</span> <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"lib"</span><span class="token punctuation">,</span> <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"lib"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token punctuation">{</span> <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"cli"</span><span class="token punctuation">,</span> <span class="token property">"value"</span><span class="token operator">:</span> <span class="token string">"cli"</span> <span class="token punctuation">}</span>
-          <span class="token punctuation">]</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token punctuation">{</span>
-          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"checkbox"</span><span class="token punctuation">,</span>
-          <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"init-sync"</span><span class="token punctuation">,</span>
-          <span class="token property">"label"</span><span class="token operator">:</span> <span class="token string">"init sync"</span><span class="token punctuation">,</span>
-          <span class="token property">"default"</span><span class="token operator">:</span> <span class="token boolean">false</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
+  "newProject.generators": [
+    {
+      "id": "@liuli-util/cli",
+      "title": "liuli-cli",
+      "package": "@liuli-util/cli",
+      "command": "liuli-cli generate",
+      "configs": [
+        {
+          "type": "select",
+          "name": "template",
+          "label": "Template",
+          "default": "lib",
+          "options": [
+            { "label": "lib", "value": "lib" },
+            { "label": "cli", "value": "cli" }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "name": "init-sync",
+          "label": "init sync",
+          "default": false
+        }
+      ]
+    }
+  ]
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>然后便可以使用这个生成器创建项目了</p>
 <p><img src="/resources/dec1bb478fb34a83baf03512bf181d42.png" srcset="/img/loading.gif" lazyload alt="1648703038281"></p>

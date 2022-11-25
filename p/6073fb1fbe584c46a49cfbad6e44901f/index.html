@@ -386,20 +386,20 @@
 <p>Pass: 不要吐槽性能很差啦，这个场景下不会缓存特别多的元素啦，最多也就不到 1000 个吧</p>
 </blockquote>
 <h2 id="结合高阶函数"><a href="#结合高阶函数" class="headerlink" title="结合高阶函数"></a>结合高阶函数</h2><p>现在，我们可以结合这两种方式了，同时使用 <code>onceOfSameParam/batch</code> 两个高阶函数来优化 <strong>根据 id 获取字典信息</strong> 的 API 了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">const</span> getById <span class="token operator">=</span> <span class="token function">onceOfSameParam</span><span class="token punctuation">(</span>
-  <span class="token generic-function"><span class="token function">batch</span><span class="token generic class-name"><span class="token operator">&lt;</span><span class="token punctuation">[</span><span class="token builtin">number</span><span class="token punctuation">]</span><span class="token punctuation">,</span> Dict<span class="token operator">&gt;</span></span></span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span>idList<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>idList<span class="token punctuation">.</span>length <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-    <span class="token comment">// 一次批量处理多个 id</span>
-    <span class="token keyword">const</span> list <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getByIdList</span><span class="token punctuation">(</span><span class="token function">uniqueBy</span><span class="token punctuation">(</span>idList<span class="token punctuation">.</span><span class="token function">flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> <span class="token function">arrayToMap</span><span class="token punctuation">(</span>
-      list<span class="token punctuation">,</span>
-      <span class="token punctuation">(</span>dict<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>dict<span class="token punctuation">.</span>id<span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token punctuation">(</span>dict<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> dict<span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const getById = onceOfSameParam(
+  batch&lt;[number], Dict&gt;(async (idList) =&gt; {
+    if (idList.length === 0) {
+      return new Map()
+    }
+    // 一次批量处理多个 id
+    const list = await this.getByIdList(uniqueBy(idList.flat()))
+    return arrayToMap(
+      list,
+      (dict) =&gt; [dict.id],
+      (dict) =&gt; dict,
+    )
+  }, 100),
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <h2 id="支持异步-formatter"><a href="#支持异步-formatter" class="headerlink" title="支持异步 formatter"></a>支持异步 formatter</h2><p>原本想要支持 ListTable 的异步 <code>formatter</code> 函数，但后来想想，如果 <code>slot</code> 里也包含字典 id 呢？那是否 <code>slot</code> 也要支持异步呢？这可是个比较棘手的问题，所以还是不支持好了。</p>
 <blockquote>

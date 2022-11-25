@@ -836,13 +836,13 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </blockquote>
 <h3 id="自执行函数前面必须加分号"><a href="#自执行函数前面必须加分号" class="headerlink" title="自执行函数前面必须加分号"></a>自执行函数前面必须加分号</h3><p>如果我们需要使用自执行函数，则开头必须加上 <code>;</code> 以避免可能出现的歧义。</p>
 <p>错误示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token keyword">function</span> returnItself<span class="token punctuation">(</span>o<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token builtin class-name">return</span> o
-<span class="token punctuation">}</span>
-returnItself<span class="token variable"><span class="token punctuation">((</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> console.log<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">))</span></span>
-<span class="token punctuation">((</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
-  console.log<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">function returnItself(o) {
+  return o
+}
+returnItself(() =&gt; console.log(1))
+(() =&gt; {
+  console.log(2)
+})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
 
 <p>上面这段代码是有问题的，因为后面的自执行函数会被认为是上一句的 <code>returnItself</code> 返回函数的参数，最后的括号会被认为又是一次调用，将会抛出错误</p>
 <figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">returnItself</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> is not a <span class="token keyword">function</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
