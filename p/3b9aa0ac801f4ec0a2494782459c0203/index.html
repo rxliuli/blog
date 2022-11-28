@@ -1,0 +1,1188 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言作为一个开发者，吾辈在工作之后开始使用了 markdown 作为一切文档的基本格式。由此衍生出来了一些处理 markdown 的需要，特别是在笔记工具使用了基于 markdown 的 joplin 之后，这种需求确切的开始存在了。 下面列出一些常见的需求  在 vscode 中访问和编辑笔记 从笔记中导出 blog 需要的文件 从 markdown 生成 epub 文件和网站 从 markdo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="markdown 自动化">
+<meta property="og:url" content="https://blog.rxliuli.com/p/3b9aa0ac801f4ec0a2494782459c0203/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言作为一个开发者，吾辈在工作之后开始使用了 markdown 作为一切文档的基本格式。由此衍生出来了一些处理 markdown 的需要，特别是在笔记工具使用了基于 markdown 的 joplin 之后，这种需求确切的开始存在了。 下面列出一些常见的需求  在 vscode 中访问和编辑笔记 从笔记中导出 blog 需要的文件 从 markdown 生成 epub 文件和网站 从 markdo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/f099deeb591d43ef9a00f3b3138bd696.png">
+<meta property="article:published_time" content="2022-10-28T02:54:44.110Z">
+<meta property="article:modified_time" content="2022-11-28T14:18:24.069Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="markdown">
+<meta property="article:tag" content="ast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/f099deeb591d43ef9a00f3b3138bd696.png">
+  
+  
+  
+  <title>markdown 自动化 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="markdown 自动化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-28 10:54" pubdate>
+          2022年10月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          87 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">markdown 自动化</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2022年11月28日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一个开发者，吾辈在工作之后开始使用了 markdown 作为一切文档的基本格式。由此衍生出来了一些处理 markdown 的需要，特别是在笔记工具使用了基于 markdown 的 joplin 之后，这种需求确切的开始存在了。</p>
+<p>下面列出一些常见的需求</p>
+<ul>
+<li>在 vscode 中访问和编辑笔记</li>
+<li>从笔记中导出 blog 需要的文件</li>
+<li>从 markdown 生成 epub 文件和网站</li>
+<li>从 markdown 生成 pdf 文件以便分享</li>
+<li>更多。。。</li>
+</ul>
+<h2 id="工具库"><a href="#工具库" class="headerlink" title="工具库"></a>工具库</h2><p>markdown 相关的工具库有很多，举几个知名的</p>
+<ul>
+<li>markdown-it: 很早的一个 markdown 实现，包括 vscode 在内的许多工具都使用它</li>
+<li>marked: 一个更古老的工具，npm 下载量更多，但我没有找到知名的用例</li>
+<li>remark: 一个离散的 markdown 工具，几乎所有功能都交由插件系统实现，非常灵活，被 mdx 等知名工具使用</li>
+<li>mdast: 更底层的 markdown ast 抽象，提供了各种各样的工具包，是 remark 的底层依赖</li>
+</ul>
+<p>虽然有这么多的工具，但最终吾辈选择了 mdast，原因是多方面的</p>
+<ul>
+<li>支持仅修改 markdown 而不将之转换为 html，其他工具一般只能将自定义操作作为插件嵌入到渲染流程中，而不能单独获取和处理 ast，它是吾辈已知唯一能这样做的库</li>
+<li>mdast 提供 markdown 的 ast 抽象，并且对开发者暴露，也能与其他工具很好的结合，例如 astexplorer 支持查看基于 mdast 抽象的 markdown 语法树</li>
+<li>mdast/remark 同源，但 mdast 层级更低也更快，没有准确的测量但实际用例中快了 5 倍</li>
+</ul>
+<p>所以最终选择了 mdast，即便它也有一些缺点，但仍然瑕不掩瑜</p>
+<ul>
+<li>mdast 非常离散化，所需的功能基本都在社区插件包中维护，这意味着要依赖非常多的模块 – 通过自行维护 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/markdown-util">@liuli-util/markdown-util</a> 解决</li>
+<li>mdast 是 esm only 的，这个社区也开始放弃 cjs 了 – 吾辈也开始这样做了，虽然许多模块仍然支持 cjs，但新的模块已经默认 esm only 了</li>
+</ul>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>一个最简单的使用示例是将 markdown 转换为 html</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { toHtml } from 'hast-util-to-html'
+import { fromMarkdown } from 'mdast-util-from-markdown'
+import { gfmFromMarkdown } from 'mdast-util-gfm'
+import { toHast } from 'mdast-util-to-hast'
+import { gfm } from 'micromark-extension-gfm'
+
+const s = '## Hello **World**!'
+const root = fromMarkdown(s, {
+  extensions: [gfm()],
+  mdastExtensions: [gfmFromMarkdown()],
+})
+const r = toHtml(toHast(root)!)
+console.log(r) // &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，比想象中要麻烦一些，必须使用各种插件和工具，只是这个简单的工作我们需要使用 5 个模块，但在下面吾辈会证明这是值得的，也是可以解决的。</p>
+<p>这里我们可以先简单封装一下，三个最基本的函数</p>
+<ul>
+<li><code>fromMarkdown</code>: 从 markdown 文本得到 ast</li>
+<li><code>toMarkdown</code>: 从 ast 转换为 markdown 文本</li>
+<li><code>toHTML</code>: 从 ast 转换为 html 文本</li>
+</ul>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
+  fromMarkdown as fm,
+  Options as FmOptions,
+} from 'mdast-util-from-markdown'
+import { Options as TmOptions, toMarkdown as tm } from 'mdast-util-to-markdown'
+import type { Content, Root } from 'mdast'
+import {
+  frontmatterFromMarkdown,
+  frontmatterToMarkdown,
+} from 'mdast-util-frontmatter'
+import { frontmatter } from 'micromark-extension-frontmatter'
+import { gfm } from 'micromark-extension-gfm'
+import { gfmFromMarkdown, gfmToMarkdown } from 'mdast-util-gfm'
+import { toHast } from 'mdast-util-to-hast'
+import { toHtml as hastToHtml } from 'hast-util-to-html'
+
+/**
+ * 解析 markdown 文本为 ast
+ * @param content
+ * @returns
+ */
+export function fromMarkdown(content: string, options?: FmOptions): Root {
+  return fm(content, {
+    ...options,
+    extensions: [frontmatter(['yaml']), gfm()].concat(
+      options?.extensions ?? [],
+    ),
+    mdastExtensions: [
+      frontmatterFromMarkdown(['yaml']),
+      gfmFromMarkdown(),
+    ].concat(options?.mdastExtensions ?? []),
+  })
+}
+
+/**
+ * 将 markdown ast 转换为文本
+ * @param ast
+ * @returns
+ */
+export function toMarkdown(ast: Content | Root, options?: TmOptions): string {
+  return tm(ast, {
+    ...options,
+    extensions: [frontmatterToMarkdown(['yaml']), gfmToMarkdown()].concat(
+      options?.extensions ?? [],
+    ),
+  })
+}
+
+/**
+ * 将一段 markdown ast 序列化为 html
+ * @param node
+ * @returns
+ */
+export function toHtml(node: Root): string {
+  return hastToHtml(toHast(node)!)
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>为了方便，我们默认引入了 gfm/yaml 这两个插件。下面的示例代码将直接使用这三个函数，现在重新完成之前转换 markdown 为 html 的需求</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const s = '## Hello **World**!'
+const r = toHtml(fromMarkdown(s))
+console.log(r) // &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>可以看到，现在使用变得简单一些了。</p>
+<h3 id="markdown-ast"><a href="#markdown-ast" class="headerlink" title="markdown ast"></a>markdown ast</h3><p>然后，就是 ast 部分，mdast 抽象了 markdown 的语法树，可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 中检查一段 markdown 的语法树。</p>
+<p><img src="/resources/f099deeb591d43ef9a00f3b3138bd696.png" srcset="/img/loading.gif" lazyload alt="1669637555985.png"></p>
+<p>实际上，它就是一个嵌套的 json 对象。当得到 ast 之后，就可以对他进行操作，例如，最简单的遍历</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Node, visit } from 'unist-util-visit'
+import { fromMarkdown } from '../parse'
+
+const s = '## Hello **World**!'
+const root = fromMarkdown(s)
+visit(root, (node: Node) =&gt; {
+  console.log(node.type)
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>或者对它做一些修改，例如将粗体的替换为普通文本</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Node, Parent } from 'unist'
+import { Strong } from 'mdast'
+import { visit } from 'unist-util-visit'
+import { fromMarkdown, toMarkdown } from '../parse'
+
+const s = '## Hello **World**!'
+const root = fromMarkdown(s)
+visit(root, (node: Node) =&gt; {
+  if ('children' in (node as any)) {
+    const p = node as Parent
+    p.children = p.children.flatMap((item) =&gt;
+      item.type === 'strong' ? (item as Strong).children : [item],
+    )
+  }
+})
+console.log(toMarkdown(root)) // ## Hello World!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>嗯，引入了 3 个模块。我们可以更进一步封装一个适用于 mdast 的 <code>flatMap</code></p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
+ * 映射一棵 ast 树
+ * 注：其中会执行真实的修改操作
+ * @param tree
+ * @param fn
+ * @returns
+ */
+export function flatMap&lt;T extends Node&gt;(
+  tree: T,
+  fn: (node: Node, i: number, parent?: Parent) =&gt; Node[],
+): T {
+  function transform(node: Node, i: number, parent?: Parent): Node[] {
+    if ('children' in node) {
+      const p = node as unknown as Parent
+      p.children = p.children.flatMap((item, i) =&gt; transform(item, i, p)) as any
+    }
+    return fn(node, i, parent)
+  }
+  return transform(tree, 0, undefined)[0] as T
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>使用 <code>flatMap</code> 重新完成它</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
+import { flatMap } from '../utils'
+import { Strong } from 'mdast'
+
+const s = '## Hello **World**!'
+const root = fromMarkdown(s)
+flatMap(root, (item) =&gt;
+  item.type === 'strong' ? (item as Strong).children : [item],
+)
+console.log(toMarkdown(root)) // ## Hello World!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>嗯，只需要一步就完成了。嗯，为了性能吾辈并未将 flatMap 实现为返回一个新的 ast，当然，如果期望如此，无论如何都可以使用 immer 之类的库来实现 immutable。</p>
+<h3 id="转换链接"><a href="#转换链接" class="headerlink" title="转换链接"></a>转换链接</h3><p>好吧，来看一些真实的需求<br>第一个是修改 markdown 中的链接，例如希望将链接中的资源都转换为 cdn 地址，这里使用 google photos 作为示例</p>
+<p>原始 markdown 内容</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
+![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>希望转换得到的 markdown 内容，即为 google 图片的地址添加代理服务，避免无法在 blog 显示的错误。同时也不能转换不相关的资源</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
+![1669384280333.png](https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+
+<p>实际上这件事情很简单，我们只需要过滤出来需要的节点并且修改就好了</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
+import { Image } from 'mdast'
+import { selectAll } from 'unist-util-select'
+
+const s = `
+![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
+![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)
+`.trim()
+const root = fromMarkdown(s)
+;(selectAll('image', root) as Image[])
+  .filter((item) =&gt;
+    item.url.startsWith('https://lh3.googleusercontent.com/pw/'),
+  )
+  .forEach(
+    (item) =&gt; (item.url = `https://image-proxy.rxliuli.com/?url=${item.url}`),
+  )
+console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="修改元数据"><a href="#修改元数据" class="headerlink" title="修改元数据"></a>修改元数据</h3><p>我们还可以修改 markdown 的元数据，例如我们从 hexo 转换为 hugo 时，会需要转换它们的元数据。</p>
+<p>例如 hexo 的元数据一般格式是</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">layout: post
+title: 2. Importing and exporting notes
+abbrlink: 2ba8366ac77c4a93b9eb7595d1343eb6
+tags: []
+date: 1667644025956
+updated: 1667644025956<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>而 hugo 的是</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">title: 2. Importing and exporting notes
+slug: 2ba8366ac77c4a93b9eb7595d1343eb6
+tags: []
+date: 2022-11-05T10:27:05.956Z
+lastmod: 2022-11-05T10:27:05.956Z<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>无论如何，它们的 markdown 不会完全一样，这时候我们需要做一些简单的转换。</p>
+<p>首先我们还是先封装 getYamlMeta/setYamlMeta 这些工具函数吧</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Root, YAML } from 'mdast'
+import { select } from 'unist-util-select'
+import * as yaml from 'yaml'
+
+/**
+ * 获取 markdown 的 yaml 元数据
+ * @param root
+ * @returns
+ */
+export function getYamlMeta&lt;T&gt;(root: Root): T {
+  const r = select('yaml', root)
+  return yaml.parse(r ? (r as YAML).value : '')
+}
+
+/**
+ * 设置 markdown 的 yaml 元数据
+ * @param root
+ * @returns
+ */
+export function setYamlMeta(root: Root, meta: any) {
+  const r = select('yaml', root) as YAML
+  if (r) {
+    r.value = yaml.stringify(meta).trim()
+  } else {
+    root.children.unshift({
+      type: 'yaml',
+      value: yaml.stringify(meta).trim(),
+    } as YAML)
+  }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>然后就可以简单的修改元数据了</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
+import { getYamlMeta, setYamlMeta } from '../utils'
+
+const s = `
+---
+layout: post
+title: 2. Importing and exporting notes
+abbrlink: 2ba8366ac77c4a93b9eb7595d1343eb6
+tags: []
+date: 1667644025956
+updated: 1667644025956
+---
+`.trim()
+interface HexoMeta {
+  layout: string
+  title: string
+  abbrlink: string
+  tags: string[]
+  date: number
+  updated: number
+}
+interface HugoMeta {
+  title: string
+  slug: string
+  tags: string[]
+  date: string
+  lastmod: string
+}
+const root = fromMarkdown(s)
+const meta = getYamlMeta(root) as HexoMeta
+setYamlMeta(root, {
+  title: meta.title,
+  slug: meta.abbrlink,
+  tags: meta.tags,
+  date: new Date(meta.date).toISOString(),
+  lastmod: new Date(meta.updated).toISOString(),
+} as HugoMeta)
+console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="清除额外的空格"><a href="#清除额外的空格" class="headerlink" title="清除额外的空格"></a>清除额外的空格</h3><p>可能不太为人所知的是，markdown 对东亚字符的支持一直有问题，一个之前遇到的例子是如果粗体的结尾使用中文符号，则粗体不会生效。</p>
+<p>例如</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">**真没想到我这么快就要死了，**她有些自暴自弃地想着。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>会被渲染为</p>
+<p>**真没想到我这么快就要死了，**她有些自暴自弃地想着。</p>
+<p>这很奇怪，但确实存在，commonmark 的实现 markdown-it 官方的建议是添加额外的空格，例如修改为</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">**真没想到我这么快就要死了，** 她有些自暴自弃地想着。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+
+<p>这样就能正确渲染粗体了</p>
+<p><strong>真没想到我这么快就要死了，</strong> 她有些自暴自弃地想着。</p>
+<p>但这会渲染额外的空格，如果期望最终 html 中不渲染这个额外的空格怎么办？可以使用程序删除掉它。<br>这里有两种方法</p>
+<ol>
+<li>直接修改 markdown ast 清除空格</li>
+<li>转换为 html 语法树之后再修改</li>
+</ol>
+<p>由于这里更关注 markdown，所以会采用第一种方法</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Strong, Text } from 'mdast'
+import { fromMarkdown } from '../parse'
+import { toHtml } from '../stringify'
+import { flatMap } from '../utils'
+
+const s = `**真没想到我这么快就要死了，** 她有些自暴自弃地想着。`
+const root = fromMarkdown(s)
+console.log(toHtml(root)) // &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt; 她有些自暴自弃地想着。&lt;/p&gt;
+flatMap(root, (item, i, p) =&gt; {
+  if (item.type === 'strong') {
+    const v = item as Strong
+    const next = p!.children[i + 1]
+    const s = (v.children[0] as Text).value
+    if (s) {
+      const last = s.slice(s.length - 1)
+      if (
+        next &amp;&amp;
+        next.type === 'text' &amp;&amp;
+        ['，', '。', '？', '！', '〉'].includes(last) &amp;&amp;
+        next.value.startsWith(' ')
+      ) {
+        next.value = next.value.trim()
+      }
+    }
+  }
+  return [item]
+})
+console.log(toHtml(root)) // &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt;她有些自暴自弃地想着。&lt;/p&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<h3 id="创建插件"><a href="#创建插件" class="headerlink" title="创建插件"></a>创建插件</h3><p>现在，我们可以来谈一下 mdast 中的插件了，更准确的说是 mdast-util-from-markdown/mdast-util-to-markdown 所支持的插件系统。我们上面写的那些其实都可以封装为插件</p>
+<p>例如最初的转换链接可以封装为插件，可以封装为 MdastExtensions 插件以便在 transforms hooks 中转换 ast</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
+import { Image } from 'mdast'
+import { selectAll } from 'unist-util-select'
+import { Extension } from 'mdast-util-from-markdown'
+
+function googleImageProxyFromMarkdown(): Extension {
+  return {
+    transforms: [
+      (root) =&gt; {
+        ;(selectAll('image', root) as Image[])
+          .filter((item) =&gt;
+            item.url.startsWith('https://lh3.googleusercontent.com/pw/'),
+          )
+          .forEach(
+            (item) =&gt;
+              (item.url = `https://image-proxy.rxliuli.com/?url=${item.url}`),
+          )
+      },
+    ],
+  }
+}
+const root = fromMarkdown(s, {
+  mdastExtensions: [googleImageProxyFromMarkdown()],
+})
+console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>也可以封装为输出插件，在 handlers hooks 中处理 image 类型的 ast</p>
+<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
+import { Image } from 'mdast'
+import { Options } from 'mdast-util-to-markdown'
+
+function googleImageProxyToMarkdown(): Options {
+  return {
+    handlers: {
+      image(node) {
+        const l = node as Image
+        if (l.url.startsWith('https://lh3.googleusercontent.com/pw/')) {
+          l.url = `https://image-proxy.rxliuli.com/?url=${l.url}`
+        }
+        return `![${l.alt}](${l.url})`
+      },
+    },
+  }
+}
+const root = fromMarkdown(s)
+console.log(
+  toMarkdown(root, {
+    extensions: [googleImageProxyToMarkdown()],
+  }),
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+
+<p>就吾辈而言，一般不会将这种操作封装为插件，而是封装为简单的函数，接收一个 ast 并返回一个 ast 的函数，在需要时直接使用即可。除非一些明显适合使用插件的场景，例如要支持新的语法，例如 <code>[[wiki]]</code> 链接之类的，对这个插件感兴趣可以查看 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/mami/blob/master/packages/plugin-obsidian/src/utils/wiki.ts">https://github.com/rxliuli/mami/blob/master/packages/plugin-obsidian/src/utils/wiki.ts</a>。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>markdown 是一个有趣的格式，现在几乎所有开发者相关的平台（非国内）都支持它，所以自然而然衍生了很多相关的工具和模块，而基于个人独特的需求则衍生了更多的东西。就吾辈而言，吾辈创建的与 markdown 相关的工具或库包括</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=rxliuli.joplin-vscode-plugin">joplin-vscode-plugin</a>: joplin 的 vscode 集成，基于 vscode 提供强大的编辑功能</li>
+<li><a target="_blank" rel="noopener" href="https://mami.rxliuli.com/">mami</a>: 跨工具的 note/blog/wiki 转换器，目前支持 joplin/obsidian/hexo/hugo/docsify/local/raw</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rxliuli/mdbook">mdbook</a>: markdown 转换为 epub 的工具，自行实现的主要原因是需要处理中文支持</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/markdown-util">@liuli-util/markdown-util</a>: 一个 markdown 工具库，将上面那些零散的模块统一导出使用，mami/mdbook 都使用它</li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/joplin-blog">joplin-blog</a>: 从 joplin 生成静态网站，支持 hexo/vuepress/docsify/jeykll，已被 mami 替代</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rxliuli/markdown-extension-pack">markdown-extension-pack</a>: 4 年前的一个项目，尝试 pack 了一些常用的 markdown 插件</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%89%8D%E7%AB%AF/%E6%A1%86%E6%9E%B6/" class="category-chain-item">框架</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/markdown/">#markdown</a>
+      
+        <a href="/tags/ast/">#ast</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>markdown 自动化</div>
+      <div>https://blog.rxliuli.com/p/3b9aa0ac801f4ec0a2494782459c0203/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/ef26175b98af43ccaf918296a739ded5/" title="2022 年里做前端是怎样一种体验">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2022 年里做前端是怎样一种体验</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/a657a02fccca4f788fb864f2ec8ebfa0/" title="mami 一个跨工具文档转换器">
+                        <span class="hidden-mobile">mami 一个跨工具文档转换器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
