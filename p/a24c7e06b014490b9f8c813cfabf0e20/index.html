@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="为什么要写这篇文章呢？因为吾辈碰到了 MySQL 中字符串数字比较起来的坑。  字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。  例如以下的表结构： CREATE TABLE test_table (   id      BIGINT       NOT NULL   COMMENT &#39;id&#39;,   int_str VARCHAR(200) NOT NULL   C">
+    <meta name="description" content="为什么要写这篇文章呢？因为吾辈碰到了 MySQL 中字符串数字比较起来的坑。  字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。  例如以下的表结构： 1234567CREATE TABLE test_table (  id      BIGINT       NOT NULL  COMMENT &#39;id&#39;,  int_str VARCHAR(200) NOT NULL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL 字符串数字比较大小的问题以及解决方案">
 <meta property="og:url" content="https://blog.rxliuli.com/p/a24c7e06b014490b9f8c813cfabf0e20/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="为什么要写这篇文章呢？因为吾辈碰到了 MySQL 中字符串数字比较起来的坑。  字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。  例如以下的表结构： CREATE TABLE test_table (   id      BIGINT       NOT NULL   COMMENT &#39;id&#39;,   int_str VARCHAR(200) NOT NULL   C">
+<meta property="og:description" content="为什么要写这篇文章呢？因为吾辈碰到了 MySQL 中字符串数字比较起来的坑。  字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。  例如以下的表结构： 1234567CREATE TABLE test_table (  id      BIGINT       NOT NULL  COMMENT &#39;id&#39;,  int_str VARCHAR(200) NOT NULL">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-18T14:14:09.412Z">
 <meta property="article:modified_time" content="2020-12-30T05:18:55.220Z">
@@ -40,8 +40,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -317,24 +315,15 @@
 <p>字符串数字：明明是数字却在数据库中使用 varchar 等类型进行存储的数字。</p>
 </blockquote>
 <p>例如以下的表结构：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">CREATE TABLE test_table (
-  id      BIGINT       NOT NULL
-  COMMENT 'id',
-  int_str VARCHAR(200) NOT NULL
-  COMMENT '使用 varchar 保存数字的列'
-)
-  COMMENT '测试用的数据表';<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> test_table (<br>  id      <span class="hljs-type">BIGINT</span>       <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span><br>  COMMENT <span class="hljs-string">'id'</span>,<br>  int_str <span class="hljs-type">VARCHAR</span>(<span class="hljs-number">200</span>) <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span><br>  COMMENT <span class="hljs-string">'使用 varchar 保存数字的列'</span><br>)<br>  COMMENT <span class="hljs-string">'测试用的数据表'</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当吾辈想要查询 <code>big_int_column</code> 大于某个值的数据时，最初是这样写的：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
-FROM test_table
-WHERE int_str &gt; ?;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span><br><span class="hljs-keyword">FROM</span> test_table<br><span class="hljs-keyword">WHERE</span> int_str <span class="hljs-operator">&gt;</span> ?;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但后来发现一个问题。。。</p>
 <p>其实很简单，因为字符串的比较规则和数字并不一样，虽然很多时候看起来好像没什么不同。</p>
 <p>例如下面的 SQL 语句：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT 2 &gt; 12; #结果为 0(false)
-SELECT '2' &gt; '12'; #结果为 1(true)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-number">2</span> <span class="hljs-operator">&gt;</span> <span class="hljs-number">12</span>; #结果为 <span class="hljs-number">0</span>(<span class="hljs-literal">false</span>)<br><span class="hljs-keyword">SELECT</span> <span class="hljs-string">'2'</span> <span class="hljs-operator">&gt;</span> <span class="hljs-string">'12'</span>; #结果为 <span class="hljs-number">1</span>(<span class="hljs-literal">true</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>只是类型变化了，但结果却截然相反，因为字符串是按照字符依次进行对比，而数字则是按照大小直接比较。</p>
 <blockquote>
@@ -343,42 +332,34 @@ SELECT '2' &gt; '12'; #结果为 1(true)<span aria-hidden="true" class="line-num
 <p>所以后来去稍微查询了一下，发现了 MySQL 中的两个函数：</p>
 <ul>
 <li><p>cast()<br>标准语法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast(value as type)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-built_in">cast</span>(<span class="hljs-keyword">value</span> <span class="hljs-keyword">as</span> type)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者（不是重点）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">cast(value AS CHAR CHARACTER SET encoding)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-built_in">cast</span>(<span class="hljs-keyword">value</span> <span class="hljs-keyword">AS</span> <span class="hljs-type">CHAR</span> <span class="hljs-type">CHARACTER</span> <span class="hljs-keyword">SET</span> encoding)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用示例：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"># 转换为整数(值区间 [-9223372036854775808 ~ 9223372036854775807])
-cast('12' AS SIGNED)
-# 或者转换为无符号整数(值区间 [0 ~ 18446744073709551615])
-cast('12' AS UNSIGNED)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 转换为整数(值区间 [<span class="hljs-number">-9223372036854775808</span> <span class="hljs-operator">~</span> <span class="hljs-number">9223372036854775807</span>])<br><span class="hljs-built_in">cast</span>(<span class="hljs-string">'12'</span> <span class="hljs-keyword">AS</span> SIGNED)<br># 或者转换为无符号整数(值区间 [<span class="hljs-number">0</span> <span class="hljs-operator">~</span> <span class="hljs-number">18446744073709551615</span>])<br><span class="hljs-built_in">cast</span>(<span class="hljs-string">'12'</span> <span class="hljs-keyword">AS</span> UNSIGNED)<br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>convert()</p>
 <p>标准语法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">convert(value, type)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">convert</span>(<span class="hljs-keyword">value</span>, type)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者（不是重点）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">convert(value using charset)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">convert</span>(<span class="hljs-keyword">value</span> <span class="hljs-keyword">using</span> charset)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用示例：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"># 转换为整数
-convert('12', SIGNED)
-# 或者转换为无符号整数
-convert('12', UNSIGNED)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 转换为整数<br><span class="hljs-keyword">convert</span>(<span class="hljs-string">'12'</span>, SIGNED)<br># 或者转换为无符号整数<br><span class="hljs-keyword">convert</span>(<span class="hljs-string">'12'</span>, UNSIGNED)<br></code></pre></td></tr></tbody></table></figure></li>
 </ul>
 <p>所以吾辈将查询的 SQL 语句修改成如下样子：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT *
-FROM test_table
-WHERE int_str &gt; cast(? AS UNSIGNED);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span><br><span class="hljs-keyword">FROM</span> test_table<br><span class="hljs-keyword">WHERE</span> int_str <span class="hljs-operator">&gt;</span> <span class="hljs-built_in">cast</span>(? <span class="hljs-keyword">AS</span> UNSIGNED);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>算是解决了一些问题，然而如果 <code>int_str</code> 的值大于 <code>UNSIGNED</code> 类型的最大值又会发生问题。。。</p>
 <p>然后从网络上看到了一种推荐的 SQL 的写法：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT '12' + 0;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-string">'12'</span> <span class="hljs-operator">+</span> <span class="hljs-number">0</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但经过了测试，甚至比上面的 <code>cast()</code> 和 <code>convert()</code> 表现更糟。</p>
 <p>例如下面的 SQL：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">SELECT '9223372036854775807' + 0; #结果是：9223372036854776000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-string">'9223372036854775807'</span> <span class="hljs-operator">+</span> <span class="hljs-number">0</span>; #结果是：<span class="hljs-number">9223372036854776000</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>所以说，还是直接直接用数字存储数字最好啦！（＿´ω ｀）</p>
 
@@ -730,8 +711,6 @@ WHERE int_str &gt; cast(? AS UNSIGNED);<span aria-hidden="true" class="line-numb
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景在很多生产项目中，我们希望自定义 electron 窗口顶栏，因为它确实非常简陋。 步骤在渲染层实现自定义顶栏实际上，核心的代码就是添加一个为顶栏的元素添加 css 样式。在 electron 环境，有 -webkit-app-region: drag; 属性的元素可以拖动整个窗口。 .toolbar {   -webkit-app-region: drag; } .toolbar &gt;">
+    <meta name="description" content="场景在很多生产项目中，我们希望自定义 electron 窗口顶栏，因为它确实非常简陋。 步骤在渲染层实现自定义顶栏实际上，核心的代码就是添加一个为顶栏的元素添加 css 样式。在 electron 环境，有 -webkit-app-region: drag; 属性的元素可以拖动整个窗口。 123456.toolbar {  -webkit-app-region: drag;}.toolbar &amp;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="electron 开发经验之谈系列-自定义窗口顶栏">
 <meta property="og:url" content="https://blog.rxliuli.com/p/85f539d2cc4e4ae89093df537111cec8/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景在很多生产项目中，我们希望自定义 electron 窗口顶栏，因为它确实非常简陋。 步骤在渲染层实现自定义顶栏实际上，核心的代码就是添加一个为顶栏的元素添加 css 样式。在 electron 环境，有 -webkit-app-region: drag; 属性的元素可以拖动整个窗口。 .toolbar {   -webkit-app-region: drag; } .toolbar &gt;">
+<meta property="og:description" content="场景在很多生产项目中，我们希望自定义 electron 窗口顶栏，因为它确实非常简陋。 步骤在渲染层实现自定义顶栏实际上，核心的代码就是添加一个为顶栏的元素添加 css 样式。在 electron 环境，有 -webkit-app-region: drag; 属性的元素可以拖动整个窗口。 123456.toolbar {  -webkit-app-region: drag;}.toolbar &amp;g">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/92f7aa2fcd894107b05056f5c662e051.png">
 <meta property="article:published_time" content="2021-01-07T12:12:44.784Z">
@@ -43,8 +43,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -317,12 +315,7 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在很多生产项目中，我们希望自定义 electron 窗口顶栏，因为它确实非常简陋。</p>
 <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="在渲染层实现自定义顶栏"><a href="#在渲染层实现自定义顶栏" class="headerlink" title="在渲染层实现自定义顶栏"></a>在渲染层实现自定义顶栏</h3><p>实际上，核心的代码就是添加一个为顶栏的元素添加 css 样式。在 electron 环境，有 <code>-webkit-app-region: drag;</code> 属性的元素可以拖动整个窗口。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
-  <span class="token property">-webkit-app-region</span><span class="token punctuation">:</span> drag<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.toolbar &gt; *</span> <span class="token punctuation">{</span>
-  <span class="token property">-webkit-app-region</span><span class="token punctuation">:</span> no-drag<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.toolbar</span> {<br>  -webkit-app-region: drag;<br>}<br><span class="hljs-selector-class">.toolbar</span> &gt; * {<br>  -webkit-app-region: no-drag;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>上面的 css 看起来有点奇怪，但这是为了避免子元素（例如关闭按钮）也可以拖动的错误。</p>
 <blockquote>
@@ -331,58 +324,19 @@
 <h3 id="使用-electron-通信实现窗口的三个操作"><a href="#使用-electron-通信实现窗口的三个操作" class="headerlink" title="使用 electron 通信实现窗口的三个操作"></a>使用 electron 通信实现窗口的三个操作</h3><p>其实，electron 本身支持在渲染层暴露 <code>remote</code> 模块，但这里我们选择使用 <code>ipcRenderer/ipcMain</code> 手动实现，remote 模块因为安全原因默认被禁用了。</p>
 <p>下面的步骤基本和 <a href="/p/76393a60949c47c7add910df0206734c">渲染、主进程通信</a> 所属一样，下面贴一些关键代码</p>
 <p>共享类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// WindowDefine.ts
-import { BaseDefine } from 'electron_ipc_type'
-
-export interface WindowDefine extends BaseDefine&lt;'WindowApi'&gt; {
-  action(type: 'min' | 'max' | 'close'): void
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// WindowDefine.ts</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">BaseDefine</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'electron_ipc_type'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">WindowDefine</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;'<span class="hljs-title class_">WindowApi</span>'&gt; {<br>  <span class="hljs-title function_">action</span>(<span class="hljs-attr">type</span>: <span class="hljs-string">'min'</span> | <span class="hljs-string">'max'</span> | <span class="hljs-string">'close'</span>): <span class="hljs-built_in">void</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>主进程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-class WindowApi {
-  async action(e: IpcMainInvokeEvent, type: 'min' | 'max' | 'close') {
-    const win = BrowserWindow.fromWebContents(e.sender)
-    switch (type) {
-      case 'min':
-        win.minimize()
-        break
-      case 'max':
-        win.isMaximized() ? win.unmaximize() : win.maximize()
-        break
-      case 'close':
-        win.close()
-        break
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// main.ts</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WindowApi</span> {<br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">action</span>(<span class="hljs-params">e: IpcMainInvokeEvent, <span class="hljs-keyword">type</span>: <span class="hljs-string">'min'</span> | <span class="hljs-string">'max'</span> | <span class="hljs-string">'close'</span></span>) {<br>    <span class="hljs-keyword">const</span> win = <span class="hljs-title class_">BrowserWindow</span>.<span class="hljs-title function_">fromWebContents</span>(e.<span class="hljs-property">sender</span>)<br>    <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">type</span>) {<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'min'</span>:<br>        win.<span class="hljs-title function_">minimize</span>()<br>        <span class="hljs-keyword">break</span><br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'max'</span>:<br>        win.<span class="hljs-title function_">isMaximized</span>() ? win.<span class="hljs-title function_">unmaximize</span>() : win.<span class="hljs-title function_">maximize</span>()<br>        <span class="hljs-keyword">break</span><br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'close'</span>:<br>        win.<span class="hljs-title function_">close</span>()<br>        <span class="hljs-keyword">break</span><br>    }<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>渲染进程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// BasicLayout.tsx
-const windowApi = IpcRendererClient.gen&lt;WindowDefine&gt;('WindowApi')
-
-/**
- * 封装 electron 的窗口控制 hooks
- */
-function useElectronWindowControl() {
-  return {
-    handleMin: () =&gt; windowApi.action('min'),
-    handleMax: () =&gt; windowApi.action('max'),
-    handleClose: () =&gt; windowApi.action('close'),
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// BasicLayout.tsx</span><br><span class="hljs-keyword">const</span> windowApi = <span class="hljs-title class_">IpcRendererClient</span>.<span class="hljs-property">gen</span>&lt;<span class="hljs-title class_">WindowDefine</span>&gt;(<span class="hljs-string">'WindowApi'</span>)<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 封装 electron 的窗口控制 hooks</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">useElectronWindowControl</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">handleMin</span>: <span class="hljs-function">() =&gt;</span> windowApi.<span class="hljs-title function_">action</span>(<span class="hljs-string">'min'</span>),<br>    <span class="hljs-attr">handleMax</span>: <span class="hljs-function">() =&gt;</span> windowApi.<span class="hljs-title function_">action</span>(<span class="hljs-string">'max'</span>),<br>    <span class="hljs-attr">handleClose</span>: <span class="hljs-function">() =&gt;</span> windowApi.<span class="hljs-title function_">action</span>(<span class="hljs-string">'close'</span>),<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/electron_example/tree/3aea837b0c7661e030406a0c20d306694402a26f">参考代码</a></p>
 </blockquote>
 <h3 id="隐藏掉默认的顶栏"><a href="#隐藏掉默认的顶栏" class="headerlink" title="隐藏掉默认的顶栏"></a>隐藏掉默认的顶栏</h3><p>实际上，只要在创建 electron 的 <code>BrowserWindow</code> 实例时配置即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">new BrowserWindow({
-  webPreferences: {
-    nodeIntegration: true,
-  },
-  frame: false,
-  autoHideMenuBar: true,
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>({<br>  <span class="hljs-attr">webPreferences</span>: {<br>    <span class="hljs-attr">nodeIntegration</span>: <span class="hljs-literal">true</span>,<br>  },<br>  <span class="hljs-attr">frame</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-attr">autoHideMenuBar</span>: <span class="hljs-literal">true</span>,<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，electron 程序就有自定义顶栏啦</p>
 <p><img src="/resources/92f7aa2fcd894107b05056f5c662e051.png" srcset="/img/loading.gif" lazyload alt="1611134001681.png"></p>
@@ -744,8 +698,6 @@ function useElectronWindowControl() {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

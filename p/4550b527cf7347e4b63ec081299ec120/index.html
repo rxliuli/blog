@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景吾辈在使用 Java8 的 LocalDateTime 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！ 问题想要格式化一个字符串为日期时间。例如常见的 yyyy-MM-dd hh:mm:ss 格式的 2017-12-11 10:11:05，吾辈习惯性的写出以下代码 final String text &#x3D; &quot;2017-12-11 10:11:05&quot;; final">
+    <meta name="description" content="场景吾辈在使用 Java8 的 LocalDateTime 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！ 问题想要格式化一个字符串为日期时间。例如常见的 yyyy-MM-dd hh:mm:ss 格式的 2017-12-11 10:11:05，吾辈习惯性的写出以下代码 1234final String text &#x3D; &quot;2017-12-11 10:11:05&quot;;fin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java8 时间格式化 DateTimeFormatter">
 <meta property="og:url" content="https://blog.rxliuli.com/p/4550b527cf7347e4b63ec081299ec120/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景吾辈在使用 Java8 的 LocalDateTime 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！ 问题想要格式化一个字符串为日期时间。例如常见的 yyyy-MM-dd hh:mm:ss 格式的 2017-12-11 10:11:05，吾辈习惯性的写出以下代码 final String text &#x3D; &quot;2017-12-11 10:11:05&quot;; final">
+<meta property="og:description" content="场景吾辈在使用 Java8 的 LocalDateTime 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！ 问题想要格式化一个字符串为日期时间。例如常见的 yyyy-MM-dd hh:mm:ss 格式的 2017-12-11 10:11:05，吾辈习惯性的写出以下代码 1234final String text &#x3D; &quot;2017-12-11 10:11:05&quot;;fin">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-18T14:14:09.394Z">
 <meta property="article:modified_time" content="2020-12-30T05:10:41.247Z">
@@ -40,8 +40,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -314,22 +312,15 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>吾辈在使用 Java8 的 <code>LocalDateTime</code> 想要根据某种格式格式化字符串为日期时间，本以来会简单的事情，事实上却出乎预料！</p>
 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>想要格式化一个字符串为日期时间。例如常见的 <code>yyyy-MM-dd hh:mm:ss</code> 格式的 <code>2017-12-11 10:11:05</code>，吾辈习惯性的写出以下代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2017-12-11 10:11:05";
-final String pattern = "yyyy-MM-dd hh:mm:ss";
-final LocalDateTime dateTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));
-System.out.println(dateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">"2017-12-11 10:11:05"</span>;<br><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">pattern</span> <span class="hljs-operator">=</span> <span class="hljs-string">"yyyy-MM-dd hh:mm:ss"</span>;<br><span class="hljs-keyword">final</span> <span class="hljs-type">LocalDateTime</span> <span class="hljs-variable">dateTime</span> <span class="hljs-operator">=</span> LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));<br>System.out.println(dateTime);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>谜之音：<strong>JVM</strong> 不想理你，并抛给了你一个 <strong>Error</strong></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">java.time.format.DateTimeParseException: Text '2017-12-11 10:11:05' could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: {MinuteOfHour=11, MilliOfSecond=0, MicroOfSecond=0, SecondOfMinute=5, HourOfAmPm=10, NanoOfSecond=0},ISO resolved to 2017-12-11 of type java.time.format.Parsed<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">java.time.format.DateTimeParseException: Text <span class="hljs-string">'2017-12-11 10:11:05'</span> could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor: {MinuteOfHour=11, MilliOfSecond=0, MicroOfSecond=0, SecondOfMinute=5, HourOfAmPm=10, NanoOfSecond=0},ISO resolved to 2017-12-11 of <span class="hljs-built_in">type</span> java.time.format.Parsed<br></code></pre></td></tr></tbody></table></figure>
 
 <p>大意便是无法解析，去 Google 了一下，在 StackOverflow 上发现了这个问题：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/43732751/">DateTimeParseException: Text could not be parsed: Unable to obtain LocalDateTime from TemporalAccessor
 </a></p>
 <p>里面的答案说是使用 <code>HH</code>（每小时）而非 <code>hh</code>（每小时上午时钟），所以吾辈修改了代码，变成了下面这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2017-12-11 10:11:05";
-// 只改了这里的格式
-final String pattern = "yyyy-MM-dd HH:mm:ss";
-final LocalDateTime dateTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));
-System.out.println(dateTime);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">"2017-12-11 10:11:05"</span>;<br><span class="hljs-comment">// 只改了这里的格式</span><br><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">pattern</span> <span class="hljs-operator">=</span> <span class="hljs-string">"yyyy-MM-dd HH:mm:ss"</span>;<br><span class="hljs-keyword">final</span> <span class="hljs-type">LocalDateTime</span> <span class="hljs-variable">dateTime</span> <span class="hljs-operator">=</span> LocalDateTime.parse(text, DateTimeFormatter.ofPattern(pattern));<br>System.out.println(dateTime);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然而确实能正常解析了！？？**#黑人问号**</p>
 <h2 id="根源"><a href="#根源" class="headerlink" title="根源"></a>根源</h2><p>去看了一下 Java8 的 <code>DateTimeFormatter</code> 日期时间格式化类，发现了 class 上一段有趣的注释</p>
@@ -585,11 +576,7 @@ System.out.println(dateTime);<span aria-hidden="true" class="line-numbers-rows">
 <li>标准的日期时间：<code>DateTimeFormatter.ISO_DATE_TIME</code>（Java8 time 库中已存在）</li>
 </ul>
 <p>将字符串转换为日期时间大致有两种方式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String text = "2019-02-12T01:24:07.425Z";
-// 先解析为时间在转换为具体的日期时间类
-final LocalDateTime from = LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(text));
-// 直接根据指定的格式解析字符串为具体的日期时间类
-final LocalDateTime parse = LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">text</span> <span class="hljs-operator">=</span> <span class="hljs-string">"2019-02-12T01:24:07.425Z"</span>;<br><span class="hljs-comment">// 先解析为时间在转换为具体的日期时间类</span><br><span class="hljs-keyword">final</span> <span class="hljs-type">LocalDateTime</span> <span class="hljs-variable">from</span> <span class="hljs-operator">=</span> LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(text));<br><span class="hljs-comment">// 直接根据指定的格式解析字符串为具体的日期时间类</span><br><span class="hljs-keyword">final</span> <span class="hljs-type">LocalDateTime</span> <span class="hljs-variable">parse</span> <span class="hljs-operator">=</span> LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE_TIME);<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>那么，<code>Java8</code> 的踩坑之路还在继续，不知还有多少人在用 <code>Java7-</code> 呢？＼（＠￣ ∇ ￣＠）／</p>
@@ -942,8 +929,6 @@ final LocalDateTime parse = LocalDateTime.parse(text, DateTimeFormatter.ISO_DATE
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

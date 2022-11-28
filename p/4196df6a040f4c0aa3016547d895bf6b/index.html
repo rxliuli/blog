@@ -55,8 +55,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -450,26 +448,23 @@
 <p>参考: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules">https://www.jetbrains.com/help/webstorm/using-language-injections.html#configure-injection-rules</a></p>
 </blockquote>
 <h2 id="Live-Template-x2F-Postfix-Template-模板"><a href="#Live-Template-x2F-Postfix-Template-模板" class="headerlink" title="Live Template/Postfix Template 模板"></a>Live Template/Postfix Template 模板</h2><p>Live Template 模板就是那种在 Java 中输入 <code>sout</code> 就可以生成以下代码的模板功能，而这功能在 WebStorm 还可以自定义。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">System.out.println($END$);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">System.out.println($END$);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>例如吾辈就定义了 <code>autowired</code> 用于生成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Autowired private $BeanClass$ $BeanName$;
-$END$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span> <span class="hljs-keyword">private</span> $BeanClass$ $BeanName$;<br>$END$<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者 <code>thread</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">new Thread(() -&gt; {
-    $END$
-}).start();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; {<br>    $END$<br>}).start();<br></code></pre></td></tr></tbody></table></figure>
 
 <p>此功能使用得当甚至能大量减少重复编码。不过相比之下另外一个代码生成功能吾辈更加喜欢，但 WebStorm 在 2018.2 版本之前并不支持自定义，所以功能上来说就显得稍弱一些，当然吾辈也使用插件（Custom Postfix Templates <a target="_blank" rel="noopener" href="https://github.com/xylo/intellij-postfix-templates#download">GitHub</a>）实现了自定义的需求。最新版本 WebStorm 原生支持了自定义功能（<a target="_blank" rel="noopener" href="https://blog.jetbrains.com/idea/2014/03/postfix-completion/">WebStorm 官方介绍</a>），但实现尚不完善。</p>
 <p>此功能可以做到另外一种形式的模板字符串，例如输入 <code>"str".var</code> 然后回车会得到</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">$variableName$</span> <span class="hljs-operator">=</span> <span class="hljs-string">"str"</span>;$END$<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者 <code>"str".sout</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Sysout.out.println("str");<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Sysout.out.println(<span class="hljs-string">"str"</span>);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>吾辈也自定义一些，例如输入了 <code>"str".val</code>，会生成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final String $variableName$ = "str";$END$<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">$variableName$</span> <span class="hljs-operator">=</span> <span class="hljs-string">"str"</span>;$END$<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="一些有用的配置项"><a href="#一些有用的配置项" class="headerlink" title="一些有用的配置项"></a>一些有用的配置项</h2><h3 id="soft-wrap-强制换行"><a href="#soft-wrap-强制换行" class="headerlink" title="soft wrap 强制换行"></a>soft wrap 强制换行</h3><p>WebStorm 在一行过长时会出现横向滚动条，那我们不想要它出现以便于能直接使用键盘就能看完要怎么办呢？</p>
 <p>可以在 <em>Settings ⇒ Editor ⇒ General ⇒ Soft Wraps</em> 中找到设置，将 <strong>Soft-wrap files</strong> 的值修改为 <code>*</code> 即可。</p>
@@ -508,7 +503,7 @@ $END$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 </ul>
 </blockquote>
 <p>react 项目下其实就是添加环境变量 <code>REACT_EDITOR</code> 而已，可以使用 <code>.env.local</code> 进行配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-env" data-language="env"><code class="language-env">REACT_EDITOR=[WebStorm 的路径]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs env">REACT_EDITOR=[WebStorm 的路径]<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="设定默认-jest-运行单元测试"><a href="#设定默认-jest-运行单元测试" class="headerlink" title="设定默认 jest 运行单元测试"></a>设定默认 jest 运行单元测试</h2><p>在包含 react-scripts 依赖的项目中，WebStorm 会默认使用 react-scripts 运行测试，这在单体项目中当然很好，但如果是 monorepo，则会出现一些问题。react-scripts 运行时会强制修改 <code>tsconfig.json/react-app-env.d.ts</code>，这在一些 node 子模块中会出现问题，而 react-scripts 目前还不能关闭这个功能。所以只能修改 WebStorm 的测试运行工具了，可以在 <code>Edit configuration</code> 中修改 <code>Jest =&gt; Jest Package</code> 字段值为 <code>jest</code>，更推荐设置 <code>Templates =&gt; Jest =&gt; Jest Package</code> 字段，因为它可以一劳永逸。</p>
 <p><img src="/resources/468e71461fca48fa9ae306f2da89fc48.png" srcset="/img/loading.gif" lazyload alt="1615086542056"></p>
@@ -868,8 +863,6 @@ $END$<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

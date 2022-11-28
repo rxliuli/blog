@@ -50,8 +50,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -257,7 +255,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.3k 字
+          2.4k 字
         
       </span>
     
@@ -337,13 +335,7 @@
 <p>Stylus 能够使用被称为 <code>user.css</code> 的技术，能够在本地修改任意网站的样式 – 即自定义 UI 显示。<br>而 Tampermonkey 则更强大，支持 <code>user.js</code> – 可以在本地打开任意网站时载入自定义的 JavaScript 脚本，不再局限于修改 UI，几乎与插件无异（事实上它也确实被认为是更轻量的插件）。</p>
 </blockquote>
 <p>原以为就几句 css 的事情，找到了广告的 id，于是吾辈写下了下面这些 css</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/*屏蔽动漫花园的广告*/</span>
-<span class="token selector">.ad,
-#1280_adv,
-#1280_ad &gt; a,
-#bebiv3_ad</span> <span class="token punctuation">{</span>
-  <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/*屏蔽动漫花园的广告*/</span><br><span class="hljs-selector-class">.ad</span>,<br><span class="hljs-selector-id">#1280_adv</span>,<br><span class="hljs-selector-id">#1280_ad</span> &gt; <span class="hljs-selector-tag">a</span>,<br><span class="hljs-selector-id">#bebiv3_ad</span> {<br>  <span class="hljs-attribute">display</span>: none;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但结果却是。。。只生效了一半！</p>
 <p><img src="https://img.rxliuli.com/20200429010717.png" srcset="/img/loading.gif" lazyload alt="屏蔽一半"></p>
@@ -356,40 +348,17 @@
 <p><img src="https://img.rxliuli.com/20200429010811.png" srcset="/img/loading.gif" lazyload alt="Console 获取"></p>
 <p>OK，确实能够正常拿到。由于这些奇怪的字符在 css 中存在语法错误，那么接下来便用 <code>user.js</code> 去屏蔽掉它们吧！</p>
 <p>基本实现如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">;</span><span class="token punctuation">[</span>
-  document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#\\31 280_adv'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'.ad'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#\\31 280_ad &gt; a'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">ad</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> ad<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js">;[<br>  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#\\31 280_adv'</span>),<br>  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'.ad'</span>),<br>  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#\\31 280_ad &gt; a'</span>),<br>].<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">ad</span>) =&gt;</span> ad.<span class="hljs-title function_">remove</span>())<br></code></pre></td></tr></tbody></table></figure>
 
 <p>甚至吾辈都发到了 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/userjs/tree/master/src/dmhy">GitHub</a> 与 <a target="_blank" rel="noopener" href="https://greasyfork.org/zh-CN/scripts/402206">GreasyFork</a> 上了。</p>
 <p>然后，有个（万能的）网友就提出，可以转换思路，既然 <code>#\\31 280_adv</code> 在 css 中存在语法错误，那么使用属性选择器过滤 id 将值包裹在 <code>''</code> 之中不就好了么？此话真是九言劝醒迷途仕，一语惊醒梦中人，吾辈瞬间 GET 到了这个点。</p>
 <p>于是吾辈编写出了下面这段 <code>user.css</code> 样式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/*屏蔽动漫花园的广告*/</span>
-<span class="token selector">.ad,
-div[id='\31 280_adv'],
-div[id='\31 280_ad'] &gt; a,
-div[id='bebiv3_ad']</span> <span class="token punctuation">{</span>
-  <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/*屏蔽动漫花园的广告*/</span><br><span class="hljs-selector-class">.ad</span>,<br><span class="hljs-selector-tag">div</span><span class="hljs-selector-attr">[id=<span class="hljs-string">'\31 280_adv'</span>]</span>,<br><span class="hljs-selector-tag">div</span><span class="hljs-selector-attr">[id=<span class="hljs-string">'\31 280_ad'</span>]</span> &gt; <span class="hljs-selector-tag">a</span>,<br><span class="hljs-selector-tag">div</span><span class="hljs-selector-attr">[id=<span class="hljs-string">'bebiv3_ad'</span>]</span> {<br>  <span class="hljs-attribute">display</span>: none;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用后效果如下</p>
 <p><img src="https://img.rxliuli.com/20200429010852.png" srcset="/img/loading.gif" lazyload alt="屏蔽后干净的网页"></p>
 <p>现在，初始目的达成了，吾辈开始有点好奇它是怎么实现这个功能，于是下载了它的源码，id 那里并未发现什么奇怪的东西，但吾辈却也无法复现一个 demo！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>test<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
-      window<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'load'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#test'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">,</span> <span class="token string">'\\31 280_adv'</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span> /&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"test"</span>&gt;</span>2<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">      <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'load'</span>, <span class="hljs-function">() =&gt;</span> {</span><br><span class="language-javascript">        <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#test'</span>).<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">'id'</span>, <span class="hljs-string">'\\31 280_adv'</span>)</span><br><span class="language-javascript">      })</span><br><span class="language-javascript">    </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>demo 效果</p>
 <p><img src="https://img.rxliuli.com/20200429011004.png" srcset="/img/loading.gif" lazyload alt="demo 效果"></p>
@@ -757,8 +726,6 @@ div[id='bebiv3_ad']</span> <span class="token punctuation">{</span>
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

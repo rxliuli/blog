@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？ for (let i &#x3D; 0; i &lt; 3; i++) {   setTimeout(() &#x3D;&gt; console.log(i), 0) }  和 for (var i &#x3D; 0; i &lt; 3; i++) {   setTimeout(() &#x3D;&gt; console.log(i), 0) }  嗯，乍看之下好像">
+    <meta name="description" content="场景今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？ 123for (let i &#x3D; 0; i &lt; 3; i++) {  setTimeout(() &#x3D;&gt; console.log(i), 0)}  和 123for (var i &#x3D; 0; i &lt; 3; i++) {  setTimeout(() &#x3D;&gt; console.log(i), 0)}  嗯，乍看之下">
 <meta property="og:type" content="article">
 <meta property="og:title" content="let 与 var 在 for 循环中的区别">
 <meta property="og:url" content="https://blog.rxliuli.com/p/88c96ca913764189a7670c31af966d6e/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？ for (let i &#x3D; 0; i &lt; 3; i++) {   setTimeout(() &#x3D;&gt; console.log(i), 0) }  和 for (var i &#x3D; 0; i &lt; 3; i++) {   setTimeout(() &#x3D;&gt; console.log(i), 0) }  嗯，乍看之下好像">
+<meta property="og:description" content="场景今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？ 123for (let i &#x3D; 0; i &lt; 3; i++) {  setTimeout(() &#x3D;&gt; console.log(i), 0)}  和 123for (var i &#x3D; 0; i &lt; 3; i++) {  setTimeout(() &#x3D;&gt; console.log(i), 0)}  嗯，乍看之下">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181227214410.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181227212650.png">
@@ -44,8 +44,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.1k 字
+          2.2k 字
         
       </span>
     
@@ -264,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          18 分钟
+          19 分钟
         
       </span>
     
@@ -317,14 +315,10 @@
               <div class="markdown-body">
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>今天遇到的一个很有趣的问题，下面两段 js 代码执行的结果是什么？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i), <span class="hljs-number">0</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>和</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i), <span class="hljs-number">0</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>嗯，乍看之下好像没什么区别，只有声明方式 <code>let</code> 和 <code>var</code> 不一样而已。</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>这里先说一下吾辈两个关于 js 的认知</p>
@@ -350,51 +344,19 @@
 </blockquote>
 <p>所以 <code>setTimeout</code> 实际上并没有立刻执行，而是等到整个 <code>for</code> 循环结束之后才执行的。</p>
 <h3 id="其二：js-里的-for-循环和-java-应该差不多，for-循环内部是单独的作用域"><a href="#其二：js-里的-for-循环和-java-应该差不多，for-循环内部是单独的作用域" class="headerlink" title="其二：js 里的 for 循环和 java 应该差不多，for 循环内部是单独的作用域"></a>其二：js 里的 for 循环和 java 应该差不多，for 循环内部是单独的作用域</h3><p>好吧，这个认知更是错的一塌糊涂，for 循环居然没有块级作用域？i 和 k 都是可以直接访问的，犹如直接声明到 for 循环外一样。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">var</span> k <span class="token operator">=</span> <span class="token number">10</span> <span class="token operator">-</span> i
-<span class="token punctuation">}</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">i: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>i<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">, k: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>k<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-
-<span class="token comment">// 结果：</span>
-<span class="token comment">// i: 3, k: 8</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-keyword">var</span> k = <span class="hljs-number">10</span> - i<br>}<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`i: <span class="hljs-subst">${i}</span>, k: <span class="hljs-subst">${k}</span>`</span>)<br><br><span class="hljs-comment">// 结果：</span><br><span class="hljs-comment">// i: 3, k: 8</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>相当于</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span>
-<span class="token keyword">var</span> k
-<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  k <span class="token operator">=</span> <span class="token number">10</span> <span class="token operator">-</span> i
-  i<span class="token operator">++</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span><br><span class="hljs-keyword">var</span> k<br><span class="hljs-keyword">for</span> (; i &lt; <span class="hljs-number">3</span>; ) {<br>  k = <span class="hljs-number">10</span> - i<br>  i++<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>如果换成 let 则两者都无法访问</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> k <span class="token operator">=</span> <span class="token number">10</span> <span class="token operator">-</span> i
-<span class="token punctuation">}</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">i: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>i<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">, k: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>k<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-
-<span class="token comment">// 结果：</span>
-<span class="token comment">// Uncaught ReferenceError: i is not defined</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-keyword">let</span> k = <span class="hljs-number">10</span> - i<br>}<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`i: <span class="hljs-subst">${i}</span>, k: <span class="hljs-subst">${k}</span>`</span>)<br><br><span class="hljs-comment">// 结果：</span><br><span class="hljs-comment">// Uncaught ReferenceError: i is not defined</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>甚至还有一个更有趣的情况，在 for 的表达式和块中可以声明相同的变量，这只说明了一件事，let 声明的变量和循环内部声明的变量不在同一个作用域中！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'in for expression'</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">,</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">let</span> i
-  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'in for block'</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token comment">// 结果：</span>
-<span class="token comment">// in for block undefined</span>
-<span class="token comment">// in for expression 0</span>
-<span class="token comment">// in for block undefined</span>
-<span class="token comment">// in for expression 1</span>
-<span class="token comment">// in for block undefined</span>
-<span class="token comment">// in for expression 2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'in for expression'</span>, i), i++) {<br>  <span class="hljs-keyword">let</span> i<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'in for block'</span>, i)<br>}<br><br><span class="hljs-comment">// 结果：</span><br><span class="hljs-comment">// in for block undefined</span><br><span class="hljs-comment">// in for expression 0</span><br><span class="hljs-comment">// in for block undefined</span><br><span class="hljs-comment">// in for expression 1</span><br><span class="hljs-comment">// in for block undefined</span><br><span class="hljs-comment">// in for expression 2</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>或许，i 只是加了新的作用域，就像下面这样，如此，循环外面就访问不到内部的值，循环内部和 for 的表达式也同样不在一个作用域了，每次循环结束就更新这个值</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token parameter">i</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  ;(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> {<br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i), <span class="hljs-number">0</span>)<br>  })(i)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>附：这里吾辈是根据 babel 编译的结果修改而来。而且 babel 真的很聪明，当迭代变量 i 没有更新时，就不会使用 <code>_i</code> 进行区分呢！</p>
@@ -402,9 +364,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>重新建立了自己的认知之后，可以再对 <code>let/var</code> 在 for 循环进行分析了。</p>
 <p>首先是 <code>let + for</code></p>
 <h3 id="let-for"><a href="#let-for" class="headerlink" title="let + for"></a>let + for</h3><p>再看下面这段代码，可以对其进行分解</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i), <span class="hljs-number">0</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ol>
 <li>创建 for 循环，表达式中存在 let 变量，for 将会创建一个块级作用域（ES6 let 专用）</li>
@@ -417,9 +377,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <p>图解如下</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20181227212650.png" srcset="/img/loading.gif" lazyload alt="let + for 图解"></p>
 <h3 id="var-for"><a href="#var-for" class="headerlink" title="var + for"></a>var + for</h3><p>分析一下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">3</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">3</span>; i++) {<br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i), <span class="hljs-number">0</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <ol>
 <li>进入 for 循环</li>
@@ -779,8 +737,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

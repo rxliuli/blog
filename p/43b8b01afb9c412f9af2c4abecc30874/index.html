@@ -44,8 +44,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -251,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.8k 字
+          1.9k 字
         
       </span>
     
@@ -263,7 +261,7 @@
         
         
           <!-- compatible with older versions-->
-          15 分钟
+          16 分钟
         
       </span>
     
@@ -326,111 +324,40 @@
 <p>整体基于 esbuild 来重写 liuli-cli 的 build 命令，支持 build lib/cli 以及自定义目标。下面是一些吾辈在重写之后做的测试，证明使用 golang 可以大幅度提高 lib 构建性能，它是如此快速以至于有可能将它放在 postinstall 中。</p>
 <p>命令均使用 <code>time seq 10 | xargs -i &lt;cmd&gt;</code> 重复执行 10 次</p>
 <h2 id="saki-build"><a href="#saki-build" class="headerlink" title="saki build"></a>saki build</h2><p>基于 esbuild 构建 lib 或 cli 程序，它非常快。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">saki build lib # 构建 lib
-saki build cli # 构建 cli<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">saki build lib <span class="hljs-comment"># 构建 lib</span><br>saki build cli <span class="hljs-comment"># 构建 cli</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>性能测试</p>
 <p>下面两个 cli 都基于 esbuild 实现的构建，但后者真实运行时间很长，因为 nodejs 本身加载代码也需要时间（而且很慢）。</p>
 <p>下载二进制文件安装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ saki build lib
-
-real    0m0.647s
-user    0m0.060s
-sys     0m0.183s
-# 平均 64.7ms/次
-
-$ saki build cli
-
-real    0m2.831s
-user    0m0.106s
-sys     0m0.275s
-# 平均 283.1ms/次<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ saki build lib<br><br>real    0m0.647s<br>user    0m0.060s<br>sys     0m0.183s<br><span class="hljs-comment"># 平均 64.7ms/次</span><br><br>$ saki build cli<br><br>real    0m2.831s<br>user    0m0.106s<br>sys     0m0.275s<br><span class="hljs-comment"># 平均 283.1ms/次</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>npm 全局安装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ saki build lib
-
-real    0m2.724s
-user    0m0.482s
-sys     0m1.665s
-# 平均 272.4ms/次
-
-$ saki build cli
-
-real    0m4.622s
-user    0m0.587s
-sys     0m1.438s
-# 平均 462.2ms/次<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ saki build lib<br><br>real    0m2.724s<br>user    0m0.482s<br>sys     0m1.665s<br><span class="hljs-comment"># 平均 272.4ms/次</span><br><br>$ saki build cli<br><br>real    0m4.622s<br>user    0m0.587s<br>sys     0m1.438s<br><span class="hljs-comment"># 平均 462.2ms/次</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>liuli-cli</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ liuli-cli build lib
-
-real    0m6.882s
-user    0m0.648s
-sys     0m1.364s
-# 平均 688.2ms/次
-
-$ liuli-cli build cli
-
-real    0m8.687s
-user    0m0.587s
-sys     0m1.333s
-# 平均 868.7ms/次<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ liuli-cli build lib<br><br>real    0m6.882s<br>user    0m0.648s<br>sys     0m1.364s<br><span class="hljs-comment"># 平均 688.2ms/次</span><br><br>$ liuli-cli build cli<br><br>real    0m8.687s<br>user    0m0.587s<br>sys     0m1.333s<br><span class="hljs-comment"># 平均 868.7ms/次</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="saki-run"><a href="#saki-run" class="headerlink" title="saki run"></a>saki run</h2><p>一个 <code>pnpm --filter . run</code> 的替代命令，尝试提高多线程运行命令的效率。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">saki run setup # 在所有模块运行 setup 命令（如果有这个命令）
-saki run --filter libs/* setup # 在所有匹配 libs/* 的模块中运行 setup 命令
-# 使用 --filter 数组
-saki run --filter libs/* --filter apps/* setup # 或者使用 , 分割
-saki run --filter libs/*,apps/* setup<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">saki run setup <span class="hljs-comment"># 在所有模块运行 setup 命令（如果有这个命令）</span><br>saki run --filter libs/* setup <span class="hljs-comment"># 在所有匹配 libs/* 的模块中运行 setup 命令</span><br><span class="hljs-comment"># 使用 --filter 数组</span><br>saki run --filter libs/* --filter apps/* setup <span class="hljs-comment"># 或者使用 , 分割</span><br>saki run --filter libs/*,apps/* setup<br></code></pre></td></tr></tbody></table></figure>
 
 <p>性能测试</p>
 <p>pnpm + liuli-cli + dts</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pnpm --filter . run setup
-
-real    4m49.648s
-user    0m0.593s
-sys     0m1.391s
-# 平均 1034.4ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ pnpm --filter . run setup<br><br>real    4m49.648s<br>user    0m0.593s<br>sys     0m1.391s<br><span class="hljs-comment"># 平均 1034.4ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>pnpm + liuli-cli</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pnpm --filter . run setup
-
-real    1m3.847s
-user    0m0.468s
-sys     0m1.484s
-# 平均 228ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ pnpm --filter . run setup<br><br>real    1m3.847s<br>user    0m0.468s<br>sys     0m1.484s<br><span class="hljs-comment"># 平均 228ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>saki + liuli-cli</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ saki run setup
-
-real    1m19.657s
-user    0m0.497s
-sys     0m1.494s
-# 平均 284.4ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ saki run setup<br><br>real    1m19.657s<br>user    0m0.497s<br>sys     0m1.494s<br><span class="hljs-comment"># 平均 284.4ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>pnpm + saki（几乎是使用 js 工具链难以想象的）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ pnpm --filter . run setup
-
-real    0m16.168s
-user    0m0.435s
-sys     0m1.590s
-# 平均 57.7ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ pnpm --filter . run setup<br><br>real    0m16.168s<br>user    0m0.435s<br>sys     0m1.590s<br><span class="hljs-comment"># 平均 57.7ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>npm saki</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ saki run setup
-
-real    0m17.545s
-user    0m0.651s
-sys     0m1.618s
-# 平均 62.6ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ saki run setup<br><br>real    0m17.545s<br>user    0m0.651s<br>sys     0m1.618s<br><span class="hljs-comment"># 平均 62.6ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>下载二进制文件安装 saki</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ saki run setup
-
-real    0m13.742s
-user    0m0.046s
-sys     0m0.258s
-# 平均 49.0ms/个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ saki run setup<br><br>real    0m13.742s<br>user    0m0.046s<br>sys     0m0.258s<br><span class="hljs-comment"># 平均 49.0ms/个</span><br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>Windows 下使用 git bash –filter 参数请用 <code>""</code> 包裹</p>
@@ -788,8 +715,6 @@ sys     0m0.258s
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

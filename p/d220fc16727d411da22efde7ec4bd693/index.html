@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.7k 字
+          4.1k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          31 分钟
+          34 分钟
         
       </span>
     
@@ -324,181 +322,10 @@
 <li>引用组件并传递一个 vue 模板</li>
 </ol>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>定义模板 <code>VxScrollToTop</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-vuejs" data-language="vuejs"><code class="language-vuejs">/**
-一个 Vue 的滚动到顶部的容器组件（不提供 UI 显示）
-使用：
-1. 引入自定义文件上传组件: import VxScrollToTop from '@/components/common/VxScrollToTop'
-2. 声明它
-export default {
-  components: {
-    VxScrollToTop: VxScrollToTop
-  }
-}
-3. 在 template 中使用
-&lt;vx-scroll-to-top&gt;
-  &lt;!-- 这里面的内容随你定义，是上拉按钮要显示的样子 --&gt;
-  &lt;v-btn color="primary"
-          fab&gt;
-    &lt;v-icon&gt;vertical_align_top&lt;/v-icon&gt;
-  &lt;/v-btn&gt;
-&lt;/vx-scroll-to-top&gt;
- */
-&lt;template&gt;
-  &lt;div :style="scrollToTopStyle"
-       v-show="showScrollToTop"
-       @click="scrollToTop"&gt;
-    &lt;slot&gt;&lt;/slot&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-&lt;script&gt;
-export default {
-  props: {
-    // 定义上拉按钮容器的位置
-    top: {
-      type: [Number, String],
-      default: undefined
-    },
-    bottom: {
-      type: [Number, String],
-      default: undefined
-    },
-    left: {
-      type: [Number, String],
-      default: undefined
-    },
-    right: {
-      type: [Number, String],
-      default: undefined
-    }
-  },
-  data: () =&gt; ({
-    // 是否显示，初始默认不显示
-    showScrollToTop: false,
-    // 定时器
-    timer: null,
-    scrollToTopStyle: {
-      position: 'fixed',
-      top: '',
-      bottom: '',
-      left: '',
-      right: ''
-    }
-  }),
-  methods: {
-    isNumber (str) {
-      if (!new RegExp('^[0-9]+([.]{1}[0-9]+)?$').test(str)) {
-        return false
-      }
-      return true
-    },
-    watchPosition () {
-      if (![this.top, this.bottom, this.left, this.right].find(i =&gt; i !== undefined)) {
-        this.scrollToTopStyle.bottom = this.scrollToTopStyle.right = '14px'
-      }
-    },
-    watchTop () {
-      if (this.top !== undefined) {
-        this.scrollToTopStyle.top = this.isNumber(this.top) ? parseFloat(this.top) + 'px' : this.top
-      }
-    },
-    watchBottom () {
-      if (this.bottom !== undefined) {
-        this.scrollToTopStyle.bottom = this.isNumber(this.bottom) ? parseFloat(this.bottom) + 'px' : this.bottom
-      }
-    },
-    watchLeft () {
-      if (this.left !== undefined) {
-        this.scrollToTopStyle.left = this.isNumber(this.left) ? parseFloat(this.left) + 'px' : this.left
-      }
-    },
-    watchRigth () {
-      if (this.right !== undefined) {
-        this.scrollToTopStyle.right = this.isNumber(this.right) ? parseFloat(this.right) + 'px' : this.right
-      }
-    },
-    /**
-     * 初始化按钮的位置
-     */
-    initBtnPosition () {
-      this.watchTop()
-      this.watchBottom()
-      this.watchLeft()
-      this.watchRigth()
-      this.watchPosition()
-    },
-    initBindScroll () {
-      // 监听窗口滚动
-      document.onscroll = ((oldScrollTopLength) =&gt; {
-        const clientHeight = document.documentElement.clientHeight
-        return () =&gt; {
-          const scrollTopLength = document.documentElement.scrollTop || document.body.scrollTop
-          // 如果定时器不存在的话就正常计算滚动到顶部的图标是否存在
-          if (!this.timer) {
-            // 滚动到第二屏就显示
-            this.showScrollToTop = scrollTopLength &gt; clientHeight
-          }
-          // 向下滚动时判断判断是否正在向上滚动，是的话就清除定时器，停在当前位置
-          if (scrollTopLength &gt; oldScrollTopLength &amp;&amp; this.timer) {
-            // 设置这个是因为有时候 clearInterval() 并不能清除这个属性，或许是 vuejs 组件中的属性特殊一点？
-            this.timer = clearInterval(this.timer)
-          }
-          oldScrollTopLength = scrollTopLength
-        }
-      })(0)
-    },
-    /**
-     * 回到顶部
-     */
-    scrollToTop () {
-      this.timer = setInterval(() =&gt; {
-        const scrollTopLength = document.documentElement.scrollTop || document.body.scrollTop
-        if (scrollTopLength &lt;= 0) {
-          this.timer = clearInterval(this.timer)
-          this.showScrollToTop = false
-        }
-        const spend = scrollTopLength / 5
-        document.documentElement.scrollTop = document.body.scrollTop = scrollTopLength - spend
-      }, 30)
-    }
-  },
-  mounted () {
-    this.initBtnPosition()
-    this.initBindScroll()
-  }
-}
-&lt;/script&gt;
-&lt;style scoped&gt;
-#vx-scroll-to-top-btn {
-  position: fixed;
-}
-&lt;/style&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><code class="hljs vuejs">/**<br>一个 Vue 的滚动到顶部的容器组件（不提供 UI 显示）<br>使用：<br>1. 引入自定义文件上传组件: import VxScrollToTop from '@/components/common/VxScrollToTop'<br>2. 声明它<br>export default {<br>  components: {<br>    VxScrollToTop: VxScrollToTop<br>  }<br>}<br>3. 在 template 中使用<br>&lt;vx-scroll-to-top&gt;<br>  &lt;!-- 这里面的内容随你定义，是上拉按钮要显示的样子 --&gt;<br>  &lt;v-btn color="primary"<br>          fab&gt;<br>    &lt;v-icon&gt;vertical_align_top&lt;/v-icon&gt;<br>  &lt;/v-btn&gt;<br>&lt;/vx-scroll-to-top&gt;<br> */<br>&lt;template&gt;<br>  &lt;div :style="scrollToTopStyle"<br>       v-show="showScrollToTop"<br>       @click="scrollToTop"&gt;<br>    &lt;slot&gt;&lt;/slot&gt;<br>  &lt;/div&gt;<br>&lt;/template&gt;<br>&lt;script&gt;<br>export default {<br>  props: {<br>    // 定义上拉按钮容器的位置<br>    top: {<br>      type: [Number, String],<br>      default: undefined<br>    },<br>    bottom: {<br>      type: [Number, String],<br>      default: undefined<br>    },<br>    left: {<br>      type: [Number, String],<br>      default: undefined<br>    },<br>    right: {<br>      type: [Number, String],<br>      default: undefined<br>    }<br>  },<br>  data: () =&gt; ({<br>    // 是否显示，初始默认不显示<br>    showScrollToTop: false,<br>    // 定时器<br>    timer: null,<br>    scrollToTopStyle: {<br>      position: 'fixed',<br>      top: '',<br>      bottom: '',<br>      left: '',<br>      right: ''<br>    }<br>  }),<br>  methods: {<br>    isNumber (str) {<br>      if (!new RegExp('^[0-9]+([.]{1}[0-9]+)?$').test(str)) {<br>        return false<br>      }<br>      return true<br>    },<br>    watchPosition () {<br>      if (![this.top, this.bottom, this.left, this.right].find(i =&gt; i !== undefined)) {<br>        this.scrollToTopStyle.bottom = this.scrollToTopStyle.right = '14px'<br>      }<br>    },<br>    watchTop () {<br>      if (this.top !== undefined) {<br>        this.scrollToTopStyle.top = this.isNumber(this.top) ? parseFloat(this.top) + 'px' : this.top<br>      }<br>    },<br>    watchBottom () {<br>      if (this.bottom !== undefined) {<br>        this.scrollToTopStyle.bottom = this.isNumber(this.bottom) ? parseFloat(this.bottom) + 'px' : this.bottom<br>      }<br>    },<br>    watchLeft () {<br>      if (this.left !== undefined) {<br>        this.scrollToTopStyle.left = this.isNumber(this.left) ? parseFloat(this.left) + 'px' : this.left<br>      }<br>    },<br>    watchRigth () {<br>      if (this.right !== undefined) {<br>        this.scrollToTopStyle.right = this.isNumber(this.right) ? parseFloat(this.right) + 'px' : this.right<br>      }<br>    },<br>    /**<br>     * 初始化按钮的位置<br>     */<br>    initBtnPosition () {<br>      this.watchTop()<br>      this.watchBottom()<br>      this.watchLeft()<br>      this.watchRigth()<br>      this.watchPosition()<br>    },<br>    initBindScroll () {<br>      // 监听窗口滚动<br>      document.onscroll = ((oldScrollTopLength) =&gt; {<br>        const clientHeight = document.documentElement.clientHeight<br>        return () =&gt; {<br>          const scrollTopLength = document.documentElement.scrollTop || document.body.scrollTop<br>          // 如果定时器不存在的话就正常计算滚动到顶部的图标是否存在<br>          if (!this.timer) {<br>            // 滚动到第二屏就显示<br>            this.showScrollToTop = scrollTopLength &gt; clientHeight<br>          }<br>          // 向下滚动时判断判断是否正在向上滚动，是的话就清除定时器，停在当前位置<br>          if (scrollTopLength &gt; oldScrollTopLength &amp;&amp; this.timer) {<br>            // 设置这个是因为有时候 clearInterval() 并不能清除这个属性，或许是 vuejs 组件中的属性特殊一点？<br>            this.timer = clearInterval(this.timer)<br>          }<br>          oldScrollTopLength = scrollTopLength<br>        }<br>      })(0)<br>    },<br>    /**<br>     * 回到顶部<br>     */<br>    scrollToTop () {<br>      this.timer = setInterval(() =&gt; {<br>        const scrollTopLength = document.documentElement.scrollTop || document.body.scrollTop<br>        if (scrollTopLength &lt;= 0) {<br>          this.timer = clearInterval(this.timer)<br>          this.showScrollToTop = false<br>        }<br>        const spend = scrollTopLength / 5<br>        document.documentElement.scrollTop = document.body.scrollTop = scrollTopLength - spend<br>      }, 30)<br>    }<br>  },<br>  mounted () {<br>    this.initBtnPosition()<br>    this.initBindScroll()<br>  }<br>}<br>&lt;/script&gt;<br>&lt;style scoped&gt;<br>#vx-scroll-to-top-btn {<br>  position: fixed;<br>}<br>&lt;/style&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用起来就很简单了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-vuejs" data-language="vuejs"><code class="language-vuejs">&lt;template&gt;
-  &lt;div&gt;
-    &lt;h2 v-for="i in 100"
-        :key="i"&gt;
-      第 {{i}} 行文字
-    &lt;/h2&gt;
-    &lt;vx-scroll-to-top&gt;
-      &lt;!-- 这里面的内容随你定义，是上拉按钮要显示的样子 --&gt;
-      &lt;v-btn color="primary"
-             fab&gt;
-        &lt;v-icon&gt;vertical_align_top&lt;/v-icon&gt;
-      &lt;/v-btn&gt;
-    &lt;/vx-scroll-to-top&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-import VxScrollToTop from '@/components/common/VxScrollToTop'
-
-export default {
-  components: {
-    VxScrollToTop
-  }
-}
-&lt;/script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs vuejs">&lt;template&gt;<br>  &lt;div&gt;<br>    &lt;h2 v-for="i in 100"<br>        :key="i"&gt;<br>      第 {{i}} 行文字<br>    &lt;/h2&gt;<br>    &lt;vx-scroll-to-top&gt;<br>      &lt;!-- 这里面的内容随你定义，是上拉按钮要显示的样子 --&gt;<br>      &lt;v-btn color="primary"<br>             fab&gt;<br>        &lt;v-icon&gt;vertical_align_top&lt;/v-icon&gt;<br>      &lt;/v-btn&gt;<br>    &lt;/vx-scroll-to-top&gt;<br>  &lt;/div&gt;<br>&lt;/template&gt;<br><br>&lt;script&gt;<br>import VxScrollToTop from '@/components/common/VxScrollToTop'<br><br>export default {<br>  components: {<br>    VxScrollToTop<br>  }<br>}<br>&lt;/script&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>目前这里只能供了最简单的功能，如果有特别的需求可以在上面继续修改一下就好啦</p>
 <h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><ul>
@@ -854,8 +681,6 @@ export default {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

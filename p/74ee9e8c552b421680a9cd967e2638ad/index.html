@@ -45,8 +45,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          11k 字
+          12k 字
         
       </span>
     
@@ -264,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          96 分钟
+          101 分钟
         
       </span>
     
@@ -323,428 +321,82 @@
 <h2 id="之前的想法"><a href="#之前的想法" class="headerlink" title="之前的想法"></a>之前的想法</h2><p>最初，吾辈的想法是让操作保存起来，只有等待某个显式调用的时候才真正执行。</p>
 <p>即调用 map/filter/reduce 时将 action 与参数保存起来，等到调用 value 方法的时候才真正执行，像是 lodash 的 <code>_.chain</code> api 就是这种形式的。</p>
 <p>形如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">_.chain([1, 2, 3, 4])
-  .filter((i) =&gt; i % 2 === 0)
-  .map((i) =&gt; i * 2)
-  .value()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts">_.<span class="hljs-title function_">chain</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>  .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>)<br>  .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i * <span class="hljs-number">2</span>)<br>  .<span class="hljs-title function_">value</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>于是最初吾辈也是按照这种 api 实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Stream&lt;T&gt; {
-  private flags: [action: string, ...args: any[]][] = []
-  constructor(private readonly arr: T[]) {}
-  map&lt;R&gt;(f: (item: T) =&gt; R): Stream&lt;R&gt; {
-    this.flags.push(['map', f])
-    return this as any
-  }
-  filter(f: (item: T) =&gt; boolean): Stream&lt;T&gt; {
-    this.flags.push(['filter', f])
-    return this
-  }
-  reduce&lt;R&gt;(f: (r: R, item: T) =&gt; R, init: R): R {
-    this.flags.push(['reduce', f, init])
-    return this.value() as any
-  }
-  value() {
-    const res: any[] = []
-    for (const item of this.arr) {
-      outer: {
-        let temp = item
-        for (const [action, ...args] of this.flags) {
-          switch (action) {
-            case 'map':
-              temp = args[0](temp)
-              break
-            case 'filter':
-              if (!args[0](temp)) {
-                break outer
-              }
-              break
-          }
-        }
-        res.push(temp)
-      }
-    }
-    return res
-  }
-}
-
-it('basic', () =&gt; {
-  const r = new Stream([1, 2, 3, 4])
-    .filter((i) =&gt; i % 2 === 0)
-    .map((i) =&gt; i * 2)
-    .value()
-  expect(r).toEqual([4, 8])
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">flags</span>: [<span class="hljs-attr">action</span>: <span class="hljs-built_in">string</span>, ...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]][] = []<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> arr: T[]</span>) {}<br>  map&lt;R&gt;(<span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> R): <span class="hljs-title class_">Stream</span>&lt;R&gt; {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">flags</span>.<span class="hljs-title function_">push</span>([<span class="hljs-string">'map'</span>, f])<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span> <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>  }<br>  <span class="hljs-title function_">filter</span>(<span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-built_in">boolean</span>): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">flags</span>.<span class="hljs-title function_">push</span>([<span class="hljs-string">'filter'</span>, f])<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span><br>  }<br>  reduce&lt;R&gt;(<span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">r: R, item: T</span>) =&gt;</span> R, <span class="hljs-attr">init</span>: R): R {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">flags</span>.<span class="hljs-title function_">push</span>([<span class="hljs-string">'reduce'</span>, f, init])<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">value</span>() <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>  }<br>  <span class="hljs-title function_">value</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">res</span>: <span class="hljs-built_in">any</span>[] = []<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> item <span class="hljs-keyword">of</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">arr</span>) {<br>      <span class="hljs-attr">outer</span>: {<br>        <span class="hljs-keyword">let</span> temp = item<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [action, ...args] <span class="hljs-keyword">of</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">flags</span>) {<br>          <span class="hljs-keyword">switch</span> (action) {<br>            <span class="hljs-keyword">case</span> <span class="hljs-string">'map'</span>:<br>              temp = args[<span class="hljs-number">0</span>](temp)<br>              <span class="hljs-keyword">break</span><br>            <span class="hljs-keyword">case</span> <span class="hljs-string">'filter'</span>:<br>              <span class="hljs-keyword">if</span> (!args[<span class="hljs-number">0</span>](temp)) {<br>                <span class="hljs-keyword">break</span> outer<br>              }<br>              <span class="hljs-keyword">break</span><br>          }<br>        }<br>        res.<span class="hljs-title function_">push</span>(temp)<br>      }<br>    }<br>    <span class="hljs-keyword">return</span> res<br>  }<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'basic'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Stream</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i * <span class="hljs-number">2</span>)<br>    .<span class="hljs-title function_">value</span>()<br>  <span class="hljs-title function_">expect</span>(r).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">4</span>, <span class="hljs-number">8</span>])<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来 map/filter 工作的还不错，但 reduce 却存在问题，因为在两层 for 循环中 map 是依赖于临时变量替换，filter 则是依赖于 break label 实现，这种方式显然很难在 value 函数中兼容所有的功能。</p>
 <p>不过实际上的解决方案也是延迟执行，只需要转换一下思路即可。下面将使用 cons 来构造流。</p>
 <h2 id="延迟计算"><a href="#延迟计算" class="headerlink" title="延迟计算"></a>延迟计算</h2><p>首先，可以将流可以看作一系列的值，而且只能顺序依次获取，那么，我们仅需要实现一种在需要的时候能拿到值的数据结构就可以了。</p>
 <p>下面将流的每个节点分为两部分，head 部分是一个具体的值，而 tail 部分则是一个产生下一个节点的函数，它可能是空的。</p>
 <p><img src="/resources/d3826159559041f2aedb2bb21a1566c9.svg" srcset="/img/loading.gif" lazyload alt="流节点.excalidraw.svg"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Stream&lt;T&gt; = Cons&lt;T, () =&gt; Stream&lt;T&gt;&gt; | null
-function makeStream&lt;T&gt;(head: T, tail: () =&gt; Stream&lt;T&gt; = () =&gt; null) {
-  return cons(head, tail)
-}
-function head&lt;T&gt;(s: Stream&lt;T&gt;): T | null {
-  return s ? car(s) : null
-}
-function tail&lt;T&gt;(s: Stream&lt;T&gt;): Stream&lt;T&gt; {
-  return s ? cdr(s)() : null
-}
-function isEmpty(s: Stream&lt;any&gt;): boolean {
-  return s === null
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Stream</span>&lt;T&gt; = <span class="hljs-title class_">Cons</span>&lt;T, <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Stream</span>&lt;T&gt;&gt; | <span class="hljs-literal">null</span><br><span class="hljs-keyword">function</span> makeStream&lt;T&gt;(<span class="hljs-attr">head</span>: T, <span class="hljs-attr">tail</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Stream</span>&lt;T&gt; = <span class="hljs-function">() =&gt;</span> <span class="hljs-literal">null</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">cons</span>(head, tail)<br>}<br><span class="hljs-keyword">function</span> head&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;): T | <span class="hljs-literal">null</span> {<br>  <span class="hljs-keyword">return</span> s ? <span class="hljs-title function_">car</span>(s) : <span class="hljs-literal">null</span><br>}<br><span class="hljs-keyword">function</span> tail&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> s ? <span class="hljs-title function_">cdr</span>(s)() : <span class="hljs-literal">null</span><br>}<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">isEmpty</span>(<span class="hljs-params">s: Stream&lt;<span class="hljs-built_in">any</span>&gt;</span>): <span class="hljs-built_in">boolean</span> {<br>  <span class="hljs-keyword">return</span> s === <span class="hljs-literal">null</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在有了基本的流的构造函数，可以使用最原始的方法构造了一个流了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">makeStream(1, () =&gt; makeStream(2, () =&gt; makeStream(3)))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">makeStream</span>(<span class="hljs-number">1</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">makeStream</span>(<span class="hljs-number">2</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">makeStream</span>(<span class="hljs-number">3</span>)))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来好像没什么用？这是因为我们还没有动态去构造。例如，我们可以从数组构造一个流，也可以转换回去</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function ofArray&lt;T&gt;(arr: T[]): Stream&lt;T&gt; {
-  return arr.length === 0
-    ? null
-    : makeStream(arr[0], () =&gt; ofArray(arr.slice(1)))
-}
-function toArray&lt;T&gt;(s: Stream&lt;T&gt;): T[] {
-  return isEmpty(s) ? [] : [head(s)!, ...toArray(tail(s))]
-}
-
-const arr = [1, 2, 3, 4]
-expect(toArray(ofArray(arr))).toEqual(arr)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> ofArray&lt;T&gt;(<span class="hljs-attr">arr</span>: T[]): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> arr.<span class="hljs-property">length</span> === <span class="hljs-number">0</span><br>    ? <span class="hljs-literal">null</span><br>    : <span class="hljs-title function_">makeStream</span>(arr[<span class="hljs-number">0</span>], <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">ofArray</span>(arr.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>)))<br>}<br><span class="hljs-keyword">function</span> toArray&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;): T[] {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">isEmpty</span>(s) ? [] : [<span class="hljs-title function_">head</span>(s)!, ...<span class="hljs-title function_">toArray</span>(<span class="hljs-title function_">tail</span>(s))]<br>}<br><br><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]<br><span class="hljs-title function_">expect</span>(<span class="hljs-title function_">toArray</span>(<span class="hljs-title function_">ofArray</span>(arr))).<span class="hljs-title function_">toEqual</span>(arr)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="map-x2F-filter-x2F-reduce"><a href="#map-x2F-filter-x2F-reduce" class="headerlink" title="map/filter/reduce"></a>map/filter/reduce</h2><p>当然，我们也可以为它们编写 map/filter/reduce</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function map&lt;T, R&gt;(s: Stream&lt;T&gt;, fn: (item: T) =&gt; R): Stream&lt;R&gt; {
-  return isEmpty(s) ? null : makeStream(fn(head(s)!), () =&gt; map(tail(s), fn))
-}
-function filter&lt;T&gt;(s: Stream&lt;T&gt;, fn: (item: T) =&gt; boolean): Stream&lt;T&gt; {
-  return isEmpty(s)
-    ? null
-    : fn(head(s)!)
-    ? makeStream(head(s)!, () =&gt; filter(tail(s), fn))
-    : filter(tail(s), fn)
-}
-function reduce&lt;T, R&gt;(s: Stream&lt;T&gt;, fn: (res: R, item: T) =&gt; R, init: R): R {
-  return isEmpty(s) ? init : reduce(tail(s), fn, fn(init, head(s)!))
-}
-
-const r = reduce(
-  map(
-    filter(ofArray([1, 2, 3, 4]), (i) =&gt; i % 2 === 0),
-    (i) =&gt; i * 2,
-  ),
-  (r, i) =&gt; r + i,
-  0,
-)
-expect(r).toBe(12)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> map&lt;T, R&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> R): <span class="hljs-title class_">Stream</span>&lt;R&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">isEmpty</span>(s) ? <span class="hljs-literal">null</span> : <span class="hljs-title function_">makeStream</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-title function_">head</span>(s)!), <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">map</span>(<span class="hljs-title function_">tail</span>(s), fn))<br>}<br><span class="hljs-keyword">function</span> filter&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-built_in">boolean</span>): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">isEmpty</span>(s)<br>    ? <span class="hljs-literal">null</span><br>    : <span class="hljs-title function_">fn</span>(<span class="hljs-title function_">head</span>(s)!)<br>    ? <span class="hljs-title function_">makeStream</span>(<span class="hljs-title function_">head</span>(s)!, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">filter</span>(<span class="hljs-title function_">tail</span>(s), fn))<br>    : <span class="hljs-title function_">filter</span>(<span class="hljs-title function_">tail</span>(s), fn)<br>}<br><span class="hljs-keyword">function</span> reduce&lt;T, R&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">res: R, item: T</span>) =&gt;</span> R, <span class="hljs-attr">init</span>: R): R {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">isEmpty</span>(s) ? init : <span class="hljs-title function_">reduce</span>(<span class="hljs-title function_">tail</span>(s), fn, <span class="hljs-title function_">fn</span>(init, <span class="hljs-title function_">head</span>(s)!))<br>}<br><br><span class="hljs-keyword">const</span> r = <span class="hljs-title function_">reduce</span>(<br>  <span class="hljs-title function_">map</span>(<br>    <span class="hljs-title function_">filter</span>(<span class="hljs-title function_">ofArray</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]), <span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>),<br>    <span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i * <span class="hljs-number">2</span>,<br>  ),<br>  <span class="hljs-function">(<span class="hljs-params">r, i</span>) =&gt;</span> r + i,<br>  <span class="hljs-number">0</span>,<br>)<br><span class="hljs-title function_">expect</span>(r).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">12</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>啊咧？奇怪，我们是不是之前在写链表的时候写过类似的代码？像是这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function map&lt;T, R&gt;(list: List&lt;T&gt;, f: (i: T) =&gt; R): List&lt;R&gt; {
-  return list === null ? null : (cons(f(car(list)), map(cdr(list)!, f)) as any)
-}
-function filter&lt;T&gt;(list: List&lt;T&gt;, f: (i: T) =&gt; boolean): List&lt;T&gt; {
-  return list === null
-    ? null
-    : f(car(list))
-    ? cons(car(list), filter(cdr(list), f))
-    : filter(cdr(list), f)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> map&lt;T, R&gt;(<span class="hljs-attr">list</span>: <span class="hljs-title class_">List</span>&lt;T&gt;, <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">i: T</span>) =&gt;</span> R): <span class="hljs-title class_">List</span>&lt;R&gt; {<br>  <span class="hljs-keyword">return</span> list === <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : (<span class="hljs-title function_">cons</span>(<span class="hljs-title function_">f</span>(<span class="hljs-title function_">car</span>(list)), <span class="hljs-title function_">map</span>(<span class="hljs-title function_">cdr</span>(list)!, f)) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)<br>}<br><span class="hljs-keyword">function</span> filter&lt;T&gt;(<span class="hljs-attr">list</span>: <span class="hljs-title class_">List</span>&lt;T&gt;, <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">i: T</span>) =&gt;</span> <span class="hljs-built_in">boolean</span>): <span class="hljs-title class_">List</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> list === <span class="hljs-literal">null</span><br>    ? <span class="hljs-literal">null</span><br>    : <span class="hljs-title function_">f</span>(<span class="hljs-title function_">car</span>(list))<br>    ? <span class="hljs-title function_">cons</span>(<span class="hljs-title function_">car</span>(list), <span class="hljs-title function_">filter</span>(<span class="hljs-title function_">cdr</span>(list), f))<br>    : <span class="hljs-title function_">filter</span>(<span class="hljs-title function_">cdr</span>(list), f)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>是的，它们的代码实现看起来很像，实际上，它们的区别仅在于流的节点的 cdr 部分是一个可以延迟计算的函数，只有<strong>在需要时</strong>才会被真的计算。在嵌套使用 map/filter 时，不再是先将所有元素通过 map 处理一遍形成新的流，再通过 filter 处理一遍形成新的流，而是在真正转换为链表或数组这种非延时的数据结构时才会被真正计算，而且方向是反的。</p>
 <p>我们可以验证它真的是延迟计算的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const genStream = jest
-  .fn()
-  .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
-const s = genStream(1)
-expect(head(s)).toEqual(1)
-expect(genStream.mock.calls.length).toBe(1)
-expect(head(tail(s))).toEqual(2)
-expect(genStream.mock.calls.length).toBe(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> genStream = jest<br>  .<span class="hljs-title function_">fn</span>()<br>  .<span class="hljs-title function_">mockImplementation</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> <span class="hljs-title function_">makeStream</span>(i, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">genStream</span>(i + <span class="hljs-number">1</span>)))<br><span class="hljs-keyword">const</span> s = <span class="hljs-title function_">genStream</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(s)).<span class="hljs-title function_">toEqual</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">expect</span>(genStream.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(<span class="hljs-title function_">tail</span>(s))).<span class="hljs-title function_">toEqual</span>(<span class="hljs-number">2</span>)<br><span class="hljs-title function_">expect</span>(genStream.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">2</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><p>在继续下一步之前，我们首先对流做一个简单的性能优化</p>
 <p>继续使用上一个示例，当多次访问 tail 时，每次都会重新计算下一个节点的值，<strong>即便已经计算过了</strong>，这很浪费，而且会引发一些其他的问题，例如 <code>tail(s) === tail(s)</code> 的结果会是 false，因为这里生成了两次。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">it('once before', () =&gt; {
-  const genStream = jest
-    .fn()
-    .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
-  const s = genStream(1) // 创建流时会立刻计算 head，1 次
-  tail(s) // 1 次
-  tail(tail(s)) // 2 次
-  tail(tail(tail(s))) // 3 次
-  expect(genStream.mock.calls.length).toBe(7)
-  expect(tail(s) === tail(s)).toBeFalsy() // 两个值不相等
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">it</span>(<span class="hljs-string">'once before'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> genStream = jest<br>    .<span class="hljs-title function_">fn</span>()<br>    .<span class="hljs-title function_">mockImplementation</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> <span class="hljs-title function_">makeStream</span>(i, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">genStream</span>(i + <span class="hljs-number">1</span>)))<br>  <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">genStream</span>(<span class="hljs-number">1</span>) <span class="hljs-comment">// 创建流时会立刻计算 head，1 次</span><br>  <span class="hljs-title function_">tail</span>(s) <span class="hljs-comment">// 1 次</span><br>  <span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(s)) <span class="hljs-comment">// 2 次</span><br>  <span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(s))) <span class="hljs-comment">// 3 次</span><br>  <span class="hljs-title function_">expect</span>(genStream.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">7</span>)<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">tail</span>(s) === <span class="hljs-title function_">tail</span>(s)).<span class="hljs-title function_">toBeFalsy</span>() <span class="hljs-comment">// 两个值不相等</span><br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>那么，是否有办法解决呢？<br>很简单，只需要做个缓存即可。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function once&lt;T extends () =&gt; any&gt;(f: T): T {
-  let flag: any = null
-  return (() =&gt; {
-    if (flag === null) {
-      flag = f()
-    }
-    return flag
-  }) as any
-}
-function makeStream&lt;T&gt;(head: T, tail: () =&gt; Stream&lt;T&gt; = () =&gt; null) {
-  return cons(head, once(tail))
-}
-it('once after', () =&gt; {
-  const genStream = jest
-    .fn()
-    .mockImplementation((i) =&gt; makeStream(i, () =&gt; genStream(i + 1)))
-  const s = genStream(1) // 创建流时会立刻计算 head，1 次
-  tail(tail(tail(s))) // 3 次
-  tail(tail(s)) // 直接从缓存读取，0 次
-  tail(s) // 直接从缓存读取，0 次
-  expect(genStream.mock.calls.length).toBe(4)
-  expect(tail(s) === tail(s)).toBeTruthy() // 两个值相等
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> once&lt;T <span class="hljs-keyword">extends</span> () =&gt; <span class="hljs-built_in">any</span>&gt;(<span class="hljs-attr">f</span>: T): T {<br>  <span class="hljs-keyword">let</span> <span class="hljs-attr">flag</span>: <span class="hljs-built_in">any</span> = <span class="hljs-literal">null</span><br>  <span class="hljs-keyword">return</span> (<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (flag === <span class="hljs-literal">null</span>) {<br>      flag = <span class="hljs-title function_">f</span>()<br>    }<br>    <span class="hljs-keyword">return</span> flag<br>  }) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>}<br><span class="hljs-keyword">function</span> makeStream&lt;T&gt;(<span class="hljs-attr">head</span>: T, <span class="hljs-attr">tail</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Stream</span>&lt;T&gt; = <span class="hljs-function">() =&gt;</span> <span class="hljs-literal">null</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">cons</span>(head, <span class="hljs-title function_">once</span>(tail))<br>}<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'once after'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> genStream = jest<br>    .<span class="hljs-title function_">fn</span>()<br>    .<span class="hljs-title function_">mockImplementation</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> <span class="hljs-title function_">makeStream</span>(i, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">genStream</span>(i + <span class="hljs-number">1</span>)))<br>  <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">genStream</span>(<span class="hljs-number">1</span>) <span class="hljs-comment">// 创建流时会立刻计算 head，1 次</span><br>  <span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(s))) <span class="hljs-comment">// 3 次</span><br>  <span class="hljs-title function_">tail</span>(<span class="hljs-title function_">tail</span>(s)) <span class="hljs-comment">// 直接从缓存读取，0 次</span><br>  <span class="hljs-title function_">tail</span>(s) <span class="hljs-comment">// 直接从缓存读取，0 次</span><br>  <span class="hljs-title function_">expect</span>(genStream.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">4</span>)<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">tail</span>(s) === <span class="hljs-title function_">tail</span>(s)).<span class="hljs-title function_">toBeTruthy</span>() <span class="hljs-comment">// 两个值相等</span><br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，所有访问 tail 访问下一个节点都会默认缓存，如果已经计算过，将永远不再重复计算。</p>
 <h2 id="无限流"><a href="#无限流" class="headerlink" title="无限流"></a>无限流</h2><p>流不仅可以表示有限的数据，甚至可以是无限的。</p>
 <p>例如可以使用以下函数生成一个从 n 开始的无限整数流</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function intFrom(n: number): Stream&lt;number&gt; {
-  return makeStream(n, () =&gt; intFrom(n + 1))
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">intFrom</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>): <span class="hljs-title class_">Stream</span>&lt;<span class="hljs-built_in">number</span>&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">makeStream</span>(n, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">intFrom</span>(n + <span class="hljs-number">1</span>))<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们可以使用以下代码验证它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const ints = intFrom(1)
-expect(head(ints)).toBe(1)
-expect(head(tail(ints))).toBe(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> ints = <span class="hljs-title function_">intFrom</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(ints)).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(<span class="hljs-title function_">tail</span>(ints))).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">2</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者生成一个所有元素都是同一个值的无限流</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function ones&lt;T&gt;(i: T): Stream&lt;T&gt; {
-  return makeStream(i, () =&gt; ones(i))
-}
-
-let n = ones(1)
-Array(100)
-  .fill(0)
-  .forEach(() =&gt; {
-    expect(head(n)).toBe(1)
-    n = tail(n)
-  })<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> ones&lt;T&gt;(<span class="hljs-attr">i</span>: T): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">makeStream</span>(i, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">ones</span>(i))<br>}<br><br><span class="hljs-keyword">let</span> n = <span class="hljs-title function_">ones</span>(<span class="hljs-number">1</span>)<br><span class="hljs-title class_">Array</span>(<span class="hljs-number">100</span>)<br>  .<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>)<br>  .<span class="hljs-title function_">forEach</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(n)).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">1</span>)<br>    n = <span class="hljs-title function_">tail</span>(n)<br>  })<br></code></pre></td></tr></tbody></table></figure>
 
 <p>那么，如何截取流的一部分呢？例如截取前 n 个元素（<code>take</code>）或第 n 个之后的所有元素（<code>drop</code>）呢？<br>其实很简单，take 只需要生成新的流并在取到第 n 个元素的时候返回 null，drop 则不断使用 tail 获取下一个节点，直到获取到第 n 个节点就返回，而 slice 则是组合这两个函数。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function take&lt;T&gt;(s: Stream&lt;T&gt;, n: number): Stream&lt;T&gt; {
-  return n === 0 || isEmpty(s)
-    ? null
-    : makeStream(head(s)!, () =&gt; take(tail(s), n - 1))
-}
-function drop&lt;T&gt;(s: Stream&lt;T&gt;, n: number): Stream&lt;T&gt; {
-  return isEmpty(s) || n === 0 ? s : drop(tail(s), n - 1)
-}
-function slice&lt;T&gt;(s: Stream&lt;T&gt;, start: number, end: number) {
-  return take(drop(s, start), end - start)
-}
-
-it('slice', () =&gt; {
-  const ints = intFrom(1)
-  expect(toArray(take(ints, 4))).toEqual([1, 2, 3, 4])
-  expect(head(drop(ints, 4))).toBe(5)
-  expect(toArray(slice(ints, 2, 4))).toEqual([3, 4])
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> take&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> n === <span class="hljs-number">0</span> || <span class="hljs-title function_">isEmpty</span>(s)<br>    ? <span class="hljs-literal">null</span><br>    : <span class="hljs-title function_">makeStream</span>(<span class="hljs-title function_">head</span>(s)!, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">take</span>(<span class="hljs-title function_">tail</span>(s), n - <span class="hljs-number">1</span>))<br>}<br><span class="hljs-keyword">function</span> drop&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Stream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">isEmpty</span>(s) || n === <span class="hljs-number">0</span> ? s : <span class="hljs-title function_">drop</span>(<span class="hljs-title function_">tail</span>(s), n - <span class="hljs-number">1</span>)<br>}<br><span class="hljs-keyword">function</span> slice&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">Stream</span>&lt;T&gt;, <span class="hljs-attr">start</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">end</span>: <span class="hljs-built_in">number</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">take</span>(<span class="hljs-title function_">drop</span>(s, start), end - start)<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'slice'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> ints = <span class="hljs-title function_">intFrom</span>(<span class="hljs-number">1</span>)<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">toArray</span>(<span class="hljs-title function_">take</span>(ints, <span class="hljs-number">4</span>))).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">head</span>(<span class="hljs-title function_">drop</span>(ints, <span class="hljs-number">4</span>))).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">5</span>)<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">toArray</span>(<span class="hljs-title function_">slice</span>(ints, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>))).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="链式调用"><a href="#链式调用" class="headerlink" title="链式调用"></a>链式调用</h2><p>上面的函数并非是链式调用的，在使用起来会感觉有点繁琐，嵌套很多层的话尤其如此，但可以通过简单的包装实现传统的链式调用。</p>
 <p>基本思想是在 Stream 对象中保存当前流，然后每次非终结操作都不断创建新的 Stream 对象，并且在对象的方法中调用之前实现的函数。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class StreamImpl&lt;T&gt; {
-  constructor(private readonly s: Stream&lt;T&gt;) {}
-  map&lt;R&gt;(fn: (item: T) =&gt; R): StreamImpl&lt;R&gt; {
-    return new StreamImpl(map(this.s, fn))
-  }
-  filter(fn: (item: T) =&gt; boolean): StreamImpl&lt;T&gt; {
-    return new StreamImpl(filter(this.s, fn))
-  }
-  reduce&lt;R&gt;(fn: (res: R, item: T) =&gt; R, init: R): R {
-    return reduce(this.s, fn, init)
-  }
-  take(n: number): StreamImpl&lt;T&gt; {
-    return new StreamImpl(take(this.s, n))
-  }
-  drop(n: number): StreamImpl&lt;T&gt; {
-    return new StreamImpl(drop(this.s, n))
-  }
-  value() {
-    return toArray(this.s)
-  }
-}
-function stream&lt;T&gt;(arr: T[]): StreamImpl&lt;T&gt; {
-  return new StreamImpl(ofArray(arr))
-}
-
-it('stream', () =&gt; {
-  const s = stream([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    .filter((i) =&gt; i % 2 === 0)
-    .map((i) =&gt; i * 2)
-    .drop(1)
-    .take(2)
-  expect(s.value()).toEqual([8, 12])
-  expect(s.reduce((r, i) =&gt; r + i, 0)).toBe(20)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StreamImpl</span>&lt;T&gt; {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> s: Stream&lt;T&gt;</span>) {}<br>  map&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> R): <span class="hljs-title class_">StreamImpl</span>&lt;R&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamImpl</span>(<span class="hljs-title function_">map</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn))<br>  }<br>  <span class="hljs-title function_">filter</span>(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-built_in">boolean</span>): <span class="hljs-title class_">StreamImpl</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamImpl</span>(<span class="hljs-title function_">filter</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn))<br>  }<br>  reduce&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">res: R, item: T</span>) =&gt;</span> R, <span class="hljs-attr">init</span>: R): R {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">reduce</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn, init)<br>  }<br>  <span class="hljs-title function_">take</span>(<span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">StreamImpl</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamImpl</span>(<span class="hljs-title function_">take</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, n))<br>  }<br>  <span class="hljs-title function_">drop</span>(<span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">StreamImpl</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamImpl</span>(<span class="hljs-title function_">drop</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, n))<br>  }<br>  <span class="hljs-title function_">value</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">toArray</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>)<br>  }<br>}<br><span class="hljs-keyword">function</span> stream&lt;T&gt;(<span class="hljs-attr">arr</span>: T[]): <span class="hljs-title class_">StreamImpl</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StreamImpl</span>(<span class="hljs-title function_">ofArray</span>(arr))<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'stream'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">stream</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>])<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i * <span class="hljs-number">2</span>)<br>    .<span class="hljs-title function_">drop</span>(<span class="hljs-number">1</span>)<br>    .<span class="hljs-title function_">take</span>(<span class="hljs-number">2</span>)<br>  <span class="hljs-title function_">expect</span>(s.<span class="hljs-title function_">value</span>()).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">8</span>, <span class="hljs-number">12</span>])<br>  <span class="hljs-title function_">expect</span>(s.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">r, i</span>) =&gt;</span> r + i, <span class="hljs-number">0</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">20</span>)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，上面的 api 其实已经和 lodash 一样了。</p>
 <h2 id="异步的流"><a href="#异步的流" class="headerlink" title="异步的流"></a>异步的流</h2><p>流不仅可以处理同步的数据，也可以处理异步的数据。但与同步的数据相比，需要更换流节点的基本模型，从 head 立刻计算、tail 延迟计算更换为整个流节点都是延迟计算的。</p>
 <p>一个基本的异步流节点可能是这样的</p>
 <p><img src="/resources/c1113e6a67e84910a162d2b244935f15.svg" srcset="/img/loading.gif" lazyload alt="异步流节点.excalidraw.svg"></p>
 <p>类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type AsyncStream&lt;T&gt; = Promise&lt;Cons&lt;T, AsyncStream&lt;T&gt;&gt; | null&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">AsyncStream</span>&lt;T&gt; = <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Cons</span>&lt;T, <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;&gt; | <span class="hljs-literal">null</span>&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>创建一些基本的辅助函数</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/** 从数组中创建异步流 */
-async function asyncOfArray&lt;T&gt;(arr: T[]): AsyncStream&lt;T&gt; {
-  return arr.length === 0 ? null : cons(arr[0], asyncOfArray(arr.slice(1)))
-}
-/** 将异步流转换为数组 */
-async function asyncToArray&lt;T&gt;(s: AsyncStream&lt;T&gt;): Promise&lt;T[]&gt; {
-  const r = await s
-  return r === null ? [] : [car(r), ...(await asyncToArray(cdr(r)))]
-}
-
-it('basic', async () =&gt; {
-  const a = [1, 2, 3, 4]
-  expect(await asyncToArray(asyncOfArray(a))).toEqual(a)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/** 从数组中创建异步流 */</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncOfArray&lt;T&gt;(<span class="hljs-attr">arr</span>: T[]): <span class="hljs-title class_">AsyncStream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">return</span> arr.<span class="hljs-property">length</span> === <span class="hljs-number">0</span> ? <span class="hljs-literal">null</span> : <span class="hljs-title function_">cons</span>(arr[<span class="hljs-number">0</span>], <span class="hljs-title function_">asyncOfArray</span>(arr.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>)))<br>}<br><span class="hljs-comment">/** 将异步流转换为数组 */</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncToArray&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;): <span class="hljs-title class_">Promise</span>&lt;T[]&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> s<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span> ? [] : [<span class="hljs-title function_">car</span>(r), ...(<span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-title function_">cdr</span>(r)))]<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'basic'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> a = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-title function_">asyncOfArray</span>(a))).<span class="hljs-title function_">toEqual</span>(a)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在此基础上实现 map/filter/reduce</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function asyncMap&lt;T, R&gt;(
-  s: AsyncStream&lt;T&gt;,
-  f: (i: T) =&gt; Promise&lt;R&gt;,
-): AsyncStream&lt;R&gt; {
-  const r = await s
-  return r === null ? null : cons((await f(car(r))) as R, asyncMap(cdr(r), f))
-}
-async function asyncFilter&lt;T&gt;(
-  s: AsyncStream&lt;T&gt;,
-  f: (i: T) =&gt; Promise&lt;boolean&gt;,
-): AsyncStream&lt;T&gt; {
-  const r = await s
-  return r === null
-    ? null
-    : (await f(car(r)))
-    ? cons(car(r), asyncFilter(cdr(r), f))
-    : await asyncFilter(cdr(r), f)
-}
-async function asyncReduce&lt;T, R&gt;(
-  s: AsyncStream&lt;T&gt;,
-  f: (r: R, i: T) =&gt; Promise&lt;R&gt;,
-  init: R,
-): Promise&lt;R&gt; {
-  const r = await s
-  return r === null ? init : asyncReduce(cdr(r), f, await f(init, car(r)))
-}
-
-it('map/filter/reduce', async () =&gt; {
-  const s = asyncOfArray([1, 2, 3, 4])
-  const r = await asyncReduce(
-    asyncMap(
-      asyncFilter(s, async (i) =&gt; i % 2 === 0),
-      async (i) =&gt; i * 2,
-    ),
-    async (r, i) =&gt; r + i,
-    0,
-  )
-  expect(r).toBe(12)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncMap&lt;T, R&gt;(<br>  <span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;,<br>  <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">i: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;,<br>): <span class="hljs-title class_">AsyncStream</span>&lt;R&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> s<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : <span class="hljs-title function_">cons</span>((<span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(<span class="hljs-title function_">car</span>(r))) <span class="hljs-keyword">as</span> R, <span class="hljs-title function_">asyncMap</span>(<span class="hljs-title function_">cdr</span>(r), f))<br>}<br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncFilter&lt;T&gt;(<br>  <span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;,<br>  <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">i: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt;,<br>): <span class="hljs-title class_">AsyncStream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> s<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span><br>    ? <span class="hljs-literal">null</span><br>    : (<span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(<span class="hljs-title function_">car</span>(r)))<br>    ? <span class="hljs-title function_">cons</span>(<span class="hljs-title function_">car</span>(r), <span class="hljs-title function_">asyncFilter</span>(<span class="hljs-title function_">cdr</span>(r), f))<br>    : <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncFilter</span>(<span class="hljs-title function_">cdr</span>(r), f)<br>}<br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncReduce&lt;T, R&gt;(<br>  <span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;,<br>  <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">r: R, i: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;,<br>  <span class="hljs-attr">init</span>: R,<br>): <span class="hljs-title class_">Promise</span>&lt;R&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> s<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span> ? init : <span class="hljs-title function_">asyncReduce</span>(<span class="hljs-title function_">cdr</span>(r), f, <span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(init, <span class="hljs-title function_">car</span>(r)))<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'map/filter/reduce'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">asyncOfArray</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncReduce</span>(<br>    <span class="hljs-title function_">asyncMap</span>(<br>      <span class="hljs-title function_">asyncFilter</span>(s, <span class="hljs-keyword">async</span> (i) =&gt; i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>),<br>      <span class="hljs-keyword">async</span> (i) =&gt; i * <span class="hljs-number">2</span>,<br>    ),<br>    <span class="hljs-keyword">async</span> (r, i) =&gt; r + i,<br>    <span class="hljs-number">0</span>,<br>  )<br>  <span class="hljs-title function_">expect</span>(r).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">12</span>)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里也顺便实现一下 flatMap</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function concat&lt;T&gt;(a: AsyncStream&lt;T&gt;, b: AsyncStream&lt;T&gt;): AsyncStream&lt;T&gt; {
-  const r = await a
-  return r === null ? b : cons(car(r), concat(cdr(r), b))
-}
-async function asyncFlatMap&lt;T, R&gt;(
-  s: AsyncStream&lt;T&gt;,
-  f: (i: T) =&gt; AsyncStream&lt;R&gt;,
-): AsyncStream&lt;R&gt; {
-  const r = await s
-  return r === null ? null : concat(f(car(r)), asyncFlatMap(cdr(r), f))
-}
-async function int(start: number, end: number): AsyncStream&lt;number&gt; {
-  return start === end ? null : cons(start, int(start + 1, end))
-}
-it('flatMap', async () =&gt; {
-  expect(await asyncToArray(int(1, 4))).toEqual([1, 2, 3])
-  const r = asyncFlatMap(int(1, 4), (i) =&gt; int(0, i))
-  expect(await asyncToArray(r)).toEqual([0, 0, 1, 0, 1, 2])
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> concat&lt;T&gt;(<span class="hljs-attr">a</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;, <span class="hljs-attr">b</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;): <span class="hljs-title class_">AsyncStream</span>&lt;T&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> a<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span> ? b : <span class="hljs-title function_">cons</span>(<span class="hljs-title function_">car</span>(r), <span class="hljs-title function_">concat</span>(<span class="hljs-title function_">cdr</span>(r), b))<br>}<br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> asyncFlatMap&lt;T, R&gt;(<br>  <span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;,<br>  <span class="hljs-attr">f</span>: <span class="hljs-function">(<span class="hljs-params">i: T</span>) =&gt;</span> <span class="hljs-title class_">AsyncStream</span>&lt;R&gt;,<br>): <span class="hljs-title class_">AsyncStream</span>&lt;R&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> s<br>  <span class="hljs-keyword">return</span> r === <span class="hljs-literal">null</span> ? <span class="hljs-literal">null</span> : <span class="hljs-title function_">concat</span>(<span class="hljs-title function_">f</span>(<span class="hljs-title function_">car</span>(r)), <span class="hljs-title function_">asyncFlatMap</span>(<span class="hljs-title function_">cdr</span>(r), f))<br>}<br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">int</span>(<span class="hljs-params">start: <span class="hljs-built_in">number</span>, end: <span class="hljs-built_in">number</span></span>): <span class="hljs-title class_">AsyncStream</span>&lt;<span class="hljs-built_in">number</span>&gt; {<br>  <span class="hljs-keyword">return</span> start === end ? <span class="hljs-literal">null</span> : <span class="hljs-title function_">cons</span>(start, <span class="hljs-title function_">int</span>(start + <span class="hljs-number">1</span>, end))<br>}<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'flatMap'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-title function_">int</span>(<span class="hljs-number">1</span>, <span class="hljs-number">4</span>))).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-title function_">asyncFlatMap</span>(<span class="hljs-title function_">int</span>(<span class="hljs-number">1</span>, <span class="hljs-number">4</span>), <span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> <span class="hljs-title function_">int</span>(<span class="hljs-number">0</span>, i))<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncToArray</span>(r)).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>])<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，同步与异步的 map/filter/reduce 两者之间实现的差距相当小，是否有办法兼容呢？<br>不知道，或许有办法做到，但类型上感觉会有些复杂。</p>
 <h2 id="异步数组"><a href="#异步数组" class="headerlink" title="异步数组"></a>异步数组</h2><p>下面列出一个真实的例子，在写前端应用时，处理异步操作是一件常见的事情，当需要异步的 map/filter/reduce 时，我们经常会使用 <code>Promise.all</code> 来完成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">it('promise.all', async () =&gt; {
-  const r = (await Promise.all([1, 2, 3, 4].map(async (i) =&gt; [i % 2 === 0, i])))
-    .filter((r) =&gt; r[0])
-    .map((r) =&gt; r[1])
-  expect(r).toEqual([2, 4])
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">it</span>(<span class="hljs-string">'promise.all'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> r = (<span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>].<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (i) =&gt; [i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>, i])))<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r[<span class="hljs-number">0</span>])<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r[<span class="hljs-number">1</span>])<br>  <span class="hljs-title function_">expect</span>(r).<span class="hljs-title function_">toEqual</span>([<span class="hljs-number">2</span>, <span class="hljs-number">4</span>])<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但是也可以看到，这种代码非常丑陋，因此吾辈之前曾经写过 AsyncArray 这种异步数组工具类，参考 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/blob/master/libs/async/src/AsyncArray.ts">https://github.com/rxliuli/liuli-tools/blob/master/libs/async/src/AsyncArray.ts</a>。</p>
 <p>下面基于 asyncStream 来实现它，可以看到都是直接转发到异步操作上，这没什么复杂的。有一点比较比较有趣的是这里还实现了 <code>PromiseLike</code> 接口，这让我们可以在不使用 <code>.value</code> 这种显式调用的情况下将流转换为 <code>Promise&lt;any[]&gt;</code>，仅使用 await 就像等待一个 Promise 一样执行了 then 方法，这只是个 Promise 的技巧罢了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class AsyncArray&lt;T&gt; implements PromiseLike&lt;T[]&gt; {
-  static reduce&lt;T, R&gt;(
-    arr: T[],
-    fn: (res: R, item: T) =&gt; Promise&lt;R&gt;,
-    res: R,
-  ): Promise&lt;R&gt; {
-    return asyncReduce(asyncOfArray(arr), fn, res)
-  }
-  static map&lt;T, R&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;R&gt;): Promise&lt;R[]&gt; {
-    return asyncToArray(asyncMap(asyncOfArray(arr), fn))
-  }
-  static filter&lt;T&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;boolean&gt;): Promise&lt;T[]&gt; {
-    return asyncToArray(asyncFilter(asyncOfArray(arr), fn))
-  }
-  static flatMap&lt;T, R&gt;(arr: T[], fn: (item: T) =&gt; Promise&lt;R[]&gt;): Promise&lt;R[]&gt; {
-    return asyncToArray(
-      asyncFlatMap(asyncOfArray(arr), async (i) =&gt; asyncOfArray(await fn(i))),
-    )
-  }
-  static async forEach&lt;T&gt;(
-    arr: T[],
-    fn: (item: T) =&gt; Promise&lt;void&gt;,
-  ): Promise&lt;void&gt; {
-    await this.map(arr, fn)
-  }
-
-  private s: AsyncStream&lt;T&gt;
-  constructor(arr: T[]) {
-    this.s = asyncOfArray(arr)
-  }
-
-  private static of&lt;T&gt;(s: AsyncStream&lt;T&gt;): AsyncArray&lt;T&gt; {
-    const r = new AsyncArray&lt;T&gt;([])
-    r.s = s
-    return r
-  }
-
-  map&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R&gt;): AsyncArray&lt;R&gt; {
-    return AsyncArray.of(asyncMap(this.s, fn))
-  }
-  flatMap&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R[]&gt;): AsyncArray&lt;R&gt; {
-    return AsyncArray.of(
-      asyncFlatMap(this.s, async (i) =&gt; asyncOfArray(await fn(i))),
-    )
-  }
-  filter(fn: (item: T) =&gt; Promise&lt;boolean&gt;): AsyncArray&lt;T&gt; {
-    return AsyncArray.of(asyncFilter(this.s, fn))
-  }
-  async forEach&lt;R&gt;(fn: (item: T) =&gt; Promise&lt;R&gt;): Promise&lt;void&gt; {
-    await this.map(fn)
-  }
-  reduce&lt;R&gt;(fn: (res: R, item: T) =&gt; Promise&lt;R&gt;, res: R): Promise&lt;R&gt; {
-    return asyncReduce(this.s, fn, res)
-  }
-  then&lt;TResult1 = T[], TResult2 = never&gt;(
-    onfulfilled?: ((value: T[]) =&gt; TResult1 | PromiseLike&lt;TResult1&gt;) | null,
-    onrejected?: ((reason: any) =&gt; TResult2 | PromiseLike&lt;TResult2&gt;) | null,
-  ): PromiseLike&lt;TResult1&gt; {
-    return asyncToArray(this.s) as any
-  }
-}
-
-it('AsyncArray', async () =&gt; {
-  const r = await new AsyncArray([1, 2, 3, 4])
-    .filter(async (i) =&gt; i % 2 === 0)
-    .map(async (i) =&gt; i * 2)
-    .reduce(async (r, i) =&gt; r + i, 0)
-  expect(r).toBe(12)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">AsyncArray</span>&lt;T&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">PromiseLike</span>&lt;T[]&gt; {<br>  <span class="hljs-keyword">static</span> reduce&lt;T, R&gt;(<br>    <span class="hljs-attr">arr</span>: T[],<br>    <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">res: R, item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;,<br>    <span class="hljs-attr">res</span>: R,<br>  ): <span class="hljs-title class_">Promise</span>&lt;R&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncReduce</span>(<span class="hljs-title function_">asyncOfArray</span>(arr), fn, res)<br>  }<br>  <span class="hljs-keyword">static</span> map&lt;T, R&gt;(<span class="hljs-attr">arr</span>: T[], <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;): <span class="hljs-title class_">Promise</span>&lt;R[]&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-title function_">asyncMap</span>(<span class="hljs-title function_">asyncOfArray</span>(arr), fn))<br>  }<br>  <span class="hljs-keyword">static</span> filter&lt;T&gt;(<span class="hljs-attr">arr</span>: T[], <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt;): <span class="hljs-title class_">Promise</span>&lt;T[]&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-title function_">asyncFilter</span>(<span class="hljs-title function_">asyncOfArray</span>(arr), fn))<br>  }<br>  <span class="hljs-keyword">static</span> flatMap&lt;T, R&gt;(<span class="hljs-attr">arr</span>: T[], <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R[]&gt;): <span class="hljs-title class_">Promise</span>&lt;R[]&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncToArray</span>(<br>      <span class="hljs-title function_">asyncFlatMap</span>(<span class="hljs-title function_">asyncOfArray</span>(arr), <span class="hljs-keyword">async</span> (i) =&gt; <span class="hljs-title function_">asyncOfArray</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(i))),<br>    )<br>  }<br>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">async</span> forEach&lt;T&gt;(<br>    <span class="hljs-attr">arr</span>: T[],<br>    <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt;,<br>  ): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {<br>    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">map</span>(arr, fn)<br>  }<br><br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">arr: T[]</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span> = <span class="hljs-title function_">asyncOfArray</span>(arr)<br>  }<br><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">of</span>&lt;T&gt;(<span class="hljs-attr">s</span>: <span class="hljs-title class_">AsyncStream</span>&lt;T&gt;): <span class="hljs-title class_">AsyncArray</span>&lt;T&gt; {<br>    <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncArray</span>&lt;T&gt;([])<br>    r.<span class="hljs-property">s</span> = s<br>    <span class="hljs-keyword">return</span> r<br>  }<br><br>  map&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;): <span class="hljs-title class_">AsyncArray</span>&lt;R&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">AsyncArray</span>.<span class="hljs-title function_">of</span>(<span class="hljs-title function_">asyncMap</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn))<br>  }<br>  flatMap&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R[]&gt;): <span class="hljs-title class_">AsyncArray</span>&lt;R&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">AsyncArray</span>.<span class="hljs-title function_">of</span>(<br>      <span class="hljs-title function_">asyncFlatMap</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, <span class="hljs-keyword">async</span> (i) =&gt; <span class="hljs-title function_">asyncOfArray</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(i))),<br>    )<br>  }<br>  <span class="hljs-title function_">filter</span>(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt;): <span class="hljs-title class_">AsyncArray</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">AsyncArray</span>.<span class="hljs-title function_">of</span>(<span class="hljs-title function_">asyncFilter</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn))<br>  }<br>  <span class="hljs-keyword">async</span> forEach&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {<br>    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">map</span>(fn)<br>  }<br>  reduce&lt;R&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">res: R, item: T</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt;, <span class="hljs-attr">res</span>: R): <span class="hljs-title class_">Promise</span>&lt;R&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncReduce</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>, fn, res)<br>  }<br>  then&lt;<span class="hljs-title class_">TResult1</span> = T[], <span class="hljs-title class_">TResult2</span> = <span class="hljs-built_in">never</span>&gt;(<br>    onfulfilled?: (<span class="hljs-function">(<span class="hljs-params">value: T[]</span>) =&gt;</span> <span class="hljs-title class_">TResult1</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult1</span>&gt;) | <span class="hljs-literal">null</span>,<br>    onrejected?: (<span class="hljs-function">(<span class="hljs-params">reason: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-title class_">TResult2</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult2</span>&gt;) | <span class="hljs-literal">null</span>,<br>  ): <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult1</span>&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncToArray</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">s</span>) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>  }<br>}<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'AsyncArray'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncArray</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-keyword">async</span> (i) =&gt; i % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (i) =&gt; i * <span class="hljs-number">2</span>)<br>    .<span class="hljs-title function_">reduce</span>(<span class="hljs-keyword">async</span> (r, i) =&gt; r + i, <span class="hljs-number">0</span>)<br>  <span class="hljs-title function_">expect</span>(r).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">12</span>)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>流是一个很有用的数据抽象，尤其是在处理集合方面，几乎是无可比肩的，之前曾经非常流行的大数据处理框架 Spark 就非常强调 map/filter/reduce，这种数据结构约定了<strong>接口</strong>，然后就可以抽象出各种通用的处理了，延迟计算的想法更是天才，几乎仅仅只修改了 makeStream，就能够实现集合处理的性能优化了。虽然吾辈了解和实现这些知识有些晚，但就像有人说过 <strong>种一棵树最好的时间是十年前，其次是现在</strong>，亡羊补牢，尤未迟也，只要在不断的变得更好，便已然足够了。</p>
 
@@ -1096,8 +748,6 @@ it('AsyncArray', async () =&gt; {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -46,8 +46,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -253,7 +251,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          15k 字
+          16k 字
         
       </span>
     
@@ -265,7 +263,7 @@
         
         
           <!-- compatible with older versions-->
-          122 分钟
+          130 分钟
         
       </span>
     
@@ -490,95 +488,27 @@
 </tr>
 </tbody></table>
 <p>可以看到，最终我们成功将圆盘从 a 移动到了 b，这里的关键点是将一个复杂操作分为几步，直到能够执行某些基本操作为止。下面是吾辈使用 ts 实现的最初版本</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoi(n: number) {
-  const res: [from: string, to: string][] = []
-  function hanoi(n: number, from: string, to: string, stage: string) {
-    if (n === 1) {
-      res.push([from, to])
-      return
-    }
-    hanoi(n - 1, from, stage, to)
-    hanoi(1, from, to, stage)
-    hanoi(n - 1, stage, to, from)
-  }
-
-  hanoi(n, 'a', 'b', 'c')
-  return res
-}
-
-console.log(hanoi(4))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoi</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">res</span>: [<span class="hljs-attr">from</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">to</span>: <span class="hljs-built_in">string</span>][] = []<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoi</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span>, <span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span>, to: <span class="hljs-built_in">string</span>, stage: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) {<br>      res.<span class="hljs-title function_">push</span>([<span class="hljs-keyword">from</span>, to])<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-title function_">hanoi</span>(n - <span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, stage, to)<br>    <span class="hljs-title function_">hanoi</span>(<span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, to, stage)<br>    <span class="hljs-title function_">hanoi</span>(n - <span class="hljs-number">1</span>, stage, to, <span class="hljs-keyword">from</span>)<br>  }<br><br>  <span class="hljs-title function_">hanoi</span>(n, <span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>)<br>  <span class="hljs-keyword">return</span> res<br>}<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hanoi</span>(<span class="hljs-number">4</span>))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>下面则使用更加函数式的风格来完成</p>
 <blockquote>
 <p>改进：实际上汉诺塔是先移动上层的所有圆盘到临时柱，然后移动最下层的圆盘到目标柱，最终将临时圆盘上的所有圆盘移动到目标柱。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoi(n: number) {
-  function iter(
-    n: number,
-    from: string,
-    to: string,
-    stage: string,
-  ): [string, string][] {
-    if (n === 1) {
-      return [[from, to]]
-    }
-    return iter(n - 1, from, stage, to)
-      .concat(iter(1, from, to, stage))
-      .concat(iter(n - 1, stage, to, from))
-  }
-  return hanoi(n, 'a', 'b', 'c')
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoi</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">iter</span>(<span class="hljs-params"></span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">    to: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">    stage: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">  </span>): [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>][] {<br>    <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) {<br>      <span class="hljs-keyword">return</span> [[<span class="hljs-keyword">from</span>, to]]<br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">iter</span>(n - <span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, stage, to)<br>      .<span class="hljs-title function_">concat</span>(<span class="hljs-title function_">iter</span>(<span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, to, stage))<br>      .<span class="hljs-title function_">concat</span>(<span class="hljs-title function_">iter</span>(n - <span class="hljs-number">1</span>, stage, to, <span class="hljs-keyword">from</span>))<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">hanoi</span>(n, <span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="计算步数"><a href="#计算步数" class="headerlink" title="计算步数"></a>计算步数</h2><p>计算步数更加简单，甚至可以写成一个数学函数</p>
 <p>$$<br>f(1)=1 \<br>f(n)=2f(n-1)+1<br>$$</p>
 <p>如果画成图，就是求一棵树的所有叶子节点</p>
 <p><img src="/resources/a08e9f5d95a541f7b016a7cce631662c.png" srcset="/img/loading.gif" lazyload alt="1654526921100"></p>
 <p>下面使用 ts 非常简单的实现了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 计算移动汉诺塔从 a =&gt; b 的步数，本质上公式非常简单
- * @param n
- * @returns
- */
-function fn(n: number) {
-  return n === 1 ? 1 : fn(n - 1) + fn(1) + fn(n - 1)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 计算移动汉诺塔从 a =&gt; b 的步数，本质上公式非常简单</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">n</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">return</span> n === <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : <span class="hljs-title function_">fn</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fn</span>(<span class="hljs-number">1</span>) + <span class="hljs-title function_">fn</span>(n - <span class="hljs-number">1</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>如果使用缓存，则效率可以高得多</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const map = new Map&lt;number, number&gt;()
-function fn(n: number) {
-  if (!map.has(n)) {
-    map.set(n, n === 1 ? 1 : fn(n - 1) + fn(1) + fn(n - 1))
-  }
-  return map.get(n)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">number</span>, <span class="hljs-built_in">number</span>&gt;()<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">if</span> (!map.<span class="hljs-title function_">has</span>(n)) {<br>    map.<span class="hljs-title function_">set</span>(n, n === <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : <span class="hljs-title function_">fn</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fn</span>(<span class="hljs-number">1</span>) + <span class="hljs-title function_">fn</span>(n - <span class="hljs-number">1</span>))<br>  }<br>  <span class="hljs-keyword">return</span> map.<span class="hljs-title function_">get</span>(n)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用迭代的方式求解"><a href="#使用迭代的方式求解" class="headerlink" title="使用迭代的方式求解"></a>使用迭代的方式求解</h2><p>看起来似乎无法使用迭代的方式去解决这个问题，核心是不知道前面还有多少步，或者说没有办法保存当前的移动信息<br>或许有办法，使用一个对象，通过三个字段的数组保存当前汉诺塔的状态，只要递归函数能<strong>智能</strong>移动一步，就可以以尾递归（迭代）的方式来解决这个问题，就像人的做法一样，能根据上下文做出合理的移动。</p>
 <p>创建一个 HanoiGame 类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class HanoiGame {
-  constructor(public state: { a: number[]; b: number[]; c: number[] }) {}
-  check(from: string, to: string) {
-    return (
-      this.state[from].length !== 0 &amp;&amp;
-      (this.state[to].length === 0 || this.get(from) &lt; this.get(to))
-    )
-  }
-  move(from: string, to: string) {
-    if (!this.check(from, to)) {
-      throw new Error(
-        `invalid move ${JSON.stringify(this.state)} ${from} ${to}`,
-      )
-    }
-    this.state[to].unshift(this.state[from].shift())
-  }
-  get(from: string) {
-    return this.state[from][0]
-  }
-}
-
-const game = new HanoiGame({ a: [1, 2, 3, 4], b: [], c: [] })
-const steps = hanoi(4)
-steps.forEach((item) =&gt; game.move(...item))
-console.log(game.state)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">HanoiGame</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> state: { a: <span class="hljs-built_in">number</span>[]; b: <span class="hljs-built_in">number</span>[]; c: <span class="hljs-built_in">number</span>[] }</span>) {}<br>  <span class="hljs-title function_">check</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span>, to: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">return</span> (<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>[<span class="hljs-keyword">from</span>].<span class="hljs-property">length</span> !== <span class="hljs-number">0</span> &amp;&amp;<br>      (<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>[to].<span class="hljs-property">length</span> === <span class="hljs-number">0</span> || <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">from</span>) &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">get</span>(to))<br>    )<br>  }<br>  <span class="hljs-title function_">move</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span>, to: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">check</span>(<span class="hljs-keyword">from</span>, to)) {<br>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<br>        <span class="hljs-string">`invalid move <span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-variable language_">this</span>.state)}</span> <span class="hljs-subst">${<span class="hljs-keyword">from</span>}</span> <span class="hljs-subst">${to}</span>`</span>,<br>      )<br>    }<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>[to].<span class="hljs-title function_">unshift</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>[<span class="hljs-keyword">from</span>].<span class="hljs-title function_">shift</span>())<br>  }<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>[<span class="hljs-keyword">from</span>][<span class="hljs-number">0</span>]<br>  }<br>}<br><br><span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">b</span>: [], <span class="hljs-attr">c</span>: [] })<br><span class="hljs-keyword">const</span> steps = <span class="hljs-title function_">hanoi</span>(<span class="hljs-number">4</span>)<br>steps.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> game.<span class="hljs-title function_">move</span>(...item))<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(game.<span class="hljs-property">state</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="初始想法"><a href="#初始想法" class="headerlink" title="初始想法"></a>初始想法</h3><p>下面是想到的一种迭代式的非最佳走法</p>
 <p>基本思路如下</p>
@@ -594,56 +524,7 @@ console.log(game.state)<span aria-hidden="true" class="line-numbers-rows"><span>
 <li>传递当前状态进行下一次移动</li>
 </ol>
 <p><img src="/resources/00007b59e8bb4315a0defa9d591bb4e8.png" srcset="/img/loading.gif" lazyload alt="演示的示例"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function sortBy&lt;T&gt;(arr: T[], fn: (item: T) =&gt; number): T[] {
-  return [...arr].sort((a, b) =&gt; fn(a) - fn(b))
-}
-
-function fn(n: number) {
-  const game = new HanoiGame({
-    a: Array(n)
-      .fill(0)
-      .map((_, i) =&gt; i + 1),
-    b: [],
-    c: [],
-  })
-  const res: [string, string][] = []
-  function f(game: HanoiGame, last: number) {
-    if (
-      game.state.a.length === 0 &amp;&amp;
-      (game.state.b.length === 0 || game.state.c.length === 0)
-    ) {
-      return
-    }
-    const steps = (
-      [
-        ['a', 'b'],
-        ['a', 'c'],
-        ['c', 'b'],
-        ['b', 'c'],
-        ['b', 'a'],
-        ['c', 'a'],
-      ] as [string, string][]
-    ).filter(
-      ([from, to]) =&gt; game.check(from, to) &amp;&amp; game.state[from][0] !== last,
-    )
-    const list = sortBy(steps, (item) =&gt;
-      Math.abs(game.state[item[0]][0] ?? 0 - game.state[item[1]][0] ?? 0),
-    )
-    const step = list[0]
-    res.push(step)
-    game.move(...list[0])
-    f(game, game.state[step[1]][0])
-  }
-  f(game, 0)
-  return res
-}
-
-console.log(fn(1).length)
-console.log(fn(2).length)
-console.log(fn(3).length)
-console.log(fn(4).length)
-console.log(fn(5).length)
-console.log(fn(6).length)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> sortBy&lt;T&gt;(<span class="hljs-attr">arr</span>: T[], <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">item: T</span>) =&gt;</span> <span class="hljs-built_in">number</span>): T[] {<br>  <span class="hljs-keyword">return</span> [...arr].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-title function_">fn</span>(a) - <span class="hljs-title function_">fn</span>(b))<br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>({<br>    <span class="hljs-attr">a</span>: <span class="hljs-title class_">Array</span>(n)<br>      .<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>)<br>      .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> i + <span class="hljs-number">1</span>),<br>    <span class="hljs-attr">b</span>: [],<br>    <span class="hljs-attr">c</span>: [],<br>  })<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">res</span>: [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>][] = []<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">game: HanoiGame, last: <span class="hljs-built_in">number</span></span>) {<br>    <span class="hljs-keyword">if</span> (<br>      game.<span class="hljs-property">state</span>.<span class="hljs-property">a</span>.<span class="hljs-property">length</span> === <span class="hljs-number">0</span> &amp;&amp;<br>      (game.<span class="hljs-property">state</span>.<span class="hljs-property">b</span>.<span class="hljs-property">length</span> === <span class="hljs-number">0</span> || game.<span class="hljs-property">state</span>.<span class="hljs-property">c</span>.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>)<br>    ) {<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">const</span> steps = (<br>      [<br>        [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>],<br>        [<span class="hljs-string">'a'</span>, <span class="hljs-string">'c'</span>],<br>        [<span class="hljs-string">'c'</span>, <span class="hljs-string">'b'</span>],<br>        [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>],<br>        [<span class="hljs-string">'b'</span>, <span class="hljs-string">'a'</span>],<br>        [<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>],<br>      ] <span class="hljs-keyword">as</span> [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>][]<br>    ).<span class="hljs-title function_">filter</span>(<br>      <span class="hljs-function">(<span class="hljs-params">[<span class="hljs-keyword">from</span>, to]</span>) =&gt;</span> game.<span class="hljs-title function_">check</span>(<span class="hljs-keyword">from</span>, to) &amp;&amp; game.<span class="hljs-property">state</span>[<span class="hljs-keyword">from</span>][<span class="hljs-number">0</span>] !== last,<br>    )<br>    <span class="hljs-keyword">const</span> list = <span class="hljs-title function_">sortBy</span>(steps, <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">abs</span>(game.<span class="hljs-property">state</span>[item[<span class="hljs-number">0</span>]][<span class="hljs-number">0</span>] ?? <span class="hljs-number">0</span> - game.<span class="hljs-property">state</span>[item[<span class="hljs-number">1</span>]][<span class="hljs-number">0</span>] ?? <span class="hljs-number">0</span>),<br>    )<br>    <span class="hljs-keyword">const</span> step = list[<span class="hljs-number">0</span>]<br>    res.<span class="hljs-title function_">push</span>(step)<br>    game.<span class="hljs-title function_">move</span>(...list[<span class="hljs-number">0</span>])<br>    <span class="hljs-title function_">f</span>(game, game.<span class="hljs-property">state</span>[step[<span class="hljs-number">1</span>]][<span class="hljs-number">0</span>])<br>  }<br>  <span class="hljs-title function_">f</span>(game, <span class="hljs-number">0</span>)<br>  <span class="hljs-keyword">return</span> res<br>}<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">1</span>).<span class="hljs-property">length</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">2</span>).<span class="hljs-property">length</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">3</span>).<span class="hljs-property">length</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">4</span>).<span class="hljs-property">length</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">5</span>).<span class="hljs-property">length</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fn</span>(<span class="hljs-number">6</span>).<span class="hljs-property">length</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>这个实现有 bug，当 n = 10 时，会无限递归调用导致堆栈溢出</p>
@@ -653,12 +534,7 @@ console.log(fn(6).length)<span aria-hidden="true" class="line-numbers-rows"><spa
 <li>如果按照最佳走法，那么第一步和汉诺塔的层级决定了最终的 target。具体规则是 <code>n % 2 = 0, target != first step to; n % 2 =1, target = first step to</code></li>
 </ul>
 <h3 id="使用迭代的方式计算步数"><a href="#使用迭代的方式计算步数" class="headerlink" title="使用迭代的方式计算步数"></a>使用迭代的方式计算步数</h3><p>换个思路求解步数也可以简化为尾递归的形式</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoiCountByIter(n: number): number {
-  function f(i: number, n: number, sum: number) {
-    return i &gt; n ? sum : f(i + 1, n, sum * 2 + 1)
-  }
-  return f(1, n, 0)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiCountByIter</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">i: <span class="hljs-built_in">number</span>, n: <span class="hljs-built_in">number</span>, sum: <span class="hljs-built_in">number</span></span>) {<br>    <span class="hljs-keyword">return</span> i &gt; n ? sum : <span class="hljs-title function_">f</span>(i + <span class="hljs-number">1</span>, n, sum * <span class="hljs-number">2</span> + <span class="hljs-number">1</span>)<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">f</span>(<span class="hljs-number">1</span>, n, <span class="hljs-number">0</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用迭代的方式计算移动步骤"><a href="#使用迭代的方式计算移动步骤" class="headerlink" title="使用迭代的方式计算移动步骤"></a>使用迭代的方式计算移动步骤</h3><p>下面是一个迭代实现，基本思路</p>
 <ul>
@@ -667,99 +543,7 @@ console.log(fn(6).length)<span aria-hidden="true" class="line-numbers-rows"><spa
 <li>使用链表保存所有的操作，每次递归调用时，都替换其中一个复合操作为 3 个基本操作，并且修改当前操作为要替换的 3 个操作的第一个，直到遇到基本操作</li>
 <li>如果还有下一个操作，则继续处理，否则终止迭代</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface LinkNode&lt;T&gt; {
-  prev?: LinkNode&lt;T&gt;
-  next?: LinkNode&lt;T&gt;
-  value: T
-}
-
-class LinkedList&lt;T&gt; {
-  first: LinkNode&lt;T&gt;
-  constructor(first: T) {
-    this.first = { value: first }
-  }
-  replace(old: LinkNode&lt;T&gt;, _nodes: T[]) {
-    const nodes: LinkNode&lt;T&gt;[] = _nodes.map((value) =&gt; ({ value }))
-    nodes.forEach((item, i) =&gt; {
-      item.next = nodes[i + 1]
-      item.prev = nodes[i - 1]
-    })
-    nodes[0].prev = old.prev
-    if (old.prev) {
-      old.prev.next = nodes[0]
-    } else {
-      this.first = nodes[0]
-    }
-
-    const last = nodes[nodes.length - 1]
-    last.next = old.next
-    if (old.next) {
-      old.prev = last
-    }
-    return nodes[0]
-  }
-
-  *[Symbol.iterator]() {
-    let current: LinkNode&lt;T&gt; | undefined = this.first
-    while (current) {
-      yield current.value
-      current = current.next
-    }
-  }
-}
-
-interface HanoiItem {
-  value: number
-  from: string
-  to: string
-  stage: string
-}
-
-function hanoiForIter(n: number) {
-  const list = new LinkedList&lt;HanoiItem&gt;({
-    value: n,
-    from: 'a',
-    to: 'b',
-    stage: 'c',
-  })
-  function f(node: LinkNode&lt;HanoiItem&gt;) {
-    const current = node.value
-    // 如果可以直接移动，则必须返回
-    if (current.value === 1) {
-      // 如果没有处理到最后一个节点，则继续处理下一个
-      if (node.next) {
-        f(node.next)
-      }
-      return
-    }
-    // 替换当前复合操作为 3 个子操作
-    const newNode = list.replace(node, [
-      {
-        value: current.value - 1,
-        from: current.from,
-        to: current.stage,
-        stage: current.to,
-      },
-      {
-        value: 1,
-        from: current.from,
-        to: current.to,
-        stage: current.stage,
-      },
-      {
-        value: current.value - 1,
-        from: current.stage,
-        to: current.to,
-        stage: current.from,
-      },
-    ])
-    f(newNode)
-  }
-  f(list.first)
-  return [...list].map((item) =&gt; [item.from, item.to] as [string, string])
-}
-
-console.log(hanoiForIter(4))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LinkNode</span>&lt;T&gt; {<br>  prev?: <span class="hljs-title class_">LinkNode</span>&lt;T&gt;<br>  next?: <span class="hljs-title class_">LinkNode</span>&lt;T&gt;<br>  <span class="hljs-attr">value</span>: T<br>}<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">LinkedList</span>&lt;T&gt; {<br>  <span class="hljs-attr">first</span>: <span class="hljs-title class_">LinkNode</span>&lt;T&gt;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">first: T</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">first</span> = { <span class="hljs-attr">value</span>: first }<br>  }<br>  <span class="hljs-title function_">replace</span>(<span class="hljs-params">old: LinkNode&lt;T&gt;, _nodes: T[]</span>) {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">nodes</span>: <span class="hljs-title class_">LinkNode</span>&lt;T&gt;[] = _nodes.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> ({ value }))<br>    nodes.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">item, i</span>) =&gt;</span> {<br>      item.<span class="hljs-property">next</span> = nodes[i + <span class="hljs-number">1</span>]<br>      item.<span class="hljs-property">prev</span> = nodes[i - <span class="hljs-number">1</span>]<br>    })<br>    nodes[<span class="hljs-number">0</span>].<span class="hljs-property">prev</span> = old.<span class="hljs-property">prev</span><br>    <span class="hljs-keyword">if</span> (old.<span class="hljs-property">prev</span>) {<br>      old.<span class="hljs-property">prev</span>.<span class="hljs-property">next</span> = nodes[<span class="hljs-number">0</span>]<br>    } <span class="hljs-keyword">else</span> {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">first</span> = nodes[<span class="hljs-number">0</span>]<br>    }<br><br>    <span class="hljs-keyword">const</span> last = nodes[nodes.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>]<br>    last.<span class="hljs-property">next</span> = old.<span class="hljs-property">next</span><br>    <span class="hljs-keyword">if</span> (old.<span class="hljs-property">next</span>) {<br>      old.<span class="hljs-property">prev</span> = last<br>    }<br>    <span class="hljs-keyword">return</span> nodes[<span class="hljs-number">0</span>]<br>  }<br><br>  *[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {<br>    <span class="hljs-keyword">let</span> <span class="hljs-attr">current</span>: <span class="hljs-title class_">LinkNode</span>&lt;T&gt; | <span class="hljs-literal">undefined</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">first</span><br>    <span class="hljs-keyword">while</span> (current) {<br>      <span class="hljs-keyword">yield</span> current.<span class="hljs-property">value</span><br>      current = current.<span class="hljs-property">next</span><br>    }<br>  }<br>}<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">HanoiItem</span> {<br>  <span class="hljs-attr">value</span>: <span class="hljs-built_in">number</span><br>  <span class="hljs-attr">from</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">to</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">stage</span>: <span class="hljs-built_in">string</span><br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiForIter</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>) {<br>  <span class="hljs-keyword">const</span> list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>&lt;<span class="hljs-title class_">HanoiItem</span>&gt;({<br>    <span class="hljs-attr">value</span>: n,<br>    <span class="hljs-attr">from</span>: <span class="hljs-string">'a'</span>,<br>    <span class="hljs-attr">to</span>: <span class="hljs-string">'b'</span>,<br>    <span class="hljs-attr">stage</span>: <span class="hljs-string">'c'</span>,<br>  })<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">node: LinkNode&lt;HanoiItem&gt;</span>) {<br>    <span class="hljs-keyword">const</span> current = node.<span class="hljs-property">value</span><br>    <span class="hljs-comment">// 如果可以直接移动，则必须返回</span><br>    <span class="hljs-keyword">if</span> (current.<span class="hljs-property">value</span> === <span class="hljs-number">1</span>) {<br>      <span class="hljs-comment">// 如果没有处理到最后一个节点，则继续处理下一个</span><br>      <span class="hljs-keyword">if</span> (node.<span class="hljs-property">next</span>) {<br>        <span class="hljs-title function_">f</span>(node.<span class="hljs-property">next</span>)<br>      }<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-comment">// 替换当前复合操作为 3 个子操作</span><br>    <span class="hljs-keyword">const</span> newNode = list.<span class="hljs-title function_">replace</span>(node, [<br>      {<br>        <span class="hljs-attr">value</span>: current.<span class="hljs-property">value</span> - <span class="hljs-number">1</span>,<br>        <span class="hljs-attr">from</span>: current.<span class="hljs-property">from</span>,<br>        <span class="hljs-attr">to</span>: current.<span class="hljs-property">stage</span>,<br>        <span class="hljs-attr">stage</span>: current.<span class="hljs-property">to</span>,<br>      },<br>      {<br>        <span class="hljs-attr">value</span>: <span class="hljs-number">1</span>,<br>        <span class="hljs-attr">from</span>: current.<span class="hljs-property">from</span>,<br>        <span class="hljs-attr">to</span>: current.<span class="hljs-property">to</span>,<br>        <span class="hljs-attr">stage</span>: current.<span class="hljs-property">stage</span>,<br>      },<br>      {<br>        <span class="hljs-attr">value</span>: current.<span class="hljs-property">value</span> - <span class="hljs-number">1</span>,<br>        <span class="hljs-attr">from</span>: current.<span class="hljs-property">stage</span>,<br>        <span class="hljs-attr">to</span>: current.<span class="hljs-property">to</span>,<br>        <span class="hljs-attr">stage</span>: current.<span class="hljs-property">from</span>,<br>      },<br>    ])<br>    <span class="hljs-title function_">f</span>(newNode)<br>  }<br>  <span class="hljs-title function_">f</span>(list.<span class="hljs-property">first</span>)<br>  <span class="hljs-keyword">return</span> [...list].<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> [item.<span class="hljs-property">from</span>, item.<span class="hljs-property">to</span>] <span class="hljs-keyword">as</span> [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>])<br>}<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hanoiForIter</span>(<span class="hljs-number">4</span>))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>最终，吾辈也是用迭代的方式计算得到了结果（虽然这种方式看起来非常不优雅）</p>
 <h2 id="处理任意状态的汉诺塔"><a href="#处理任意状态的汉诺塔" class="headerlink" title="处理任意状态的汉诺塔"></a>处理任意状态的汉诺塔</h2><p>以上都在处理从零开始移动汉诺塔，但实际上我们也可以处理任意状态的汉诺塔，以下是吾辈想到的一些处理任意汉诺塔的思路</p>
@@ -773,380 +557,34 @@ console.log(hanoiForIter(4))<span aria-hidden="true" class="line-numbers-rows"><
 <p>有什么简单的迭代方式去处理树结构么？</p>
 <h3 id="2-优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤"><a href="#2-优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤" class="headerlink" title="2. 优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤"></a>2. 优先移动小的圆盘，合并为连续的便于视为一个复合操作，最终一定能合并到一个柱子上，但不是最优步骤</h3><p>下面是使用第二种方式实现处理任意状态的汉诺塔</p>
 <p>这种方式最大的优点是比较简单，因为它可以像处理一个初始的汉诺塔一样处理任意状态的汉诺塔，只需要将一些有序的圆盘移动到另一个柱子上，而不需要考虑另一个柱子的状态。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 处理任意状态下的汉诺塔
- * @param state
- * @returns
- */
-function hanoiAny(state: Record&lt;HanoiPos, number[]&gt;): [HanoiPos, HanoiPos][] {
-  function findPos(state: Record&lt;HanoiPos, number[]&gt;, value: number): HanoiPos {
-    const arr: HanoiPos[] = ['a', 'b', 'c']
-    const res = arr.map((i) =&gt; state[i][0])
-    return arr[res.indexOf(value)]
-  }
-  function findContinuousCount(arr: number[]): number {
-    function f(i: number, last: number): number {
-      return arr[i] !== last + 1 ? i : f(i + 1, arr[i])
-    }
-    return f(1, arr[0])
-  }
-  function calcSteps(
-    n: number,
-    from: HanoiPos,
-    to: HanoiPos,
-    stage: HanoiPos,
-  ): [HanoiPos, HanoiPos][] {
-    if (n === 1) {
-      return [[from, to]]
-    }
-    return calcSteps(n - 1, from, stage, to)
-      .concat(calcSteps(1, from, to, stage))
-      .concat(calcSteps(n - 1, stage, to, from))
-  }
-  function findStage(from: HanoiPos, to: HanoiPos): HanoiPos {
-    const arr: HanoiPos[] = ['a', 'b', 'c']
-    return arr.find((i) =&gt; i !== from &amp;&amp; i !== to)!
-  }
-  function move(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    n: number,
-    from: HanoiPos,
-    to: HanoiPos,
-    stage: HanoiPos,
-  ): Record&lt;HanoiPos, number[]&gt; {
-    return {
-      [to]: state[from].slice(0, n).concat(state[to]),
-      [from]: state[from].slice(n),
-      [stage]: state[stage],
-    } as Record&lt;HanoiPos, number[]&gt;
-  }
-  function count(state: Record&lt;HanoiPos, number[]&gt;): number {
-    const arr: HanoiPos[] = ['a', 'b', 'c']
-    return arr.map((i) =&gt; state[i].length).reduce((a, b) =&gt; a + b)
-  }
-  function iter(state: Record&lt;HanoiPos, number[]&gt;): [HanoiPos, HanoiPos][] {
-    // 寻找小的连续圆盘
-    const from = findPos(state, 1)
-    const n = findContinuousCount(state[from])
-    // 判断是否到最终状态了
-    // 返回所有步骤
-    if (n === count(state)) {
-      return []
-    }
-    // 否则移动所有连续的圆盘到另一个柱子
-    // 找到移动的目标
-    const to = findPos(state, state[from][n - 1] + 1)
-    const stage = findStage(from, to)
-    // 移动
-    return calcSteps(n, from, to, stage).concat(
-      iter(move(state, n, from, to, stage)),
-    )
-  }
-  return iter(state)
-}
-
-const state = { a: [1, 4], b: [2], c: [3, 5] }
-const game = new HanoiGame(state)
-const steps = hanoiAny(state)
-steps.forEach((item) =&gt; game.move(...item))
-console.log(game.state) // { a: [], b: [], c: [ 1, 2, 3, 4, 5 ] }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 处理任意状态下的汉诺塔</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">state</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiAny</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;</span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">findPos</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;, value: <span class="hljs-built_in">number</span></span>): <span class="hljs-title class_">HanoiPos</span> {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>    <span class="hljs-keyword">const</span> res = arr.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> state[i][<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">return</span> arr[res.<span class="hljs-title function_">indexOf</span>(value)]<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">findContinuousCount</span>(<span class="hljs-params">arr: <span class="hljs-built_in">number</span>[]</span>): <span class="hljs-built_in">number</span> {<br>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">i: <span class="hljs-built_in">number</span>, last: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {<br>      <span class="hljs-keyword">return</span> arr[i] !== last + <span class="hljs-number">1</span> ? i : <span class="hljs-title function_">f</span>(i + <span class="hljs-number">1</span>, arr[i])<br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">f</span>(<span class="hljs-number">1</span>, arr[<span class="hljs-number">0</span>])<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">calcSteps</span>(<span class="hljs-params"></span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: HanoiPos,</span><br><span class="hljs-params">    to: HanoiPos,</span><br><span class="hljs-params">    stage: HanoiPos,</span><br><span class="hljs-params">  </span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>    <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) {<br>      <span class="hljs-keyword">return</span> [[<span class="hljs-keyword">from</span>, to]]<br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">calcSteps</span>(n - <span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, stage, to)<br>      .<span class="hljs-title function_">concat</span>(<span class="hljs-title function_">calcSteps</span>(<span class="hljs-number">1</span>, <span class="hljs-keyword">from</span>, to, stage))<br>      .<span class="hljs-title function_">concat</span>(<span class="hljs-title function_">calcSteps</span>(n - <span class="hljs-number">1</span>, stage, to, <span class="hljs-keyword">from</span>))<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">findStage</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>: HanoiPos, to: HanoiPos</span>): <span class="hljs-title class_">HanoiPos</span> {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>    <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i !== <span class="hljs-keyword">from</span> &amp;&amp; i !== to)!<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">move</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: HanoiPos,</span><br><span class="hljs-params">    to: HanoiPos,</span><br><span class="hljs-params">    stage: HanoiPos,</span><br><span class="hljs-params">  </span>): <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; {<br>    <span class="hljs-keyword">return</span> {<br>      [to]: state[<span class="hljs-keyword">from</span>].<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, n).<span class="hljs-title function_">concat</span>(state[to]),<br>      [<span class="hljs-keyword">from</span>]: state[<span class="hljs-keyword">from</span>].<span class="hljs-title function_">slice</span>(n),<br>      [stage]: state[stage],<br>    } <span class="hljs-keyword">as</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt;<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">count</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;</span>): <span class="hljs-built_in">number</span> {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>    <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> state[i].<span class="hljs-property">length</span>).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b)<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">iter</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;</span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>    <span class="hljs-comment">// 寻找小的连续圆盘</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-keyword">from</span> = <span class="hljs-title function_">findPos</span>(state, <span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">const</span> n = <span class="hljs-title function_">findContinuousCount</span>(state[<span class="hljs-keyword">from</span>])<br>    <span class="hljs-comment">// 判断是否到最终状态了</span><br>    <span class="hljs-comment">// 返回所有步骤</span><br>    <span class="hljs-keyword">if</span> (n === <span class="hljs-title function_">count</span>(state)) {<br>      <span class="hljs-keyword">return</span> []<br>    }<br>    <span class="hljs-comment">// 否则移动所有连续的圆盘到另一个柱子</span><br>    <span class="hljs-comment">// 找到移动的目标</span><br>    <span class="hljs-keyword">const</span> to = <span class="hljs-title function_">findPos</span>(state, state[<span class="hljs-keyword">from</span>][n - <span class="hljs-number">1</span>] + <span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">const</span> stage = <span class="hljs-title function_">findStage</span>(<span class="hljs-keyword">from</span>, to)<br>    <span class="hljs-comment">// 移动</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">calcSteps</span>(n, <span class="hljs-keyword">from</span>, to, stage).<span class="hljs-title function_">concat</span>(<br>      <span class="hljs-title function_">iter</span>(<span class="hljs-title function_">move</span>(state, n, <span class="hljs-keyword">from</span>, to, stage)),<br>    )<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">iter</span>(state)<br>}<br><br><span class="hljs-keyword">const</span> state = { <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>], <span class="hljs-attr">c</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">5</span>] }<br><span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>(state)<br><span class="hljs-keyword">const</span> steps = <span class="hljs-title function_">hanoiAny</span>(state)<br>steps.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> game.<span class="hljs-title function_">move</span>(...item))<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(game.<span class="hljs-property">state</span>) <span class="hljs-comment">// { a: [], b: [], c: [ 1, 2, 3, 4, 5 ] }</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>以上方法都是指数增长 <code>2^n-1</code>，或许有某种线性增长的方法？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function hanoiCount(n: number): number {
-  return n === 1 ? 1 : hanoiCount(n - 1) * 2 + 1
-}
-
-console.log(
-  Array(64)
-    .fill(0)
-    .map((_, i) =&gt; hanoiCount(i + 1)),
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiCount</span>(<span class="hljs-params">n: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {<br>  <span class="hljs-keyword">return</span> n === <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : <span class="hljs-title function_">hanoiCount</span>(n - <span class="hljs-number">1</span>) * <span class="hljs-number">2</span> + <span class="hljs-number">1</span><br>}<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<br>  <span class="hljs-title class_">Array</span>(<span class="hljs-number">64</span>)<br>    .<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> <span class="hljs-title function_">hanoiCount</span>(i + <span class="hljs-number">1</span>)),<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p><img src="/resources/f6ee862e41844284a6ca0bbb1513ccdc.png" srcset="/img/loading.gif" lazyload alt="汉诺塔层级-移动次数关系"></p>
 <h3 id="3-穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）–-性能存在问题，无法排除掉大量无效解"><a href="#3-穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）–-性能存在问题，无法排除掉大量无效解" class="headerlink" title="3. 穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）– 性能存在问题，无法排除掉大量无效解"></a>3. 穷举所有可能的步骤，得到最佳的走法（或许可以改进为动态规划）– 性能存在问题，无法排除掉大量无效解</h3><p>使用穷举法实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 使用穷举的方式尝试所有可能的走法，找出最优解
- * 深度优先递归的问题是前期会做大量浪费的计算，实际上最优解可能并不在前面，或许应该尝试一下广度优先递归
- * @param state
- * @returns
- */
-export function hanoiAnyByReduce(
-  state: Record&lt;HanoiPos, number[]&gt;,
-): [HanoiPos, HanoiPos][] {
-  let min = hanoiAny(state)
-  function isComplete(state: Record&lt;HanoiPos, number[]&gt;): boolean {
-    return Object.values(state).filter((v) =&gt; v.length !== 0).length === 1
-  }
-  const steps: [HanoiPos, HanoiPos][] = [
-    ['a', 'b'],
-    ['a', 'c'],
-    ['b', 'a'],
-    ['b', 'c'],
-    ['c', 'a'],
-    ['c', 'b'],
-  ]
-  function calcSteps(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    prev: [HanoiPos, HanoiPos][],
-  ): [HanoiPos, HanoiPos][] {
-    const game = new HanoiGame(state)
-    return steps.filter((step) =&gt; game.check(...step))
-  }
-  function move(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    from: HanoiPos,
-    to: HanoiPos,
-  ): Record&lt;HanoiPos, number[]&gt; {
-    return {
-      ...state,
-      [to]: state[from].slice(0, 1).concat(state[to]),
-      [from]: state[from].slice(1),
-    }
-  }
-  function isSuccess(steps: [HanoiPos, HanoiPos][]): boolean {
-    if (steps.length &lt; 2) {
-      return true
-    }
-    const last = steps[steps.length - 1]
-    const prev = steps[steps.length - 2]
-    if (prev[0] === last[1] &amp;&amp; prev[1] === last[0]) {
-      return false
-    }
-    return true
-  }
-  const arr: string[] = []
-  function iter(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    prev: [HanoiPos, HanoiPos][],
-  ) {
-    // 判断当前是否出现了环
-    if (!isSuccess(prev)) {
-      return
-    }
-    const prevString = JSON.stringify(prev)
-    arr.push(prevString)
-    // 判断当前步数是否已经超过了最佳步数（或者之后可以使用 map 判断相同状态是否已经有更好的走法了）
-    if (prev.length &gt;= min.length) {
-      return
-    }
-    if (isComplete(state)) {
-      if (prev.length &lt; min.length) {
-        min = prev
-      }
-      return
-    }
-    // 否则找到所有可行步骤，执行它们
-    calcSteps(state, prev).forEach((step) =&gt; {
-      iter(move(state, ...step), [...prev, step])
-    })
-  }
-  iter(state, [])
-  // writeFileSync(path.resolve(__dirname, 'test.json'), JSON.stringify(arr))
-  return min
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 使用穷举的方式尝试所有可能的走法，找出最优解</span><br><span class="hljs-comment"> * 深度优先递归的问题是前期会做大量浪费的计算，实际上最优解可能并不在前面，或许应该尝试一下广度优先递归</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">state</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiAnyByReduce</span>(<span class="hljs-params"></span><br><span class="hljs-params">  state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params"></span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>  <span class="hljs-keyword">let</span> min = <span class="hljs-title function_">hanoiAny</span>(state)<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">isComplete</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;</span>): <span class="hljs-built_in">boolean</span> {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(state).<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">v</span>) =&gt;</span> v.<span class="hljs-property">length</span> !== <span class="hljs-number">0</span>).<span class="hljs-property">length</span> === <span class="hljs-number">1</span><br>  }<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">steps</span>: [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] = [<br>    [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>],<br>    [<span class="hljs-string">'a'</span>, <span class="hljs-string">'c'</span>],<br>    [<span class="hljs-string">'b'</span>, <span class="hljs-string">'a'</span>],<br>    [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>],<br>    [<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>],<br>    [<span class="hljs-string">'c'</span>, <span class="hljs-string">'b'</span>],<br>  ]<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">calcSteps</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    prev: [HanoiPos, HanoiPos][],</span><br><span class="hljs-params">  </span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>    <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>(state)<br>    <span class="hljs-keyword">return</span> steps.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">step</span>) =&gt;</span> game.<span class="hljs-title function_">check</span>(...step))<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">move</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: HanoiPos,</span><br><span class="hljs-params">    to: HanoiPos,</span><br><span class="hljs-params">  </span>): <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; {<br>    <span class="hljs-keyword">return</span> {<br>      ...state,<br>      [to]: state[<span class="hljs-keyword">from</span>].<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">concat</span>(state[to]),<br>      [<span class="hljs-keyword">from</span>]: state[<span class="hljs-keyword">from</span>].<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>),<br>    }<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">isSuccess</span>(<span class="hljs-params">steps: [HanoiPos, HanoiPos][]</span>): <span class="hljs-built_in">boolean</span> {<br>    <span class="hljs-keyword">if</span> (steps.<span class="hljs-property">length</span> &lt; <span class="hljs-number">2</span>) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>    }<br>    <span class="hljs-keyword">const</span> last = steps[steps.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">const</span> prev = steps[steps.<span class="hljs-property">length</span> - <span class="hljs-number">2</span>]<br>    <span class="hljs-keyword">if</span> (prev[<span class="hljs-number">0</span>] === last[<span class="hljs-number">1</span>] &amp;&amp; prev[<span class="hljs-number">1</span>] === last[<span class="hljs-number">0</span>]) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>  }<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-built_in">string</span>[] = []<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">iter</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    prev: [HanoiPos, HanoiPos][],</span><br><span class="hljs-params">  </span>) {<br>    <span class="hljs-comment">// 判断当前是否出现了环</span><br>    <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isSuccess</span>(prev)) {<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">const</span> prevString = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(prev)<br>    arr.<span class="hljs-title function_">push</span>(prevString)<br>    <span class="hljs-comment">// 判断当前步数是否已经超过了最佳步数（或者之后可以使用 map 判断相同状态是否已经有更好的走法了）</span><br>    <span class="hljs-keyword">if</span> (prev.<span class="hljs-property">length</span> &gt;= min.<span class="hljs-property">length</span>) {<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isComplete</span>(state)) {<br>      <span class="hljs-keyword">if</span> (prev.<span class="hljs-property">length</span> &lt; min.<span class="hljs-property">length</span>) {<br>        min = prev<br>      }<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-comment">// 否则找到所有可行步骤，执行它们</span><br>    <span class="hljs-title function_">calcSteps</span>(state, prev).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">step</span>) =&gt;</span> {<br>      <span class="hljs-title function_">iter</span>(<span class="hljs-title function_">move</span>(state, ...step), [...prev, step])<br>    })<br>  }<br>  <span class="hljs-title function_">iter</span>(state, [])<br>  <span class="hljs-comment">// writeFileSync(path.resolve(__dirname, 'test.json'), JSON.stringify(arr))</span><br>  <span class="hljs-keyword">return</span> min<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="1-优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）"><a href="#1-优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）" class="headerlink" title="1. 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）"></a>1. 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）</h3><p>使用第一种方法实现，但最终结果和穷举法相同，似乎这就是最优解</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 处理任意状态下的汉诺塔
- * 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）
- */
-export function hanoiAnyByDepth(
-  state: Record&lt;HanoiPos, number[]&gt;,
-  to: HanoiPos,
-): [HanoiPos, HanoiPos][] {
-  function findPosByNumber(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    n: number,
-  ): HanoiPos {
-    return Object.entries(state).find(([_k, v]) =&gt;
-      v.includes(n),
-    )?.[0] as HanoiPos
-  }
-  function isMove(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    from: HanoiPos,
-    to: HanoiPos,
-    n: number,
-  ) {
-    const game = new HanoiGame(state)
-    return game.get(from) === n &amp;&amp; game.check(from, to)
-  }
-  function move(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    steps: [HanoiPos, HanoiPos][],
-  ): Record&lt;HanoiPos, number[]&gt; {
-    const game = new HanoiGame(JSON.parse(JSON.stringify(state)))
-    steps.forEach((step) =&gt; game.move(...step))
-    return game.state
-  }
-  function findStage(from: HanoiPos, to: HanoiPos): HanoiPos {
-    const arr: HanoiPos[] = ['a', 'b', 'c']
-    return arr.find((i) =&gt; i !== from &amp;&amp; i !== to)!
-  }
-  function iter(
-    state: Record&lt;HanoiPos, number[]&gt;,
-    from: HanoiPos,
-    to: HanoiPos,
-    stage: HanoiPos,
-    n: number,
-  ): [HanoiPos, HanoiPos][] {
-    if (from === to) {
-      const nextFrom = findPosByNumber(state, n - 1)
-      return iter(state, nextFrom, to, findStage(nextFrom, to), n - 1)
-    }
-    // 移动 from =&gt; to 的一个指定值
-    // 如果可以直接移动，则直接移动
-    if (isMove(state, from, to, n)) {
-      return [[from, to]]
-    }
-    // 否则找到上面影响移动的最大圆盘到临时柱，递归调用该方法
-    const values = [...state[from], ...state[to]].sort((a, b) =&gt; a - b)
-    const nextN = values[values.indexOf(n) - 1]
-    const nextForm = findPosByNumber(state, nextN)
-    // 应用上面的移动步骤，然后递归调用该方法
-    // 移动上面阻碍它移动的圆盘到临时柱
-    const before = iter(
-      state,
-      nextForm,
-      stage,
-      findStage(nextForm, stage),
-      nextN,
-    )
-    let nextState = move(state, before)
-    // 移动当前圆盘
-    const current = iter(nextState, from, to, stage, n)
-    nextState = move(nextState, current)
-    const next = findPosByNumber(nextState, n - 1)
-    // 继续下一次迭代移动上面的一个圆盘
-    const after = iter(nextState, next, to, findStage(next, to), n - 1)
-    return [...before, ...current, ...after]
-  }
-  const initN = Object.values(state).flat().length
-  const initForm = findPosByNumber(state, initN)
-  return iter(state, initForm, to, findStage(initForm, to), initN)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 处理任意状态下的汉诺塔</span><br><span class="hljs-comment"> * 优先考虑如何将最大的圆盘移动到合适的位置，必须要考虑无法移动的情况（在无法移动的情况下应该尝试合并两外两个柱子）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">hanoiAnyByDepth</span>(<span class="hljs-params"></span><br><span class="hljs-params">  state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">  to: HanoiPos,</span><br><span class="hljs-params"></span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">findPosByNumber</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  </span>): <span class="hljs-title class_">HanoiPos</span> {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(state).<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">[_k, v]</span>) =&gt;</span><br>      v.<span class="hljs-title function_">includes</span>(n),<br>    )?.[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> <span class="hljs-title class_">HanoiPos</span><br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">isMove</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: HanoiPos,</span><br><span class="hljs-params">    to: HanoiPos,</span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  </span>) {<br>    <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>(state)<br>    <span class="hljs-keyword">return</span> game.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">from</span>) === n &amp;&amp; game.<span class="hljs-title function_">check</span>(<span class="hljs-keyword">from</span>, to)<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">move</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    steps: [HanoiPos, HanoiPos][],</span><br><span class="hljs-params">  </span>): <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; {<br>    <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(state)))<br>    steps.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">step</span>) =&gt;</span> game.<span class="hljs-title function_">move</span>(...step))<br>    <span class="hljs-keyword">return</span> game.<span class="hljs-property">state</span><br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">findStage</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>: HanoiPos, to: HanoiPos</span>): <span class="hljs-title class_">HanoiPos</span> {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>    <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i !== <span class="hljs-keyword">from</span> &amp;&amp; i !== to)!<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">iter</span>(<span class="hljs-params"></span><br><span class="hljs-params">    state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">    <span class="hljs-keyword">from</span>: HanoiPos,</span><br><span class="hljs-params">    to: HanoiPos,</span><br><span class="hljs-params">    stage: HanoiPos,</span><br><span class="hljs-params">    n: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  </span>): [<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>][] {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">from</span> === to) {<br>      <span class="hljs-keyword">const</span> nextFrom = <span class="hljs-title function_">findPosByNumber</span>(state, n - <span class="hljs-number">1</span>)<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">iter</span>(state, nextFrom, to, <span class="hljs-title function_">findStage</span>(nextFrom, to), n - <span class="hljs-number">1</span>)<br>    }<br>    <span class="hljs-comment">// 移动 from =&gt; to 的一个指定值</span><br>    <span class="hljs-comment">// 如果可以直接移动，则直接移动</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isMove</span>(state, <span class="hljs-keyword">from</span>, to, n)) {<br>      <span class="hljs-keyword">return</span> [[<span class="hljs-keyword">from</span>, to]]<br>    }<br>    <span class="hljs-comment">// 否则找到上面影响移动的最大圆盘到临时柱，递归调用该方法</span><br>    <span class="hljs-keyword">const</span> values = [...state[<span class="hljs-keyword">from</span>], ...state[to]].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a - b)<br>    <span class="hljs-keyword">const</span> nextN = values[values.<span class="hljs-title function_">indexOf</span>(n) - <span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">const</span> nextForm = <span class="hljs-title function_">findPosByNumber</span>(state, nextN)<br>    <span class="hljs-comment">// 应用上面的移动步骤，然后递归调用该方法</span><br>    <span class="hljs-comment">// 移动上面阻碍它移动的圆盘到临时柱</span><br>    <span class="hljs-keyword">const</span> before = <span class="hljs-title function_">iter</span>(<br>      state,<br>      nextForm,<br>      stage,<br>      <span class="hljs-title function_">findStage</span>(nextForm, stage),<br>      nextN,<br>    )<br>    <span class="hljs-keyword">let</span> nextState = <span class="hljs-title function_">move</span>(state, before)<br>    <span class="hljs-comment">// 移动当前圆盘</span><br>    <span class="hljs-keyword">const</span> current = <span class="hljs-title function_">iter</span>(nextState, <span class="hljs-keyword">from</span>, to, stage, n)<br>    nextState = <span class="hljs-title function_">move</span>(nextState, current)<br>    <span class="hljs-keyword">const</span> next = <span class="hljs-title function_">findPosByNumber</span>(nextState, n - <span class="hljs-number">1</span>)<br>    <span class="hljs-comment">// 继续下一次迭代移动上面的一个圆盘</span><br>    <span class="hljs-keyword">const</span> after = <span class="hljs-title function_">iter</span>(nextState, next, to, <span class="hljs-title function_">findStage</span>(next, to), n - <span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> [...before, ...current, ...after]<br>  }<br>  <span class="hljs-keyword">const</span> initN = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(state).<span class="hljs-title function_">flat</span>().<span class="hljs-property">length</span><br>  <span class="hljs-keyword">const</span> initForm = <span class="hljs-title function_">findPosByNumber</span>(state, initN)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">iter</span>(state, initForm, to, <span class="hljs-title function_">findStage</span>(initForm, to), initN)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用基本的单元测试验证它是有效的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">describe('hanoiAnyByDepth', () =&gt; {
-  it('basic', () =&gt; {
-    const state: Record&lt;HanoiPos, number[]&gt; = {
-      a: [1, 3, 5],
-      b: [],
-      c: [2, 4, 6],
-    }
-    console.log(hanoiAnyByDepth(state, 'c').length)
-    console.log(hanoiAny(state).length)
-    const game = new HanoiGame(state)
-    hanoiAnyByDepth(state, 'b').forEach((step) =&gt; game.move(...step))
-    expect(game.state['b'].length).toBe(6)
-  })
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">describe</span>(<span class="hljs-string">'hanoiAnyByDepth'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">'basic'</span>, <span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">state</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; = {<br>      <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>],<br>      <span class="hljs-attr">b</span>: [],<br>      <span class="hljs-attr">c</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>],<br>    }<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hanoiAnyByDepth</span>(state, <span class="hljs-string">'c'</span>).<span class="hljs-property">length</span>)<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hanoiAny</span>(state).<span class="hljs-property">length</span>)<br>    <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>(state)<br>    <span class="hljs-title function_">hanoiAnyByDepth</span>(state, <span class="hljs-string">'b'</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">step</span>) =&gt;</span> game.<span class="hljs-title function_">move</span>(...step))<br>    <span class="hljs-title function_">expect</span>(game.<span class="hljs-property">state</span>[<span class="hljs-string">'b'</span>].<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">6</span>)<br>  })<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>大多数情况下，它计算得到的步数要比使用方法 2 得到的步骤少得多，我们可以验证这一点</p>
 <blockquote>
 <p><code>upset</code> 是一个将汉诺塔状态随机打乱的函数</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function findMax(state: Record&lt;HanoiPos, number[]&gt;) {
-  const pos: HanoiPos[] = ['a', 'b', 'c']
-  return sortBy(
-    pos.map((k) =&gt; ({
-      k,
-      v: state[k][state[k].length - 1] ?? 0,
-    })),
-    (item) =&gt; -item.v,
-  )[0].k
-}
-it('findMax', () =&gt; {
-  console.log(findMax({ a: [1, 3], b: [], c: [2, 4] }))
-  console.log(findMax({ a: [1, 2, 3, 4], b: [], c: [] }))
-})
-it('perf', async () =&gt; {
-  const list = Array(100)
-    .fill(0)
-    .map(() =&gt; {
-      const state = upset(10)
-      return {
-        first: hanoiAny(state).length,
-        second: hanoiAnyByDepth(state, findMax(state)).length,
-      }
-    })
-  await mkdirp(path.resolve(__dirname, '.temp/'))
-  await writeJson(path.resolve(__dirname, '.temp/test.json'), [
-    {
-      name: 'hanoiAny',
-      type: 'line',
-      data: list.map((item) =&gt; item.first),
-    },
-    {
-      name: 'hanoiAnyByDepth',
-      type: 'line',
-      data: list.map((item) =&gt; item.second),
-    },
-  ])
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findMax</span>(<span class="hljs-params">state: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;</span>) {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">pos</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">sortBy</span>(<br>    pos.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">k</span>) =&gt;</span> ({<br>      k,<br>      <span class="hljs-attr">v</span>: state[k][state[k].<span class="hljs-property">length</span> - <span class="hljs-number">1</span>] ?? <span class="hljs-number">0</span>,<br>    })),<br>    <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> -item.<span class="hljs-property">v</span>,<br>  )[<span class="hljs-number">0</span>].<span class="hljs-property">k</span><br>}<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'findMax'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">findMax</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [], <span class="hljs-attr">c</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>] }))<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">findMax</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">b</span>: [], <span class="hljs-attr">c</span>: [] }))<br>})<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'perf'</span>, <span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> list = <span class="hljs-title class_">Array</span>(<span class="hljs-number">100</span>)<br>    .<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">() =&gt;</span> {<br>      <span class="hljs-keyword">const</span> state = <span class="hljs-title function_">upset</span>(<span class="hljs-number">10</span>)<br>      <span class="hljs-keyword">return</span> {<br>        <span class="hljs-attr">first</span>: <span class="hljs-title function_">hanoiAny</span>(state).<span class="hljs-property">length</span>,<br>        <span class="hljs-attr">second</span>: <span class="hljs-title function_">hanoiAnyByDepth</span>(state, <span class="hljs-title function_">findMax</span>(state)).<span class="hljs-property">length</span>,<br>      }<br>    })<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">mkdirp</span>(path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">'.temp/'</span>))<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">writeJson</span>(path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">'.temp/test.json'</span>), [<br>    {<br>      <span class="hljs-attr">name</span>: <span class="hljs-string">'hanoiAny'</span>,<br>      <span class="hljs-attr">type</span>: <span class="hljs-string">'line'</span>,<br>      <span class="hljs-attr">data</span>: list.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item.<span class="hljs-property">first</span>),<br>    },<br>    {<br>      <span class="hljs-attr">name</span>: <span class="hljs-string">'hanoiAnyByDepth'</span>,<br>      <span class="hljs-attr">type</span>: <span class="hljs-string">'line'</span>,<br>      <span class="hljs-attr">data</span>: list.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item.<span class="hljs-property">second</span>),<br>    },<br>  ])<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>下面是测试用例的结果的可视化图表</p>
 <p><img src="/resources/77f4b3628080446a99c703301062bec2.png" srcset="/img/loading.gif" lazyload alt="1654530232450"></p>
 <h3 id="4-算出一个汉诺塔从-0-开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤"><a href="#4-算出一个汉诺塔从-0-开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤" class="headerlink" title="4. 算出一个汉诺塔从 0 开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤"></a>4. 算出一个汉诺塔从 0 开始移动到另一个柱子上最佳步骤的所有状态，然后匹配特定状态，进而得到后续所有的步骤</h3><p>实际上不可能，事实上可以找到反例，例如以下状态就不会在最佳走法的任意一步状态中</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const state: Record&lt;HanoiPos, number[]&gt; = {
-  a: [1, 3],
-  b: [],
-  c: [2, 4],
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> <span class="hljs-attr">state</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; = {<br>  <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>],<br>  <span class="hljs-attr">b</span>: [],<br>  <span class="hljs-attr">c</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>],<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>验证它也很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function eq(
-  a: Record&lt;HanoiPos, number[]&gt;,
-  b: Record&lt;HanoiPos, number[]&gt;,
-): Record&lt;HanoiPos, HanoiPos&gt; | false {
-  const arr: HanoiPos[] = ['a', 'b', 'c']
-  const bs = arr.reduce((res, i) =&gt; {
-    res[JSON.stringify(b[i])] = i
-    return res
-  }, {} as Record&lt;string, HanoiPos&gt;)
-  const res: (HanoiPos | null)[] = arr.map(
-    (i) =&gt; bs[JSON.stringify(a[i])] ?? null,
-  )
-  if (res.includes(null)) {
-    return false
-  }
-  return res.reduce((res, v, i) =&gt; {
-    res[arr[i]] = v!
-    return res
-  }, {} as Record&lt;HanoiPos, HanoiPos&gt;)
-}
-it('eq', () =&gt; {
-  expect(
-    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [1, 3], b: [2, 4], c: [] }),
-  ).toBeTruthy()
-  expect(
-    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [], b: [2, 4], c: [1, 3] }),
-  ).toBeTruthy()
-  expect(
-    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [2, 4], b: [], c: [1, 3] }),
-  ).toBeTruthy()
-  expect(
-    eq({ a: [1, 3], b: [2, 4], c: [] }, { a: [2], b: [], c: [1, 3] }),
-  ).toBeFalsy()
-})
-it('hanoiByStream', () =&gt; {
-  const state: Record&lt;HanoiPos, number[]&gt; = {
-    a: [1, 3],
-    b: [],
-    c: [2, 4],
-  }
-  const game = new HanoiGame({
-    a: [1, 2, 3, 4],
-    b: [],
-    c: [],
-  })
-  const i = hanoi(4).findIndex((step) =&gt; {
-    const res = eq(game.state, state)
-    game.move(...step)
-    return res
-  })
-  console.log(i)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">eq</span>(<span class="hljs-params"></span><br><span class="hljs-params">  a: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params">  b: Record&lt;HanoiPos, <span class="hljs-built_in">number</span>[]&gt;,</span><br><span class="hljs-params"></span>): <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>&gt; | <span class="hljs-literal">false</span> {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">HanoiPos</span>[] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]<br>  <span class="hljs-keyword">const</span> bs = arr.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">res, i</span>) =&gt;</span> {<br>    res[<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(b[i])] = i<br>    <span class="hljs-keyword">return</span> res<br>  }, {} <span class="hljs-keyword">as</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">HanoiPos</span>&gt;)<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">res</span>: (<span class="hljs-title class_">HanoiPos</span> | <span class="hljs-literal">null</span>)[] = arr.<span class="hljs-title function_">map</span>(<br>    <span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> bs[<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(a[i])] ?? <span class="hljs-literal">null</span>,<br>  )<br>  <span class="hljs-keyword">if</span> (res.<span class="hljs-title function_">includes</span>(<span class="hljs-literal">null</span>)) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>  }<br>  <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">res, v, i</span>) =&gt;</span> {<br>    res[arr[i]] = v!<br>    <span class="hljs-keyword">return</span> res<br>  }, {} <span class="hljs-keyword">as</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-title class_">HanoiPos</span>&gt;)<br>}<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'eq'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-title function_">expect</span>(<br>    <span class="hljs-title function_">eq</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [] }, { <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [] }),<br>  ).<span class="hljs-title function_">toBeTruthy</span>()<br>  <span class="hljs-title function_">expect</span>(<br>    <span class="hljs-title function_">eq</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [] }, { <span class="hljs-attr">a</span>: [], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>] }),<br>  ).<span class="hljs-title function_">toBeTruthy</span>()<br>  <span class="hljs-title function_">expect</span>(<br>    <span class="hljs-title function_">eq</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [] }, { <span class="hljs-attr">a</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">b</span>: [], <span class="hljs-attr">c</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>] }),<br>  ).<span class="hljs-title function_">toBeTruthy</span>()<br>  <span class="hljs-title function_">expect</span>(<br>    <span class="hljs-title function_">eq</span>({ <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>], <span class="hljs-attr">b</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], <span class="hljs-attr">c</span>: [] }, { <span class="hljs-attr">a</span>: [<span class="hljs-number">2</span>], <span class="hljs-attr">b</span>: [], <span class="hljs-attr">c</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>] }),<br>  ).<span class="hljs-title function_">toBeFalsy</span>()<br>})<br><span class="hljs-title function_">it</span>(<span class="hljs-string">'hanoiByStream'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">state</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">HanoiPos</span>, <span class="hljs-built_in">number</span>[]&gt; = {<br>    <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>],<br>    <span class="hljs-attr">b</span>: [],<br>    <span class="hljs-attr">c</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>],<br>  }<br>  <span class="hljs-keyword">const</span> game = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HanoiGame</span>({<br>    <span class="hljs-attr">a</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>],<br>    <span class="hljs-attr">b</span>: [],<br>    <span class="hljs-attr">c</span>: [],<br>  })<br>  <span class="hljs-keyword">const</span> i = <span class="hljs-title function_">hanoi</span>(<span class="hljs-number">4</span>).<span class="hljs-title function_">findIndex</span>(<span class="hljs-function">(<span class="hljs-params">step</span>) =&gt;</span> {<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-title function_">eq</span>(game.<span class="hljs-property">state</span>, state)<br>    game.<span class="hljs-title function_">move</span>(...step)<br>    <span class="hljs-keyword">return</span> res<br>  })<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>吾辈最终也实现了一个汉诺塔的在线小游戏，参考：<a target="_blank" rel="noopener" href="https://rxliuli.github.io/hanoi/">https://rxliuli.github.io/hanoi/</a></p>
 <blockquote>
@@ -1501,8 +939,6 @@ it('hanoiByStream', () =&gt; {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

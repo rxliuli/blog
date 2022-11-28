@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.2k 字
+          3.5k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          27 分钟
+          29 分钟
         
       </span>
     
@@ -323,23 +321,7 @@
 <p>注：以下内容使用 react+ts 实现</p>
 </blockquote>
 <h2 id="添加事件禁止选择、拖拽、右键"><a href="#添加事件禁止选择、拖拽、右键" class="headerlink" title="添加事件禁止选择、拖拽、右键"></a>添加事件禁止选择、拖拽、右键</h2><p>简而言之，这是一种简单有效的方式，能够在用户不打开控制台的情况下阻止用户保存图片。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">export function preventDefaultListener(e: any) {
-  e.preventDefault()
-}
-
-;&lt;img
-  src={props.url}
-  alt=""
-  style={{
-    //禁止用户选择
-    userSelect: 'none',
-    //禁止所有鼠标事件，过于强大，图片仅用于展示可用
-    // pointerEvents: 'none',
-  }}
-  onTouchStart={preventDefaultListener}
-  onContextMenu={preventDefaultListener}
-  onDragStart={preventDefaultListener}
-/&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">preventDefaultListener</span>(<span class="hljs-params">e: any</span>) {<br>  e.<span class="hljs-title function_">preventDefault</span>()<br>}<br><br>;<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span></span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">src</span>=<span class="hljs-string">{props.url}</span></span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">alt</span>=<span class="hljs-string">""</span></span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">    //<span class="hljs-attr">禁止用户选择</span></span></span><br><span class="hljs-tag"><span class="language-xml">    <span class="hljs-attr">userSelect:</span> '<span class="hljs-attr">none</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">    //<span class="hljs-attr">禁止所有鼠标事件</span>，<span class="hljs-attr">过于强大</span>，<span class="hljs-attr">图片仅用于展示可用</span></span></span><br><span class="hljs-tag"><span class="language-xml">    // <span class="hljs-attr">pointerEvents:</span> '<span class="hljs-attr">none</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">  }}</span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">onTouchStart</span>=<span class="hljs-string">{preventDefaultListener}</span></span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">onContextMenu</span>=<span class="hljs-string">{preventDefaultListener}</span></span></span><br><span class="hljs-tag"><span class="language-xml">  <span class="hljs-attr">onDragStart</span>=<span class="hljs-string">{preventDefaultListener}</span></span></span><br><span class="hljs-tag"><span class="language-xml">/&gt;</span></span><br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/dxzg/p/9930559.html">https://www.cnblogs.com/dxzg/p/9930559.html</a></p>
@@ -347,132 +329,15 @@
 <h2 id="将之转换为-canvas"><a href="#将之转换为-canvas" class="headerlink" title="将之转换为 canvas"></a>将之转换为 canvas</h2><p>另一种思路是将图片转换为 canvas 避免用户使用 <code>img</code> 相关的操作。</p>
 <ol>
 <li><p>将图片转成 canvas</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function imageToCanvas(url: string, canvas: HTMLCanvasElement) {
-  return new Promise((resolve, reject) =&gt; {
-    //新建Image对象，引入当前目录下的图片
-    const img = new Image()
-    img.src = url
-    const c = canvas.getContext('2d')!
-
-    //图片初始化完成后调用
-    img.onload = function () {
-      //将canvas的宽高设置为图像的宽高
-      canvas.width = img.width
-      canvas.height = img.height
-
-      //canvas画图片
-      c.drawImage(img, 0, 0, img.width, img.height)
-      resolve()
-    }
-    img.addEventListener('error', (e) =&gt; {
-      reject(e)
-    })
-  })
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">imageToCanvas</span>(<span class="hljs-params">url: <span class="hljs-built_in">string</span>, canvas: HTMLCanvasElement</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {<br>    <span class="hljs-comment">//新建Image对象，引入当前目录下的图片</span><br>    <span class="hljs-keyword">const</span> img = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Image</span>()<br>    img.<span class="hljs-property">src</span> = url<br>    <span class="hljs-keyword">const</span> c = canvas.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">'2d'</span>)!<br><br>    <span class="hljs-comment">//图片初始化完成后调用</span><br>    img.<span class="hljs-property">onload</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {<br>      <span class="hljs-comment">//将canvas的宽高设置为图像的宽高</span><br>      canvas.<span class="hljs-property">width</span> = img.<span class="hljs-property">width</span><br>      canvas.<span class="hljs-property">height</span> = img.<span class="hljs-property">height</span><br><br>      <span class="hljs-comment">//canvas画图片</span><br>      c.<span class="hljs-title function_">drawImage</span>(img, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, img.<span class="hljs-property">width</span>, img.<span class="hljs-property">height</span>)<br>      <span class="hljs-title function_">resolve</span>()<br>    }<br>    img.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'error'</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {<br>      <span class="hljs-title function_">reject</span>(e)<br>    })<br>  })<br>}<br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>禁用 canvas 事件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const throwFn = () =&gt; {
-  throw new Error(
-    "Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported.",
-  )
-}
-
-const $canvasRef = useRef&lt;HTMLCanvasElement&gt;(null)
- useEffect(() =&gt; {
-     ;(async () =&gt; {
-         await imageToCanvas(props.url, $canvasRef.current!)
-         $canvasRef.current!.toBlob = throwFn
-         $canvasRef.current!.toDataURL = throwFn
-     })()
- }, [])
- return (
-     &lt;canvas
-         ref={$canvasRef}
-         onTouchStart={preventDefaultListener}
-         onContextMenu={preventDefaultListener}
-     /&gt;
- )<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title function_">throwFn</span> = (<span class="hljs-params"></span>) =&gt; {<br>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<br>    <span class="hljs-string">"Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."</span>,<br>  )<br>}<br><br><span class="hljs-keyword">const</span> $canvasRef = useRef&lt;<span class="hljs-title class_">HTMLCanvasElement</span>&gt;(<span class="hljs-literal">null</span>)<br> <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>     ;(<span class="hljs-keyword">async</span> () =&gt; {<br>         <span class="hljs-keyword">await</span> <span class="hljs-title function_">imageToCanvas</span>(props.<span class="hljs-property">url</span>, $canvasRef.<span class="hljs-property">current</span>!)<br>         $canvasRef.<span class="hljs-property">current</span>!.<span class="hljs-property">toBlob</span> = throwFn<br>         $canvasRef.<span class="hljs-property">current</span>!.<span class="hljs-property">toDataURL</span> = throwFn<br>     })()<br> }, [])<br> <span class="hljs-keyword">return</span> (<br>     <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span></span></span><br><span class="hljs-tag"><span class="language-xml">         <span class="hljs-attr">ref</span>=<span class="hljs-string">{$canvasRef}</span></span></span><br><span class="hljs-tag"><span class="language-xml">         <span class="hljs-attr">onTouchStart</span>=<span class="hljs-string">{preventDefaultListener}</span></span></span><br><span class="hljs-tag"><span class="language-xml">         <span class="hljs-attr">onContextMenu</span>=<span class="hljs-string">{preventDefaultListener}</span></span></span><br><span class="hljs-tag"><span class="language-xml">     /&gt;</span></span><br> )<br></code></pre></td></tr></tbody></table></figure></li>
 </ol>
 <h2 id="禁止用户使用控制台查看源码"><a href="#禁止用户使用控制台查看源码" class="headerlink" title="禁止用户使用控制台查看源码"></a>禁止用户使用控制台查看源码</h2><p>如果能禁止用户操作控制台，那么自然能够避免用户查看源码了，下面是一个简单的实现。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 兼容异步函数的返回值
- * @param res 返回值
- * @param callback 同步/异步结果的回调函数
- * @typeparam T 处理参数的类型，如果是 Promise 类型，则取出其泛型类型
- * @typeparam Param 处理参数具体的类型，如果是 Promise 类型，则指定为原类型
- * @typeparam R 返回值具体的类型，如果是 Promise 类型，则指定为 Promise 类型，否则为原类型
- * @returns 处理后的结果，如果是同步的，则返回结果是同步的，否则为异步的
- */
-export function compatibleAsync&lt;T = any, Param = T | Promise&lt;T&gt;, R = T&gt;(
-  res: Param,
-  callback: (r: T) =&gt; R,
-): Param extends Promise&lt;T&gt; ? Promise&lt;R&gt; : R {
-  return (res instanceof Promise
-    ? res.then(callback)
-    : callback(res as any)) as any
-}
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 兼容异步函数的返回值</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> res 返回值</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> callback 同步/异步结果的回调函数</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@typeparam</span> T 处理参数的类型，如果是 Promise 类型，则取出其泛型类型</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@typeparam</span> Param 处理参数具体的类型，如果是 Promise 类型，则指定为原类型</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@typeparam</span> R 返回值具体的类型，如果是 Promise 类型，则指定为 Promise 类型，否则为原类型</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> 处理后的结果，如果是同步的，则返回结果是同步的，否则为异步的</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> compatibleAsync&lt;T = <span class="hljs-built_in">any</span>, <span class="hljs-title class_">Param</span> = T | <span class="hljs-title class_">Promise</span>&lt;T&gt;, R = T&gt;(<br>  <span class="hljs-attr">res</span>: <span class="hljs-title class_">Param</span>,<br>  <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">r: T</span>) =&gt;</span> R,<br>): <span class="hljs-title class_">Param</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Promise</span>&lt;T&gt; ? <span class="hljs-title class_">Promise</span>&lt;R&gt; : R {<br>  <span class="hljs-keyword">return</span> (res <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Promise</span><br>    ? res.<span class="hljs-title function_">then</span>(callback)<br>    : <span class="hljs-title function_">callback</span>(res <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 测试函数的执行时间</span><br><span class="hljs-comment"> * 注：如果函数返回 Promise，则该函数也会返回 Promise，否则直接返回执行时间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> fn 需要测试的函数</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> 执行的毫秒数</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> timing&lt;R&gt;(<br>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> R,<br>  <span class="hljs-comment">// 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number</span><br>): R <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">any</span>&gt; ? <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">number</span>&gt; : <span class="hljs-built_in">number</span> {<br>  <span class="hljs-keyword">const</span> begin = performance.<span class="hljs-title function_">now</span>()<br>  <span class="hljs-keyword">const</span> res = <span class="hljs-title function_">fn</span>()<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">compatibleAsync</span>(res, <span class="hljs-function">() =&gt;</span> performance.<span class="hljs-title function_">now</span>() - begin)<br>}<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 禁止他人调试网站相关方法的集合对象</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AntiDebug</span> {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 不停循环 debugger 防止有人调试代码</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> 取消函数</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-title function_">cyclingDebugger</span>(): <span class="hljs-title class_">Function</span> {<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {<br>      <span class="hljs-keyword">debugger</span><br>    }, <span class="hljs-number">100</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(res)<br>  }<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 检查是否正在 debugger 并调用回调函数</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> fn 回调函数，默认为重载页面</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> 取消函数</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-title function_">checkDebug</span>(<br>    <span class="hljs-attr">fn</span>: <span class="hljs-title class_">Function</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">window</span>.<span class="hljs-property">location</span>.<span class="hljs-title function_">reload</span>(),<br>  ): <span class="hljs-title class_">Function</span> {<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {<br>      <span class="hljs-keyword">const</span> diff = <span class="hljs-title function_">timing</span>(<span class="hljs-function">() =&gt;</span> {<br>        <span class="hljs-keyword">debugger</span><br>      })<br>      <span class="hljs-keyword">if</span> (diff &gt; <span class="hljs-number">500</span>) {<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(diff)<br>        <span class="hljs-title function_">fn</span>()<br>      }<br>    }, <span class="hljs-number">1000</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(res)<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-/**
- * 测试函数的执行时间
- * 注：如果函数返回 Promise，则该函数也会返回 Promise，否则直接返回执行时间
- * @param fn 需要测试的函数
- * @returns 执行的毫秒数
- */
-export function timing&lt;R&gt;(
-  fn: (...args: any[]) =&gt; R,
-  // 函数返回类型是 Promise 的话，则返回 Promise&lt;number&gt;，否则返回 number
-): R extends Promise&lt;any&gt; ? Promise&lt;number&gt; : number {
-  const begin = performance.now()
-  const res = fn()
-  return compatibleAsync(res, () =&gt; performance.now() - begin)
-}
-/**
- * 禁止他人调试网站相关方法的集合对象
- */
-export class AntiDebug {
-  /**
-   * 不停循环 debugger 防止有人调试代码
-   * @returns 取消函数
-   */
-  public static cyclingDebugger(): Function {
-    const res = setInterval(() =&gt; {
-      debugger
-    }, 100)
-    return () =&gt; clearInterval(res)
-  }
-  /**
-   * 检查是否正在 debugger 并调用回调函数
-   * @param fn 回调函数，默认为重载页面
-   * @returns 取消函数
-   */
-  public static checkDebug(
-    fn: Function = () =&gt; window.location.reload(),
-  ): Function {
-    const res = setInterval(() =&gt; {
-      const diff = timing(() =&gt; {
-        debugger
-      })
-      if (diff &gt; 500) {
-        console.log(diff)
-        fn()
-      }
-    }, 1000)
-    return () =&gt; clearInterval(res)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">useEffect(() =&gt; {
-  const cancel1 = AntiDebug.cyclingDebugger() as any
-  const cancel2 = AntiDebug.checkDebug(() =&gt;
-    console.log('请不要打开调试'),
-  ) as any
-  return () =&gt; {
-    cancel1()
-    cancel2()
-  }
-}, [])
-
-return &lt;img src={url} alt="" /&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> cancel1 = <span class="hljs-title class_">AntiDebug</span>.<span class="hljs-title function_">cyclingDebugger</span>() <span class="hljs-keyword">as</span> any<br>  <span class="hljs-keyword">const</span> cancel2 = <span class="hljs-title class_">AntiDebug</span>.<span class="hljs-title function_">checkDebug</span>(<span class="hljs-function">() =&gt;</span><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'请不要打开调试'</span>),<br>  ) <span class="hljs-keyword">as</span> any<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-title function_">cancel1</span>()<br>    <span class="hljs-title function_">cancel2</span>()<br>  }<br>}, [])<br><br><span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{url}</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">""</span> /&gt;</span></span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="传输图片使用自定义格式"><a href="#传输图片使用自定义格式" class="headerlink" title="传输图片使用自定义格式"></a>传输图片使用自定义格式</h2><p>该功能需要服务端配合，故而此处赞不实现，可以参考 <a target="_blank" rel="noopener" href="https://weread.qq.com/">微信读书</a>，就是将文本转为 canvas，数据传输也进行了加密，可以在很大程度上防止普通用户想要复制/下载的行为了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如同所有的前端限制用户的技术一样，这是一个没有终点的斗争。。。</p>
@@ -828,8 +693,6 @@ return &lt;img src={url} alt="" /&gt;<span aria-hidden="true" class="line-number
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

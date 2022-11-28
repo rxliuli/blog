@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.1k 字
+          2.2k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          18 分钟
+          19 分钟
         
       </span>
     
@@ -325,94 +323,11 @@
 <li>浏览器使用 localStorage 实现</li>
 <li>electron 中则使用 electron-store 实现</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type Store from 'electron-store'
-import isElectron from 'is-electron'
-import { DeepReadonly } from 'utility-types'
-
-interface BaseStore {
-  get(key: string): string | null
-
-  set(key: string, value: string): void
-}
-
-class ElectronStoreImpl implements BaseStore {
-  private store: Store
-
-  constructor() {
-    const Store = window.require('electron-store')
-    this.store = new Store()
-  }
-
-  set(key: string, value: string): void {
-    this.store.set(key, value)
-  }
-
-  get(key: string) {
-    return this.store.get(key) as string
-  }
-}
-
-class LocalStorageImpl implements BaseStore {
-  get(key: string) {
-    return localStorage.getItem(key)
-  }
-
-  set(key: string, value: string) {
-    localStorage.setItem(key, value)
-  }
-}
-
-const symbol = Symbol('ElectronStore.store')
-
-export class ElectronStore {
-  private readonly [symbol]: BaseStore = isElectron()
-    ? new ElectronStoreImpl()
-    : new LocalStorageImpl()
-
-  static getInstance&lt;T extends object&gt;(
-    init?: Partial&lt;T&gt;,
-  ): Partial&lt;{ [P in keyof T]: DeepReadonly&lt;T[P]&gt; }&gt; {
-    const electronStore = new ElectronStore()
-
-    const proxy = new Proxy({} as any, {
-      get(target: any, p: string): any {
-        const text = electronStore[symbol].get(p)
-        try {
-          if (text === null || text === undefined) {
-            return null
-          }
-          return JSON.parse(text)
-        } catch (e) {
-          return null
-        }
-      },
-      set(target: any, p: string, value: any): boolean {
-        electronStore[symbol].set(
-          p,
-          value !== undefined &amp;&amp; value !== null ? JSON.stringify(value) : value,
-        )
-        return true
-      },
-    })
-    if (init) {
-      Object.entries(init).forEach(([k, v]) =&gt; {
-        const text = electronStore[symbol].get(k)
-        if (text === null || text === undefined) {
-          proxy[k] = v
-        }
-      })
-    }
-    return proxy
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">Store</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'electron-store'</span><br><span class="hljs-keyword">import</span> isElectron <span class="hljs-keyword">from</span> <span class="hljs-string">'is-electron'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">DeepReadonly</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'utility-types'</span><br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">BaseStore</span> {<br>  <span class="hljs-title function_">get</span>(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span><br><br>  <span class="hljs-title function_">set</span>(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">void</span><br>}<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ElectronStoreImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">BaseStore</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">store</span>: <span class="hljs-title class_">Store</span><br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">Store</span> = <span class="hljs-variable language_">window</span>.<span class="hljs-built_in">require</span>(<span class="hljs-string">'electron-store'</span>)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">store</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Store</span>()<br>  }<br><br>  <span class="hljs-title function_">set</span>(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">void</span> {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">store</span>.<span class="hljs-title function_">set</span>(key, value)<br>  }<br><br>  <span class="hljs-title function_">get</span>(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">store</span>.<span class="hljs-title function_">get</span>(key) <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span><br>  }<br>}<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">LocalStorageImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">BaseStore</span> {<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(key)<br>  }<br><br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">key: <span class="hljs-built_in">string</span>, value: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(key, value)<br>  }<br>}<br><br><span class="hljs-keyword">const</span> <span class="hljs-built_in">symbol</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'ElectronStore.store'</span>)<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ElectronStore</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> [<span class="hljs-built_in">symbol</span>]: <span class="hljs-title class_">BaseStore</span> = <span class="hljs-title function_">isElectron</span>()<br>    ? <span class="hljs-keyword">new</span> <span class="hljs-title class_">ElectronStoreImpl</span>()<br>    : <span class="hljs-keyword">new</span> <span class="hljs-title class_">LocalStorageImpl</span>()<br><br>  <span class="hljs-keyword">static</span> getInstance&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span>&gt;(<br>    init?: <span class="hljs-title class_">Partial</span>&lt;T&gt;,<br>  ): <span class="hljs-title class_">Partial</span>&lt;{ [P <span class="hljs-keyword">in</span> keyof T]: <span class="hljs-title class_">DeepReadonly</span>&lt;T[P]&gt; }&gt; {<br>    <span class="hljs-keyword">const</span> electronStore = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ElectronStore</span>()<br><br>    <span class="hljs-keyword">const</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>({} <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>, {<br>      <span class="hljs-title function_">get</span>(<span class="hljs-attr">target</span>: <span class="hljs-built_in">any</span>, <span class="hljs-attr">p</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">any</span> {<br>        <span class="hljs-keyword">const</span> text = electronStore[<span class="hljs-built_in">symbol</span>].<span class="hljs-title function_">get</span>(p)<br>        <span class="hljs-keyword">try</span> {<br>          <span class="hljs-keyword">if</span> (text === <span class="hljs-literal">null</span> || text === <span class="hljs-literal">undefined</span>) {<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>          }<br>          <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text)<br>        } <span class="hljs-keyword">catch</span> (e) {<br>          <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>        }<br>      },<br>      <span class="hljs-title function_">set</span>(<span class="hljs-attr">target</span>: <span class="hljs-built_in">any</span>, <span class="hljs-attr">p</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">value</span>: <span class="hljs-built_in">any</span>): <span class="hljs-built_in">boolean</span> {<br>        electronStore[<span class="hljs-built_in">symbol</span>].<span class="hljs-title function_">set</span>(<br>          p,<br>          value !== <span class="hljs-literal">undefined</span> &amp;&amp; value !== <span class="hljs-literal">null</span> ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(value) : value,<br>        )<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>      },<br>    })<br>    <span class="hljs-keyword">if</span> (init) {<br>      <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(init).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[k, v]</span>) =&gt;</span> {<br>        <span class="hljs-keyword">const</span> text = electronStore[<span class="hljs-built_in">symbol</span>].<span class="hljs-title function_">get</span>(k)<br>        <span class="hljs-keyword">if</span> (text === <span class="hljs-literal">null</span> || text === <span class="hljs-literal">undefined</span>) {<br>          proxy[k] = v<br>        }<br>      })<br>    }<br>    <span class="hljs-keyword">return</span> proxy<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>你可能发现了，为了简化使用的 API，这里使用了代理模式拦截了对实例的访问，修改为使用 <code>get/set</code> 方法取值和设值。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来和一个普通的对象没什么区别，直接通过 <code>.</code> 访问或设置属性即可。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const userStore = ElectronStore.getInstance&lt;{ name: string; age: number }&gt;()
-userStore.name = 'liuli'
-console.log(userStore.name === 'liuli')
-userStore.age = 1
-console.log(userStore.age === 1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> userStore = <span class="hljs-title class_">ElectronStore</span>.<span class="hljs-property">getInstance</span>&lt;{ <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span> }&gt;()<br>userStore.<span class="hljs-property">name</span> = <span class="hljs-string">'liuli'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(userStore.<span class="hljs-property">name</span> === <span class="hljs-string">'liuli'</span>)<br>userStore.<span class="hljs-property">age</span> = <span class="hljs-number">1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(userStore.<span class="hljs-property">age</span> === <span class="hljs-number">1</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>具体代码在 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/electron_example/blob/ed158e9d013d7138697c76b52ddefb4748fe1af0/libs/electron-util/src/ElectronStore.ts#L40">electron_example</a>，由于是一个浅层封装，所以并未发布，但可以直接将模块复制到项目中使用。</p>
@@ -768,8 +683,6 @@ console.log(userStore.age === 1)<span aria-hidden="true" class="line-numbers-row
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

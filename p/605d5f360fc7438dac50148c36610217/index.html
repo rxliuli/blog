@@ -45,8 +45,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          4.9k 字
+          5.1k 字
         
       </span>
     
@@ -264,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          42 分钟
+          43 分钟
         
       </span>
     
@@ -370,23 +368,7 @@
 <li>ui 库不支持 tree shaking，导致 bundle 比较大，项目占比 <strong>439.98kb/74.79%</strong></li>
 </ul>
 <p>依赖树实在可怕，正因如此，吾辈才没有去替换 react =&gt; preact</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@vscode/codicons 0.0.29
-@vscode/webview-ui-toolkit 0.9.3
-├── @microsoft/fast-element 1.8.0
-├─┬ @microsoft/fast-foundation 2.37.2
-│ ├── @microsoft/fast-element 1.8.0
-│ ├── @microsoft/fast-web-utilities 5.1.0
-│ ├── tabbable 5.2.1
-│ └── tslib 1.14.1
-├─┬ @microsoft/fast-react-wrapper 0.1.43
-│ ├── @microsoft/fast-element 1.8.0
-│ ├─┬ @microsoft/fast-foundation 2.37.2
-│ │ ├── @microsoft/fast-element 1.8.0
-│ │ ├── @microsoft/fast-web-utilities 5.1.0
-│ │ ├── tabbable 5.2.1
-│ │ └── tslib 1.14.1
-│ └── react 17.0.2 peer
-└── react 17.0.2 peer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sh">@vscode/codicons 0.0.29<br>@vscode/webview-ui-toolkit 0.9.3<br>├── @microsoft/fast-element 1.8.0<br>├─┬ @microsoft/fast-foundation 2.37.2<br>│ ├── @microsoft/fast-element 1.8.0<br>│ ├── @microsoft/fast-web-utilities 5.1.0<br>│ ├── tabbable 5.2.1<br>│ └── tslib 1.14.1<br>├─┬ @microsoft/fast-react-wrapper 0.1.43<br>│ ├── @microsoft/fast-element 1.8.0<br>│ ├─┬ @microsoft/fast-foundation 2.37.2<br>│ │ ├── @microsoft/fast-element 1.8.0<br>│ │ ├── @microsoft/fast-web-utilities 5.1.0<br>│ │ ├── tabbable 5.2.1<br>│ │ └── tslib 1.14.1<br>│ └── react 17.0.2 peer<br>└── react 17.0.2 peer<br></code></pre></td></tr></tbody></table></figure>
 
 <p><img src="/resources/8cb9112697704e6699908d0537c647fe.png" srcset="/img/loading.gif" lazyload alt="Snipaste\_2022-03-29\_22-24-32"></p>
 <h2 id="如何实现渲染层与主线程通信"><a href="#如何实现渲染层与主线程通信" class="headerlink" title="如何实现渲染层与主线程通信"></a>如何实现渲染层与主线程通信</h2><p>由于核心是通过 <code>postMessage/onmessage</code> 实现，所以与 web worker 或 iframe 通信非常相似。由于代码比较简单，所以吾辈并未封装复杂的通信逻辑。</p>
@@ -397,84 +379,16 @@
 </ol>
 <p>关键代码</p>
 <p>主线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const map = new Map&lt;string, (...args: any[]) =&gt; any&gt;()
-map.set('hello', (name: string) =&gt; `hello ${name}`)
-webview.onDidReceiveMessage(
-  async (message: any) =&gt; {
-    const { command, data = [], callback } = message
-    if (!map.has(command)) {
-      throw new Error(`找不到命令 ${command}`)
-    }
-    const res = await map.get(command)!(...data)
-    if (callback) {
-      console.log('callback: ', callback)
-      this._panel.webview.postMessage({
-        command: callback,
-        data: [res],
-      })
-    }
-  },
-  undefined,
-  this._disposables,
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">any</span>&gt;()<br>map.<span class="hljs-title function_">set</span>(<span class="hljs-string">'hello'</span>, <span class="hljs-function">(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span>)<br>webview.<span class="hljs-title function_">onDidReceiveMessage</span>(<br>  <span class="hljs-keyword">async</span> (<span class="hljs-attr">message</span>: <span class="hljs-built_in">any</span>) =&gt; {<br>    <span class="hljs-keyword">const</span> { command, data = [], callback } = message<br>    <span class="hljs-keyword">if</span> (!map.<span class="hljs-title function_">has</span>(command)) {<br>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`找不到命令 <span class="hljs-subst">${command}</span>`</span>)<br>    }<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> map.<span class="hljs-title function_">get</span>(command)!(...data)<br>    <span class="hljs-keyword">if</span> (callback) {<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'callback: '</span>, callback)<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">_panel</span>.<span class="hljs-property">webview</span>.<span class="hljs-title function_">postMessage</span>({<br>        <span class="hljs-attr">command</span>: callback,<br>        <span class="hljs-attr">data</span>: [res],<br>      })<br>    }<br>  },<br>  <span class="hljs-literal">undefined</span>,<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">_disposables</span>,<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>渲染线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type { WebviewApi } from 'vscode-webview'
-
-class VSCodeAPIWrapper {
-  private readonly vsCodeApi: WebviewApi&lt;unknown&gt; | undefined
-
-  constructor() {
-    if (typeof acquireVsCodeApi === 'function') {
-      this.vsCodeApi = acquireVsCodeApi()
-    }
-  }
-
-  public postMessage(message: unknown) {
-    if (this.vsCodeApi) {
-      this.vsCodeApi.postMessage(message)
-    } else {
-      console.log(message)
-    }
-  }
-
-  async invoke(options: {
-    command: string
-    default?: any
-    args?: any[]
-  }): Promise&lt;any&gt; {
-    return await new Promise&lt;string&gt;((resolve) =&gt; {
-      if (typeof acquireVsCodeApi !== 'function') {
-        resolve(options.default)
-        return
-      }
-      const id = Date.now() + '_' + Math.random()
-      const listener = (message: MessageEvent) =&gt; {
-        const data = message.data
-        if (data.command === id) {
-          resolve(data.data[0])
-          window.removeEventListener('message', listener)
-        }
-      }
-      window.addEventListener('message', listener)
-      vscode.postMessage({
-        command: options.command,
-        data: options.args,
-        callback: id,
-      })
-    })
-  }
-}
-
-export const vscode = new VSCodeAPIWrapper()
-
-console.log(await vscode.invoke({ command: 'world' })) // hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">WebviewApi</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vscode-webview'</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VSCodeAPIWrapper</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">vsCodeApi</span>: <span class="hljs-title class_">WebviewApi</span>&lt;<span class="hljs-built_in">unknown</span>&gt; | <span class="hljs-literal">undefined</span><br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> acquireVsCodeApi === <span class="hljs-string">'function'</span>) {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">vsCodeApi</span> = <span class="hljs-title function_">acquireVsCodeApi</span>()<br>    }<br>  }<br><br>  <span class="hljs-keyword">public</span> <span class="hljs-title function_">postMessage</span>(<span class="hljs-params">message: <span class="hljs-built_in">unknown</span></span>) {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">vsCodeApi</span>) {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">vsCodeApi</span>.<span class="hljs-title function_">postMessage</span>(message)<br>    } <span class="hljs-keyword">else</span> {<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(message)<br>    }<br>  }<br><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">invoke</span>(<span class="hljs-attr">options</span>: {<br>    <span class="hljs-attr">command</span>: <span class="hljs-built_in">string</span><br>    <span class="hljs-keyword">default</span>?: <span class="hljs-built_in">any</span><br>    args?: <span class="hljs-built_in">any</span>[]<br>  }): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">any</span>&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {<br>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> acquireVsCodeApi !== <span class="hljs-string">'function'</span>) {<br>        <span class="hljs-title function_">resolve</span>(options.<span class="hljs-property">default</span>)<br>        <span class="hljs-keyword">return</span><br>      }<br>      <span class="hljs-keyword">const</span> id = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() + <span class="hljs-string">'_'</span> + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>()<br>      <span class="hljs-keyword">const</span> <span class="hljs-title function_">listener</span> = (<span class="hljs-params">message: MessageEvent</span>) =&gt; {<br>        <span class="hljs-keyword">const</span> data = message.<span class="hljs-property">data</span><br>        <span class="hljs-keyword">if</span> (data.<span class="hljs-property">command</span> === id) {<br>          <span class="hljs-title function_">resolve</span>(data.<span class="hljs-property">data</span>[<span class="hljs-number">0</span>])<br>          <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">'message'</span>, listener)<br>        }<br>      }<br>      <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'message'</span>, listener)<br>      vscode.<span class="hljs-title function_">postMessage</span>({<br>        <span class="hljs-attr">command</span>: options.<span class="hljs-property">command</span>,<br>        <span class="hljs-attr">data</span>: options.<span class="hljs-property">args</span>,<br>        <span class="hljs-attr">callback</span>: id,<br>      })<br>    })<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> vscode = <span class="hljs-keyword">new</span> <span class="hljs-title class_">VSCodeAPIWrapper</span>()<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> vscode.<span class="hljs-title function_">invoke</span>({ <span class="hljs-attr">command</span>: <span class="hljs-string">'world'</span> })) <span class="hljs-comment">// hello world</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用-npm-create-还是-npx"><a href="#使用-npm-create-还是-npx" class="headerlink" title="使用 npm create 还是 npx"></a>使用 npm create 还是 npx</h2><p>例如使用 vite 创建一个 react 项目的命令是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx --yes --package create-vite create-vite path --template=react-ts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npx --<span class="hljs-built_in">yes</span> --package create-vite create-vite path --template=react-ts<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用 create-react-app 创建一个项目的命令是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx --yes --package create-react-app create-react-app path --template=typescript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npx --<span class="hljs-built_in">yes</span> --package create-react-app create-react-app path --template=typescript<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可能有人会问了：“为什么没有使用类似 <code>npm create</code> 这个命令来创建项目呢？”<br>这背后确有缘由，乍看上去 <code>create</code> 命令已经被主流的包管理器 <code>npm/yarn/pnpm</code> 都支持了，但它有一些局限性</p>
 <ol>
@@ -490,41 +404,10 @@ console.log(await vscode.invoke({ command: 'world' })) // hello world<span aria-
 </ol>
 <p>因而吾辈选择使用 <code>context.globalState</code> 持久化数据</p>
 <p>主线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// 其他代码。。。
-map.set('getState', (key: string) =&gt; this.globalState.get(key))
-map.set('setState', (key: string, value: any) =&gt;
-  this.globalState.update(key, value),
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// 其他代码。。。</span><br>map.<span class="hljs-title function_">set</span>(<span class="hljs-string">'getState'</span>, <span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">globalState</span>.<span class="hljs-title function_">get</span>(key))<br>map.<span class="hljs-title function_">set</span>(<span class="hljs-string">'setState'</span>, <span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span>, value: <span class="hljs-built_in">any</span></span>) =&gt;</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">globalState</span>.<span class="hljs-title function_">update</span>(key, value),<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>渲染线程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import type { WebviewApi } from 'vscode-webview'
-
-class VSCodeAPIWrapper {
-  // 其他代码。。。
-  async getState(key: string): Promise&lt;unknown | undefined&gt; {
-    if (this.vsCodeApi) {
-      return await this.invoke({ command: 'getState', args: [key] })
-    } else {
-      const state = localStorage.getItem(key)
-      return state ? JSON.parse(state) : undefined
-    }
-  }
-
-  async setState&lt;T extends unknown | undefined&gt;(
-    key: string,
-    newState: T,
-  ): Promise&lt;void&gt; {
-    if (this.vsCodeApi) {
-      return await this.invoke({ command: 'setState', args: [key, newState] })
-    } else {
-      localStorage.setItem(key, JSON.stringify(newState))
-    }
-  }
-}
-
-export const vscode = new VSCodeAPIWrapper()
-
-const store = (await vscode.getState(props.id)) as { location: string }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">WebviewApi</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vscode-webview'</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">VSCodeAPIWrapper</span> {<br>  <span class="hljs-comment">// 其他代码。。。</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">getState</span>(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">unknown</span> | <span class="hljs-literal">undefined</span>&gt; {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">vsCodeApi</span>) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">invoke</span>({ <span class="hljs-attr">command</span>: <span class="hljs-string">'getState'</span>, <span class="hljs-attr">args</span>: [key] })<br>    } <span class="hljs-keyword">else</span> {<br>      <span class="hljs-keyword">const</span> state = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(key)<br>      <span class="hljs-keyword">return</span> state ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(state) : <span class="hljs-literal">undefined</span><br>    }<br>  }<br><br>  <span class="hljs-keyword">async</span> setState&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">unknown</span> | <span class="hljs-literal">undefined</span>&gt;(<br>    <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>,<br>    <span class="hljs-attr">newState</span>: T,<br>  ): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">vsCodeApi</span>) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">invoke</span>({ <span class="hljs-attr">command</span>: <span class="hljs-string">'setState'</span>, <span class="hljs-attr">args</span>: [key, newState] })<br>    } <span class="hljs-keyword">else</span> {<br>      <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(key, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(newState))<br>    }<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> vscode = <span class="hljs-keyword">new</span> <span class="hljs-title class_">VSCodeAPIWrapper</span>()<br><br><span class="hljs-keyword">const</span> store = (<span class="hljs-keyword">await</span> vscode.<span class="hljs-title function_">getState</span>(props.<span class="hljs-property">id</span>)) <span class="hljs-keyword">as</span> { <span class="hljs-attr">location</span>: <span class="hljs-built_in">string</span> }<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在可以支持选择的生成器和配置项在下次使用时仍然会被缓存，这对于需要使用相同的生成器创建项目确实很方便，尤其是生成器选项比较多的情况下。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>vscode 目前在一些方面仍然比不上 webstorm，但其流行趋势简直势不可挡，许多前端项目甚至官方仅支持 vscode 编辑器，这让在某些时候变得没有选择（例如 vue3、nx）。所以与其抱怨，还不如尝试让它变得更好。</p>
@@ -877,8 +760,6 @@ const store = (await vscode.getState(props.id)) as { location: string }<span ari
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

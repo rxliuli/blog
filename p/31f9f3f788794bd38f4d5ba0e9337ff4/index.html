@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景客户需要一次性将视频全部缓冲完成再进行观看而非看一段缓冲一段，所以就看了一下有没有什么方法能够做到，结果顺便还写了一个通用的加载资源的方法。 实现基本思路是使用 ajax(fetch) 将资源先加载到本地，然后生成一个本地的 url，最后将本地资源链接赋值给需要资源的元素上。 &#x2F;**  * 将 url 中的内容加载到元素上  * 注：domSelector 必须有 src 属性用以将加载完成的">
+    <meta name="description" content="场景客户需要一次性将视频全部缓冲完成再进行观看而非看一段缓冲一段，所以就看了一下有没有什么方法能够做到，结果顺便还写了一个通用的加载资源的方法。 实现基本思路是使用 ajax(fetch) 将资源先加载到本地，然后生成一个本地的 url，最后将本地资源链接赋值给需要资源的元素上。 12345678910111213141516171819202122232425262728293031323334">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JavaScript 加载全部资源后再使用">
 <meta property="og:url" content="https://blog.rxliuli.com/p/31f9f3f788794bd38f4d5ba0e9337ff4/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景客户需要一次性将视频全部缓冲完成再进行观看而非看一段缓冲一段，所以就看了一下有没有什么方法能够做到，结果顺便还写了一个通用的加载资源的方法。 实现基本思路是使用 ajax(fetch) 将资源先加载到本地，然后生成一个本地的 url，最后将本地资源链接赋值给需要资源的元素上。 &#x2F;**  * 将 url 中的内容加载到元素上  * 注：domSelector 必须有 src 属性用以将加载完成的">
+<meta property="og:description" content="场景客户需要一次性将视频全部缓冲完成再进行观看而非看一段缓冲一段，所以就看了一下有没有什么方法能够做到，结果顺便还写了一个通用的加载资源的方法。 实现基本思路是使用 ajax(fetch) 将资源先加载到本地，然后生成一个本地的 url，最后将本地资源链接赋值给需要资源的元素上。 12345678910111213141516171819202122232425262728293031323334">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-02T14:15:37.858Z">
 <meta property="article:modified_time" content="2020-12-25T11:11:46.406Z">
@@ -41,8 +41,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.6k 字
+          1.7k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          14 分钟
+          15 分钟
         
       </span>
     
@@ -315,68 +313,13 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>客户需要一次性将视频全部缓冲完成再进行观看而非看一段缓冲一段，所以就看了一下有没有什么方法能够做到，结果顺便还写了一个通用的加载资源的方法。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>基本思路是使用 <code>ajax</code>(<code>fetch</code>) 将资源先加载到本地，然后生成一个本地的 url，最后将本地资源链接赋值给需要资源的元素上。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
- * 将 url 中的内容加载到元素上
- * 注：domSelector 必须有 src 属性用以将加载完成的资源赋值给其，加载默认是异步的
- * @param {string} url url 资源
- * @param {document} domSelector dom 选择器
- * @param {object} init 初始化参数, 实为 fetch() 的参数以及一些自定义的参数
- * 关于 fetch 具体可以参考 &lt;https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch&gt;
- * 自定义的参数有:
- * before: 加载之前的方法，例如可以设置一个弹窗或者遮罩告诉用户资源正在加载中
- * after: 加载完成之后的方法，例如可以设置一个加载完成的动画提醒一下用户
- * error: 发生异常时的方法，例如可以设置一个错误提示通知用户加载异常需要刷新了
- */</span>
-<span class="token keyword">function</span> <span class="token function">loadResource</span><span class="token punctuation">(</span><span class="token parameter">url<span class="token punctuation">,</span> domSelector<span class="token punctuation">,</span> init</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>init<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    init <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-  <span class="token punctuation">}</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>init<span class="token punctuation">.</span>before <span class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> init<span class="token punctuation">.</span>before <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    init<span class="token punctuation">.</span><span class="token function">before</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-  <span class="token comment">// 如果没有自定义缓存的话就设置缓存</span>
-  init<span class="token punctuation">.</span>cache <span class="token operator">=</span> init<span class="token punctuation">.</span>cache <span class="token operator">||</span> <span class="token string">'force-cache'</span>
-  <span class="token comment">// 如果没有自定义错误处理就设置一下错误处理</span>
-  init<span class="token punctuation">.</span>error <span class="token operator">=</span>
-    init<span class="token punctuation">.</span>error <span class="token operator">||</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">error</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">request was wrong: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>error<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> init<span class="token punctuation">)</span>
-    <span class="token comment">// 判断返回的状态是否正常</span>
-    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">rep</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>rep<span class="token punctuation">.</span>status <span class="token operator">===</span> <span class="token number">200</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> rep
-      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">response status error </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>rep<span class="token punctuation">.</span>status<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token comment">// 转换资源</span>
-    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> data<span class="token punctuation">.</span><span class="token function">blob</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">blob</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token comment">// 生成一个本地的 url 并赋值给 src 属性</span>
-      domSelector<span class="token punctuation">.</span>src <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token constant">URL</span><span class="token punctuation">.</span><span class="token function">createObjectURL</span><span class="token punctuation">(</span>blob<span class="token punctuation">)</span>
-      <span class="token keyword">if</span> <span class="token punctuation">(</span>init<span class="token punctuation">.</span>after <span class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> init<span class="token punctuation">.</span>after <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        init<span class="token punctuation">.</span><span class="token function">after</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span>init<span class="token punctuation">.</span>error<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 将 url 中的内容加载到元素上</span><br><span class="hljs-comment"> * 注：domSelector 必须有 src 属性用以将加载完成的资源赋值给其，加载默认是异步的</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">string</span>} url url 资源</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">document</span>} domSelector dom 选择器</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">object</span>} init 初始化参数, 实为 fetch() 的参数以及一些自定义的参数</span><br><span class="hljs-comment"> * 关于 fetch 具体可以参考 &lt;https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch&gt;</span><br><span class="hljs-comment"> * 自定义的参数有:</span><br><span class="hljs-comment"> * before: 加载之前的方法，例如可以设置一个弹窗或者遮罩告诉用户资源正在加载中</span><br><span class="hljs-comment"> * after: 加载完成之后的方法，例如可以设置一个加载完成的动画提醒一下用户</span><br><span class="hljs-comment"> * error: 发生异常时的方法，例如可以设置一个错误提示通知用户加载异常需要刷新了</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">loadResource</span>(<span class="hljs-params">url, domSelector, init</span>) {<br>  <span class="hljs-keyword">if</span> (!init) {<br>    init = {}<br>  }<br>  <span class="hljs-keyword">if</span> (init.<span class="hljs-property">before</span> &amp;&amp; <span class="hljs-keyword">typeof</span> init.<span class="hljs-property">before</span> === <span class="hljs-string">'function'</span>) {<br>    init.<span class="hljs-title function_">before</span>()<br>  }<br>  <span class="hljs-comment">// 如果没有自定义缓存的话就设置缓存</span><br>  init.<span class="hljs-property">cache</span> = init.<span class="hljs-property">cache</span> || <span class="hljs-string">'force-cache'</span><br>  <span class="hljs-comment">// 如果没有自定义错误处理就设置一下错误处理</span><br>  init.<span class="hljs-property">error</span> =<br>    init.<span class="hljs-property">error</span> || (<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`request was wrong: <span class="hljs-subst">${error}</span>`</span>))<br>  <span class="hljs-title function_">fetch</span>(url, init)<br>    <span class="hljs-comment">// 判断返回的状态是否正常</span><br>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">rep</span>) =&gt;</span> {<br>      <span class="hljs-keyword">if</span> (rep.<span class="hljs-property">status</span> === <span class="hljs-number">200</span>) {<br>        <span class="hljs-keyword">return</span> rep<br>      } <span class="hljs-keyword">else</span> {<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`response status error <span class="hljs-subst">${rep.status}</span>`</span>)<br>      }<br>    })<br>    <span class="hljs-comment">// 转换资源</span><br>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> data.<span class="hljs-title function_">blob</span>())<br>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">blob</span>) =&gt;</span> {<br>      <span class="hljs-comment">// 生成一个本地的 url 并赋值给 src 属性</span><br>      domSelector.<span class="hljs-property">src</span> = <span class="hljs-variable language_">window</span>.<span class="hljs-property">URL</span>.<span class="hljs-title function_">createObjectURL</span>(blob)<br>      <span class="hljs-keyword">if</span> (init.<span class="hljs-property">after</span> &amp;&amp; <span class="hljs-keyword">typeof</span> init.<span class="hljs-property">after</span> === <span class="hljs-string">'function'</span>) {<br>        init.<span class="hljs-title function_">after</span>()<br>      }<br>    })<br>    .<span class="hljs-title function_">catch</span>(init.<span class="hljs-property">error</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><p>假如有一个 <code>video</code> 元素需要加载视频</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>video</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>video<span class="token punctuation">"</span></span> <span class="token attr-name">controls</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>video</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">video</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"video"</span> <span class="hljs-attr">controls</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">video</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>那么使用该方法的 <code>JavaScript</code> 代码就是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 要加载的 url 资源</span>
-<span class="token keyword">var</span> url <span class="token operator">=</span> <span class="token string">'/html/testVideo.m4'</span>
-<span class="token comment">// 资源的容器，这里是一个视频元素</span>
-<span class="token keyword">var</span> video <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'#video'</span><span class="token punctuation">)</span>
-
-<span class="token comment">// 此处使用第三个参数仅为演示，不需要的话忽略即可。。。</span>
-<span class="token function">loadResource</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> video<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token function-variable function">before</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'video load before'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token function-variable function">after</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'video load after'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token function-variable function">error</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">error</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">video load error: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>error<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token comment">// 即可以：</span>
-<span class="token function">loadResource</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> video<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 要加载的 url 资源</span><br><span class="hljs-keyword">var</span> url = <span class="hljs-string">'/html/testVideo.m4'</span><br><span class="hljs-comment">// 资源的容器，这里是一个视频元素</span><br><span class="hljs-keyword">var</span> video = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#video'</span>)<br><br><span class="hljs-comment">// 此处使用第三个参数仅为演示，不需要的话忽略即可。。。</span><br><span class="hljs-title function_">loadResource</span>(url, video, {<br>  <span class="hljs-attr">before</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'video load before'</span>),<br>  <span class="hljs-attr">after</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'video load after'</span>),<br>  <span class="hljs-attr">error</span>: <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`video load error: <span class="hljs-subst">${error}</span>`</span>),<br>})<br><span class="hljs-comment">// 即可以：</span><br><span class="hljs-title function_">loadResource</span>(url, video)<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>注：此方法不仅可以加载视频，也可以加载 audio, img 等拥有 src 属性的二进制资源</p>
@@ -733,8 +676,6 @@
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

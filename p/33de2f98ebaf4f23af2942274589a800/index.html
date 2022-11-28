@@ -45,8 +45,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.1k 字
+          3.3k 字
         
       </span>
     
@@ -264,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          26 分钟
+          28 分钟
         
       </span>
     
@@ -365,131 +363,9 @@
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>具体的代码吾辈就不贴到这里了，全部的代码已经放到 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/java-ftp-example">GitHub 的公共仓库</a> 上了。</p>
 <h2 id="FTP-使用"><a href="#FTP-使用" class="headerlink" title="FTP 使用"></a>FTP 使用</h2><p>FtpOperator API 图解<br><img src="https://img.rxliuli.com/20190302115433.png" srcset="/img/loading.gif" lazyload alt="FtpOperator API 图解"></p>
 <p>上传部分流程图解<br><img src="https://img.rxliuli.com/20190302120512.png" srcset="/img/loading.gif" lazyload alt="上传部分流程图解"></p>
-<h3 id="使用-FtpOperator-进行基本操作"><a href="#使用-FtpOperator-进行基本操作" class="headerlink" title="使用 FtpOperator 进行基本操作"></a>使用 FtpOperator 进行基本操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class FtpSpringConfigTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private FtpOperator ftp;
+<h3 id="使用-FtpOperator-进行基本操作"><a href="#使用-FtpOperator-进行基本操作" class="headerlink" title="使用 FtpOperator 进行基本操作"></a>使用 FtpOperator 进行基本操作</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span><br><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FtpSpringConfigTest</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(getClass());<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> FtpOperator ftp;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">put</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> UnsupportedEncodingException {<br>        <span class="hljs-comment">// 上传数据</span><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">ByteArrayInputStream</span> <span class="hljs-variable">is</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(<span class="hljs-string">"测试数据"</span>.getBytes(<span class="hljs-string">"UTF-8"</span>));<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> ftp.put(is, <span class="hljs-string">"/test.txt"</span>);<br>        assertThat(result)<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">exist</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 判断数据是否存在于 ftp 服务器</span><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">boolean</span> <span class="hljs-variable">exist</span> <span class="hljs-operator">=</span> ftp.exist(<span class="hljs-string">"/test.txt"</span>);<br>        assertThat(exist)<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">get</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 从 ftp 服务器上下载数据</span><br>        ftp.get(<span class="hljs-string">"/test.txt"</span>, is -&gt; {<br>            <span class="hljs-keyword">try</span> {<br>                <span class="hljs-keyword">final</span> List&lt;String&gt; list = IOUtils.readLines(is);<br>                log.info(<span class="hljs-string">"list: {}"</span>, list);<br>                assertThat(list)<br>                        .isNotEmpty();<br>            } <span class="hljs-keyword">catch</span> (IOException e) {<br>                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>            }<br><br>        });<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">mkdir</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 创建文件夹</span><br>        assertThat(ftp.mkdir(<span class="hljs-string">"/test"</span>))<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">mkdirR</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 递归创建文件夹</span><br>        assertThat(ftp.mkdirR(<span class="hljs-string">"/test/test2/test3"</span>))<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ls</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 获取目录下的文件信息列表</span><br>        <span class="hljs-keyword">final</span> List&lt;Stat&gt; list = ftp.ls(<span class="hljs-string">"/"</span>);<br>        log.info(<span class="hljs-string">"list: {}"</span>, list.stream()<br>                .map(Stat::getPath)<br>                .collect(Collectors.joining(<span class="hljs-string">"\n"</span>)));<br>        assertThat(list)<br>                .isNotEmpty();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">lsr</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 获取目录下的文件信息列表</span><br>        <span class="hljs-keyword">final</span> List&lt;Stat&gt; list = ftp.lsR(<span class="hljs-string">"/"</span>);<br>        log.info(<span class="hljs-string">"list: {}"</span>, list.stream()<br>                .map(Stat::getPath)<br>                .collect(Collectors.joining(<span class="hljs-string">"\n"</span>)));<br>        assertThat(list)<br>                .isNotEmpty();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">rm</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 删除单个文件</span><br>        assertThat(ftp.rm(<span class="hljs-string">"/test.txt"</span>))<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">rmdir</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 删除指定空目录</span><br>        assertThat(ftp.rmdir(<span class="hljs-string">"/test/test2/test3"</span>))<br>                .isTrue();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">rmdirR</span><span class="hljs-params">()</span> {<br>        <span class="hljs-comment">// 递归删除指定目录</span><br>        assertThat(ftp.rmdirR(<span class="hljs-string">"/test"</span>))<br>                .isTrue();<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-    @Test
-    public void put() throws UnsupportedEncodingException {
-        // 上传数据
-        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
-        final boolean result = ftp.put(is, "/test.txt");
-        assertThat(result)
-                .isTrue();
-    }
-
-    @Test
-    public void exist() {
-        // 判断数据是否存在于 ftp 服务器
-        final boolean exist = ftp.exist("/test.txt");
-        assertThat(exist)
-                .isTrue();
-    }
-
-    @Test
-    public void get() {
-        // 从 ftp 服务器上下载数据
-        ftp.get("/test.txt", is -&gt; {
-            try {
-                final List&lt;String&gt; list = IOUtils.readLines(is);
-                log.info("list: {}", list);
-                assertThat(list)
-                        .isNotEmpty();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        });
-    }
-
-    @Test
-    public void mkdir() {
-        // 创建文件夹
-        assertThat(ftp.mkdir("/test"))
-                .isTrue();
-    }
-
-    @Test
-    public void mkdirR() {
-        // 递归创建文件夹
-        assertThat(ftp.mkdirR("/test/test2/test3"))
-                .isTrue();
-    }
-
-    @Test
-    public void ls() {
-        // 获取目录下的文件信息列表
-        final List&lt;Stat&gt; list = ftp.ls("/");
-        log.info("list: {}", list.stream()
-                .map(Stat::getPath)
-                .collect(Collectors.joining("\n")));
-        assertThat(list)
-                .isNotEmpty();
-    }
-
-    @Test
-    public void lsr() {
-        // 获取目录下的文件信息列表
-        final List&lt;Stat&gt; list = ftp.lsR("/");
-        log.info("list: {}", list.stream()
-                .map(Stat::getPath)
-                .collect(Collectors.joining("\n")));
-        assertThat(list)
-                .isNotEmpty();
-    }
-
-    @Test
-    public void rm() {
-        // 删除单个文件
-        assertThat(ftp.rm("/test.txt"))
-                .isTrue();
-    }
-
-    @Test
-    public void rmdir() {
-        // 删除指定空目录
-        assertThat(ftp.rmdir("/test/test2/test3"))
-                .isTrue();
-    }
-
-    @Test
-    public void rmdirR() {
-        // 递归删除指定目录
-        assertThat(ftp.rmdirR("/test"))
-                .isTrue();
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<h3 id="使用-FtpOperator-上传文件并监听结果"><a href="#使用-FtpOperator-上传文件并监听结果" class="headerlink" title="使用 FtpOperator 上传文件并监听结果"></a>使用 FtpOperator 上传文件并监听结果</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class FtpSpringConfigTest extends BaseTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private FtpOperator ftp;
-    @Test
-    public void watch() throws InterruptedException, UnsupportedEncodingException {
-        // 监听新文件 /test.md 的出现
-        final String path = "/test.md";
-        ftp.watch((Predicate&lt;String&gt;) str -&gt; str.equals(path))
-                .thenAcceptAsync(stat -&gt; {
-                    log.warn("stat: {}", stat);
-                    assertThat(ftp.exist(stat.getPath()))
-                            .isNotNull();
-                });
-        // 创建测试文件
-        final ByteArrayInputStream is = new ByteArrayInputStream("测试数据".getBytes("UTF-8"));
-        log.warn("test file upload completed!");
-        assertThat(ftp.put(is, path))
-                .isTrue();
-        // 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！
-        Thread.sleep(2000);
-        // 删除测试文件
-        ftp.rm(path);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-FtpOperator-上传文件并监听结果"><a href="#使用-FtpOperator-上传文件并监听结果" class="headerlink" title="使用 FtpOperator 上传文件并监听结果"></a>使用 FtpOperator 上传文件并监听结果</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span><br><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FtpSpringConfigTest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseTest</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(getClass());<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> FtpOperator ftp;<br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">watch</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, UnsupportedEncodingException {<br>        <span class="hljs-comment">// 监听新文件 /test.md 的出现</span><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">path</span> <span class="hljs-operator">=</span> <span class="hljs-string">"/test.md"</span>;<br>        ftp.watch((Predicate&lt;String&gt;) str -&gt; str.equals(path))<br>                .thenAcceptAsync(stat -&gt; {<br>                    log.warn(<span class="hljs-string">"stat: {}"</span>, stat);<br>                    assertThat(ftp.exist(stat.getPath()))<br>                            .isNotNull();<br>                });<br>        <span class="hljs-comment">// 创建测试文件</span><br>        <span class="hljs-keyword">final</span> <span class="hljs-type">ByteArrayInputStream</span> <span class="hljs-variable">is</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ByteArrayInputStream</span>(<span class="hljs-string">"测试数据"</span>.getBytes(<span class="hljs-string">"UTF-8"</span>));<br>        log.warn(<span class="hljs-string">"test file upload completed!"</span>);<br>        assertThat(ftp.put(is, path))<br>                .isTrue();<br>        <span class="hljs-comment">// 注意，这里有一个问题就是如果程序结束的太快，那么更新将变得不可能的！</span><br>        Thread.sleep(<span class="hljs-number">2000</span>);<br>        <span class="hljs-comment">// 删除测试文件</span><br>        ftp.rm(path);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>那么，关于 Java 中使用 <code>FTP/SFTP</code> 便到此为止啦</p>
@@ -842,8 +718,6 @@ public class FtpSpringConfigTest extends BaseTest {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

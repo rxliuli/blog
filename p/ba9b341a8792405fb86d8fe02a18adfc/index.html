@@ -44,8 +44,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -251,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.8k 字
+          6.2k 字
         
       </span>
     
@@ -263,7 +261,7 @@
         
         
           <!-- compatible with older versions-->
-          49 分钟
+          52 分钟
         
       </span>
     
@@ -318,318 +316,70 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://esbuild.github.io/">esbuild</a> 是一个通用的代码编译器和构建工具，使用 golang 构建，它非常快，性能上比现有的 js 工具链高 1~2 个数量级。它目前还不是一个开箱即用的构建工具，但通过它的插件系统，我们已经可以做到许多事情。</p>
 <p><img src="/resources/006b4700843a4237a22056b3bd29a742.png" srcset="/img/loading.gif" lazyload alt="1653052756694"></p>
 <h2 id="自动排除所有依赖项"><a href="#自动排除所有依赖项" class="headerlink" title="自动排除所有依赖项"></a>自动排除所有依赖项</h2><p>在构建 lib 时，我们通常都不希望捆绑依赖的模块，希望能够默认排除掉所有的依赖项，这个插件就是用来实现这个功能的。它会将所有不是以 <code>.</code> 开头的导入模块设置为外部的，避免捆绑到最终构建产物中。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
-
-/**
- * 自动排除所有依赖项
- * golang 不支持 js 的一些正则表达式语法，参考 https://github.com/evanw/esbuild/issues/1634
- */
-export function autoExternal(): Plugin {
-  return {
-    name: 'autoExternal',
-    setup(build) {
-      build.onResolve({ filter: /.*/ }, (args) =&gt; {
-        if (/^\.{1,2}\//.test(args.path)) {
-          return
-        }
-        return {
-          path: args.path,
-          external: true,
-        }
-      })
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 自动排除所有依赖项</span><br><span class="hljs-comment"> * golang 不支持 js 的一些正则表达式语法，参考 https://github.com/evanw/esbuild/issues/1634</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">autoExternal</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'autoExternal'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      build.<span class="hljs-title function_">onResolve</span>({ <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/.*/</span> }, <span class="hljs-function">(<span class="hljs-params">args</span>) =&gt;</span> {<br>        <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/^\.{1,2}\//</span>.<span class="hljs-title function_">test</span>(args.<span class="hljs-property">path</span>)) {<br>          <span class="hljs-keyword">return</span><br>        }<br>        <span class="hljs-keyword">return</span> {<br>          <span class="hljs-attr">path</span>: args.<span class="hljs-property">path</span>,<br>          <span class="hljs-attr">external</span>: <span class="hljs-literal">true</span>,<br>        }<br>      })<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们可以这样使用，例如 import esbuild，但它不会被捆绑进来。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build } from 'esbuild'
-console.log(build)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { build } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(build)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>会被编译成</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> build <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'esbuild'</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>build<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> { build } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(build)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用环境变量"><a href="#使用环境变量" class="headerlink" title="使用环境变量"></a>使用环境变量</h2><p>有时候我们会需要针对不同的环境使用环境变量来区分，而使用插件也可以很简单的做到这一点。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
-
-/**
- * @param {string} str
- */
-function isValidId(str: string) {
-  try {
-    new Function(`var ${str};`)
-  } catch (err) {
-    return false
-  }
-  return true
-}
-
-/**
- * Create a map of replacements for environment variables.
- * @return A map of variables.
- */
-export function defineProcessEnv() {
-  /**
-   * @type {{ [key: string]: string }}
-   */
-  const definitions: Record&lt;string, string&gt; = {}
-  definitions['process.env.NODE_ENV'] = JSON.stringify(
-    process.env.NODE_ENV || 'development',
-  )
-  Object.keys(process.env).forEach((key) =&gt; {
-    if (isValidId(key)) {
-      definitions[`process.env.${key}`] = JSON.stringify(process.env[key])
-    }
-  })
-  definitions['process.env'] = '{}'
-
-  return definitions
-}
-
-export function defineImportEnv() {
-  const definitions: Record&lt;string, string&gt; = {}
-  Object.keys(process.env).forEach((key) =&gt; {
-    if (isValidId(key)) {
-      definitions[`import.meta.env.${key}`] = JSON.stringify(process.env[key])
-    }
-  })
-  definitions['import.meta.env'] = '{}'
-  return definitions
-}
-
-/**
- * Pass environment variables to esbuild.
- * @return An esbuild plugin.
- */
-export function env(options: { process?: boolean; import?: boolean }): Plugin {
-  return {
-    name: 'env',
-    setup(build) {
-      const { platform, define = {} } = build.initialOptions
-      if (platform === 'node') {
-        return
-      }
-      build.initialOptions.define = define
-      if (options.import) {
-        Object.assign(build.initialOptions.define, defineImportEnv())
-      }
-      if (options.process) {
-        Object.assign(build.initialOptions.define, defineProcessEnv())
-      }
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">string</span>} <span class="hljs-variable">str</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">isValidId</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">try</span> {<br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Function</span>(<span class="hljs-string">`var <span class="hljs-subst">${str}</span>;`</span>)<br>  } <span class="hljs-keyword">catch</span> (err) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Create a map of replacements for environment variables.</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span> A map of variables.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">defineProcessEnv</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@type</span> {<span class="hljs-type">{ [key: string]: string </span>}}</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">definitions</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt; = {}<br>  definitions[<span class="hljs-string">'process.env.NODE_ENV'</span>] = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<br>    process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> || <span class="hljs-string">'development'</span>,<br>  )<br>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(process.<span class="hljs-property">env</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isValidId</span>(key)) {<br>      definitions[<span class="hljs-string">`process.env.<span class="hljs-subst">${key}</span>`</span>] = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(process.<span class="hljs-property">env</span>[key])<br>    }<br>  })<br>  definitions[<span class="hljs-string">'process.env'</span>] = <span class="hljs-string">'{}'</span><br><br>  <span class="hljs-keyword">return</span> definitions<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">defineImportEnv</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">definitions</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt; = {}<br>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(process.<span class="hljs-property">env</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isValidId</span>(key)) {<br>      definitions[<span class="hljs-string">`import.meta.env.<span class="hljs-subst">${key}</span>`</span>] = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(process.<span class="hljs-property">env</span>[key])<br>    }<br>  })<br>  definitions[<span class="hljs-string">'import.meta.env'</span>] = <span class="hljs-string">'{}'</span><br>  <span class="hljs-keyword">return</span> definitions<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Pass environment variables to esbuild.</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span> An esbuild plugin.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">env</span>(<span class="hljs-params">options: { process?: <span class="hljs-built_in">boolean</span>; <span class="hljs-keyword">import</span>?: <span class="hljs-built_in">boolean</span> }</span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'env'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      <span class="hljs-keyword">const</span> { platform, define = {} } = build.<span class="hljs-property">initialOptions</span><br>      <span class="hljs-keyword">if</span> (platform === <span class="hljs-string">'node'</span>) {<br>        <span class="hljs-keyword">return</span><br>      }<br>      build.<span class="hljs-property">initialOptions</span>.<span class="hljs-property">define</span> = define<br>      <span class="hljs-keyword">if</span> (options.<span class="hljs-property">import</span>) {<br>        <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(build.<span class="hljs-property">initialOptions</span>.<span class="hljs-property">define</span>, <span class="hljs-title function_">defineImportEnv</span>())<br>      }<br>      <span class="hljs-keyword">if</span> (options.<span class="hljs-property">process</span>) {<br>        <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(build.<span class="hljs-property">initialOptions</span>.<span class="hljs-property">define</span>, <span class="hljs-title function_">defineProcessEnv</span>())<br>      }<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用插件之后，我们就可以在代码中使用环境变量了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export const NodeEnv = import.meta.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">NodeEnv</span> = <span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>编译结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">const</span> NodeEnv <span class="token operator">=</span> <span class="token string">'test'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">NodeEnv</span> = <span class="hljs-string">'test'</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="在构建时输出日志"><a href="#在构建时输出日志" class="headerlink" title="在构建时输出日志"></a>在构建时输出日志</h2><p>有时候我们希望以监视模式构建某些东西，但 esbuild 不会在构建后输出消息，我们简单实现一个。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin, PluginBuild } from 'esbuild'
-
-export function log(): Plugin {
-  return {
-    name: 'log',
-    setup(builder: PluginBuild) {
-      let start: number
-      builder.onStart(() =&gt; {
-        start = Date.now()
-      })
-      builder.onEnd((result) =&gt; {
-        if (result.errors.length !== 0) {
-          console.error('build failed', result.errors)
-          return
-        }
-        console.log(`build complete, time ${Date.now() - start}ms`)
-      })
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span>, <span class="hljs-title class_">PluginBuild</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">log</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'log'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">builder: PluginBuild</span>) {<br>      <span class="hljs-keyword">let</span> <span class="hljs-attr">start</span>: <span class="hljs-built_in">number</span><br>      builder.<span class="hljs-title function_">onStart</span>(<span class="hljs-function">() =&gt;</span> {<br>        start = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>()<br>      })<br>      builder.<span class="hljs-title function_">onEnd</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {<br>        <span class="hljs-keyword">if</span> (result.<span class="hljs-property">errors</span>.<span class="hljs-property">length</span> !== <span class="hljs-number">0</span>) {<br>          <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">'build failed'</span>, result.<span class="hljs-property">errors</span>)<br>          <span class="hljs-keyword">return</span><br>        }<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`build complete, time <span class="hljs-subst">${<span class="hljs-built_in">Date</span>.now() - start}</span>ms`</span>)<br>      })<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们可以测试它是有效的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const mockLog = jest.fn()
-jest.spyOn(global.console, 'log').mockImplementation(mockLog)
-await build({
-  stdin: {
-    contents: `export const name = 'liuli'`,
-  },
-  plugins: [log()],
-  write: false,
-})
-expect(mockLog.mock.calls.length).toBe(1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> mockLog = jest.<span class="hljs-title function_">fn</span>()<br>jest.<span class="hljs-title function_">spyOn</span>(<span class="hljs-variable language_">global</span>.<span class="hljs-property">console</span>, <span class="hljs-string">'log'</span>).<span class="hljs-title function_">mockImplementation</span>(mockLog)<br><span class="hljs-keyword">await</span> <span class="hljs-title function_">build</span>({<br>  <span class="hljs-attr">stdin</span>: {<br>    <span class="hljs-attr">contents</span>: <span class="hljs-string">`export const name = 'liuli'`</span>,<br>  },<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">log</span>()],<br>  <span class="hljs-attr">write</span>: <span class="hljs-literal">false</span>,<br>})<br><span class="hljs-title function_">expect</span>(mockLog.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">1</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="自动排除-node-开头的依赖"><a href="#自动排除-node-开头的依赖" class="headerlink" title="自动排除 node: 开头的依赖"></a>自动排除 node: 开头的依赖</h2><p>有时候某些依赖的模块使用了 nodejs 的原生模块，但是以 <code>node:</code> 开头的的写法，这会导致 esbuild 无法识别，我们使用以下插件处理它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
-
-/**
- * 排除和替换 node 内置模块
- */
-export function nodeExternal(): Plugin {
-  return {
-    name: 'nodeExternals',
-    setup(build) {
-      build.onResolve({ filter: /(^node:)/ }, (args) =&gt; ({
-        path: args.path.slice(5),
-        external: true,
-      }))
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 排除和替换 node 内置模块</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">nodeExternal</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'nodeExternals'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      build.<span class="hljs-title function_">onResolve</span>({ <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/(^node:)/</span> }, <span class="hljs-function">(<span class="hljs-params">args</span>) =&gt;</span> ({<br>        <span class="hljs-attr">path</span>: args.<span class="hljs-property">path</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-number">5</span>),<br>        <span class="hljs-attr">external</span>: <span class="hljs-literal">true</span>,<br>      }))<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们的以下代码中的 node: 开头的原生模块会被排除</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { path } from 'node:path'
-console.log(path.resolve(__dirname))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { path } <span class="hljs-keyword">from</span> <span class="hljs-string">'node:path'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(path.<span class="hljs-title function_">resolve</span>(__dirname))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>编译结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// &lt;stdin&gt;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> path <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'path'</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// &lt;stdin&gt;</span><br><span class="hljs-keyword">import</span> { path } <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(path.<span class="hljs-title function_">resolve</span>(__dirname))<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="通过-raw-捆绑文本文件"><a href="#通过-raw-捆绑文本文件" class="headerlink" title="通过 ?raw 捆绑文本文件"></a>通过 ?raw 捆绑文本文件</h2><p>如果使用过 vite 的话，可能会对它的 <code>?*</code> 功能印象深刻，它提供了各种各样的功能来以不同的方式导入文件，而在 esbuild 中，我们有时候也希望静态捆绑某些内容，例如 readme 文件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
-import { readFile } from 'fs-extra'
-import * as path from 'path'
-
-/**
- * 通过 ?raw 将资源作为字符串打包进来
- * @returns
- */
-export function raw(): Plugin {
-  return {
-    name: 'raw',
-    setup(build) {
-      build.onResolve({ filter: /\?raw$/ }, (args) =&gt; {
-        return {
-          path: path.isAbsolute(args.path)
-            ? args.path
-            : path.join(args.resolveDir, args.path),
-          namespace: 'raw-loader',
-        }
-      })
-      build.onLoad(
-        { filter: /\?raw$/, namespace: 'raw-loader' },
-        async (args) =&gt; {
-          return {
-            contents: await readFile(args.path.replace(/\?raw$/, '')),
-            loader: 'text',
-          }
-        },
-      )
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><span class="hljs-keyword">import</span> { readFile } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 通过 ?raw 将资源作为字符串打包进来</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">raw</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'raw'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      build.<span class="hljs-title function_">onResolve</span>({ <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/\?raw$/</span> }, <span class="hljs-function">(<span class="hljs-params">args</span>) =&gt;</span> {<br>        <span class="hljs-keyword">return</span> {<br>          <span class="hljs-attr">path</span>: path.<span class="hljs-title function_">isAbsolute</span>(args.<span class="hljs-property">path</span>)<br>            ? args.<span class="hljs-property">path</span><br>            : path.<span class="hljs-title function_">join</span>(args.<span class="hljs-property">resolveDir</span>, args.<span class="hljs-property">path</span>),<br>          <span class="hljs-attr">namespace</span>: <span class="hljs-string">'raw-loader'</span>,<br>        }<br>      })<br>      build.<span class="hljs-title function_">onLoad</span>(<br>        { <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/\?raw$/</span>, <span class="hljs-attr">namespace</span>: <span class="hljs-string">'raw-loader'</span> },<br>        <span class="hljs-keyword">async</span> (args) =&gt; {<br>          <span class="hljs-keyword">return</span> {<br>            <span class="hljs-attr">contents</span>: <span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(args.<span class="hljs-property">path</span>.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\?raw$/</span>, <span class="hljs-string">''</span>)),<br>            <span class="hljs-attr">loader</span>: <span class="hljs-string">'text'</span>,<br>          }<br>        },<br>      )<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>通过以下方式验证</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const res = await build({
-  stdin: {
-    contents: `
-        import readme from '../../README.md?raw'
-        console.log(readme)
-      `,
-    resolveDir: __dirname,
-  },
-  plugins: [raw()],
-  bundle: true,
-  write: false,
-})
-console.log(res.outputFiles[0].text)
-expect(
-  res.outputFiles[0].text.includes('@liuli-util/esbuild-plugins'),
-).toBeTruthy()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">build</span>({<br>  <span class="hljs-attr">stdin</span>: {<br>    <span class="hljs-attr">contents</span>: <span class="hljs-string">`</span><br><span class="hljs-string">        import readme from '../../README.md?raw'</span><br><span class="hljs-string">        console.log(readme)</span><br><span class="hljs-string">      `</span>,<br>    <span class="hljs-attr">resolveDir</span>: __dirname,<br>  },<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">raw</span>()],<br>  <span class="hljs-attr">bundle</span>: <span class="hljs-literal">true</span>,<br>  <span class="hljs-attr">write</span>: <span class="hljs-literal">false</span>,<br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(res.<span class="hljs-property">outputFiles</span>[<span class="hljs-number">0</span>].<span class="hljs-property">text</span>)<br><span class="hljs-title function_">expect</span>(<br>  res.<span class="hljs-property">outputFiles</span>[<span class="hljs-number">0</span>].<span class="hljs-property">text</span>.<span class="hljs-title function_">includes</span>(<span class="hljs-string">'@liuli-util/esbuild-plugins'</span>),<br>).<span class="hljs-title function_">toBeTruthy</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="重写一些模块"><a href="#重写一些模块" class="headerlink" title="重写一些模块"></a>重写一些模块</h2><p>有时候我们希望重写一些模块，例如将导入的 lodash 更改为 lodash-es 以实现 tree shaking，这时候我们可以通过以下插件办到这件事</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { build, Plugin } from 'esbuild'
-import path from 'path'
-
-/**
- * 将指定的 import 重写为另一个
- * @param entries
- * @returns
- */
-export function resolve(entries: [from: string, to: string][]): Plugin {
-  return {
-    name: 'resolve',
-    setup(build) {
-      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
-        const findEntries = entries.find((item) =&gt; item[0] === args.path)
-        if (!findEntries) {
-          return
-        }
-        return await build.resolve(findEntries[1])
-      })
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { build, <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 将指定的 import 重写为另一个</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">entries</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">resolve</span>(<span class="hljs-params">entries: [<span class="hljs-keyword">from</span>: <span class="hljs-built_in">string</span>, to: <span class="hljs-built_in">string</span>][]</span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'resolve'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      build.<span class="hljs-title function_">onResolve</span>({ <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/.*/</span> }, <span class="hljs-keyword">async</span> (args) =&gt; {<br>        <span class="hljs-keyword">const</span> findEntries = entries.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item[<span class="hljs-number">0</span>] === args.<span class="hljs-property">path</span>)<br>        <span class="hljs-keyword">if</span> (!findEntries) {<br>          <span class="hljs-keyword">return</span><br>        }<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> build.<span class="hljs-title function_">resolve</span>(findEntries[<span class="hljs-number">1</span>])<br>      })<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们可以使用以下配置将 lodash 替换为 lodash-es</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
-  plugins: [resolve([['lodash', 'lodash-es']])],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">build</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">resolve</span>([[<span class="hljs-string">'lodash'</span>, <span class="hljs-string">'lodash-es'</span>]])],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>源代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { uniq } from 'lodash'
-console.log(uniq([1, 2, 1]))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { uniq } <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">uniq</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>编译结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> uniq <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'lodash-es'</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">uniq</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> { uniq } <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash-es'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">uniq</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]))<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="强制指定模块没有副作用"><a href="#强制指定模块没有副作用" class="headerlink" title="强制指定模块没有副作用"></a>强制指定模块没有副作用</h2><p>当我们的使用一个第三方的包时，有可能这个包依赖了一些其他的模块，如果这个模块没有声明 <code>sideEffect</code>，那么即便它没有副作用并且导出了 esm 的包，也会将依赖的模块 bundle 进来，但我们可以使用插件 api 强制指定模块没有副作用。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'esbuild'
-
-/**
- * 设置指定模块为没有副作用的包，由于 webpack/esbuild 的配置不兼容，所以先使用插件来完成这件事
- * @param packages
- * @returns
- */
-export function sideEffects(packages: string[]): Plugin {
-  return {
-    name: 'sideEffects',
-    setup(build) {
-      build.onResolve({ filter: /.*/ }, async (args) =&gt; {
-        if (
-          args.pluginData || // Ignore this if we called ourselves
-          !packages.includes(args.path)
-        ) {
-          return
-        }
-
-        const { path, ...rest } = args
-        rest.pluginData = true // Avoid infinite recursion
-        const result = await build.resolve(path, rest)
-
-        result.sideEffects = false
-        return result
-      })
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'esbuild'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 设置指定模块为没有副作用的包，由于 webpack/esbuild 的配置不兼容，所以先使用插件来完成这件事</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">packages</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sideEffects</span>(<span class="hljs-params">packages: <span class="hljs-built_in">string</span>[]</span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'sideEffects'</span>,<br>    <span class="hljs-title function_">setup</span>(<span class="hljs-params">build</span>) {<br>      build.<span class="hljs-title function_">onResolve</span>({ <span class="hljs-attr">filter</span>: <span class="hljs-regexp">/.*/</span> }, <span class="hljs-keyword">async</span> (args) =&gt; {<br>        <span class="hljs-keyword">if</span> (<br>          args.<span class="hljs-property">pluginData</span> || <span class="hljs-comment">// Ignore this if we called ourselves</span><br>          !packages.<span class="hljs-title function_">includes</span>(args.<span class="hljs-property">path</span>)<br>        ) {<br>          <span class="hljs-keyword">return</span><br>        }<br><br>        <span class="hljs-keyword">const</span> { path, ...rest } = args<br>        rest.<span class="hljs-property">pluginData</span> = <span class="hljs-literal">true</span> <span class="hljs-comment">// Avoid infinite recursion</span><br>        <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> build.<span class="hljs-title function_">resolve</span>(path, rest)<br><br>        result.<span class="hljs-property">sideEffects</span> = <span class="hljs-literal">false</span><br>        <span class="hljs-keyword">return</span> result<br>      })<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们以如下方式使用它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">build({
-  plugins: [sideEffects(['lib'])],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">build</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">sideEffects</span>([<span class="hljs-string">'lib'</span>])],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这时候，即便 lib-a 中某些代码依赖了 lib-b，但只要你的代码没有依赖到特定方法，那么它就会被正确的 tree shaking</p>
 <p>例如下面的代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-import { hello } from 'lib-a'
-console.log(hello('liuli'))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// main.ts</span><br><span class="hljs-keyword">import</span> { hello } <span class="hljs-keyword">from</span> <span class="hljs-string">'lib-a'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hello</span>(<span class="hljs-string">'liuli'</span>))<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// lib-a/src/index.ts
-export * from 'lib-b'
-export function hello(name: string) {
-  return `hello ${name}`
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// lib-a/src/index.ts</span><br><span class="hljs-keyword">export</span> * <span class="hljs-keyword">from</span> <span class="hljs-string">'lib-b'</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>编译结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// dist/main.js</span>
-<span class="token keyword">function</span> <span class="token function">hello</span><span class="token punctuation">(</span><span class="token parameter"><span class="token literal-property property">name</span><span class="token operator">:</span> string</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">hello </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span>
-<span class="token punctuation">}</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">hello</span><span class="token punctuation">(</span><span class="token string">'liuli'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// dist/main.js</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">name: string</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>}<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">hello</span>(<span class="hljs-string">'liuli'</span>))<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>目前已经实现了 esbuild 的许多插件，但它作为构建应用的基础构建工具仍然稍显薄弱，目前仅推荐使用它构建一些纯 JavaScript/TypeScript 的代码。如果需要构建完整的 web 应用，那么 vite 可能是目前基于 esbuild 的最成熟的构建工具。</p>
 
@@ -983,8 +733,6 @@ console<span class="token punctuation">.</span><span class="token function">log<
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

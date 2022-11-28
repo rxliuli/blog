@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.8k 字
+          2.9k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          24 分钟
+          25 分钟
         
       </span>
     
@@ -326,89 +324,13 @@
 <li>watch</li>
 </ul>
 <p>在 react 中提到可变状态，可能最容易想到的就是 <a target="_blank" rel="noopener" href="https://mobx.js.org/">mobx</a>（与之相对的是不可变的 redux），所以下面便基于它实现以上这些 hooks 函数。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { observer } from 'mobx-react'
-import { action, autorun, computed, observable, reaction } from 'mobx'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-
-export function useVReactive&lt;T extends object&gt;(value: T): T {
-  const [state] = useState(() =&gt; observable(value))
-  return state
-}
-
-export function useVRef&lt;T&gt;(value: T): { value: T } {
-  return useVReactive({ value })
-}
-
-export function useVComputed&lt;T&gt;(fn: () =&gt; T): { value: T } {
-  const computedValue = useMemo(() =&gt; computed(fn), [])
-  return {
-    get value() {
-      return computedValue.get()
-    },
-  }
-}
-
-export function useVFn&lt;T extends (...args: any[]) =&gt; any&gt;(fn: T): T {
-  return useCallback(action(fn), [])
-}
-
-export function useVWatch(deps: () =&gt; any, fn: () =&gt; void): void {
-  useEffect(() =&gt; reaction(deps, fn), [])
-}
-
-export function useVWatchEffect(fn: () =&gt; void): void {
-  useEffect(() =&gt; autorun(fn), [])
-}
-
-const contextMap = observable(new Map&lt;ContextKey&lt;any&gt;, any&gt;())
-// eslint-disable-next-line
-export interface ContextKey&lt;T&gt; extends Symbol {}
-export function useVProvide&lt;T&gt;(key: ContextKey&lt;T&gt;, value: T): void {
-  useState(action(() =&gt; contextMap.set(key, value)))
-  useEffect(
-    action(() =&gt; {
-      contextMap.set(key, value)
-      return action(() =&gt; {
-        contextMap.delete(key)
-      })
-    }),
-    [],
-  )
-}
-export function useVInject&lt;T&gt;(key: ContextKey&lt;T&gt;): T | undefined {
-  const value = useMemo(() =&gt; computed(() =&gt; contextMap.get(key)), [])
-  const state = useVRef(value.get())
-  useVWatchEffect(() =&gt; (state.value = value.get()))
-  return state.value
-}
-
-export const defineComponent = observer<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { observer } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx-react'</span><br><span class="hljs-keyword">import</span> { action, autorun, computed, observable, reaction } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx'</span><br><span class="hljs-keyword">import</span> { useCallback, useEffect, useMemo, useState } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVReactive&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span>&gt;(<span class="hljs-attr">value</span>: T): T {<br>  <span class="hljs-keyword">const</span> [state] = <span class="hljs-title function_">useState</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">observable</span>(value))<br>  <span class="hljs-keyword">return</span> state<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVRef&lt;T&gt;(<span class="hljs-attr">value</span>: T): { <span class="hljs-attr">value</span>: T } {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useVReactive</span>({ value })<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVComputed&lt;T&gt;(<span class="hljs-attr">fn</span>: <span class="hljs-function">() =&gt;</span> T): { <span class="hljs-attr">value</span>: T } {<br>  <span class="hljs-keyword">const</span> computedValue = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">computed</span>(fn), [])<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-keyword">get</span> <span class="hljs-title function_">value</span>() {<br>      <span class="hljs-keyword">return</span> computedValue.<span class="hljs-title function_">get</span>()<br>    },<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVFn&lt;T <span class="hljs-keyword">extends</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; <span class="hljs-built_in">any</span>&gt;(<span class="hljs-attr">fn</span>: T): T {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useCallback</span>(<span class="hljs-title function_">action</span>(fn), [])<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">useVWatch</span>(<span class="hljs-params">deps: () =&gt; <span class="hljs-built_in">any</span>, fn: () =&gt; <span class="hljs-built_in">void</span></span>): <span class="hljs-built_in">void</span> {<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">reaction</span>(deps, fn), [])<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">useVWatchEffect</span>(<span class="hljs-params">fn: () =&gt; <span class="hljs-built_in">void</span></span>): <span class="hljs-built_in">void</span> {<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">autorun</span>(fn), [])<br>}<br><br><span class="hljs-keyword">const</span> contextMap = <span class="hljs-title function_">observable</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-title class_">ContextKey</span>&lt;<span class="hljs-built_in">any</span>&gt;, <span class="hljs-built_in">any</span>&gt;())<br><span class="hljs-comment">// eslint-disable-next-line</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ContextKey</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Symbol</span> {}<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVProvide&lt;T&gt;(<span class="hljs-attr">key</span>: <span class="hljs-title class_">ContextKey</span>&lt;T&gt;, <span class="hljs-attr">value</span>: T): <span class="hljs-built_in">void</span> {<br>  <span class="hljs-title function_">useState</span>(<span class="hljs-title function_">action</span>(<span class="hljs-function">() =&gt;</span> contextMap.<span class="hljs-title function_">set</span>(key, value)))<br>  <span class="hljs-title function_">useEffect</span>(<br>    <span class="hljs-title function_">action</span>(<span class="hljs-function">() =&gt;</span> {<br>      contextMap.<span class="hljs-title function_">set</span>(key, value)<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">action</span>(<span class="hljs-function">() =&gt;</span> {<br>        contextMap.<span class="hljs-title function_">delete</span>(key)<br>      })<br>    }),<br>    [],<br>  )<br>}<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useVInject&lt;T&gt;(<span class="hljs-attr">key</span>: <span class="hljs-title class_">ContextKey</span>&lt;T&gt;): T | <span class="hljs-literal">undefined</span> {<br>  <span class="hljs-keyword">const</span> value = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">computed</span>(<span class="hljs-function">() =&gt;</span> contextMap.<span class="hljs-title function_">get</span>(key)), [])<br>  <span class="hljs-keyword">const</span> state = <span class="hljs-title function_">useVRef</span>(value.<span class="hljs-title function_">get</span>())<br>  <span class="hljs-title function_">useVWatchEffect</span>(<span class="hljs-function">() =&gt;</span> (state.<span class="hljs-property">value</span> = value.<span class="hljs-title function_">get</span>()))<br>  <span class="hljs-keyword">return</span> state.<span class="hljs-property">value</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> defineComponent = observer<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>吾辈已将之发布到 npm <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/mobx-vue3-hooks">@liuli-util/mobx-vue3-hooks</a></p>
 </blockquote>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来与 vue3 hooks 的感觉差不多，只是声明一个状态，然后直接修改它，一切就自动响应了 – 不再需要手动管理依赖和了解 hooks 的心智模型。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import {
-  defineComponent,
-  useVRef,
-  useVFn,
-  useVComputed,
-} from '@liuli-util/mobx-vue3-hooks'
-
-const HelloWorld = defineComponent(() =&gt; {
-  const state = useVRef(0)
-  const computedValue = useVComputed(() =&gt; state.value * 2)
-
-  const onInc = useVFn(() =&gt; {
-    state.value++
-  })
-  return (
-    &lt;div&gt;
-      &lt;button onClick={onInc}&gt;增加&lt;/button&gt;
-      &lt;div&gt;{computedValue.value}&lt;/div&gt;
-    &lt;/div&gt;
-  )
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> {<br>  defineComponent,<br>  useVRef,<br>  useVFn,<br>  useVComputed,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/mobx-vue3-hooks'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">HelloWorld</span> = <span class="hljs-title function_">defineComponent</span>(<span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> state = <span class="hljs-title function_">useVRef</span>(<span class="hljs-number">0</span>)<br>  <span class="hljs-keyword">const</span> computedValue = <span class="hljs-title function_">useVComputed</span>(<span class="hljs-function">() =&gt;</span> state.<span class="hljs-property">value</span> * <span class="hljs-number">2</span>)<br><br>  <span class="hljs-keyword">const</span> onInc = <span class="hljs-title function_">useVFn</span>(<span class="hljs-function">() =&gt;</span> {<br>    state.<span class="hljs-property">value</span>++<br>  })<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{onInc}</span>&gt;</span>增加<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{computedValue.value}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>由于一些原因，吾辈未能完全实现 vue3 hooks 的效果，例如</p>
 <ul>
@@ -768,8 +690,6 @@ const HelloWorld = defineComponent(() =&gt; {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

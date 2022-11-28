@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景在项目中的实体类里面使用了 Java8 新的时间 API，例如 LocalDate, LocalTime, LocalDateTime 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。 嗯，大概就是下面这种样子的 {   &quot;dayOfMonth&quot;: 27,   &quot;dayOfWeek&quot;: &quot;MONDAY&quot;,   &quot;dayOfYear&quot;: 239,   &quot;month&quot;: &quot;">
+    <meta name="description" content="场景在项目中的实体类里面使用了 Java8 新的时间 API，例如 LocalDate, LocalTime, LocalDateTime 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。 嗯，大概就是下面这种样子的 12345678910111213141516{  &quot;dayOfMonth&quot;: 27,  &quot;dayOfWeek&quot;: &quot;MONDAY&quot;,  &quot;dayOfYear">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot 使用 Jackson 处理 Java8 时间 API">
 <meta property="og:url" content="https://blog.rxliuli.com/p/8f7de362e0024b428f5393c21a71dfdc/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景在项目中的实体类里面使用了 Java8 新的时间 API，例如 LocalDate, LocalTime, LocalDateTime 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。 嗯，大概就是下面这种样子的 {   &quot;dayOfMonth&quot;: 27,   &quot;dayOfWeek&quot;: &quot;MONDAY&quot;,   &quot;dayOfYear&quot;: 239,   &quot;month&quot;: &quot;">
+<meta property="og:description" content="场景在项目中的实体类里面使用了 Java8 新的时间 API，例如 LocalDate, LocalTime, LocalDateTime 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。 嗯，大概就是下面这种样子的 12345678910111213141516{  &quot;dayOfMonth&quot;: 27,  &quot;dayOfWeek&quot;: &quot;MONDAY&quot;,  &quot;dayOfYear">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-18T14:14:09.395Z">
 <meta property="article:modified_time" content="2020-12-30T05:10:12.897Z">
@@ -40,8 +40,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.9k 字
+          2k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          16 分钟
+          17 分钟
         
       </span>
     
@@ -314,69 +312,19 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在项目中的实体类里面使用了 <code>Java8</code> 新的时间 API，例如 <code>LocalDate</code>, <code>LocalTime</code>, <code>LocalDateTime</code> 等。然而在将这些时间类型的字段序列化返回到前端时，但格式却感觉有些异常。</p>
 <p>嗯，大概就是下面这种样子的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "dayOfMonth": 27,
-  "dayOfWeek": "MONDAY",
-  "dayOfYear": 239,
-  "month": "AUGUST",
-  "monthValue": 8,
-  "year": 2018,
-  "hour": 10,
-  "minute": 0,
-  "nano": 370000000,
-  "second": 52,
-  "chronology": {
-    "id": "ISO",
-    "calendarType": "iso8601"
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"dayOfMonth"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">27</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"dayOfWeek"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"MONDAY"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"dayOfYear"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">239</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"month"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"AUGUST"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"monthValue"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">8</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"year"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2018</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"hour"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"minute"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"nano"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">370000000</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"second"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">52</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"chronology"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ISO"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"calendarType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"iso8601"</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>这是什么鬼的格式。。。</p>
 <h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>添加依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>com.fasterxml.jackson.datatype<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>jackson-datatype-jsr310<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.fasterxml.jackson.datatype<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>jackson-datatype-jsr310<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>修改 <code>application.yml</code>，配置 <code>spring.jackson.serialization.write_dates_as_timestamps</code> 禁用 <em>打印日期为时间戳的功能</em>。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">spring:
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">jackson:</span><br>    <span class="hljs-attr">serialization:</span><br>      <span class="hljs-attr">write_dates_as_timestamps:</span> <span class="hljs-literal">false</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>如此，在返回数据到前端的时候 SpringBoot 就会自动将日期格式化为 <code>yyyy-MM-ddThh:mm:ss</code></p>
 <p>然而，如果我们想要在程序中手动的序列化日期怎么办呢？实际上也很简单，使用代码 <code>.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)</code> 来禁止序列化时间为时间戳并注册 <code>jackson-datatype-jsr310</code> 中的 <code>JavaTimeModule</code> 模块。</p>
 <p>下面是吾辈在项目里使用的一个全局 <code>ObjectMapper</code> 对象</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
-  * 提供一个全局可用的序列化 Bean
-  */
-public static final ObjectMapper OM = new ObjectMapper()
-        //Date 对象的格式
-        .setDateFormat(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"))
-        //禁止序列化值为 null 的属性
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        //禁止序列化时间为时间戳
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        .registerModules(
-                //注册 Jsr310（Java8 的时间兼容模块）
-                new JavaTimeModule(),
-                //序列化 Long 为 String
-                new SimpleModule()
-                        //大数字直接序列化为 String
-                        .addSerializer(Long.class, ToStringSerializer.instance)
-                        .addSerializer(Long.TYPE, ToStringSerializer.instance)
-                        .addSerializer(long.class, ToStringSerializer.instance)
-                        .addSerializer(BigInteger.class, ToStringSerializer.instance)
-                        //大浮点数直接序列化为 String
-                        .addSerializer(BigDecimal.class, new JsonSerializer&lt;BigDecimal&gt;() {
-                            @Override
-                            public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-                                gen.writeString(value.setScale(10, BigDecimal.ROUND_HALF_UP).toPlainString());
-                            }
-                        })
-        )
-        //JSON 序列化移除 transient 修饰的 Page 无关紧要的返回属性(Mybatis Plus)
-        .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment">  * 提供一个全局可用的序列化 Bean</span><br><span class="hljs-comment">  */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ObjectMapper</span> <span class="hljs-variable">OM</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectMapper</span>()<br>        <span class="hljs-comment">//Date 对象的格式</span><br>        .setDateFormat(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleDateFormat</span>(<span class="hljs-string">"yyyy-MM-dd hh:mm:ss"</span>))<br>        <span class="hljs-comment">//禁止序列化值为 null 的属性</span><br>        .setSerializationInclusion(JsonInclude.Include.NON_NULL)<br>        <span class="hljs-comment">//禁止序列化时间为时间戳</span><br>        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)<br>        .registerModules(<br>                <span class="hljs-comment">//注册 Jsr310（Java8 的时间兼容模块）</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">JavaTimeModule</span>(),<br>                <span class="hljs-comment">//序列化 Long 为 String</span><br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleModule</span>()<br>                        <span class="hljs-comment">//大数字直接序列化为 String</span><br>                        .addSerializer(Long.class, ToStringSerializer.instance)<br>                        .addSerializer(Long.TYPE, ToStringSerializer.instance)<br>                        .addSerializer(<span class="hljs-type">long</span>.class, ToStringSerializer.instance)<br>                        .addSerializer(BigInteger.class, ToStringSerializer.instance)<br>                        <span class="hljs-comment">//大浮点数直接序列化为 String</span><br>                        .addSerializer(BigDecimal.class, <span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonSerializer</span>&lt;BigDecimal&gt;() {<br>                            <span class="hljs-meta">@Override</span><br>                            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">serialize</span><span class="hljs-params">(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)</span> <span class="hljs-keyword">throws</span> IOException {<br>                                gen.writeString(value.setScale(<span class="hljs-number">10</span>, BigDecimal.ROUND_HALF_UP).toPlainString());<br>                            }<br>                        })<br>        )<br>        <span class="hljs-comment">//JSON 序列化移除 transient 修饰的 Page 无关紧要的返回属性(Mybatis Plus)</span><br>        .configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, <span class="hljs-literal">true</span>);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>那么，以上就是 SpringBoot 序列化 Java8 时间 API 的问题和解决方案啦 ヾ(@^▽^@)ノ</p>
 
@@ -728,8 +676,6 @@ public static final ObjectMapper OM = new ObjectMapper()
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

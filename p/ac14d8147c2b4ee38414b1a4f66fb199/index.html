@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          4.5k 字
+          4.7k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          38 分钟
+          39 分钟
         
       </span>
     
@@ -327,16 +325,7 @@
 </blockquote>
 <h3 id="继承-MongoRepository-lt-T-ID-gt-使用命名方法"><a href="#继承-MongoRepository-lt-T-ID-gt-使用命名方法" class="headerlink" title="继承 MongoRepository<T, ID> 使用命名方法"></a>继承 MongoRepository&lt;T, ID&gt; 使用命名方法</h3><p>集成了 MongoData 之后，我们可以选择让 Dao 继承 <code>MongoRepository&lt;T, ID&gt;</code> 模板以获得通用方法，并且，可以通过特定方式的命名方法让 MongoData 来帮我们自动实现。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
-public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {
-    /**
-     * 根据 id 查询用户日志信息
-     *
-     * @param id 查询的 id
-     * @return 用户日志
-     */
-    UserInfoLog findUserInfoLogByIdEquals(Long id);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoLogRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">MongoRepository</span>&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据 id 查询用户日志信息</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> id 查询的 id</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户日志</span><br><span class="hljs-comment">     */</span><br>    UserInfoLog <span class="hljs-title function_">findUserInfoLogByIdEquals</span><span class="hljs-params">(Long id)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这个方法将会被 MongoData 自动实现，而我们做的只是让接口方法名符合 MongoData 的命名规范罢了。</p>
 <p>这里来说明一下 <code>findUserInfoLogByIdEquals</code> 方法，将之拆分开来</p>
@@ -349,112 +338,26 @@ public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, L
 </ul>
 <p>是的，MongoData 会自动根据方法名创建具体的实现，而我们要做的，仅仅是让方法名复合 MongoData 的规范而已。</p>
 <p>甚至于，我们可以添加更多的条件，例如下面的 <code>findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
-  * 根据用户 id/记录时间/操作说明查询用户日志
-  *
-  * @param userId  用户 id
-  * @param logTime 记录时间
-  * @param operate 操作说明
-  * @return 用户日志
-  */
-List&lt;UserInfoLog&gt; findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex(Long userId, LocalDateTime logTime, String operate);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment">  * 根据用户 id/记录时间/操作说明查询用户日志</span><br><span class="hljs-comment">  *</span><br><span class="hljs-comment">  * <span class="hljs-doctag">@param</span> userId  用户 id</span><br><span class="hljs-comment">  * <span class="hljs-doctag">@param</span> logTime 记录时间</span><br><span class="hljs-comment">  * <span class="hljs-doctag">@param</span> operate 操作说明</span><br><span class="hljs-comment">  * <span class="hljs-doctag">@return</span> 用户日志</span><br><span class="hljs-comment">  */</span><br>List&lt;UserInfoLog&gt; <span class="hljs-title function_">findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex</span><span class="hljs-params">(Long userId, LocalDateTime logTime, String operate)</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当吾辈第一次看到这么长的方法名时（是的，足足有 71 个字符组成），也只能惊呼：**Oh my Gad!**<br>这对业务层的调用实在是太过于痛苦了，尤其而且能逼死强迫症（例如吾辈），所以下面就说一种更加灵活的解决方案！</p>
 <h3 id="使用-MongoOperations-创建更加灵活的查询"><a href="#使用-MongoOperations-创建更加灵活的查询" class="headerlink" title="使用 MongoOperations 创建更加灵活的查询"></a>使用 MongoOperations 创建更加灵活的查询</h3><p>修改 <code>UserInfoLogRepository</code> 并定义 <code>listByParam()</code> 以替代上面的 <code>findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex()</code> 方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoLogRepository {
-    /**
-     * 根据一些参数查询用户信息列表
-     *
-     * @param userInfoLog 参数对象
-     * @return 用户信息列表
-     */
-    List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoLogRepository</span> {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据一些参数查询用户信息列表</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> userInfoLog 参数对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户信息列表</span><br><span class="hljs-comment">     */</span><br>    List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>创建实现类 <code>UserInfoLogRepositoryImpl</code> 并实现 <code>listByParam()</code> 方法。这里注入 <code>MongoOperations</code> MongoDB 操作模板，它的实现类实际上是 <code>MongoTemplate</code>，然后使用 <code>Criteria</code> 定义复杂的查询。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
-public class UserInfoLogRepositoryImpl implements UserInfoLogRepository {
-    @Autowired
-    private MongoOperations mongoOperations;
-
-    @Override
-    public List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog) {
-        final Criteria criteria = new Criteria();
-        if (userInfoLog.getUserId() != null) {
-            criteria.and("userId")
-                    .is(userInfoLog.getUserId());
-        }
-        if (userInfoLog.getLogTime() != null) {
-            criteria.and("logTime")
-                    .gte(userInfoLog.getLogTime());
-        }
-        if (userInfoLog.getOperate() != null) {
-            criteria.and("operate")
-                    .regex(userInfoLog.getOperate());
-        }
-        return mongoOperations.find(new Query(criteria), UserInfoLog.class);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoLogRepositoryImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">UserInfoLogRepository</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> MongoOperations mongoOperations;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">Criteria</span> <span class="hljs-variable">criteria</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Criteria</span>();<br>        <span class="hljs-keyword">if</span> (userInfoLog.getUserId() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"userId"</span>)<br>                    .is(userInfoLog.getUserId());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getLogTime() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"logTime"</span>)<br>                    .gte(userInfoLog.getLogTime());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getOperate() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"operate"</span>)<br>                    .regex(userInfoLog.getOperate());<br>        }<br>        <span class="hljs-keyword">return</span> mongoOperations.find(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Query</span>(criteria), UserInfoLog.class);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，<code>listByParam()</code> 相对而言更加优雅，不过代码量上也有增加就是了。事实上，对于复杂的查询，最好使用这种方式进行查询。</p>
 <h3 id="集合-MongoRepository-和-MongoOperations"><a href="#集合-MongoRepository-和-MongoOperations" class="headerlink" title="集合 MongoRepository 和 MongoOperations"></a>集合 MongoRepository 和 MongoOperations</h3><p>总之，上面两种方式各有优缺点。<code>MongoRepository</code> 对于大部分常见的操作基本都可以正常替代，而 <code>MongoOperations</code> 比之灵活得多，我们是否只能<strong>鱼与熊掌不可兼得</strong>呢？<br>当然不是，MongoData 在设计之初便充分权衡过方便与灵活性的平衡点，所以，我们可以同时使用它们！</p>
 <p>具体使用步骤如下</p>
 <h4 id="自定义更加复杂的-Dao-接口"><a href="#自定义更加复杂的-Dao-接口" class="headerlink" title="自定义更加复杂的 Dao 接口"></a>自定义更加复杂的 Dao 接口</h4><p>该接口定义需要自己实现的方法，需要同时被 <code>UserInfoLogRepository</code> 和 <code>UserInfoLogRepositoryImpl</code> 实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface CustomUserInfoLogRepository {
-    /**
-     * 根据一些参数查询用户信息列表
-     *
-     * @param userInfoLog 参数对象
-     * @return 用户信息列表
-     */
-    List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">CustomUserInfoLogRepository</span> {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据一些参数查询用户信息列表</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> userInfoLog 参数对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户信息列表</span><br><span class="hljs-comment">     */</span><br>    List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h4 id="定义一些简单操作的-Dao-接口"><a href="#定义一些简单操作的-Dao-接口" class="headerlink" title="定义一些简单操作的 Dao 接口"></a>定义一些简单操作的 Dao 接口</h4><p>注意，这里同时继承了 <code>CustomUserInfoLogRepository</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {
-    /**
-     * 根据 id 查询用户日志信息
-     *
-     * @param id 查询的 id
-     * @return 用户日志
-     */
-    @Nullable
-    UserInfoLog findUserInfoLogByIdEquals(Long id);
-
-    /**
-     * 根据用户 id/记录时间/操作说明查询用户日志
-     *
-     * @param userId  用户 id
-     * @param logTime 记录时间
-     * @param operate 操作说明
-     * @return 用户日志
-     */
-    List&lt;UserInfoLog&gt; findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex(Long userId, LocalDateTime logTime, String operate);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoLogRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">MongoRepository</span>&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据 id 查询用户日志信息</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> id 查询的 id</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户日志</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Nullable</span><br>    UserInfoLog <span class="hljs-title function_">findUserInfoLogByIdEquals</span><span class="hljs-params">(Long id)</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据用户 id/记录时间/操作说明查询用户日志</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> userId  用户 id</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> logTime 记录时间</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> operate 操作说明</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户日志</span><br><span class="hljs-comment">     */</span><br>    List&lt;UserInfoLog&gt; <span class="hljs-title function_">findUserInfoLogsByUserIdEqualsAndLogTimeGreaterThanEqualAndOperateRegex</span><span class="hljs-params">(Long userId, LocalDateTime logTime, String operate)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h4 id="定义实现-UserInfoLogRepositoryImpl-类"><a href="#定义实现-UserInfoLogRepositoryImpl-类" class="headerlink" title="定义实现 UserInfoLogRepositoryImpl 类"></a>定义实现 UserInfoLogRepositoryImpl 类</h4><p>数据仓库 <code>UserInfoLogRepository</code> 的实现类，但请务必注意，实现类继承的是 <code>CustomUserInfoLogRepository</code> 接口，而非本应该继承的接口。而且实现类的名字必须是基础接口名 + <code>Impl</code>，因为 MongoData 默认使用的实现类就是这个名字。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public class UserInfoLogRepositoryImpl implements CustomUserInfoLogRepository {
-    @Autowired
-    private MongoOperations mongoOperations;
-
-    @Override
-    public List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog) {
-        final Criteria criteria = new Criteria();
-        if (userInfoLog.getUserId() != null) {
-            criteria.and("userId")
-                    .is(userInfoLog.getUserId());
-        }
-        if (userInfoLog.getLogTime() != null) {
-            criteria.and("logTime")
-                    .gte(userInfoLog.getLogTime());
-        }
-        if (userInfoLog.getOperate() != null) {
-            criteria.and("operate")
-                    .regex(userInfoLog.getOperate());
-        }
-        return mongoOperations.find(new Query(criteria), UserInfoLog.class);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoLogRepositoryImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">CustomUserInfoLogRepository</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> MongoOperations mongoOperations;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">Criteria</span> <span class="hljs-variable">criteria</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Criteria</span>();<br>        <span class="hljs-keyword">if</span> (userInfoLog.getUserId() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"userId"</span>)<br>                    .is(userInfoLog.getUserId());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getLogTime() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"logTime"</span>)<br>                    .gte(userInfoLog.getLogTime());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getOperate() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"operate"</span>)<br>                    .regex(userInfoLog.getOperate());<br>        }<br>        <span class="hljs-keyword">return</span> mongoOperations.find(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Query</span>(criteria), UserInfoLog.class);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="常用-API"><a href="#常用-API" class="headerlink" title="常用 API"></a>常用 API</h2><p>匹配标准：<code>Criteria</code></p>
 <table>
@@ -915,8 +818,6 @@ public class UserInfoLogRepositoryImpl implements UserInfoLogRepository {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景之前在封装 table 组件 Vue 表格封装 BasicTableVue 的时候遇到的问题，在 data 属性中无法使用 this.** 调用 methods 中的函数。例如下面的代码 class BasicTableData {   constructor({     user &#x3D; {       name: &#39;rx&#39;,       age: 17,     },   } &#x3D; {}) {">
+    <meta name="description" content="场景之前在封装 table 组件 Vue 表格封装 BasicTableVue 的时候遇到的问题，在 data 属性中无法使用 this.** 调用 methods 中的函数。例如下面的代码 12345678910111213141516171819202122232425262728293031323334353637class BasicTableData {  constructor({">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue data 属性中的 this 指向问题">
 <meta property="og:url" content="https://blog.rxliuli.com/p/86acfc702cbc4855ac917047f8c88e96/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景之前在封装 table 组件 Vue 表格封装 BasicTableVue 的时候遇到的问题，在 data 属性中无法使用 this.** 调用 methods 中的函数。例如下面的代码 class BasicTableData {   constructor({     user &#x3D; {       name: &#39;rx&#39;,       age: 17,     },   } &#x3D; {}) {">
+<meta property="og:description" content="场景之前在封装 table 组件 Vue 表格封装 BasicTableVue 的时候遇到的问题，在 data 属性中无法使用 this.** 调用 methods 中的函数。例如下面的代码 12345678910111213141516171819202122232425262728293031323334353637class BasicTableData {  constructor({">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190327085616.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190327085734.png">
@@ -49,8 +49,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -257,7 +255,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2k 字
+          2.2k 字
         
       </span>
     
@@ -269,7 +267,7 @@
         
         
           <!-- compatible with older versions-->
-          18 分钟
+          19 分钟
         
       </span>
     
@@ -322,43 +320,7 @@
               <div class="markdown-body">
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>之前在封装 table 组件 <a href="/p/90548a371a16435799bcbfae3e4dbfb6">Vue 表格封装 BasicTableVue</a> 的时候遇到的问题，在 <code>data</code> 属性中无法使用 <code>this.**</code> 调用 <code>methods</code> 中的函数。<br>例如下面的代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">class</span> <span class="token class-name">BasicTableData</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    user <span class="token operator">=</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'rx'</span><span class="token punctuation">,</span>
-      <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>user <span class="token operator">=</span> user
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">Table</span> <span class="token keyword">extends</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> data<span class="token punctuation">,</span> methods<span class="token punctuation">,</span> mounted<span class="token punctuation">,</span> computed <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      <span class="token literal-property property">data</span><span class="token operator">:</span> _<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BasicTableData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">,</span>
-      methods<span class="token punctuation">,</span>
-      mounted<span class="token punctuation">,</span>
-      computed<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">const</span> table <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Table</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  <span class="token literal-property property">data</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">user</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">birthday</span><span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token literal-property property">birthdayFormatter</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calcTime<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token function">calcTime</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> time<span class="token punctuation">.</span><span class="token function">toISOString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-
-<span class="token comment">// 将输出 undefined</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>table<span class="token punctuation">.</span>user<span class="token punctuation">.</span>birthdayFormatter<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BasicTableData</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{</span><br><span class="hljs-params">    user = {</span><br><span class="hljs-params">      name: <span class="hljs-string">'rx'</span>,</span><br><span class="hljs-params">      age: <span class="hljs-number">17</span>,</span><br><span class="hljs-params">    },</span><br><span class="hljs-params">  } = {}</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">user</span> = user<br>  }<br>}<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Table</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Vue</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{ data, methods, mounted, computed }</span>) {<br>    <span class="hljs-variable language_">super</span>({<br>      <span class="hljs-attr">data</span>: _.<span class="hljs-title function_">merge</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">BasicTableData</span>(), data),<br>      methods,<br>      mounted,<br>      computed,<br>    })<br>  }<br>}<br><br><span class="hljs-keyword">const</span> table = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Table</span>({<br>  <span class="hljs-attr">data</span>: {<br>    <span class="hljs-attr">user</span>: {<br>      <span class="hljs-attr">birthday</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(),<br>      <span class="hljs-attr">birthdayFormatter</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">calcTime</span>,<br>    },<br>  },<br>  <span class="hljs-attr">methods</span>: {<br>    <span class="hljs-title function_">calcTime</span>(<span class="hljs-params">time</span>) {<br>      <span class="hljs-keyword">return</span> time.<span class="hljs-title function_">toISOString</span>()<br>    },<br>  },<br>})<br><br><span class="hljs-comment">// 将输出 undefined</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(table.<span class="hljs-property">user</span>.<span class="hljs-property">birthdayFormatter</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>吾辈尝试了一下原生的 vuejs，发现这样的 data 仍然不能用。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>后来在官方文档找到了 <a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/api/#data">这里</a>，data 如果是一个对象或者箭头函数时，不会绑定 <code>this</code>，仅当 <code>data</code> 是一个普通函数（使用 <code>function</code> 声明）时，才会被绑定 <code>this</code>。</p>
@@ -368,56 +330,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <li>如果需要默认 <code>data</code> <code>defaultData</code>，则 <code>Table</code> 可以将合并后的 <code>data</code> 声明为函数，并将 <code>defaultData</code> 与 <code>data</code>（使用 <code>Table</code> 创建实例时传入的）的返回值合并</li>
 </ol>
 <p>修改后的代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">class</span> <span class="token class-name">BasicTableData</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    user <span class="token operator">=</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'rx'</span><span class="token punctuation">,</span>
-      <span class="token literal-property property">age</span><span class="token operator">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>user <span class="token operator">=</span> user
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">class</span> <span class="token class-name">Table</span> <span class="token keyword">extends</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> data<span class="token punctuation">,</span> methods<span class="token punctuation">,</span> mounted<span class="token punctuation">,</span> computed <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">super</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      <span class="token comment">// 关键是这里将 data 声明为普通函数</span>
-      <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment">// 此处为了简洁使用 lodash 的深度合并</span>
-        <span class="token keyword">return</span> _<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span>
-          <span class="token keyword">new</span> <span class="token class-name">BasicTableData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-          <span class="token comment">// 此处判断 data 是否为函数,是的话就绑定 this 计算结果</span>
-          <span class="token keyword">typeof</span> data <span class="token operator">===</span> <span class="token string">'function'</span> <span class="token operator">?</span> <span class="token function">data</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token operator">:</span> data<span class="token punctuation">,</span>
-        <span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      methods<span class="token punctuation">,</span>
-      mounted<span class="token punctuation">,</span>
-      computed<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">const</span> table <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Table</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  <span class="token function-variable function">data</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">user</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token literal-property property">birthday</span><span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token literal-property property">birthdayFormatter</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>calcTime<span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token function">calcTime</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> time<span class="token punctuation">.</span><span class="token function">toISOString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-
-<span class="token comment">// 打印的结果是</span>
-<span class="token comment">// ƒ calcTime(time) {</span>
-<span class="token comment">//   return time.toISOString()</span>
-<span class="token comment">// }</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>table<span class="token punctuation">.</span>user<span class="token punctuation">.</span>birthdayFormatter<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BasicTableData</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{</span><br><span class="hljs-params">    user = {</span><br><span class="hljs-params">      name: <span class="hljs-string">'rx'</span>,</span><br><span class="hljs-params">      age: <span class="hljs-number">17</span>,</span><br><span class="hljs-params">    },</span><br><span class="hljs-params">  } = {}</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">user</span> = user<br>  }<br>}<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Table</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Vue</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{ data, methods, mounted, computed }</span>) {<br>    <span class="hljs-variable language_">super</span>({<br>      <span class="hljs-comment">// 关键是这里将 data 声明为普通函数</span><br>      <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {<br>        <span class="hljs-comment">// 此处为了简洁使用 lodash 的深度合并</span><br>        <span class="hljs-keyword">return</span> _.<span class="hljs-title function_">merge</span>(<br>          <span class="hljs-keyword">new</span> <span class="hljs-title class_">BasicTableData</span>(),<br>          <span class="hljs-comment">// 此处判断 data 是否为函数,是的话就绑定 this 计算结果</span><br>          <span class="hljs-keyword">typeof</span> data === <span class="hljs-string">'function'</span> ? data.<span class="hljs-title function_">call</span>(<span class="hljs-variable language_">this</span>) : data,<br>        )<br>      },<br>      methods,<br>      mounted,<br>      computed,<br>    })<br>  }<br>}<br><br><span class="hljs-keyword">const</span> table = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Table</span>({<br>  <span class="hljs-attr">data</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">return</span> {<br>      <span class="hljs-attr">user</span>: {<br>        <span class="hljs-attr">birthday</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(),<br>        <span class="hljs-attr">birthdayFormatter</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">calcTime</span>,<br>      },<br>    }<br>  },<br>  <span class="hljs-attr">methods</span>: {<br>    <span class="hljs-title function_">calcTime</span>(<span class="hljs-params">time</span>) {<br>      <span class="hljs-keyword">return</span> time.<span class="hljs-title function_">toISOString</span>()<br>    },<br>  },<br>})<br><br><span class="hljs-comment">// 打印的结果是</span><br><span class="hljs-comment">// ƒ calcTime(time) {</span><br><span class="hljs-comment">//   return time.toISOString()</span><br><span class="hljs-comment">// }</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(table.<span class="hljs-property">user</span>.<span class="hljs-property">birthdayFormatter</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>现在问题解决了，那么，为什么 <code>vuejs</code> 就能够在传入 <code>data</code> 函数时就能调用 <code>methods</code> 中的函数了呢？吾辈稍微 debug 进入源码看了一下</p>
 <ol>
@@ -432,13 +345,12 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <li><p>进入到 <code>initState()</code>，跳转到 <code>initData(vm);</code> 处<br><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190327090559.png" srcset="/img/loading.gif" lazyload alt="initData(vm) 处"></p>
 </li>
 <li><p>进入到 <code>initData()</code> 函数，看到了判断逻辑<br><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190327090946.png" srcset="/img/loading.gif" lazyload alt="判断逻辑"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> data <span class="token operator">=</span> vm<span class="token punctuation">.</span>$options<span class="token punctuation">.</span>data
-data <span class="token operator">=</span> vm<span class="token punctuation">.</span>_data <span class="token operator">=</span> <span class="token keyword">typeof</span> data <span class="token operator">===</span> <span class="token string">'function'</span> <span class="token operator">?</span> <span class="token function">getData</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> vm<span class="token punctuation">)</span> <span class="token operator">:</span> data <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">var</span> data = vm.<span class="hljs-property">$options</span>.<span class="hljs-property">data</span><br>data = vm.<span class="hljs-property">_data</span> = <span class="hljs-keyword">typeof</span> data === <span class="hljs-string">'function'</span> ? <span class="hljs-title function_">getData</span>(data, vm) : data || {}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>注意看，这里的 vue 内部判断了 data 是否为函数，如果是就去 <code>getData(data, vm)</code></p>
 </li>
 <li><p>进入 <code>getData()</code> 函数看看，发现了关键代码<br><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190327091155.png" srcset="/img/loading.gif" lazyload alt="关键代码"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">return</span> <span class="token function">data</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>vm<span class="token punctuation">,</span> vm<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">return</span> data.<span class="hljs-title function_">call</span>(vm, vm)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>是的，data 调用时使用 <code>call</code> 绑定 <code>this</code> 为 vm，而此时 <code>vm.calcTime</code> 已经有值了。</p>
 </li>
@@ -803,8 +715,6 @@ data <span class="token operator">=</span> vm<span class="token punctuation">.</
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

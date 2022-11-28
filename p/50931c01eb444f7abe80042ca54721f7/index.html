@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.5k 字
+          2.7k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          21 分钟
+          23 分钟
         
       </span>
     
@@ -316,111 +314,10 @@
 <blockquote>
 <p><code>Promise</code> 是 ES6 添加的一个重要的元素，它将回调函数压平为了一级调用，并在 ES7 的 <code>async/await</code> 中彻底改变了异步的使用方式！</p>
 </blockquote>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public class AsyncUtil {
-    private static final Logger log = LoggerFactory.getLogger(AsyncUtil.class);
-
-    /**
-     * 将当前线程休眠指定的时间
-     *
-     * @param millis 毫秒
-     */
-    public static void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 实现 JavaScript 中的 setTimeout
-     * 注：由于 {@link CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消
-     *
-     * @param ms 等待时间
-     * @return 异步对象
-     */
-
-    public static CompletableFuture&lt;Void&gt; setTimeout(long ms) {
-        return CompletableFuture.runAsync(() -&gt; sleep(ms));
-    }
-
-    /**
-     * 实现等待指定资源加载完成
-     * 注：由于 {@link CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消
-     *
-     * @param condition 临界条件
-     * @return 异步对象
-     */
-    public static CompletableFuture&lt;Void&gt; waitResource(Supplier&lt;Boolean&gt; condition) {
-        return CompletableFuture.runAsync(() -&gt; {
-            while (!condition.get()) {
-                sleep(100);
-            }
-        });
-    }
-
-    /**
-     * 实现 JavaScript 中的 setInterval 周期函数
-     * 该方法并不是非常精确的定时器，仅适用于一般场景，如有需要请使用 {@link ScheduledExecutorService} 类
-     * 注：由于 {@link CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消
-     *
-     * @param ms       间隔毫秒数
-     * @param runnable 回调函数
-     * @return 永远不会完成的异步对象
-     */
-    public static CompletableFuture&lt;Void&gt; setInterval(long ms, Runnable runnable) {
-        return CompletableFuture.runAsync(() -&gt; {
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                try {
-                    runnable.run();
-                    sleep(ms);
-                } catch (Exception e) {
-                    log.error("使用 setInterval 发生异常: ", e);
-                }
-            }
-        });
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AsyncUtil</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(AsyncUtil.class);<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 将当前线程休眠指定的时间</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> millis 毫秒</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sleep</span><span class="hljs-params">(<span class="hljs-type">long</span> millis)</span> {<br>        <span class="hljs-keyword">try</span> {<br>            Thread.sleep(millis);<br>        } <span class="hljs-keyword">catch</span> (InterruptedException e) {<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>        }<br>    }<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 实现 JavaScript 中的 setTimeout</span><br><span class="hljs-comment">     * 注：由于 {<span class="hljs-doctag">@link</span> CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> ms 等待时间</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 异步对象</span><br><span class="hljs-comment">     */</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> CompletableFuture&lt;Void&gt; <span class="hljs-title function_">setTimeout</span><span class="hljs-params">(<span class="hljs-type">long</span> ms)</span> {<br>        <span class="hljs-keyword">return</span> CompletableFuture.runAsync(() -&gt; sleep(ms));<br>    }<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 实现等待指定资源加载完成</span><br><span class="hljs-comment">     * 注：由于 {<span class="hljs-doctag">@link</span> CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> condition 临界条件</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 异步对象</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> CompletableFuture&lt;Void&gt; <span class="hljs-title function_">waitResource</span><span class="hljs-params">(Supplier&lt;Boolean&gt; condition)</span> {<br>        <span class="hljs-keyword">return</span> CompletableFuture.runAsync(() -&gt; {<br>            <span class="hljs-keyword">while</span> (!condition.get()) {<br>                sleep(<span class="hljs-number">100</span>);<br>            }<br>        });<br>    }<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 实现 JavaScript 中的 setInterval 周期函数</span><br><span class="hljs-comment">     * 该方法并不是非常精确的定时器，仅适用于一般场景，如有需要请使用 {<span class="hljs-doctag">@link</span> ScheduledExecutorService} 类</span><br><span class="hljs-comment">     * 注：由于 {<span class="hljs-doctag">@link</span> CompletableFuture#cancel(boolean)} 方法的限制，该定时器无法强制取消</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> ms       间隔毫秒数</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> runnable 回调函数</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 永远不会完成的异步对象</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> CompletableFuture&lt;Void&gt; <span class="hljs-title function_">setInterval</span><span class="hljs-params">(<span class="hljs-type">long</span> ms, Runnable runnable)</span> {<br>        <span class="hljs-keyword">return</span> CompletableFuture.runAsync(() -&gt; {<br>            <span class="hljs-comment">//noinspection InfiniteLoopStatement</span><br>            <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {<br>                <span class="hljs-keyword">try</span> {<br>                    runnable.run();<br>                    sleep(ms);<br>                } <span class="hljs-keyword">catch</span> (Exception e) {<br>                    log.error(<span class="hljs-string">"使用 setInterval 发生异常: "</span>, e);<br>                }<br>            }<br>        });<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public class AsyncUtilTest {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    public static void main(String[] args) {
-        final AsyncUtilTest asyncUtilTest = new AsyncUtilTest();
-        asyncUtilTest.setTimeout();
-        asyncUtilTest.waitResource();
-        asyncUtilTest.setInterval();
-        AsyncUtil.sleep(4000);
-    }
-
-    @Test
-    public void setTimeout() {
-        log.info("setTimeout completed before time: {}", LocalDateTime.now());
-        AsyncUtil.setTimeout(1000)
-                .thenRunAsync(() -&gt; log.info("setTimeout completed after time: {}", LocalDateTime.now()));
-    }
-
-    @Test
-    public void waitResource() {
-        log.info("waitResource completed before time: {}", LocalDateTime.now());
-        final AtomicInteger i = new AtomicInteger(1);
-        AsyncUtil.waitResource(() -&gt; i.get() == 3)
-                .thenRunAsync(() -&gt; log.info("waitResource completed after time: {}", LocalDateTime.now()));
-        AsyncUtil.sleep(2);
-        i.set(3);
-    }
-
-    @Test
-    public void setInterval() {
-        log.info("setInterval completed before time: {}", LocalDateTime.now());
-        final CompletableFuture&lt;Void&gt; future = AsyncUtil.setInterval(100, () -&gt; log.info("setInterval in the loop, current time: {}", LocalDateTime.now()));
-        AsyncUtil.sleep(500);
-        future.complete(null);
-        AsyncUtil.sleep(1000);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AsyncUtilTest</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(getClass());<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">AsyncUtilTest</span> <span class="hljs-variable">asyncUtilTest</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncUtilTest</span>();<br>        asyncUtilTest.setTimeout();<br>        asyncUtilTest.waitResource();<br>        asyncUtilTest.setInterval();<br>        AsyncUtil.sleep(<span class="hljs-number">4000</span>);<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setTimeout</span><span class="hljs-params">()</span> {<br>        log.info(<span class="hljs-string">"setTimeout completed before time: {}"</span>, LocalDateTime.now());<br>        AsyncUtil.setTimeout(<span class="hljs-number">1000</span>)<br>                .thenRunAsync(() -&gt; log.info(<span class="hljs-string">"setTimeout completed after time: {}"</span>, LocalDateTime.now()));<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">waitResource</span><span class="hljs-params">()</span> {<br>        log.info(<span class="hljs-string">"waitResource completed before time: {}"</span>, LocalDateTime.now());<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">AtomicInteger</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicInteger</span>(<span class="hljs-number">1</span>);<br>        AsyncUtil.waitResource(() -&gt; i.get() == <span class="hljs-number">3</span>)<br>                .thenRunAsync(() -&gt; log.info(<span class="hljs-string">"waitResource completed after time: {}"</span>, LocalDateTime.now()));<br>        AsyncUtil.sleep(<span class="hljs-number">2</span>);<br>        i.set(<span class="hljs-number">3</span>);<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setInterval</span><span class="hljs-params">()</span> {<br>        log.info(<span class="hljs-string">"setInterval completed before time: {}"</span>, LocalDateTime.now());<br>        <span class="hljs-keyword">final</span> CompletableFuture&lt;Void&gt; future = AsyncUtil.setInterval(<span class="hljs-number">100</span>, () -&gt; log.info(<span class="hljs-string">"setInterval in the loop, current time: {}"</span>, LocalDateTime.now()));<br>        AsyncUtil.sleep(<span class="hljs-number">500</span>);<br>        future.complete(<span class="hljs-literal">null</span>);<br>        AsyncUtil.sleep(<span class="hljs-number">1000</span>);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
                 
               </div>
@@ -770,8 +667,6 @@
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

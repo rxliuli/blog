@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3k 字
+          3.3k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          25 分钟
+          28 分钟
         
       </span>
     
@@ -324,155 +322,10 @@
 <li>重新渲染集合元素</li>
 </ol>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>定义模板</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-vuejs" data-language="vuejs"><code class="language-vuejs">/**
-自定义瀑布流组件
-使用方法如下：
-&lt;rx-waterfalls-flow :load="load"&gt;
-    &lt;!-- 这里 slotProps 绑定的便是子组件的数据，通过 slotProps 可以访问到子组件绑定到模板上的数据，当然，更简单的方法是使用 ES6 的解构 --&gt;
-    &lt;template slot-scope="{item}"&gt;
-  &lt;!-- 在模板里面便可以使用集合中的元素 item 了 --&gt;
-  &lt;li :key="item.id"&gt;
-    {{item.text}}
-  &lt;/li&gt;
-&lt;/template&gt;
-  &lt;/rx-waterfalls-flow&gt;
- */
-&lt;template&gt;
-  &lt;div id="rx-waterfalls-flow-container"&gt;
-    &lt;slot
-      v-for="item in items"
-      :item="item"
-    /&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-export default {
-  props: {
-    load: {
-      type: Function,
-      default: function () {
-        throw new Error('你需要为 RxWaterfallsFlow 组件定义分页加载的参数')
-      }
-    }
-  },
-  data: () =&gt; ({
-    items: [],
-    page: {
-      total: 0,
-      size: 10,
-      pages: 10,
-      current: 1,
-      records: []
-    }
-  }),
-  methods: {
-    async loadPage (current, size) {
-      this.page = await this.load(current, size)
-      this.items.push(...this.page.records)
-      this.page.records = []
-    },
-    /**
-     * 初始化方法，加载第一页的数据，加载监听器
-     */
-    async init () {
-      this.loadPage()
-      // 绑定窗口滚动事件
-      // 获得文档高度和滚动高度
-      // 计算是否已经到底了
-      // 到底的话就加载下一页的数据，否则忽略
-      const otherOnscrollFn = document.onscroll ? document.onscroll : function () { }
-      document.onscroll = () =&gt; {
-        otherOnscrollFn()
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-        const clientHeight = document.documentElement.clientHeight
-        const scrollHeight = document.documentElement.scrollHeight
-        // console.log(`已滚动的高度：${scrollTop}, 滚动条高度：${scrollHeight}, ${clientHeight}`)
-        // 向下滚动时判断判断是否正在向上滚动，是的话就清除定时器，停在当前位置
-        if (scrollHeight - scrollTop - clientHeight &lt;= 0 &amp;&amp; this.page.current &lt; this.page.pages) {
-          this.loadPage(this.page.current + 1, this.page.size)
-        }
-      }
-    }
-  },
-  mounted () {
-    this.init()
-  }
-}
-&lt;/script&gt;
-
-&lt;style scoped&gt;
-/* 容器宽度要占 100% */
-#rx-waterfalls-flow-container {
-  width: 100%;
-}
-&lt;/style&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs vuejs">/**<br>自定义瀑布流组件<br>使用方法如下：<br>&lt;rx-waterfalls-flow :load="load"&gt;<br>    &lt;!-- 这里 slotProps 绑定的便是子组件的数据，通过 slotProps 可以访问到子组件绑定到模板上的数据，当然，更简单的方法是使用 ES6 的解构 --&gt;<br>    &lt;template slot-scope="{item}"&gt;<br>  &lt;!-- 在模板里面便可以使用集合中的元素 item 了 --&gt;<br>  &lt;li :key="item.id"&gt;<br>    {{item.text}}<br>  &lt;/li&gt;<br>&lt;/template&gt;<br>  &lt;/rx-waterfalls-flow&gt;<br> */<br>&lt;template&gt;<br>  &lt;div id="rx-waterfalls-flow-container"&gt;<br>    &lt;slot<br>      v-for="item in items"<br>      :item="item"<br>    /&gt;<br>  &lt;/div&gt;<br>&lt;/template&gt;<br><br>&lt;script&gt;<br>export default {<br>  props: {<br>    load: {<br>      type: Function,<br>      default: function () {<br>        throw new Error('你需要为 RxWaterfallsFlow 组件定义分页加载的参数')<br>      }<br>    }<br>  },<br>  data: () =&gt; ({<br>    items: [],<br>    page: {<br>      total: 0,<br>      size: 10,<br>      pages: 10,<br>      current: 1,<br>      records: []<br>    }<br>  }),<br>  methods: {<br>    async loadPage (current, size) {<br>      this.page = await this.load(current, size)<br>      this.items.push(...this.page.records)<br>      this.page.records = []<br>    },<br>    /**<br>     * 初始化方法，加载第一页的数据，加载监听器<br>     */<br>    async init () {<br>      this.loadPage()<br>      // 绑定窗口滚动事件<br>      // 获得文档高度和滚动高度<br>      // 计算是否已经到底了<br>      // 到底的话就加载下一页的数据，否则忽略<br>      const otherOnscrollFn = document.onscroll ? document.onscroll : function () { }<br>      document.onscroll = () =&gt; {<br>        otherOnscrollFn()<br>        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop<br>        const clientHeight = document.documentElement.clientHeight<br>        const scrollHeight = document.documentElement.scrollHeight<br>        // console.log(`已滚动的高度：${scrollTop}, 滚动条高度：${scrollHeight}, ${clientHeight}`)<br>        // 向下滚动时判断判断是否正在向上滚动，是的话就清除定时器，停在当前位置<br>        if (scrollHeight - scrollTop - clientHeight &lt;= 0 &amp;&amp; this.page.current &lt; this.page.pages) {<br>          this.loadPage(this.page.current + 1, this.page.size)<br>        }<br>      }<br>    }<br>  },<br>  mounted () {<br>    this.init()<br>  }<br>}<br>&lt;/script&gt;<br><br>&lt;style scoped&gt;<br>/* 容器宽度要占 100% */<br>#rx-waterfalls-flow-container {<br>  width: 100%;<br>}<br>&lt;/style&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>使用起来就很简单了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-vuejs" data-language="vuejs"><code class="language-vuejs">&lt;template&gt;
-  &lt;rx-waterfalls-flow :load="load"&gt;
-    &lt;!-- 这里 slotProps 绑定的便是子组件的数据，通过 slotProps 可以访问到子组件绑定到模板上的数据，当然，更简单的方法是使用 ES6 的解构 --&gt;
-    &lt;!-- 这里面的是你自定义每个元素显示的内容 --&gt;
-    &lt;template slot-scope="{item}"&gt;
-      &lt;!-- 在模板里面便可以使用集合中的元素 item 了 --&gt;
-      &lt;li
-        class="item-style"
-        :key="item.id"
-      &gt;
-        {{item.text}}
-      &lt;/li&gt;
-    &lt;/template&gt;
-  &lt;/rx-waterfalls-flow&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-// 引入瀑布流组件
-import RxWaterfallsFlow from '@/components/common/RxWaterfallsFlow'
-import _ from 'lodash'
-
-export default {
-  components: {
-    RxWaterfallsFlow
-  },
-  methods: {
-    // 使用 Promise 封装 setTimeout，模拟 ajax 的异步造成的延迟
-    await: ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms)),
-    load: (page =&gt; {
-      // 该方法用于模拟 ajax 数据加载
-      return async function () {
-        await this.await(1000)
-        console.log(`加载了第 ${page.current} 页，共 ${page.pages} 页`)
-        // 使用 lodash 模拟数据
-        page.records = _.range(
-          (page.current - 1) * page.size + 1,
-          (++page.current - 1) * page.size + 1
-        )
-          .map(i =&gt; ({
-            id: i,
-            text: `第 ${i} 行内容`
-          }))
-        return page
-      }
-    })({
-      current: 1,
-      size: 10,
-      pages: 100,
-      total: this.current * this.pages,
-      records: []
-    })
-  }
-}
-&lt;/script&gt;
-
-&lt;style&gt;
-li {
-  width: 500px;
-  height: 200px;
-  line-height: 200px;
-  background-color: aqua;
-  margin: 10px auto;
-}
-&lt;/style&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs vuejs">&lt;template&gt;<br>  &lt;rx-waterfalls-flow :load="load"&gt;<br>    &lt;!-- 这里 slotProps 绑定的便是子组件的数据，通过 slotProps 可以访问到子组件绑定到模板上的数据，当然，更简单的方法是使用 ES6 的解构 --&gt;<br>    &lt;!-- 这里面的是你自定义每个元素显示的内容 --&gt;<br>    &lt;template slot-scope="{item}"&gt;<br>      &lt;!-- 在模板里面便可以使用集合中的元素 item 了 --&gt;<br>      &lt;li<br>        class="item-style"<br>        :key="item.id"<br>      &gt;<br>        {{item.text}}<br>      &lt;/li&gt;<br>    &lt;/template&gt;<br>  &lt;/rx-waterfalls-flow&gt;<br>&lt;/template&gt;<br><br>&lt;script&gt;<br>// 引入瀑布流组件<br>import RxWaterfallsFlow from '@/components/common/RxWaterfallsFlow'<br>import _ from 'lodash'<br><br>export default {<br>  components: {<br>    RxWaterfallsFlow<br>  },<br>  methods: {<br>    // 使用 Promise 封装 setTimeout，模拟 ajax 的异步造成的延迟<br>    await: ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms)),<br>    load: (page =&gt; {<br>      // 该方法用于模拟 ajax 数据加载<br>      return async function () {<br>        await this.await(1000)<br>        console.log(`加载了第 ${page.current} 页，共 ${page.pages} 页`)<br>        // 使用 lodash 模拟数据<br>        page.records = _.range(<br>          (page.current - 1) * page.size + 1,<br>          (++page.current - 1) * page.size + 1<br>        )<br>          .map(i =&gt; ({<br>            id: i,<br>            text: `第 ${i} 行内容`<br>          }))<br>        return page<br>      }<br>    })({<br>      current: 1,<br>      size: 10,<br>      pages: 100,<br>      total: this.current * this.pages,<br>      records: []<br>    })<br>  }<br>}<br>&lt;/script&gt;<br><br>&lt;style&gt;<br>li {<br>  width: 500px;<br>  height: 200px;<br>  line-height: 200px;<br>  background-color: aqua;<br>  margin: 10px auto;<br>}<br>&lt;/style&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><p>目前这个简单的瀑布流公用组件还有着相当多的缺陷，却是要等到后面再进行改进了呢</p>
 <ul>
@@ -829,8 +682,6 @@ li {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

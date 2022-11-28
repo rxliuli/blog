@@ -46,8 +46,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -253,7 +251,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.4k 字
+          5.7k 字
         
       </span>
     
@@ -265,7 +263,7 @@
         
         
           <!-- compatible with older versions-->
-          45 分钟
+          48 分钟
         
       </span>
     
@@ -327,84 +325,24 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>jscodeshift 支持多种解析器，包括常见的 babel、ts、tsx，也提供链式调用 API，类似于 jquery。在调研的过程中，吾辈还发现了一个非常好的工具 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a>，它可以非常方便的浏览一段代码的 ast，便于确认如何找到想要处理的 ast 节点。</p>
 <p><img src="/resources/cffe2a8a0f69452bbaca26977e4a9ade.png" srcset="/img/loading.gif" lazyload alt="1658135431847"></p>
 <p>jscodeshift 同时提供了 cli/lib 的使用方式，下面是基本的使用命令，它会在匹配的 ts 文件上运行转换脚本 transform.ts，<code>-d</code> 表示尝试运行并确定影响范围。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">jscodeshift -t=./transform.ts --parser=ts ./*.ts -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">jscodeshift -t=./transform.ts --parser=ts ./*.ts -d<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="替换-import-导入的变量并替换所有使用到的-API"><a href="#替换-import-导入的变量并替换所有使用到的-API" class="headerlink" title="替换 import 导入的变量并替换所有使用到的 API"></a>替换 import 导入的变量并替换所有使用到的 API</h3><p>一种需求是将命名空间导入重构为命名导入，例如将 <code>import * as _ from 'lodash'</code> 转换为 <code>import { uniq } from 'lodash'</code> 便于构建工具能正确的 tree shaking。</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import * as _ from 'lodash'
-
-console.log(_.sort(_.uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> _ <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(_.<span class="hljs-title function_">sort</span>(_.<span class="hljs-title function_">uniq</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>])))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { sort, uniq } from 'lodash'
-
-console.log(sort(uniq([1, 2, 1])))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { sort, uniq } <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">sort</span>(<span class="hljs-title function_">uniq</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>])))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里只需要找到引用命名空间的所有调用，并分别替换<strong>导入</strong>与<strong>命名空间方法调用</strong>即可，以下是实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
-  Identifier,
-  ImportDeclaration,
-  MemberExpression,
-  Transform,
-} from 'jscodeshift'
-
-const replaceImport: Transform = (fileInfo, api) =&gt; {
-  const j = api.j
-  const root = j(fileInfo.source)
-  const importNames = root
-    .find(j.ImportDeclaration)
-    .find(j.ImportNamespaceSpecifier)
-    .find(j.Identifier)
-    .nodes()
-    .map((node) =&gt; (node as Identifier).name)
-  console.log(importNames)
-  const list = importNames.map((name) =&gt; ({
-    name,
-    list: root
-      .find(j.MemberExpression, {
-        object: { name },
-      })
-      .nodes()
-      .map((node) =&gt; ((node as MemberExpression).property as Identifier).name),
-  }))
-  console.log(list)
-  list.forEach(({ name, list }) =&gt; {
-    root
-      .find(j.ImportDeclaration, {
-        specifiers: [{ type: 'ImportNamespaceSpecifier', local: { name } }],
-      })
-      .replaceWith((path) =&gt; {
-        const node = path.node as ImportDeclaration
-        node.specifiers = list.map((name) =&gt;
-          j.importSpecifier(j.identifier(name)),
-        )
-        return node
-      })
-    list.forEach((p) =&gt; {
-      root
-        .find(j.MemberExpression, { object: { name }, property: { name: p } })
-        .replaceWith(j.identifier(p))
-    })
-  })
-  return root.toSource()
-}
-
-export default replaceImport<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> {<br>  <span class="hljs-title class_">Identifier</span>,<br>  <span class="hljs-title class_">ImportDeclaration</span>,<br>  <span class="hljs-title class_">MemberExpression</span>,<br>  <span class="hljs-title class_">Transform</span>,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'jscodeshift'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">replaceImport</span>: <span class="hljs-title class_">Transform</span> = <span class="hljs-function">(<span class="hljs-params">fileInfo, api</span>) =&gt;</span> {<br>  <span class="hljs-keyword">const</span> j = api.<span class="hljs-property">j</span><br>  <span class="hljs-keyword">const</span> root = <span class="hljs-title function_">j</span>(fileInfo.<span class="hljs-property">source</span>)<br>  <span class="hljs-keyword">const</span> importNames = root<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportDeclaration</span>)<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportNamespaceSpecifier</span>)<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">Identifier</span>)<br>    .<span class="hljs-title function_">nodes</span>()<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">node</span>) =&gt;</span> (node <span class="hljs-keyword">as</span> <span class="hljs-title class_">Identifier</span>).<span class="hljs-property">name</span>)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(importNames)<br>  <span class="hljs-keyword">const</span> list = importNames.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span> ({<br>    name,<br>    <span class="hljs-attr">list</span>: root<br>      .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">MemberExpression</span>, {<br>        <span class="hljs-attr">object</span>: { name },<br>      })<br>      .<span class="hljs-title function_">nodes</span>()<br>      .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">node</span>) =&gt;</span> ((node <span class="hljs-keyword">as</span> <span class="hljs-title class_">MemberExpression</span>).<span class="hljs-property">property</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Identifier</span>).<span class="hljs-property">name</span>),<br>  }))<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(list)<br>  list.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">{ name, list }</span>) =&gt;</span> {<br>    root<br>      .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportDeclaration</span>, {<br>        <span class="hljs-attr">specifiers</span>: [{ <span class="hljs-attr">type</span>: <span class="hljs-string">'ImportNamespaceSpecifier'</span>, <span class="hljs-attr">local</span>: { name } }],<br>      })<br>      .<span class="hljs-title function_">replaceWith</span>(<span class="hljs-function">(<span class="hljs-params">path</span>) =&gt;</span> {<br>        <span class="hljs-keyword">const</span> node = path.<span class="hljs-property">node</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">ImportDeclaration</span><br>        node.<span class="hljs-property">specifiers</span> = list.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span><br>          j.<span class="hljs-title function_">importSpecifier</span>(j.<span class="hljs-title function_">identifier</span>(name)),<br>        )<br>        <span class="hljs-keyword">return</span> node<br>      })<br>    list.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> {<br>      root<br>        .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">MemberExpression</span>, { <span class="hljs-attr">object</span>: { name }, <span class="hljs-attr">property</span>: { <span class="hljs-attr">name</span>: p } })<br>        .<span class="hljs-title function_">replaceWith</span>(j.<span class="hljs-title function_">identifier</span>(p))<br>    })<br>  })<br>  <span class="hljs-keyword">return</span> root.<span class="hljs-title function_">toSource</span>()<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> replaceImport<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="将废弃的-API-替换为新的-API-调用"><a href="#将废弃的-API-替换为新的-API-调用" class="headerlink" title="将废弃的 API 替换为新的 API 调用"></a>将废弃的 API 替换为新的 API 调用</h3><p>还有一些时候我们废弃了一些 API，但目前仍然有引用，为了避免堆叠兼容式的代码，需要将使用旧 API 的代码转换为使用新 API 的代码。<br>例如我们希望替换以下代码</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { RendererApiFactory } from 'ipc-renderer'
-
-export const { vmBasicMessageChannel } = RendererApiFactory.createAll()
-export const { systemApi } = RendererApiFactory.createAllIpcMainApi(
-  vmBasicMessageChannel,
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">RendererApiFactory</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'ipc-renderer'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> { vmBasicMessageChannel } = <span class="hljs-title class_">RendererApiFactory</span>.<span class="hljs-title function_">createAll</span>()<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> { systemApi } = <span class="hljs-title class_">RendererApiFactory</span>.<span class="hljs-title function_">createAllIpcMainApi</span>(<br>  vmBasicMessageChannel,<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { ApiFactory } from 'app-utils'
-
-export const { basicMessageChannel, systemApi } =
-  ApiFactory.createAll(basicMessageChannel)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ApiFactory</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'app-utils'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> { basicMessageChannel, systemApi } =<br>  <span class="hljs-title class_">ApiFactory</span>.<span class="hljs-title function_">createAll</span>(basicMessageChannel)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里替换稍微复杂一点，涉及到以下几个操作</p>
 <ul>
@@ -414,127 +352,33 @@ export const { basicMessageChannel, systemApi } =
 <li>创建新的导出</li>
 <li>清理空的导入、导出</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Identifier, ObjectProperty, Transform } from 'jscodeshift'
-
-const depretedApi: Transform = (fileInfo, api) =&gt; {
-  const j = api.j
-  const root = j(fileInfo.source)
-
-  const findImport = root
-    .find(j.ImportDeclaration, { source: { value: 'ipc-renderer' } })
-    .filter(
-      (path) =&gt;
-        j(path.node).find(j.ImportSpecifier, {
-          imported: { name: 'RendererApiFactory' },
-        }).length !== 0,
-    )
-  if (findImport.length === 0) {
-    return
-  }
-  findImport
-    .find(j.ImportSpecifier, { imported: { name: 'RendererApiFactory' } })
-    .remove()
-  findImport.insertAfter(
-    j.importDeclaration(
-      [j.importSpecifier(j.identifier('ApiFactory'))],
-      j.literal('app-utils'),
-    ),
-  )
-  if (findImport.find(j.ImportSpecifier).length === 0) {
-    findImport.remove()
-  }
-
-  root
-    .find(j.ExportNamedDeclaration)
-    .filter(
-      (path) =&gt;
-        j(path.node).find(j.MemberExpression, {
-          object: { name: 'RendererApiFactory' },
-          property: { name: 'createAll' },
-        }).length !== 0,
-    )
-    .remove()
-  const createAllIpcMainApi = root.find(j.ExportNamedDeclaration).filter(
-    (path) =&gt;
-      j(path.node).find(j.MemberExpression, {
-        object: { name: 'RendererApiFactory' },
-        property: { name: 'createAllIpcMainApi' },
-      }).length !== 0,
-  )
-  const keys = createAllIpcMainApi
-    .find(j.ObjectPattern)
-    .find(j.ObjectProperty)
-    .nodes()
-    .map((node) =&gt; ((node as ObjectProperty).key as Identifier).name)
-  console.log(keys)
-  createAllIpcMainApi.insertAfter(
-    j(
-      `export const { ${['basicMessageChannel', ...keys].join(
-        ', ',
-      )} } = ApiFactory.createAll()`,
-    )
-      .find(j.ExportNamedDeclaration)
-      .nodes()[0],
-  )
-  createAllIpcMainApi.remove()
-  console.log(root.toSource())
-  return root.toSource()
-}
-
-export default depretedApi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Identifier</span>, <span class="hljs-title class_">ObjectProperty</span>, <span class="hljs-title class_">Transform</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'jscodeshift'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">depretedApi</span>: <span class="hljs-title class_">Transform</span> = <span class="hljs-function">(<span class="hljs-params">fileInfo, api</span>) =&gt;</span> {<br>  <span class="hljs-keyword">const</span> j = api.<span class="hljs-property">j</span><br>  <span class="hljs-keyword">const</span> root = <span class="hljs-title function_">j</span>(fileInfo.<span class="hljs-property">source</span>)<br><br>  <span class="hljs-keyword">const</span> findImport = root<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportDeclaration</span>, { <span class="hljs-attr">source</span>: { <span class="hljs-attr">value</span>: <span class="hljs-string">'ipc-renderer'</span> } })<br>    .<span class="hljs-title function_">filter</span>(<br>      <span class="hljs-function">(<span class="hljs-params">path</span>) =&gt;</span><br>        <span class="hljs-title function_">j</span>(path.<span class="hljs-property">node</span>).<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportSpecifier</span>, {<br>          <span class="hljs-attr">imported</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'RendererApiFactory'</span> },<br>        }).<span class="hljs-property">length</span> !== <span class="hljs-number">0</span>,<br>    )<br>  <span class="hljs-keyword">if</span> (findImport.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {<br>    <span class="hljs-keyword">return</span><br>  }<br>  findImport<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportSpecifier</span>, { <span class="hljs-attr">imported</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'RendererApiFactory'</span> } })<br>    .<span class="hljs-title function_">remove</span>()<br>  findImport.<span class="hljs-title function_">insertAfter</span>(<br>    j.<span class="hljs-title function_">importDeclaration</span>(<br>      [j.<span class="hljs-title function_">importSpecifier</span>(j.<span class="hljs-title function_">identifier</span>(<span class="hljs-string">'ApiFactory'</span>))],<br>      j.<span class="hljs-title function_">literal</span>(<span class="hljs-string">'app-utils'</span>),<br>    ),<br>  )<br>  <span class="hljs-keyword">if</span> (findImport.<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ImportSpecifier</span>).<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {<br>    findImport.<span class="hljs-title function_">remove</span>()<br>  }<br><br>  root<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ExportNamedDeclaration</span>)<br>    .<span class="hljs-title function_">filter</span>(<br>      <span class="hljs-function">(<span class="hljs-params">path</span>) =&gt;</span><br>        <span class="hljs-title function_">j</span>(path.<span class="hljs-property">node</span>).<span class="hljs-title function_">find</span>(j.<span class="hljs-property">MemberExpression</span>, {<br>          <span class="hljs-attr">object</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'RendererApiFactory'</span> },<br>          <span class="hljs-attr">property</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'createAll'</span> },<br>        }).<span class="hljs-property">length</span> !== <span class="hljs-number">0</span>,<br>    )<br>    .<span class="hljs-title function_">remove</span>()<br>  <span class="hljs-keyword">const</span> createAllIpcMainApi = root.<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ExportNamedDeclaration</span>).<span class="hljs-title function_">filter</span>(<br>    <span class="hljs-function">(<span class="hljs-params">path</span>) =&gt;</span><br>      <span class="hljs-title function_">j</span>(path.<span class="hljs-property">node</span>).<span class="hljs-title function_">find</span>(j.<span class="hljs-property">MemberExpression</span>, {<br>        <span class="hljs-attr">object</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'RendererApiFactory'</span> },<br>        <span class="hljs-attr">property</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">'createAllIpcMainApi'</span> },<br>      }).<span class="hljs-property">length</span> !== <span class="hljs-number">0</span>,<br>  )<br>  <span class="hljs-keyword">const</span> keys = createAllIpcMainApi<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ObjectPattern</span>)<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ObjectProperty</span>)<br>    .<span class="hljs-title function_">nodes</span>()<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">node</span>) =&gt;</span> ((node <span class="hljs-keyword">as</span> <span class="hljs-title class_">ObjectProperty</span>).<span class="hljs-property">key</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Identifier</span>).<span class="hljs-property">name</span>)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(keys)<br>  createAllIpcMainApi.<span class="hljs-title function_">insertAfter</span>(<br>    <span class="hljs-title function_">j</span>(<br>      <span class="hljs-string">`export const { <span class="hljs-subst">${[<span class="hljs-string">'basicMessageChannel'</span>, ...keys].join(</span></span><br><span class="hljs-subst"><span class="hljs-string">        <span class="hljs-string">', '</span>,</span></span><br><span class="hljs-subst"><span class="hljs-string">      )}</span> } = ApiFactory.createAll()`</span>,<br>    )<br>      .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">ExportNamedDeclaration</span>)<br>      .<span class="hljs-title function_">nodes</span>()[<span class="hljs-number">0</span>],<br>  )<br>  createAllIpcMainApi.<span class="hljs-title function_">remove</span>()<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(root.<span class="hljs-title function_">toSource</span>())<br>  <span class="hljs-keyword">return</span> root.<span class="hljs-title function_">toSource</span>()<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> depretedApi<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里可以看到，吾辈并未使用 jscodeshift 构建 ast 的 api，而是直接使用了字符串拼接的方法。主要是使用 jscodeshift 的 api 构建过于繁琐，所以直接拼接字符串然后解析可能更简单一点。</p>
 <h3 id="替换方法调用到多个参数与对象参数"><a href="#替换方法调用到多个参数与对象参数" class="headerlink" title="替换方法调用到多个参数与对象参数"></a>替换方法调用到多个参数与对象参数</h3><p>除此之外，我们还能变换方法调用的参数，例如将多个参数转换为对象参数（这在 ide 中是现成的功能）</p>
 <p>转换前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show('liuli', 17, false)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">show</span>(<span class="hljs-string">'liuli'</span>, <span class="hljs-number">17</span>, <span class="hljs-literal">false</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>转换后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">show({ name: 'liuli', age: 17, sex: false })<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">show</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">'liuli'</span>, <span class="hljs-attr">age</span>: <span class="hljs-number">17</span>, <span class="hljs-attr">sex</span>: <span class="hljs-literal">false</span> })<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里我们仅需要找到需要处理的函数调用，然后转换其参数即可。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { CallExpression, Identifier, Transform } from 'jscodeshift'
-
-const replaceParams: Transform = (fileInfo, api) =&gt; {
-  const j = api.j
-  const root = j(fileInfo.source)
-
-  const names = ['name', 'age', 'sex']
-  root
-    .find(j.CallExpression, { callee: { type: 'Identifier', name: 'show' } })
-    .replaceWith((path) =&gt; {
-      const node = path.node as CallExpression
-      const args = node.arguments
-      node.arguments = [
-        j.objectExpression(
-          names.map((name, i) =&gt;
-            j.objectProperty(j.identifier(name), args[i] as Identifier),
-          ),
-        ),
-      ]
-      return node
-    })
-
-  return root.toSource()
-}
-
-export default replaceParams<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">CallExpression</span>, <span class="hljs-title class_">Identifier</span>, <span class="hljs-title class_">Transform</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'jscodeshift'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">replaceParams</span>: <span class="hljs-title class_">Transform</span> = <span class="hljs-function">(<span class="hljs-params">fileInfo, api</span>) =&gt;</span> {<br>  <span class="hljs-keyword">const</span> j = api.<span class="hljs-property">j</span><br>  <span class="hljs-keyword">const</span> root = <span class="hljs-title function_">j</span>(fileInfo.<span class="hljs-property">source</span>)<br><br>  <span class="hljs-keyword">const</span> names = [<span class="hljs-string">'name'</span>, <span class="hljs-string">'age'</span>, <span class="hljs-string">'sex'</span>]<br>  root<br>    .<span class="hljs-title function_">find</span>(j.<span class="hljs-property">CallExpression</span>, { <span class="hljs-attr">callee</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">'Identifier'</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">'show'</span> } })<br>    .<span class="hljs-title function_">replaceWith</span>(<span class="hljs-function">(<span class="hljs-params">path</span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> node = path.<span class="hljs-property">node</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">CallExpression</span><br>      <span class="hljs-keyword">const</span> args = node.<span class="hljs-property">arguments</span><br>      node.<span class="hljs-property">arguments</span> = [<br>        j.<span class="hljs-title function_">objectExpression</span>(<br>          names.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">name, i</span>) =&gt;</span><br>            j.<span class="hljs-title function_">objectProperty</span>(j.<span class="hljs-title function_">identifier</span>(name), args[i] <span class="hljs-keyword">as</span> <span class="hljs-title class_">Identifier</span>),<br>          ),<br>        ),<br>      ]<br>      <span class="hljs-keyword">return</span> node<br>    })<br><br>  <span class="hljs-keyword">return</span> root.<span class="hljs-title function_">toSource</span>()<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> replaceParams<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="踩到的一些坑"><a href="#踩到的一些坑" class="headerlink" title="踩到的一些坑"></a>踩到的一些坑</h2><h3 id="使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大"><a href="#使用-ts-解析器得到的结果与-jscodeshift-的-API-差距很大" class="headerlink" title="使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大"></a>使用 ts 解析器得到的结果与 jscodeshift 的 API 差距很大</h3><p>ts 的 ast 非常特立独行，可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 看到。吾辈一般会选择使用 @typescript-eslint/parser，它既能解析 js/ts/tsx，又能与 jscodeshift 的 api 相结合判断如何检索节点。</p>
 <h3 id="无法直接按类型找到泛型参数"><a href="#无法直接按类型找到泛型参数" class="headerlink" title="无法直接按类型找到泛型参数"></a>无法直接按类型找到泛型参数</h3><p>例如可以在 ast viewer 中看到节点 TSTypeParameterInstantiation</p>
 <p><img src="/resources/48b7b59c126142358065492d2935f1cb.png" srcset="/img/loading.gif" lazyload alt="1658133727745"></p>
 <p>但却无法使用 jscodeshift 找到</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const root = j(`wrap&lt;IHelloApi&gt;()`)
-expect(root.find(j.TSTypeParameterInstantiation).length).toBe(0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">j</span>(<span class="hljs-string">`wrap&lt;IHelloApi&gt;()`</span>)<br><span class="hljs-title function_">expect</span>(root.<span class="hljs-title function_">find</span>(j.<span class="hljs-property">TSTypeParameterInstantiation</span>).<span class="hljs-property">length</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">0</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="string-prototype-replace-替换包含-的字符串时会出现奇怪的现象"><a href="#string-prototype-replace-替换包含-的字符串时会出现奇怪的现象" class="headerlink" title="string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象"></a>string.prototype.replace 替换包含 $ 的字符串时会出现奇怪的现象</h3><p>运行下面这段代码，可能会得到让你意外的结果</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const s = 'hell$$ w$$rld'
-console.log(s.replaceAll(s, s)) // hell$ w$rld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> s = <span class="hljs-string">'hell$$ w$$rld'</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(s.<span class="hljs-title function_">replaceAll</span>(s, s)) <span class="hljs-comment">// hell$ w$rld</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>这与 string.prototype.replace 的一些奇怪实现有关，具体参考 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E4%BD%BF%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0">mdn</a>，目前 StackOverflow 上的推荐方法是先处理一次要替换的值</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(s.replaceAll(s, s.replaceAll('$', '$$$$')))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(s.<span class="hljs-title function_">replaceAll</span>(s, s.<span class="hljs-title function_">replaceAll</span>(<span class="hljs-string">'$'</span>, <span class="hljs-string">'$$$$'</span>)))<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="glob-模式依赖于-bash"><a href="#glob-模式依赖于-bash" class="headerlink" title="glob 模式依赖于 bash"></a>glob 模式依赖于 bash</h3><p>这点很烦人，它并未使用 node-glob 之类的包来实现文件匹配，而是直接依赖于 shell 本身的 glob 匹配，而默认情况下并不支持 <code>**</code>。某种变通的方法是使用 <code>find + xargs</code> 来绕过</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">find ./*/src -iname '*.vue' -o -iname '*.ts' | xargs jscodeshift -t "./convertAppApi.ts" -d<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts">find .<span class="hljs-comment">/*/src -iname '*.vue' -o -iname '*.ts' | xargs jscodeshift -t "./convertAppApi.ts" -d</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://www.toptal.com/javascript/write-code-to-rewrite-your-code">https://www.toptal.com/javascript/write-code-to-rewrite-your-code</a></li>
@@ -890,8 +734,6 @@ console.log(s.replaceAll(s, s)) // hell$ w$rld<span aria-hidden="true" class="li
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

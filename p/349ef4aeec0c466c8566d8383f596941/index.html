@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景graphql 提供前后端一致的 api 架构元数据，同时通过请求合并、按需获取加快 web 与后端交互的性能。 结合 ts 使用基本思路  扫描 gql 文件中的查询文件 生成类型定义与 document 对象 使用这些类型定义  使用步骤 以下使用 github api@v4 进行演示  获取后端的元数据 pnpm i -g get-graphql-schema get-graphql-s">
+    <meta name="description" content="场景graphql 提供前后端一致的 api 架构元数据，同时通过请求合并、按需获取加快 web 与后端交互的性能。 结合 ts 使用基本思路  扫描 gql 文件中的查询文件 生成类型定义与 document 对象 使用这些类型定义  使用步骤 以下使用 github api@v4 进行演示  获取后端的元数据 12pnpm i -g get-graphql-schemaget-graphql-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在 ts 中使用 graphql">
 <meta property="og:url" content="https://blog.rxliuli.com/p/349ef4aeec0c466c8566d8383f596941/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景graphql 提供前后端一致的 api 架构元数据，同时通过请求合并、按需获取加快 web 与后端交互的性能。 结合 ts 使用基本思路  扫描 gql 文件中的查询文件 生成类型定义与 document 对象 使用这些类型定义  使用步骤 以下使用 github api@v4 进行演示  获取后端的元数据 pnpm i -g get-graphql-schema get-graphql-s">
+<meta property="og:description" content="场景graphql 提供前后端一致的 api 架构元数据，同时通过请求合并、按需获取加快 web 与后端交互的性能。 结合 ts 使用基本思路  扫描 gql 文件中的查询文件 生成类型定义与 document 对象 使用这些类型定义  使用步骤 以下使用 github api@v4 进行演示  获取后端的元数据 12pnpm i -g get-graphql-schemaget-graphql-">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/994d6f1aee71444b983d982bf216fd1c.png">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/6dd72b1c51114beebd38ba4f65ca4976.png">
@@ -45,8 +45,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -253,7 +251,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.9k 字
+          6.3k 字
         
       </span>
     
@@ -265,7 +263,7 @@
         
         
           <!-- compatible with older versions-->
-          49 分钟
+          53 分钟
         
       </span>
     
@@ -328,14 +326,13 @@
 <p>以下使用 github api@v4 进行演示</p>
 </blockquote>
 <p>获取后端的元数据</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pnpm i -g get-graphql-schema
-get-graphql-schema https://docs.github.com/public/schema.docs.graphql &gt; schema.graphql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">pnpm i -g get-graphql-schema<br>get-graphql-schema https://docs.github.com/public/schema.docs.graphql &gt; schema.graphql<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>参考：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/37397886/get-graphql-whole-schema-query">https://stackoverflow.com/questions/37397886/get-graphql-whole-schema-query</a></p>
 </blockquote>
 <p>安装基础 sdk</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pnpm i @apollo/client graphql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">pnpm i @apollo/client graphql<br></code></pre></td></tr></tbody></table></figure>
 
 <p>安装代码生成器相关依赖</p>
 <ul>
@@ -346,200 +343,28 @@ get-graphql-schema https://docs.github.com/public/schema.docs.graphql &gt; schem
 <li><code>@graphql-codegen/near-operation-file-preset</code> ts 预设配置</li>
 </ul>
 <p>创建配置 <em>codegen.yml</em></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">overwrite: true
-schema: schema.graphql
-generates:
-  ./src/graphql.generated.ts:
-    plugins:
-      - typescript
-  ./:
-    documents:
-      - src/**/*.gql
-    preset: near-operation-file
-    presetConfig:
-      baseTypesPath: ./src/graphql.generated.ts
-      extension: .generated.ts
-    plugins:
-      - typescript-operations
-      - typed-document-node<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-attr">overwrite:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">schema:</span> <span class="hljs-string">schema.graphql</span><br><span class="hljs-attr">generates:</span><br>  <span class="hljs-string">./src/graphql.generated.ts:</span><br>    <span class="hljs-attr">plugins:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">typescript</span><br>  <span class="hljs-string">./:</span><br>    <span class="hljs-attr">documents:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">src/**/*.gql</span><br>    <span class="hljs-attr">preset:</span> <span class="hljs-string">near-operation-file</span><br>    <span class="hljs-attr">presetConfig:</span><br>      <span class="hljs-attr">baseTypesPath:</span> <span class="hljs-string">./src/graphql.generated.ts</span><br>      <span class="hljs-attr">extension:</span> <span class="hljs-string">.generated.ts</span><br>    <span class="hljs-attr">plugins:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">typescript-operations</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">typed-document-node</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>在 <em>src/api/RepoQuery.gql</em> 编写 graphql 查询语句</p>
 <blockquote>
 <p>注: 在非 react 项目中，请从 <code>@apollo/client/core</code> 导入所有非 react 的内容。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-gql" data-language="gql"><code class="language-gql">fragment Repo on Repository {
-  id
-  name
-}
-
-query findRepoStar($name: String!, $owner: String!) {
-  repository(name: $name, owner: $owner) {
-    ...Repo
-    stargazerCount
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs gql">fragment Repo on Repository {<br>  id<br>  name<br>}<br><br>query findRepoStar($name: String!, $owner: String!) {<br>  repository(name: $name, owner: $owner) {<br>    ...Repo<br>    stargazerCount<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用 cli 生成类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">pnpm graphql-codegen --config codegen.yml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts">pnpm graphql-codegen --config codegen.<span class="hljs-property">yml</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>生成结果大致如下，基本上就是参数和结果类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/api/RepoQuery.generated.ts
-import * as Types from '../graphql.generated'
-
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
-export type RepoFragment = {
-  __typename?: 'Repository'
-  id: string
-  name: string
-}
-
-export type FindRepoStarQueryVariables = Types.Exact&lt;{
-  name: Types.Scalars['String']
-  owner: Types.Scalars['String']
-}&gt;
-
-export type FindRepoStarQuery = {
-  __typename?: 'Query'
-  repository?:
-    | {
-        __typename?: 'Repository'
-        stargazerCount: number
-        id: string
-        name: string
-      }
-    | null
-    | undefined
-}
-
-export const RepoFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Repo' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Repository' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode&lt;RepoFragment, unknown&gt;
-export const FindRepoStarDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'findRepoStar' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'name' } },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'owner' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'repository' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'name' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'name' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'owner' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'owner' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Repo' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'stargazerCount' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    ...RepoFragmentDoc.definitions,
-  ],
-} as unknown as DocumentNode&lt;FindRepoStarQuery, FindRepoStarQueryVariables&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/api/RepoQuery.generated.ts</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> <span class="hljs-title class_">Types</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'../graphql.generated'</span><br><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">TypedDocumentNode</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">DocumentNode</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@graphql-typed-document-node/core'</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">RepoFragment</span> = {<br>  __typename?: <span class="hljs-string">'Repository'</span><br>  <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">FindRepoStarQueryVariables</span> = <span class="hljs-title class_">Types</span>.<span class="hljs-property">Exact</span>&lt;{<br>  <span class="hljs-attr">name</span>: <span class="hljs-title class_">Types</span>.<span class="hljs-property">Scalars</span>[<span class="hljs-string">'String'</span>]<br>  <span class="hljs-attr">owner</span>: <span class="hljs-title class_">Types</span>.<span class="hljs-property">Scalars</span>[<span class="hljs-string">'String'</span>]<br>}&gt;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">FindRepoStarQuery</span> = {<br>  __typename?: <span class="hljs-string">'Query'</span><br>  repository?:<br>    | {<br>        __typename?: <span class="hljs-string">'Repository'</span><br>        <span class="hljs-attr">stargazerCount</span>: <span class="hljs-built_in">number</span><br>        <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span><br>        <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>      }<br>    | <span class="hljs-literal">null</span><br>    | <span class="hljs-literal">undefined</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">RepoFragmentDoc</span> = {<br>  <span class="hljs-attr">kind</span>: <span class="hljs-string">'Document'</span>,<br>  <span class="hljs-attr">definitions</span>: [<br>    {<br>      <span class="hljs-attr">kind</span>: <span class="hljs-string">'FragmentDefinition'</span>,<br>      <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Repo'</span> },<br>      <span class="hljs-attr">typeCondition</span>: {<br>        <span class="hljs-attr">kind</span>: <span class="hljs-string">'NamedType'</span>,<br>        <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Repository'</span> },<br>      },<br>      <span class="hljs-attr">selectionSet</span>: {<br>        <span class="hljs-attr">kind</span>: <span class="hljs-string">'SelectionSet'</span>,<br>        <span class="hljs-attr">selections</span>: [<br>          { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Field'</span>, <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'id'</span> } },<br>          { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Field'</span>, <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'name'</span> } },<br>        ],<br>      },<br>    },<br>  ],<br>} <span class="hljs-keyword">as</span> <span class="hljs-built_in">unknown</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">DocumentNode</span>&lt;<span class="hljs-title class_">RepoFragment</span>, <span class="hljs-built_in">unknown</span>&gt;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">FindRepoStarDocument</span> = {<br>  <span class="hljs-attr">kind</span>: <span class="hljs-string">'Document'</span>,<br>  <span class="hljs-attr">definitions</span>: [<br>    {<br>      <span class="hljs-attr">kind</span>: <span class="hljs-string">'OperationDefinition'</span>,<br>      <span class="hljs-attr">operation</span>: <span class="hljs-string">'query'</span>,<br>      <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'findRepoStar'</span> },<br>      <span class="hljs-attr">variableDefinitions</span>: [<br>        {<br>          <span class="hljs-attr">kind</span>: <span class="hljs-string">'VariableDefinition'</span>,<br>          <span class="hljs-attr">variable</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Variable'</span>, <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'name'</span> } },<br>          <span class="hljs-attr">type</span>: {<br>            <span class="hljs-attr">kind</span>: <span class="hljs-string">'NonNullType'</span>,<br>            <span class="hljs-attr">type</span>: {<br>              <span class="hljs-attr">kind</span>: <span class="hljs-string">'NamedType'</span>,<br>              <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'String'</span> },<br>            },<br>          },<br>        },<br>        {<br>          <span class="hljs-attr">kind</span>: <span class="hljs-string">'VariableDefinition'</span>,<br>          <span class="hljs-attr">variable</span>: {<br>            <span class="hljs-attr">kind</span>: <span class="hljs-string">'Variable'</span>,<br>            <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'owner'</span> },<br>          },<br>          <span class="hljs-attr">type</span>: {<br>            <span class="hljs-attr">kind</span>: <span class="hljs-string">'NonNullType'</span>,<br>            <span class="hljs-attr">type</span>: {<br>              <span class="hljs-attr">kind</span>: <span class="hljs-string">'NamedType'</span>,<br>              <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'String'</span> },<br>            },<br>          },<br>        },<br>      ],<br>      <span class="hljs-attr">selectionSet</span>: {<br>        <span class="hljs-attr">kind</span>: <span class="hljs-string">'SelectionSet'</span>,<br>        <span class="hljs-attr">selections</span>: [<br>          {<br>            <span class="hljs-attr">kind</span>: <span class="hljs-string">'Field'</span>,<br>            <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'repository'</span> },<br>            <span class="hljs-attr">arguments</span>: [<br>              {<br>                <span class="hljs-attr">kind</span>: <span class="hljs-string">'Argument'</span>,<br>                <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'name'</span> },<br>                <span class="hljs-attr">value</span>: {<br>                  <span class="hljs-attr">kind</span>: <span class="hljs-string">'Variable'</span>,<br>                  <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'name'</span> },<br>                },<br>              },<br>              {<br>                <span class="hljs-attr">kind</span>: <span class="hljs-string">'Argument'</span>,<br>                <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'owner'</span> },<br>                <span class="hljs-attr">value</span>: {<br>                  <span class="hljs-attr">kind</span>: <span class="hljs-string">'Variable'</span>,<br>                  <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'owner'</span> },<br>                },<br>              },<br>            ],<br>            <span class="hljs-attr">selectionSet</span>: {<br>              <span class="hljs-attr">kind</span>: <span class="hljs-string">'SelectionSet'</span>,<br>              <span class="hljs-attr">selections</span>: [<br>                {<br>                  <span class="hljs-attr">kind</span>: <span class="hljs-string">'FragmentSpread'</span>,<br>                  <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Repo'</span> },<br>                },<br>                {<br>                  <span class="hljs-attr">kind</span>: <span class="hljs-string">'Field'</span>,<br>                  <span class="hljs-attr">name</span>: { <span class="hljs-attr">kind</span>: <span class="hljs-string">'Name'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'stargazerCount'</span> },<br>                },<br>              ],<br>            },<br>          },<br>        ],<br>      },<br>    },<br>    ...<span class="hljs-title class_">RepoFragmentDoc</span>.<span class="hljs-property">definitions</span>,<br>  ],<br>} <span class="hljs-keyword">as</span> <span class="hljs-built_in">unknown</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">DocumentNode</span>&lt;<span class="hljs-title class_">FindRepoStarQuery</span>, <span class="hljs-title class_">FindRepoStarQueryVariables</span>&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>我们可以这样使用它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const res = await client.query({
-  query: FindRepoStarDocument,
-  variables: {
-    name: 'liuli-tools',
-    owner: 'rxliuli',
-  },
-})
-console.log('res: ', res.data.repository?.stargazerCount)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">query</span>({<br>  <span class="hljs-attr">query</span>: <span class="hljs-title class_">FindRepoStarDocument</span>,<br>  <span class="hljs-attr">variables</span>: {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'liuli-tools'</span>,<br>    <span class="hljs-attr">owner</span>: <span class="hljs-string">'rxliuli'</span>,<br>  },<br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'res: '</span>, res.<span class="hljs-property">data</span>.<span class="hljs-property">repository</span>?.<span class="hljs-property">stargazerCount</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="Jetbrains-IDE-支持"><a href="#Jetbrains-IDE-支持" class="headerlink" title="Jetbrains IDE 支持"></a>Jetbrains IDE 支持</h2><ol>
 <li><p>安装插件 <a target="_blank" rel="noopener" href="https://plugins.jetbrains.com/plugin/8097">JS GraphQL</a></p>
 </li>
 <li><p>创建 graphql 基础配置文件 <em>.graphqlconfig</em></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "name": "github GraphQL Schema",
-  "schemaPath": "schema.graphql",
-  "extensions": {
-    "endpoints": {
-      "Default GraphQL Endpoint": {
-        "url": "https://api.github.com/graphql",
-        "headers": {
-          "user-agent": "JS GraphQL",
-          "Authorization": "bearer ${env:GH_TOKEN}"
-        },
-        "introspect": false
-      }
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"github GraphQL Schema"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"schemaPath"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"schema.graphql"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"extensions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"endpoints"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"Default GraphQL Endpoint"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"url"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"https://api.github.com/graphql"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"headers"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>          <span class="hljs-attr">"user-agent"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"JS GraphQL"</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">"Authorization"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"bearer ${env:GH_TOKEN}"</span><br>        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"introspect"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>最终效果<br><img src="/resources/994d6f1aee71444b983d982bf216fd1c.png" srcset="/img/loading.gif" lazyload alt="1635317727128"></p>
 </li>
@@ -548,14 +373,7 @@ console.log('res: ', res.data.repository?.stargazerCount)<span aria-hidden="true
 <li><p>安装插件 <a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql">GraphQL</a></p>
 </li>
 <li><p>在根目录添加配置 <em>.graphqlconfig</em></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">client</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">service</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'github GraphQL Schema'</span><span class="token punctuation">,</span>
-      <span class="token literal-property property">localSchemaFile</span><span class="token operator">:</span> <span class="token string">'./schema.graphql'</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {<br>  <span class="hljs-attr">client</span>: {<br>    <span class="hljs-attr">service</span>: {<br>      <span class="hljs-attr">name</span>: <span class="hljs-string">'github GraphQL Schema'</span>,<br>      <span class="hljs-attr">localSchemaFile</span>: <span class="hljs-string">'./schema.graphql'</span>,<br>    },<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>最终效果<br><img src="/resources/6dd72b1c51114beebd38ba4f65ca4976.png" srcset="/img/loading.gif" lazyload alt="1635316734084"></p>
 </li>
@@ -567,69 +385,10 @@ console.log('res: ', res.data.repository?.stargazerCount)<span aria-hidden="true
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/danielwaltz/vite-plugin-graphql-codegen">vite-plugin-graphql-codegen</a> 监视模式实际上有 bug，所以自行维护一个 rollup 插件</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'vite'
-import { CodegenContext, generate, loadContext } from '@graphql-codegen/cli'
-
-async function codegen(watch: boolean) {
-  const codegenContext = await loadContext()
-  codegenContext.updateConfig({ watch })
-  try {
-    await generate(codegenContext)
-  } catch (error) {
-    console.log('Something went wrong.')
-  }
-}
-
-export function graphQLCodegen(): Plugin {
-  let codegenContext: CodegenContext
-
-  return {
-    name: 'rollup-plugin-graphql-codegen',
-    async buildStart() {
-      // noinspection ES6MissingAwait
-      codegen(this.meta.watchMode)
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">CodegenContext</span>, generate, loadContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'@graphql-codegen/cli'</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">codegen</span>(<span class="hljs-params">watch: <span class="hljs-built_in">boolean</span></span>) {<br>  <span class="hljs-keyword">const</span> codegenContext = <span class="hljs-keyword">await</span> <span class="hljs-title function_">loadContext</span>()<br>  codegenContext.<span class="hljs-title function_">updateConfig</span>({ watch })<br>  <span class="hljs-keyword">try</span> {<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">generate</span>(codegenContext)<br>  } <span class="hljs-keyword">catch</span> (error) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Something went wrong.'</span>)<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">graphQLCodegen</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">let</span> <span class="hljs-attr">codegenContext</span>: <span class="hljs-title class_">CodegenContext</span><br><br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'rollup-plugin-graphql-codegen'</span>,<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">buildStart</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-comment">// noinspection ES6MissingAwait</span><br>      <span class="hljs-title function_">codegen</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">watchMode</span>)<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里其实还可以使用 <code>worker_threads</code> 尝试多线程加速</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'vite'
-import { generate, loadContext } from '@graphql-codegen/cli'
-import { isMainThread, parentPort, Worker } from 'worker_threads'
-import { expose, wrap } from 'comlink'
-import nodeEndpoint from 'comlink/dist/umd/node-adapter'
-
-async function codegen(watch: boolean) {
-  const codegenContext = await loadContext()
-  codegenContext.updateConfig({ watch })
-  try {
-    await generate(codegenContext)
-  } catch (error) {
-    console.log('Something went wrong.')
-  }
-}
-
-if (!isMainThread) {
-  expose(codegen, nodeEndpoint(parentPort!))
-}
-
-export function graphQLCodegen(): Plugin {
-  return {
-    name: 'rollup-plugin-graphql-codegen',
-    async buildStart() {
-      const worker = new Worker(__filename)
-      try {
-        const codegenWorker = wrap&lt;(watch: boolean) =&gt; void&gt;(
-          nodeEndpoint(worker),
-        )
-        // noinspection ES6MissingAwait
-        codegenWorker(this.meta.watchMode)
-      } finally {
-        worker.unref()
-      }
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> { generate, loadContext } <span class="hljs-keyword">from</span> <span class="hljs-string">'@graphql-codegen/cli'</span><br><span class="hljs-keyword">import</span> { isMainThread, parentPort, <span class="hljs-title class_">Worker</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'worker_threads'</span><br><span class="hljs-keyword">import</span> { expose, wrap } <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink'</span><br><span class="hljs-keyword">import</span> nodeEndpoint <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink/dist/umd/node-adapter'</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">codegen</span>(<span class="hljs-params">watch: <span class="hljs-built_in">boolean</span></span>) {<br>  <span class="hljs-keyword">const</span> codegenContext = <span class="hljs-keyword">await</span> <span class="hljs-title function_">loadContext</span>()<br>  codegenContext.<span class="hljs-title function_">updateConfig</span>({ watch })<br>  <span class="hljs-keyword">try</span> {<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">generate</span>(codegenContext)<br>  } <span class="hljs-keyword">catch</span> (error) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Something went wrong.'</span>)<br>  }<br>}<br><br><span class="hljs-keyword">if</span> (!isMainThread) {<br>  <span class="hljs-title function_">expose</span>(codegen, <span class="hljs-title function_">nodeEndpoint</span>(parentPort!))<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">graphQLCodegen</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'rollup-plugin-graphql-codegen'</span>,<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">buildStart</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(__filename)<br>      <span class="hljs-keyword">try</span> {<br>        <span class="hljs-keyword">const</span> codegenWorker = wrap&lt;<span class="hljs-function">(<span class="hljs-params">watch: <span class="hljs-built_in">boolean</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>&gt;(<br>          <span class="hljs-title function_">nodeEndpoint</span>(worker),<br>        )<br>        <span class="hljs-comment">// noinspection ES6MissingAwait</span><br>        <span class="hljs-title function_">codegenWorker</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">watchMode</span>)<br>      } <span class="hljs-keyword">finally</span> {<br>        worker.<span class="hljs-title function_">unref</span>()<br>      }<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>已发布至 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/rollup-plugin-graphql-codegen">@liuli-util/rollup-plugin-graphql-codegen</a></p>
@@ -637,19 +396,10 @@ export function graphQLCodegen(): Plugin {
 <hr>
 <p>更新，默认包含 <code>@graphql-codegen/cli</code>，不再需要单独维护 <em>codegen.yml</em> 配置文件（当然仍然可以自行维护），使用方法</p>
 <p>安装依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pnpm i -D @liuli-util/rollup-plugin-graphql-codegen @graphql-typed-document-node/core<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">pnpm i -D @liuli-util/rollup-plugin-graphql-codegen @graphql-typed-document-node/core<br></code></pre></td></tr></tbody></table></figure>
 
 <p>配置插件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// vite.config.ts
-import { defineConfig } from 'vite'
-import {
-  gql2TsConfig,
-  graphQLCodegen,
-} from '@liuli-util/rollup-plugin-graphql-codegen'
-
-export default defineConfig({
-  plugins: [graphQLCodegen(gql2TsConfig)],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// vite.config.ts</span><br><span class="hljs-keyword">import</span> { defineConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> {<br>  gql2TsConfig,<br>  graphQLCodegen,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/rollup-plugin-graphql-codegen'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">graphQLCodegen</span>(gql2TsConfig)],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="安装-chrome-插件"><a href="#安装-chrome-插件" class="headerlink" title="安装 chrome 插件"></a>安装 chrome 插件</h2><blockquote>
 <p><a target="_blank" rel="noopener" href="https://chrome.google.com/webstore/detail/ndlbedplllcgconngcnfmkadhokfaaln/">GraphQL Network Inspector</a></p>
@@ -1015,8 +765,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -45,8 +45,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          9.2k 字
+          10k 字
         
       </span>
     
@@ -264,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          77 分钟
+          84 分钟
         
       </span>
     
@@ -329,88 +327,11 @@
 </ul>
 <h2 id="使用-css-calc-计算高度"><a href="#使用-css-calc-计算高度" class="headerlink" title="使用 css calc() 计算高度"></a>使用 <code>css calc()</code> 计算高度</h2><p>最初，吾辈使用 <code>css calc()</code> 计算剩余高度，以占满全部高度。但这样实现存在的一个明显问题是，每当吾辈需要在纵向添加一行时，都要修改 <code>calc()</code> 重新计算高度。如果存在嵌套内容时，甚至会导致层层声明 <code>height: calc(100% - *px)</code>，而且难以复用，这是很难接受的。</p>
 <p>下面是一个实现上面那种布局的方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1.0<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>grid test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
-      <span class="token selector">*</span> <span class="token punctuation">{</span>
-        <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-        <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">html,
-      body,
-      .container</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.header</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 64px<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.main</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 64px<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 64px<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.content</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 64px<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.main-content</span> <span class="token punctuation">{</span>
-        <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span>
-        <span class="token property">width</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 300px<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.sider</span> <span class="token punctuation">{</span>
-        <span class="token property">display</span><span class="token punctuation">:</span> inline-block<span class="token punctuation">;</span>
-        <span class="token property">width</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.form</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.list</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> <span class="token function">calc</span><span class="token punctuation">(</span>100% - 300px<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.header,
-      .main,
-      .toolbar,
-      .content,
-      .sider,
-      .form,
-      .list</span> <span class="token punctuation">{</span>
-        <span class="token property">border</span><span class="token punctuation">:</span> solid 1px red<span class="token punctuation">;</span>
-        <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
-        <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>header<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>main<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>toolbar<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>toolbar<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">&gt;</span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>main-content<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>form<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>list<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sider<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>sider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>grid test<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css"></span><br><span class="language-css">      * {</span><br><span class="language-css">        <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;</span><br><span class="language-css">        <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;</span><br><span class="language-css">        <span class="hljs-attribute">box-sizing</span>: border-box;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-tag">html</span>,</span><br><span class="language-css">      <span class="hljs-selector-tag">body</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.container</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.header</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">64px</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.main</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100%</span> - <span class="hljs-number">64px</span>);</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.toolbar</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">64px</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.content</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100%</span> - <span class="hljs-number">64px</span>);</span><br><span class="language-css">        <span class="hljs-attribute">display</span>: flex;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.main-content</span> {</span><br><span class="language-css">        <span class="hljs-attribute">display</span>: inline-block;</span><br><span class="language-css">        <span class="hljs-attribute">width</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100%</span> - <span class="hljs-number">300px</span>);</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.sider</span> {</span><br><span class="language-css">        <span class="hljs-attribute">display</span>: inline-block;</span><br><span class="language-css">        <span class="hljs-attribute">width</span>: <span class="hljs-number">300px</span>;</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.form</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">300px</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.list</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-number">100%</span> - <span class="hljs-number">300px</span>);</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.header</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.main</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.toolbar</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.content</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.sider</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.form</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.list</span> {</span><br><span class="language-css">        <span class="hljs-attribute">border</span>: solid <span class="hljs-number">1px</span> red;</span><br><span class="language-css">        <span class="hljs-attribute">overflow-y</span>: auto;</span><br><span class="language-css">        <span class="hljs-attribute">text-align</span>: center;</span><br><span class="language-css">      }</span><br><span class="language-css">    </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"container"</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"header"</span>&gt;</span>header<span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"main"</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"toolbar"</span>&gt;</span>toolbar<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"content"</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"main-content"</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form"</span>&gt;</span>form<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"list"</span>&gt;</span>list<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>          <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"sider"</span>&gt;</span>sider<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>      <span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，不仅 html 部分嵌套众多，css 部分也需要反复计算宽高，这实在不是一件令人愉快的代码。</p>
 <h2 id="基于-css-calc-封装-Col-Row-组件布局"><a href="#基于-css-calc-封装-Col-Row-组件布局" class="headerlink" title="基于 css calc() 封装 Col/Row 组件布局"></a>基于 <code>css calc()</code> 封装 <code>Col/Row</code> 组件布局</h2><p>由于不希望每次都去写类似下面的代码，因而吾辈产生了封装组件的想法。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.container</span> <span class="token punctuation">{</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-  <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.container</span> {<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">overflow-y</span>: auto;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>初次尝试</p>
 <blockquote>
@@ -421,318 +342,27 @@
 <li><code>VerticalCol</code>: 占全高的一列</li>
 <li><code>VerticalRow</code>: 可控制占比列中的一行</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">type FullHeightProps = {
-  children: ReactElement
-}
-
-/**
- * 让子组件占满父组件的全部高度
- */
-const FullHeight: React.FC&lt;FullHeightProps&gt; = (props) =&gt; {
-  return cloneElement(props.children, {
-    ...props.children.props,
-    style: {
-      height: '100%',
-      overflowY: 'auto',
-      ...props.children.props.style,
-    },
-  })
-}
-
-// 垂直布局的上下文
-
-export type VerticalColContextType = {
-  //分割的份数
-  gutter: number
-}
-
-/**
- * 垂直布局的上下文环境
- */
-export const VerticalColContext = createContext&lt;VerticalColContextType&gt;({
-  gutter: 24,
-})
-
-type VerticalColProps = {
-  children: ReactElement&lt;VerticalRowProps&gt; | ReactElement&lt;VerticalRowProps&gt;[]
-  style?: CSSProperties
-}
-
-/**
- * 垂直布局的一列
- * 默认占父容器的全部高度
- */
-const VerticalCol = React.forwardRef&lt;HTMLDivElement, VerticalColProps&gt;(
-  (props, ref) =&gt; (
-    &lt;VerticalColContext.Provider
-      value={{
-        gutter: 24,
-      }}
-    &gt;
-      &lt;FullHeight&gt;
-        &lt;div style={props.style} ref={ref}&gt;
-          {props.children}
-        &lt;/div&gt;
-      &lt;/FullHeight&gt;
-    &lt;/VerticalColContext.Provider&gt;
-  ),
-)
-
-export type VerticalRowProps = {
-  span?: number
-  style?: CSSProperties
-}
-
-/**
- * 用来控制每一行占比的元素
- */
-const VerticalRow: React.FC&lt;VerticalRowProps&gt; = (props) =&gt; {
-  const { gutter } = useContext(VerticalColContext)
-  return (
-    &lt;div
-      style={{
-        height: `calc(100% / ${gutter} * ${props.span})`,
-        overflowY: 'auto',
-        ...props.style,
-      }}
-    &gt;
-      {props.children}
-    &lt;/div&gt;
-  )
-}
-
-VerticalRow.defaultProps = {
-  span: 0,
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">type</span> <span class="hljs-title class_">FullHeightProps</span> = {<br>  <span class="hljs-attr">children</span>: <span class="hljs-title class_">ReactElement</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 让子组件占满父组件的全部高度</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">FullHeight</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">FullHeightProps</span>&gt; = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">cloneElement</span>(props.<span class="hljs-property">children</span>, {<br>    ...props.<span class="hljs-property">children</span>.<span class="hljs-property">props</span>,<br>    <span class="hljs-attr">style</span>: {<br>      <span class="hljs-attr">height</span>: <span class="hljs-string">'100%'</span>,<br>      <span class="hljs-attr">overflowY</span>: <span class="hljs-string">'auto'</span>,<br>      ...props.<span class="hljs-property">children</span>.<span class="hljs-property">props</span>.<span class="hljs-property">style</span>,<br>    },<br>  })<br>}<br><br><span class="hljs-comment">// 垂直布局的上下文</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">VerticalColContextType</span> = {<br>  <span class="hljs-comment">//分割的份数</span><br>  <span class="hljs-attr">gutter</span>: <span class="hljs-built_in">number</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 垂直布局的上下文环境</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">VerticalColContext</span> = createContext&lt;<span class="hljs-title class_">VerticalColContextType</span>&gt;({<br>  <span class="hljs-attr">gutter</span>: <span class="hljs-number">24</span>,<br>})<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">VerticalColProps</span> = {<br>  <span class="hljs-attr">children</span>: <span class="hljs-title class_">ReactElement</span>&lt;<span class="hljs-title class_">VerticalRowProps</span>&gt; | <span class="hljs-title class_">ReactElement</span>&lt;<span class="hljs-title class_">VerticalRowProps</span>&gt;[]<br>  style?: <span class="hljs-title class_">CSSProperties</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 垂直布局的一列</span><br><span class="hljs-comment"> * 默认占父容器的全部高度</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">VerticalCol</span> = <span class="hljs-title class_">React</span>.<span class="hljs-property">forwardRef</span>&lt;<span class="hljs-title class_">HTMLDivElement</span>, <span class="hljs-title class_">VerticalColProps</span>&gt;(<br>  <span class="hljs-function">(<span class="hljs-params">props, ref</span>) =&gt;</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">VerticalColContext.Provider</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">value</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">gutter:</span> <span class="hljs-attr">24</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">      }}</span></span><br><span class="hljs-tag"><span class="language-xml">    &gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{props.style}</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{ref}</span>&gt;</span></span><br><span class="language-xml">          {props.children}</span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">VerticalColContext.Provider</span>&gt;</span></span><br>  ),<br>)<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">VerticalRowProps</span> = {<br>  span?: <span class="hljs-built_in">number</span><br>  style?: <span class="hljs-title class_">CSSProperties</span><br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 用来控制每一行占比的元素</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">VerticalRow</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">VerticalRowProps</span>&gt; = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> {<br>  <span class="hljs-keyword">const</span> { gutter } = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">VerticalColContext</span>)<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">height:</span> `<span class="hljs-attr">calc</span>(<span class="hljs-attr">100</span>% / ${<span class="hljs-attr">gutter</span>} * ${<span class="hljs-attr">props.span</span>})`,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">overflowY:</span> '<span class="hljs-attr">auto</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">...props.style</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">      }}</span></span><br><span class="hljs-tag"><span class="language-xml">    &gt;</span></span><br><span class="language-xml">      {props.children}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br><br><span class="hljs-title class_">VerticalRow</span>.<span class="hljs-property">defaultProps</span> = {<br>  <span class="hljs-attr">span</span>: <span class="hljs-number">0</span>,<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>基本使用大概长这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;VerticalCol
-  style={{
-    height: '100%',
-  }}
-&gt;
-  &lt;VerticalRow span={2} style={{ backgroundColor: 'red' }}&gt;
-    内容块 1
-  &lt;/VerticalRow&gt;
-  &lt;VerticalRow span={22} style={{ backgroundColor: 'green' }}&gt;
-    内容块 2
-  &lt;/VerticalRow&gt;
-&lt;/VerticalCol&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs tsx">&lt;<span class="hljs-title class_">VerticalCol</span><br>  style={{<br>    <span class="hljs-attr">height</span>: <span class="hljs-string">'100%'</span>,<br>  }}<br>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">VerticalRow</span> <span class="hljs-attr">span</span>=<span class="hljs-string">{2}</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">red</span>' }}&gt;</span></span><br><span class="language-xml">    内容块 1</span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">VerticalRow</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">VerticalRow</span> <span class="hljs-attr">span</span>=<span class="hljs-string">{22}</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">green</span>' }}&gt;</span></span><br><span class="language-xml">    内容块 2</span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">VerticalRow</span>&gt;</span></span><br>&lt;/<span class="hljs-title class_">VerticalCol</span>&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来还不错，简单的使用组件就可以按比例分割页面了。但一旦在复杂的实际页面使用时，麻烦就接踵而来了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;VerticalCol
-  style={{
-    height: 800,
-  }}
-&gt;
-  &lt;VerticalRow span={2} style={{ backgroundColor: 'red' }}&gt;
-    &lt;header&gt;
-      &lt;h1&gt;标题&lt;/h1&gt;
-    &lt;/header&gt;
-  &lt;/VerticalRow&gt;
-  &lt;VerticalRow span={22} style={{ backgroundColor: 'green' }}&gt;
-    &lt;FullHeight&gt;
-      &lt;Row&gt;
-        &lt;FullHeight&gt;
-          &lt;Col
-            span={18}
-            style={{
-              backgroundColor: 'aqua',
-            }}
-          &gt;
-            内容区域
-          &lt;/Col&gt;
-        &lt;/FullHeight&gt;
-        &lt;FullHeight&gt;
-          &lt;Col
-            span={6}
-            style={{
-              backgroundColor: 'blue',
-            }}
-          &gt;
-            {Array(100)
-              .fill(0)
-              .map((_, i) =&gt; (
-                &lt;h2
-                  style={{
-                    color: 'white',
-                  }}
-                &gt;
-                  {i}
-                &lt;/h2&gt;
-              ))}
-          &lt;/Col&gt;
-        &lt;/FullHeight&gt;
-      &lt;/Row&gt;
-    &lt;/FullHeight&gt;
-  &lt;/VerticalRow&gt;
-&lt;/VerticalCol&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs tsx">&lt;<span class="hljs-title class_">VerticalCol</span><br>  style={{<br>    <span class="hljs-attr">height</span>: <span class="hljs-number">800</span>,<br>  }}<br>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">VerticalRow</span> <span class="hljs-attr">span</span>=<span class="hljs-string">{2}</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">red</span>' }}&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>标题<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">VerticalRow</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">VerticalRow</span> <span class="hljs-attr">span</span>=<span class="hljs-string">{22}</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">green</span>' }}&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">Row</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Col</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">span</span>=<span class="hljs-string">{18}</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">aqua</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">            }}</span></span><br><span class="hljs-tag"><span class="language-xml">          &gt;</span></span><br><span class="language-xml">            内容区域</span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">Col</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Col</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">span</span>=<span class="hljs-string">{6}</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">backgroundColor:</span> '<span class="hljs-attr">blue</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">            }}</span></span><br><span class="hljs-tag"><span class="language-xml">          &gt;</span></span><br><span class="language-xml">            {Array(100)</span><br><span class="language-xml">              .fill(0)</span><br><span class="language-xml">              .map((_, i) =&gt; (</span><br><span class="language-xml">                <span class="hljs-tag">&lt;<span class="hljs-name">h2</span></span></span><br><span class="hljs-tag"><span class="language-xml">                  <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span></span></span><br><span class="hljs-tag"><span class="language-xml">                    <span class="hljs-attr">color:</span> '<span class="hljs-attr">white</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">                  }}</span></span><br><span class="hljs-tag"><span class="language-xml">                &gt;</span></span><br><span class="language-xml">                  {i}</span><br><span class="language-xml">                <span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span><br><span class="language-xml">              ))}</span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">Col</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">Row</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">FullHeight</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">VerticalRow</span>&gt;</span></span><br>&lt;/<span class="hljs-title class_">VerticalCol</span>&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，这里仅仅是使用 Component 代替了 css class 而已，并未减少页面布局的复杂性，而且由于使用组件进行布局，导致组件的结构变得更深了。</p>
 <h2 id="使用-css-grid-自适应布局"><a href="#使用-css-grid-自适应布局" class="headerlink" title="使用 css grid 自适应布局"></a>使用 <code>css grid</code> 自适应布局</h2><p>css grid 确实强大无比，尤其是 <code>grid-template-areas</code> 功能，直接改变了传统网页的布局方式。现在，自适应布局变得异常简单。</p>
 <p>下面是使用 grid 的方式实现布局的代码，可以看到最复杂的部分其实是在 <code>grid-template-areas</code>，它确定了不同元素占有的区块。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1.0<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>grid test<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
-      <span class="token selector">html,
-      body,
-      .grid-container</span> <span class="token punctuation">{</span>
-        <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-        <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-
-      <span class="token selector">.grid-container</span> <span class="token punctuation">{</span>
-        <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-        <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
-        <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 1fr 300px<span class="token punctuation">;</span>
-        <span class="token property">grid-template-rows</span><span class="token punctuation">:</span> 64px 64px 430px 1fr<span class="token punctuation">;</span>
-        <span class="token property">grid-template-areas</span><span class="token punctuation">:</span>
-          <span class="token string">'header header'</span>
-          <span class="token string">'toolbar toolbar'</span>
-          <span class="token string">'form sider'</span>
-          <span class="token string">'list sider'</span><span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.header</span> <span class="token punctuation">{</span>
-        <span class="token property">grid-area</span><span class="token punctuation">:</span> header<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
-        <span class="token property">grid-area</span><span class="token punctuation">:</span> toolbar<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.sider</span> <span class="token punctuation">{</span>
-        <span class="token property">grid-area</span><span class="token punctuation">:</span> sider<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.form</span> <span class="token punctuation">{</span>
-        <span class="token property">grid-area</span><span class="token punctuation">:</span> form<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.list</span> <span class="token punctuation">{</span>
-        <span class="token property">grid-area</span><span class="token punctuation">:</span> list<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-      <span class="token selector">.header,
-      .toolbar,
-      .sider,
-      .form,
-      .list</span> <span class="token punctuation">{</span>
-        <span class="token property">border</span><span class="token punctuation">:</span> 1px solid red<span class="token punctuation">;</span>
-        <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
-      <span class="token punctuation">}</span>
-    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>grid-container<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>toolbar<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sider<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>form<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>list<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"en"</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"viewport"</span> <span class="hljs-attr">content</span>=<span class="hljs-string">"width=device-width, initial-scale=1.0"</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>grid test<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css"></span><br><span class="language-css">      <span class="hljs-selector-tag">html</span>,</span><br><span class="language-css">      <span class="hljs-selector-tag">body</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.grid-container</span> {</span><br><span class="language-css">        <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;</span><br><span class="language-css">        <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;</span><br><span class="language-css">        <span class="hljs-attribute">box-sizing</span>: border-box;</span><br><span class="language-css">      }</span><br><span class="language-css"></span><br><span class="language-css">      <span class="hljs-selector-class">.grid-container</span> {</span><br><span class="language-css">        <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;</span><br><span class="language-css">        <span class="hljs-attribute">display</span>: grid;</span><br><span class="language-css">        <span class="hljs-attribute">grid-template-columns</span>: <span class="hljs-number">1</span>fr <span class="hljs-number">300px</span>;</span><br><span class="language-css">        <span class="hljs-attribute">grid-template-rows</span>: <span class="hljs-number">64px</span> <span class="hljs-number">64px</span> <span class="hljs-number">430px</span> <span class="hljs-number">1</span>fr;</span><br><span class="language-css">        <span class="hljs-attribute">grid-template-areas</span>:</span><br><span class="language-css">          <span class="hljs-string">'header header'</span></span><br><span class="language-css">          <span class="hljs-string">'toolbar toolbar'</span></span><br><span class="language-css">          <span class="hljs-string">'form sider'</span></span><br><span class="language-css">          <span class="hljs-string">'list sider'</span>;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.header</span> {</span><br><span class="language-css">        <span class="hljs-attribute">grid-area</span>: header;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.toolbar</span> {</span><br><span class="language-css">        <span class="hljs-attribute">grid-area</span>: toolbar;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.sider</span> {</span><br><span class="language-css">        <span class="hljs-attribute">grid-area</span>: sider;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.form</span> {</span><br><span class="language-css">        <span class="hljs-attribute">grid-area</span>: form;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.list</span> {</span><br><span class="language-css">        <span class="hljs-attribute">grid-area</span>: list;</span><br><span class="language-css">      }</span><br><span class="language-css">      <span class="hljs-selector-class">.header</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.toolbar</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.sider</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.form</span>,</span><br><span class="language-css">      <span class="hljs-selector-class">.list</span> {</span><br><span class="language-css">        <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid red;</span><br><span class="language-css">        <span class="hljs-attribute">overflow-y</span>: auto;</span><br><span class="language-css">      }</span><br><span class="language-css">    </span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"grid-container"</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"header"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"toolbar"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"sider"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"list"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>但 grid 也并非尽善尽美，它仅对直接子组件生效，而孙子及其子节点则不在 <code>grid</code> 的布局范围，这导致为子组件编写 grid 布局样式时，仍然存在一些样板代码。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/* 下面是典型的样板代码 */</span>
-<span class="token selector">.grid-container</span> <span class="token punctuation">{</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-  <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.header</span> <span class="token punctuation">{</span>
-  <span class="token property">grid-area</span><span class="token punctuation">:</span> header<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.toolbar</span> <span class="token punctuation">{</span>
-  <span class="token property">grid-area</span><span class="token punctuation">:</span> toolbar<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.sider</span> <span class="token punctuation">{</span>
-  <span class="token property">grid-area</span><span class="token punctuation">:</span> sider<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.form</span> <span class="token punctuation">{</span>
-  <span class="token property">grid-area</span><span class="token punctuation">:</span> form<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.list</span> <span class="token punctuation">{</span>
-  <span class="token property">grid-area</span><span class="token punctuation">:</span> list<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector">.header,
-.toolbar,
-.sider,
-.form,
-.list</span> <span class="token punctuation">{</span>
-  <span class="token property">overflow-y</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* 下面是典型的样板代码 */</span><br><span class="hljs-selector-class">.grid-container</span> {<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">display</span>: grid;<br>}<br><span class="hljs-selector-class">.header</span> {<br>  <span class="hljs-attribute">grid-area</span>: header;<br>}<br><span class="hljs-selector-class">.toolbar</span> {<br>  <span class="hljs-attribute">grid-area</span>: toolbar;<br>}<br><span class="hljs-selector-class">.sider</span> {<br>  <span class="hljs-attribute">grid-area</span>: sider;<br>}<br><span class="hljs-selector-class">.form</span> {<br>  <span class="hljs-attribute">grid-area</span>: form;<br>}<br><span class="hljs-selector-class">.list</span> {<br>  <span class="hljs-attribute">grid-area</span>: list;<br>}<br><span class="hljs-selector-class">.header</span>,<br><span class="hljs-selector-class">.toolbar</span>,<br><span class="hljs-selector-class">.sider</span>,<br><span class="hljs-selector-class">.form</span>,<br><span class="hljs-selector-class">.list</span> {<br>  <span class="hljs-attribute">overflow-y</span>: auto;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用-css-grid-封装组件"><a href="#使用-css-grid-封装组件" class="headerlink" title="使用 css grid 封装组件"></a>使用 <code>css grid</code> 封装组件</h2><p>事实上，吾辈确实找到了一个现有的基于 grid 的 react 布局组件库 <a target="_blank" rel="noopener" href="https://github.com/STRML/react-grid-layout">react-grid-layout</a>，而且非常强大，但很遗憾的是它并 <a target="_blank" rel="noopener" href="https://github.com/STRML/react-grid-layout/issues/1329">不支持 react 17</a>。但其 api 及封装方式确实有参考意义，所以吾辈也尝试封装一个 <code>Grid</code> 组件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">type Unit = `${number}${'px' | 'fr'}`
-
-type GridProps&lt;
-  T extends string,
-  R extends Unit[] = Unit[],
-  C extends Unit[] = Unit[],
-  A extends { [P in keyof R]: { [P in keyof C]: T } } = {
-    [P in keyof R]: { [P in keyof C]: T }
-  },
-&gt; = {
-  rows: R
-  cols: C
-  areas: A
-  children: ReactElement[]
-} &amp; CommonStyleProps
-
-/**
- * 使用 grid 进行布局的容器组件
- */
-function Grid&lt;T extends string&gt;(props: GridProps&lt;T&gt;) {
-  return (
-    &lt;div
-      className={props.className}
-      style={
-        {
-          height: '100%',
-          display: 'grid',
-          gridTemplateColumns: props.cols.join(' '),
-          gridTemplateRows: props.rows.join(' '),
-          gridTemplateAreas: props.areas
-            .map((row) =&gt; '"' + row.join(' ') + '"')
-            .join(' '),
-          ...props.style,
-        } as CSSProperties
-      }
-    &gt;
-      {props.children.map((child) =&gt; {
-        console.log('child key: ', child.key)
-        return cloneElement(child, {
-          ...child.props,
-          style: {
-            gridArea: child.key,
-            border: 'solid 1px red',
-          } as CSSProperties,
-        })
-      })}
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Unit</span> = <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">number</span>}</span><span class="hljs-subst">${<span class="hljs-string">'px'</span> | <span class="hljs-string">'fr'</span>}</span>`</span><br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">GridProps</span>&lt;<br>  T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,<br>  R <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Unit</span>[] = <span class="hljs-title class_">Unit</span>[],<br>  C <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Unit</span>[] = <span class="hljs-title class_">Unit</span>[],<br>  A <span class="hljs-keyword">extends</span> { [P <span class="hljs-keyword">in</span> keyof R]: { [P <span class="hljs-keyword">in</span> keyof C]: T } } = {<br>    [P <span class="hljs-keyword">in</span> keyof R]: { [P <span class="hljs-keyword">in</span> keyof C]: T }<br>  },<br>&gt; = {<br>  <span class="hljs-attr">rows</span>: R<br>  <span class="hljs-attr">cols</span>: C<br>  <span class="hljs-attr">areas</span>: A<br>  <span class="hljs-attr">children</span>: <span class="hljs-title class_">ReactElement</span>[]<br>} &amp; <span class="hljs-title class_">CommonStyleProps</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 使用 grid 进行布局的容器组件</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title class_">Grid</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt;(<span class="hljs-attr">props</span>: <span class="hljs-title class_">GridProps</span>&lt;T&gt;) {<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">className</span>=<span class="hljs-string">{props.className}</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">style</span>=<span class="hljs-string">{</span></span></span><br><span class="hljs-tag"><span class="language-xml">        {</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">height:</span> '<span class="hljs-attr">100</span>%',</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">display:</span> '<span class="hljs-attr">grid</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateColumns:</span> <span class="hljs-attr">props.cols.join</span>(' '),</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateRows:</span> <span class="hljs-attr">props.rows.join</span>(' '),</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateAreas:</span> <span class="hljs-attr">props.areas</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">.map</span>((<span class="hljs-attr">row</span>) =&gt;</span> '"' + row.join(' ') + '"')</span><br><span class="language-xml">            .join(' '),</span><br><span class="language-xml">          ...props.style,</span><br><span class="language-xml">        } as CSSProperties</span><br><span class="language-xml">      }</span><br><span class="language-xml">    &gt;</span><br><span class="language-xml">      {props.children.map((child) =&gt; {</span><br><span class="language-xml">        console.log('child key: ', child.key)</span><br><span class="language-xml">        return cloneElement(child, {</span><br><span class="language-xml">          ...child.props,</span><br><span class="language-xml">          style: {</span><br><span class="language-xml">            gridArea: child.key,</span><br><span class="language-xml">            border: 'solid 1px red',</span><br><span class="language-xml">          } as CSSProperties,</span><br><span class="language-xml">        })</span><br><span class="language-xml">      })}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用起来比较简单，唯一残念的是子元素中的 key 无法使用 ts 自动推导或强制约束。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">&lt;Grid&lt;AreaItemName&gt;
-  style={{
-    height: 'calc(100vh - 48px)',
-  }}
-  rows={['48px', '48px', '300px', '1fr']}
-  cols={['1fr', '300px']}
-  areas={[
-    ['header', 'header'],
-    ['toolbar', 'toolbar'],
-    ['form', 'sider'],
-    ['list', 'sider'],
-  ]}
-&gt;
-  &lt;header key={'header' as AreaItemName}&gt;header&lt;/header&gt;
-  &lt;section key={'toolbar' as AreaItemName}&gt;toolbar&lt;/section&gt;
-  &lt;section key={'sider' as AreaItemName}&gt;sider&lt;/section&gt;
-  &lt;section key={'form' as AreaItemName}&gt;form&lt;/section&gt;
-  &lt;section key={'list' as AreaItemName}&gt;list&lt;/section&gt;
-&lt;/Grid&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs tsx">&lt;<span class="hljs-title class_">Grid</span>&lt;<span class="hljs-title class_">AreaItemName</span>&gt;<br>  style={{<br>    <span class="hljs-attr">height</span>: <span class="hljs-string">'calc(100vh - 48px)'</span>,<br>  }}<br>  rows={[<span class="hljs-string">'48px'</span>, <span class="hljs-string">'48px'</span>, <span class="hljs-string">'300px'</span>, <span class="hljs-string">'1fr'</span>]}<br>  cols={[<span class="hljs-string">'1fr'</span>, <span class="hljs-string">'300px'</span>]}<br>  areas={[<br>    [<span class="hljs-string">'header'</span>, <span class="hljs-string">'header'</span>],<br>    [<span class="hljs-string">'toolbar'</span>, <span class="hljs-string">'toolbar'</span>],<br>    [<span class="hljs-string">'form'</span>, <span class="hljs-string">'sider'</span>],<br>    [<span class="hljs-string">'list'</span>, <span class="hljs-string">'sider'</span>],<br>  ]}<br>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">header</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span>header<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">toolbar</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span>toolbar<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">sider</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span>sider<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">form</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span>form<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span></span><br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">list</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span>list<span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span></span><br>&lt;/<span class="hljs-title class_">Grid</span>&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来不错，然而实际上这还是有缺陷的。</p>
 <ol>
@@ -752,99 +382,11 @@ function Grid&lt;T extends string&gt;(props: GridProps&lt;T&gt;) {
 <p>但这两种方式各有优劣</p>
 <p>前者父组件的布局不会受到子组件影响，意味着子组件更容易被复用。后者在子组件内部需要使用 ref 时，不需要再额外声明 css 以使之成为可滚动元素。</p>
 <p>下面是一个混合使用两者的的例子</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const style: CSSProperties = { border: 'solid 1px red' }
-type AreaItemName = 'header' | 'content' | 'sider'
-
-function Header() {
-  return &lt;header style={style}&gt;header&lt;/header&gt;
-}
-
-function Content() {
-  return &lt;main style={style}&gt;content&lt;/main&gt;
-}
-
-function Sider(props: CommonStyleProps) {
-  const $ref = useRef&lt;HTMLElement&gt;(null)
-  return wrapper(
-    &lt;section style={style} ref={$ref}&gt;
-      &lt;ul&gt;
-        {Array(100)
-          .fill(0)
-          .map((_, i) =&gt; (
-            &lt;li key={i}&gt;{i}&lt;/li&gt;
-          ))}
-      &lt;/ul&gt;
-      &lt;BackTop target={() =&gt; $ref.current!}&gt;
-        &lt;ToTopOutlined
-          style={
-            {
-              fontSize: 24,
-              padding: 8,
-              borderRadius: '50%',
-              color: '#ffffff',
-              backgroundColor: '#8ECAFE',
-            } as CSSProperties
-          }
-        /&gt;
-      &lt;/BackTop&gt;
-    &lt;/section&gt;,
-    props,
-  )
-}
-
-return (
-  &lt;Grid&lt;AreaItemName&gt;
-    style={{
-      height: 'calc(100vh - 48px)',
-    }}
-    rows={['48px', '1fr']}
-    cols={['1fr', '300px']}
-    areas={[['header', 'header']]}
-  &gt;
-    &lt;div key={'header' as AreaItemName}&gt;
-      &lt;Header /&gt;
-    &lt;/div&gt;
-    &lt;Content /&gt;
-    &lt;Sider /&gt;
-  &lt;/Grid&gt;
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> <span class="hljs-attr">style</span>: <span class="hljs-title class_">CSSProperties</span> = { <span class="hljs-attr">border</span>: <span class="hljs-string">'solid 1px red'</span> }<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">AreaItemName</span> = <span class="hljs-string">'header'</span> | <span class="hljs-string">'content'</span> | <span class="hljs-string">'sider'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Header</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">header</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{style}</span>&gt;</span>header<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Content</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{style}</span>&gt;</span>content<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span></span><br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Sider</span>(<span class="hljs-params">props: CommonStyleProps</span>) {<br>  <span class="hljs-keyword">const</span> $ref = useRef&lt;<span class="hljs-title class_">HTMLElement</span>&gt;(<span class="hljs-literal">null</span>)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">wrapper</span>(<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">section</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{style}</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">{$ref}</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span></span><br><span class="language-xml">        {Array(100)</span><br><span class="language-xml">          .fill(0)</span><br><span class="language-xml">          .map((_, i) =&gt; (</span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{i}</span>&gt;</span>{i}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span><br><span class="language-xml">          ))}</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">BackTop</span> <span class="hljs-attr">target</span>=<span class="hljs-string">{()</span> =&gt;</span> $ref.current!}&gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">ToTopOutlined</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">style</span>=<span class="hljs-string">{</span></span></span><br><span class="hljs-tag"><span class="language-xml">            {</span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">fontSize:</span> <span class="hljs-attr">24</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">padding:</span> <span class="hljs-attr">8</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">borderRadius:</span> '<span class="hljs-attr">50</span>%',</span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">color:</span> '#<span class="hljs-attr">ffffff</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">backgroundColor:</span> '#<span class="hljs-attr">8ECAFE</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">            } <span class="hljs-attr">as</span> <span class="hljs-attr">CSSProperties</span></span></span><br><span class="hljs-tag"><span class="language-xml">          }</span></span><br><span class="hljs-tag"><span class="language-xml">        /&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">BackTop</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span></span>,<br>    props,<br>  )<br>}<br><br><span class="hljs-keyword">return</span> (<br>  &lt;<span class="hljs-title class_">Grid</span>&lt;<span class="hljs-title class_">AreaItemName</span>&gt;<br>    style={{<br>      <span class="hljs-attr">height</span>: <span class="hljs-string">'calc(100vh - 48px)'</span>,<br>    }}<br>    rows={[<span class="hljs-string">'48px'</span>, <span class="hljs-string">'1fr'</span>]}<br>    cols={[<span class="hljs-string">'1fr'</span>, <span class="hljs-string">'300px'</span>]}<br>    areas={[[<span class="hljs-string">'header'</span>, <span class="hljs-string">'header'</span>]]}<br>  &gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{</span>'<span class="hljs-attr">header</span>' <span class="hljs-attr">as</span> <span class="hljs-attr">AreaItemName</span>}&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">Header</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Content</span> /&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Sider</span> /&gt;</span></span><br>  &lt;/<span class="hljs-title class_">Grid</span>&gt;<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="2-类型约束未能完全生效，例如子元素的-key，就没办法做到类型自动推导限定"><a href="#2-类型约束未能完全生效，例如子元素的-key，就没办法做到类型自动推导限定" class="headerlink" title="2. 类型约束未能完全生效，例如子元素的 key，就没办法做到类型自动推导限定"></a>2. 类型约束未能完全生效，例如子元素的 key，就没办法做到类型自动推导限定</h3><p>目前很难处理 <code>ReactElement</code> 类型，导致相关的类型自动推导特别麻烦，so…暂时没有好的办法。</p>
 <h3 id="3-子组件内容过多时仍然会导致父元素出现滚动条"><a href="#3-子组件内容过多时仍然会导致父元素出现滚动条" class="headerlink" title="3. 子组件内容过多时仍然会导致父元素出现滚动条"></a>3. 子组件内容过多时仍然会导致父元素出现滚动条</h3><p>为子组件设置默认 <code>height/overflowY</code> 即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">function Grid&lt;T extends string&gt;(props: GridProps&lt;T&gt;) {
-  const { cols = [], rows = [], areas = [], children } = props
-  return (
-    &lt;div
-      className={props.className}
-      style={
-        {
-          height: '100%',
-          overflowY: 'auto',
-          display: 'grid',
-          gridTemplateColumns: cols.join(' '),
-          gridTemplateRows: rows.join(' '),
-          gridTemplateAreas: areas
-            .map((row) =&gt; '"' + row.join(' ') + '"')
-            .join(' '),
-          ...props.style,
-        } as CSSProperties
-      }
-    &gt;
-      {children.map((child) =&gt; {
-        return cloneElement(child, {
-          ...child.props,
-          style: {
-            // 这里是关键
-            height: '100%',
-            overflowY: 'auto',
-            gridArea: child.key,
-            ...child.props.style,
-          } as CSSProperties,
-        })
-      })}
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">function</span> <span class="hljs-title class_">Grid</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt;(<span class="hljs-attr">props</span>: <span class="hljs-title class_">GridProps</span>&lt;T&gt;) {<br>  <span class="hljs-keyword">const</span> { cols = [], rows = [], areas = [], children } = props<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">className</span>=<span class="hljs-string">{props.className}</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">style</span>=<span class="hljs-string">{</span></span></span><br><span class="hljs-tag"><span class="language-xml">        {</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">height:</span> '<span class="hljs-attr">100</span>%',</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">overflowY:</span> '<span class="hljs-attr">auto</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">display:</span> '<span class="hljs-attr">grid</span>',</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateColumns:</span> <span class="hljs-attr">cols.join</span>(' '),</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateRows:</span> <span class="hljs-attr">rows.join</span>(' '),</span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">gridTemplateAreas:</span> <span class="hljs-attr">areas</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">.map</span>((<span class="hljs-attr">row</span>) =&gt;</span> '"' + row.join(' ') + '"')</span><br><span class="language-xml">            .join(' '),</span><br><span class="language-xml">          ...props.style,</span><br><span class="language-xml">        } as CSSProperties</span><br><span class="language-xml">      }</span><br><span class="language-xml">    &gt;</span><br><span class="language-xml">      {children.map((child) =&gt; {</span><br><span class="language-xml">        return cloneElement(child, {</span><br><span class="language-xml">          ...child.props,</span><br><span class="language-xml">          style: {</span><br><span class="language-xml">            // 这里是关键</span><br><span class="language-xml">            height: '100%',</span><br><span class="language-xml">            overflowY: 'auto',</span><br><span class="language-xml">            gridArea: child.key,</span><br><span class="language-xml">            ...child.props.style,</span><br><span class="language-xml">          } as CSSProperties,</span><br><span class="language-xml">        })</span><br><span class="language-xml">      })}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>老实说吾辈对现代前端的生态乱象表示很讨厌，尤其是 react 生态的 css 处理方案，仅 css-in-js 就有几十种可选方案，而官方又没有作为，导致没有统一的方式（vue 在这点上好很多）处理它们，所以吾辈才选择了 ui 组件 + css module 的方式。乍一看似乎回到了 HTML 标签控制样式的情况，但相比之下<strong>组件</strong>比 HTML 标签灵活得多，而且更容易扩展和组合（如果使用了 css 预处理器就是另外一回事了）。</p>
 
@@ -1200,8 +742,6 @@ return (
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

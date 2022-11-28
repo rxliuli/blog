@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/f099deeb591d43ef9a00f3b3138bd696.png">
 <meta property="article:published_time" content="2022-10-28T02:54:44.110Z">
-<meta property="article:modified_time" content="2022-11-28T14:18:24.069Z">
+<meta property="article:modified_time" content="2022-11-28T14:34:19.993Z">
 <meta property="article:author" content="rxliuli">
 <meta property="article:tag" content="markdown">
 <meta property="article:tag" content="ast">
@@ -43,8 +43,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -251,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          10k 字
+          11k 字
         
       </span>
     
@@ -263,7 +261,7 @@
         
         
           <!-- compatible with older versions-->
-          87 分钟
+          91 分钟
         
       </span>
     
@@ -343,19 +341,7 @@
 <li>mdast 是 esm only 的，这个社区也开始放弃 cjs 了 – 吾辈也开始这样做了，虽然许多模块仍然支持 cjs，但新的模块已经默认 esm only 了</li>
 </ul>
 <h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p>一个最简单的使用示例是将 markdown 转换为 html</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { toHtml } from 'hast-util-to-html'
-import { fromMarkdown } from 'mdast-util-from-markdown'
-import { gfmFromMarkdown } from 'mdast-util-gfm'
-import { toHast } from 'mdast-util-to-hast'
-import { gfm } from 'micromark-extension-gfm'
-
-const s = '## Hello **World**!'
-const root = fromMarkdown(s, {
-  extensions: [gfm()],
-  mdastExtensions: [gfmFromMarkdown()],
-})
-const r = toHtml(toHast(root)!)
-console.log(r) // &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { toHtml } <span class="hljs-keyword">from</span> <span class="hljs-string">'hast-util-to-html'</span><br><span class="hljs-keyword">import</span> { fromMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-from-markdown'</span><br><span class="hljs-keyword">import</span> { gfmFromMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-gfm'</span><br><span class="hljs-keyword">import</span> { toHast } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-to-hast'</span><br><span class="hljs-keyword">import</span> { gfm } <span class="hljs-keyword">from</span> <span class="hljs-string">'micromark-extension-gfm'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">'## Hello **World**!'</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s, {<br>  <span class="hljs-attr">extensions</span>: [<span class="hljs-title function_">gfm</span>()],<br>  <span class="hljs-attr">mdastExtensions</span>: [<span class="hljs-title function_">gfmFromMarkdown</span>()],<br>})<br><span class="hljs-keyword">const</span> r = <span class="hljs-title function_">toHtml</span>(<span class="hljs-title function_">toHast</span>(root)!)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(r) <span class="hljs-comment">// &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，比想象中要麻烦一些，必须使用各种插件和工具，只是这个简单的工作我们需要使用 5 个模块，但在下面吾辈会证明这是值得的，也是可以解决的。</p>
 <p>这里我们可以先简单封装一下，三个最基本的函数</p>
@@ -364,259 +350,59 @@ console.log(r) // &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;
 <li><code>toMarkdown</code>: 从 ast 转换为 markdown 文本</li>
 <li><code>toHTML</code>: 从 ast 转换为 html 文本</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
-  fromMarkdown as fm,
-  Options as FmOptions,
-} from 'mdast-util-from-markdown'
-import { Options as TmOptions, toMarkdown as tm } from 'mdast-util-to-markdown'
-import type { Content, Root } from 'mdast'
-import {
-  frontmatterFromMarkdown,
-  frontmatterToMarkdown,
-} from 'mdast-util-frontmatter'
-import { frontmatter } from 'micromark-extension-frontmatter'
-import { gfm } from 'micromark-extension-gfm'
-import { gfmFromMarkdown, gfmToMarkdown } from 'mdast-util-gfm'
-import { toHast } from 'mdast-util-to-hast'
-import { toHtml as hastToHtml } from 'hast-util-to-html'
-
-/**
- * 解析 markdown 文本为 ast
- * @param content
- * @returns
- */
-export function fromMarkdown(content: string, options?: FmOptions): Root {
-  return fm(content, {
-    ...options,
-    extensions: [frontmatter(['yaml']), gfm()].concat(
-      options?.extensions ?? [],
-    ),
-    mdastExtensions: [
-      frontmatterFromMarkdown(['yaml']),
-      gfmFromMarkdown(),
-    ].concat(options?.mdastExtensions ?? []),
-  })
-}
-
-/**
- * 将 markdown ast 转换为文本
- * @param ast
- * @returns
- */
-export function toMarkdown(ast: Content | Root, options?: TmOptions): string {
-  return tm(ast, {
-    ...options,
-    extensions: [frontmatterToMarkdown(['yaml']), gfmToMarkdown()].concat(
-      options?.extensions ?? [],
-    ),
-  })
-}
-
-/**
- * 将一段 markdown ast 序列化为 html
- * @param node
- * @returns
- */
-export function toHtml(node: Root): string {
-  return hastToHtml(toHast(node)!)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> {<br>  fromMarkdown <span class="hljs-keyword">as</span> fm,<br>  <span class="hljs-title class_">Options</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">FmOptions</span>,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-from-markdown'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Options</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">TmOptions</span>, toMarkdown <span class="hljs-keyword">as</span> tm } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-to-markdown'</span><br><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">Content</span>, <span class="hljs-title class_">Root</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> {<br>  frontmatterFromMarkdown,<br>  frontmatterToMarkdown,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-frontmatter'</span><br><span class="hljs-keyword">import</span> { frontmatter } <span class="hljs-keyword">from</span> <span class="hljs-string">'micromark-extension-frontmatter'</span><br><span class="hljs-keyword">import</span> { gfm } <span class="hljs-keyword">from</span> <span class="hljs-string">'micromark-extension-gfm'</span><br><span class="hljs-keyword">import</span> { gfmFromMarkdown, gfmToMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-gfm'</span><br><span class="hljs-keyword">import</span> { toHast } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-to-hast'</span><br><span class="hljs-keyword">import</span> { toHtml <span class="hljs-keyword">as</span> hastToHtml } <span class="hljs-keyword">from</span> <span class="hljs-string">'hast-util-to-html'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 解析 markdown 文本为 ast</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">content</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">fromMarkdown</span>(<span class="hljs-params">content: <span class="hljs-built_in">string</span>, options?: FmOptions</span>): <span class="hljs-title class_">Root</span> {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fm</span>(content, {<br>    ...options,<br>    <span class="hljs-attr">extensions</span>: [<span class="hljs-title function_">frontmatter</span>([<span class="hljs-string">'yaml'</span>]), <span class="hljs-title function_">gfm</span>()].<span class="hljs-title function_">concat</span>(<br>      options?.<span class="hljs-property">extensions</span> ?? [],<br>    ),<br>    <span class="hljs-attr">mdastExtensions</span>: [<br>      <span class="hljs-title function_">frontmatterFromMarkdown</span>([<span class="hljs-string">'yaml'</span>]),<br>      <span class="hljs-title function_">gfmFromMarkdown</span>(),<br>    ].<span class="hljs-title function_">concat</span>(options?.<span class="hljs-property">mdastExtensions</span> ?? []),<br>  })<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 将 markdown ast 转换为文本</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">ast</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">toMarkdown</span>(<span class="hljs-params">ast: Content | Root, options?: TmOptions</span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">tm</span>(ast, {<br>    ...options,<br>    <span class="hljs-attr">extensions</span>: [<span class="hljs-title function_">frontmatterToMarkdown</span>([<span class="hljs-string">'yaml'</span>]), <span class="hljs-title function_">gfmToMarkdown</span>()].<span class="hljs-title function_">concat</span>(<br>      options?.<span class="hljs-property">extensions</span> ?? [],<br>    ),<br>  })<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 将一段 markdown ast 序列化为 html</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">node</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">toHtml</span>(<span class="hljs-params">node: Root</span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">hastToHtml</span>(<span class="hljs-title function_">toHast</span>(node)!)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>为了方便，我们默认引入了 gfm/yaml 这两个插件。下面的示例代码将直接使用这三个函数，现在重新完成之前转换 markdown 为 html 的需求</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const s = '## Hello **World**!'
-const r = toHtml(fromMarkdown(s))
-console.log(r) // &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> s = <span class="hljs-string">'## Hello **World**!'</span><br><span class="hljs-keyword">const</span> r = <span class="hljs-title function_">toHtml</span>(<span class="hljs-title function_">fromMarkdown</span>(s))<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(r) <span class="hljs-comment">// &lt;h2&gt;Hello &lt;strong&gt;World&lt;/strong&gt;!&lt;/h2&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，现在使用变得简单一些了。</p>
 <h3 id="markdown-ast"><a href="#markdown-ast" class="headerlink" title="markdown ast"></a>markdown ast</h3><p>然后，就是 ast 部分，mdast 抽象了 markdown 的语法树，可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 中检查一段 markdown 的语法树。</p>
 <p><img src="/resources/f099deeb591d43ef9a00f3b3138bd696.png" srcset="/img/loading.gif" lazyload alt="1669637555985.png"></p>
 <p>实际上，它就是一个嵌套的 json 对象。当得到 ast 之后，就可以对他进行操作，例如，最简单的遍历</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Node, visit } from 'unist-util-visit'
-import { fromMarkdown } from '../parse'
-
-const s = '## Hello **World**!'
-const root = fromMarkdown(s)
-visit(root, (node: Node) =&gt; {
-  console.log(node.type)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Node</span>, visit } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-visit'</span><br><span class="hljs-keyword">import</span> { fromMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">'## Hello **World**!'</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-title function_">visit</span>(root, <span class="hljs-function">(<span class="hljs-params">node: Node</span>) =&gt;</span> {<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(node.<span class="hljs-property">type</span>)<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者对它做一些修改，例如将粗体的替换为普通文本</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Node, Parent } from 'unist'
-import { Strong } from 'mdast'
-import { visit } from 'unist-util-visit'
-import { fromMarkdown, toMarkdown } from '../parse'
-
-const s = '## Hello **World**!'
-const root = fromMarkdown(s)
-visit(root, (node: Node) =&gt; {
-  if ('children' in (node as any)) {
-    const p = node as Parent
-    p.children = p.children.flatMap((item) =&gt;
-      item.type === 'strong' ? (item as Strong).children : [item],
-    )
-  }
-})
-console.log(toMarkdown(root)) // ## Hello World!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Node</span>, <span class="hljs-title class_">Parent</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Strong</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { visit } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-visit'</span><br><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">'## Hello **World**!'</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-title function_">visit</span>(root, <span class="hljs-function">(<span class="hljs-params">node: Node</span>) =&gt;</span> {<br>  <span class="hljs-keyword">if</span> (<span class="hljs-string">'children'</span> <span class="hljs-keyword">in</span> (node <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)) {<br>    <span class="hljs-keyword">const</span> p = node <span class="hljs-keyword">as</span> <span class="hljs-title class_">Parent</span><br>    p.<span class="hljs-property">children</span> = p.<span class="hljs-property">children</span>.<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>      item.<span class="hljs-property">type</span> === <span class="hljs-string">'strong'</span> ? (item <span class="hljs-keyword">as</span> <span class="hljs-title class_">Strong</span>).<span class="hljs-property">children</span> : [item],<br>    )<br>  }<br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root)) <span class="hljs-comment">// ## Hello World!</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>嗯，引入了 3 个模块。我们可以更进一步封装一个适用于 mdast 的 <code>flatMap</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 映射一棵 ast 树
- * 注：其中会执行真实的修改操作
- * @param tree
- * @param fn
- * @returns
- */
-export function flatMap&lt;T extends Node&gt;(
-  tree: T,
-  fn: (node: Node, i: number, parent?: Parent) =&gt; Node[],
-): T {
-  function transform(node: Node, i: number, parent?: Parent): Node[] {
-    if ('children' in node) {
-      const p = node as unknown as Parent
-      p.children = p.children.flatMap((item, i) =&gt; transform(item, i, p)) as any
-    }
-    return fn(node, i, parent)
-  }
-  return transform(tree, 0, undefined)[0] as T
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 映射一棵 ast 树</span><br><span class="hljs-comment"> * 注：其中会执行真实的修改操作</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">tree</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">fn</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> flatMap&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Node</span>&gt;(<br>  <span class="hljs-attr">tree</span>: T,<br>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">node: Node, i: <span class="hljs-built_in">number</span>, parent?: Parent</span>) =&gt;</span> <span class="hljs-title class_">Node</span>[],<br>): T {<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">transform</span>(<span class="hljs-params">node: Node, i: <span class="hljs-built_in">number</span>, parent?: Parent</span>): <span class="hljs-title class_">Node</span>[] {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-string">'children'</span> <span class="hljs-keyword">in</span> node) {<br>      <span class="hljs-keyword">const</span> p = node <span class="hljs-keyword">as</span> <span class="hljs-built_in">unknown</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Parent</span><br>      p.<span class="hljs-property">children</span> = p.<span class="hljs-property">children</span>.<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">item, i</span>) =&gt;</span> <span class="hljs-title function_">transform</span>(item, i, p)) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span><br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">fn</span>(node, i, parent)<br>  }<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">transform</span>(tree, <span class="hljs-number">0</span>, <span class="hljs-literal">undefined</span>)[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> T<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用 <code>flatMap</code> 重新完成它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
-import { flatMap } from '../utils'
-import { Strong } from 'mdast'
-
-const s = '## Hello **World**!'
-const root = fromMarkdown(s)
-flatMap(root, (item) =&gt;
-  item.type === 'strong' ? (item as Strong).children : [item],
-)
-console.log(toMarkdown(root)) // ## Hello World!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { flatMap } <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Strong</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">'## Hello **World**!'</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-title function_">flatMap</span>(root, <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>  item.<span class="hljs-property">type</span> === <span class="hljs-string">'strong'</span> ? (item <span class="hljs-keyword">as</span> <span class="hljs-title class_">Strong</span>).<span class="hljs-property">children</span> : [item],<br>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root)) <span class="hljs-comment">// ## Hello World!</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>嗯，只需要一步就完成了。嗯，为了性能吾辈并未将 flatMap 实现为返回一个新的 ast，当然，如果期望如此，无论如何都可以使用 immer 之类的库来实现 immutable。</p>
 <h3 id="转换链接"><a href="#转换链接" class="headerlink" title="转换链接"></a>转换链接</h3><p>好吧，来看一些真实的需求<br>第一个是修改 markdown 中的链接，例如希望将链接中的资源都转换为 cdn 地址，这里使用 google photos 作为示例</p>
 <p>原始 markdown 内容</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
-![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs md">![<span class="hljs-string">test</span>](<span class="hljs-link">resources/aaefd6438fcd48d68f62fc2478f1f857.png</span>)<br>![<span class="hljs-string">1669384280333.png</span>](<span class="hljs-link">https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>希望转换得到的 markdown 内容，即为 google 图片的地址添加代理服务，避免无法在 blog 显示的错误。同时也不能转换不相关的资源</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
-![1669384280333.png](https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs md">![<span class="hljs-string">test</span>](<span class="hljs-link">resources/aaefd6438fcd48d68f62fc2478f1f857.png</span>)<br>![<span class="hljs-string">1669384280333.png</span>](<span class="hljs-link">https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>实际上这件事情很简单，我们只需要过滤出来需要的节点并且修改就好了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
-import { Image } from 'mdast'
-import { selectAll } from 'unist-util-select'
-
-const s = `
-![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)
-![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)
-`.trim()
-const root = fromMarkdown(s)
-;(selectAll('image', root) as Image[])
-  .filter((item) =&gt;
-    item.url.startsWith('https://lh3.googleusercontent.com/pw/'),
-  )
-  .forEach(
-    (item) =&gt; (item.url = `https://image-proxy.rxliuli.com/?url=${item.url}`),
-  )
-console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Image</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { selectAll } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-select'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">`</span><br><span class="hljs-string">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)</span><br><span class="hljs-string">![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)</span><br><span class="hljs-string">`</span>.<span class="hljs-title function_">trim</span>()<br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br>;(<span class="hljs-title function_">selectAll</span>(<span class="hljs-string">'image'</span>, root) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Image</span>[])<br>  .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>    item.<span class="hljs-property">url</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'https://lh3.googleusercontent.com/pw/'</span>),<br>  )<br>  .<span class="hljs-title function_">forEach</span>(<br>    <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> (item.<span class="hljs-property">url</span> = <span class="hljs-string">`https://image-proxy.rxliuli.com/?url=<span class="hljs-subst">${item.url}</span>`</span>),<br>  )<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root))<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="修改元数据"><a href="#修改元数据" class="headerlink" title="修改元数据"></a>修改元数据</h3><p>我们还可以修改 markdown 的元数据，例如我们从 hexo 转换为 hugo 时，会需要转换它们的元数据。</p>
 <p>例如 hexo 的元数据一般格式是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">layout: post
-title: 2. Importing and exporting notes
-abbrlink: 2ba8366ac77c4a93b9eb7595d1343eb6
-tags: []
-date: 1667644025956
-updated: 1667644025956<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">layout:</span> <span class="hljs-string">post</span><br><span class="hljs-attr">title:</span> <span class="hljs-number">2</span><span class="hljs-string">.</span> <span class="hljs-string">Importing</span> <span class="hljs-string">and</span> <span class="hljs-string">exporting</span> <span class="hljs-string">notes</span><br><span class="hljs-attr">abbrlink:</span> <span class="hljs-string">2ba8366ac77c4a93b9eb7595d1343eb6</span><br><span class="hljs-attr">tags:</span> []<br><span class="hljs-attr">date:</span> <span class="hljs-number">1667644025956</span><br><span class="hljs-attr">updated:</span> <span class="hljs-number">1667644025956</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>而 hugo 的是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">title: 2. Importing and exporting notes
-slug: 2ba8366ac77c4a93b9eb7595d1343eb6
-tags: []
-date: 2022-11-05T10:27:05.956Z
-lastmod: 2022-11-05T10:27:05.956Z<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">title:</span> <span class="hljs-number">2</span><span class="hljs-string">.</span> <span class="hljs-string">Importing</span> <span class="hljs-string">and</span> <span class="hljs-string">exporting</span> <span class="hljs-string">notes</span><br><span class="hljs-attr">slug:</span> <span class="hljs-string">2ba8366ac77c4a93b9eb7595d1343eb6</span><br><span class="hljs-attr">tags:</span> []<br><span class="hljs-attr">date:</span> <span class="hljs-number">2022-11-05T10:27:05.956Z</span><br><span class="hljs-attr">lastmod:</span> <span class="hljs-number">2022-11-05T10:27:05.956Z</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>无论如何，它们的 markdown 不会完全一样，这时候我们需要做一些简单的转换。</p>
 <p>首先我们还是先封装 getYamlMeta/setYamlMeta 这些工具函数吧</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Root, YAML } from 'mdast'
-import { select } from 'unist-util-select'
-import * as yaml from 'yaml'
-
-/**
- * 获取 markdown 的 yaml 元数据
- * @param root
- * @returns
- */
-export function getYamlMeta&lt;T&gt;(root: Root): T {
-  const r = select('yaml', root)
-  return yaml.parse(r ? (r as YAML).value : '')
-}
-
-/**
- * 设置 markdown 的 yaml 元数据
- * @param root
- * @returns
- */
-export function setYamlMeta(root: Root, meta: any) {
-  const r = select('yaml', root) as YAML
-  if (r) {
-    r.value = yaml.stringify(meta).trim()
-  } else {
-    root.children.unshift({
-      type: 'yaml',
-      value: yaml.stringify(meta).trim(),
-    } as YAML)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Root</span>, <span class="hljs-variable constant_">YAML</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { select } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-select'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> yaml <span class="hljs-keyword">from</span> <span class="hljs-string">'yaml'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 获取 markdown 的 yaml 元数据</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">root</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> getYamlMeta&lt;T&gt;(<span class="hljs-attr">root</span>: <span class="hljs-title class_">Root</span>): T {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-title function_">select</span>(<span class="hljs-string">'yaml'</span>, root)<br>  <span class="hljs-keyword">return</span> yaml.<span class="hljs-title function_">parse</span>(r ? (r <span class="hljs-keyword">as</span> <span class="hljs-variable constant_">YAML</span>).<span class="hljs-property">value</span> : <span class="hljs-string">''</span>)<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 设置 markdown 的 yaml 元数据</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">root</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">setYamlMeta</span>(<span class="hljs-params">root: Root, meta: <span class="hljs-built_in">any</span></span>) {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-title function_">select</span>(<span class="hljs-string">'yaml'</span>, root) <span class="hljs-keyword">as</span> <span class="hljs-variable constant_">YAML</span><br>  <span class="hljs-keyword">if</span> (r) {<br>    r.<span class="hljs-property">value</span> = yaml.<span class="hljs-title function_">stringify</span>(meta).<span class="hljs-title function_">trim</span>()<br>  } <span class="hljs-keyword">else</span> {<br>    root.<span class="hljs-property">children</span>.<span class="hljs-title function_">unshift</span>({<br>      <span class="hljs-attr">type</span>: <span class="hljs-string">'yaml'</span>,<br>      <span class="hljs-attr">value</span>: yaml.<span class="hljs-title function_">stringify</span>(meta).<span class="hljs-title function_">trim</span>(),<br>    } <span class="hljs-keyword">as</span> <span class="hljs-variable constant_">YAML</span>)<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后就可以简单的修改元数据了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
-import { getYamlMeta, setYamlMeta } from '../utils'
-
-const s = `
----
-layout: post
-title: 2. Importing and exporting notes
-abbrlink: 2ba8366ac77c4a93b9eb7595d1343eb6
-tags: []
-date: 1667644025956
-updated: 1667644025956
----
-`.trim()
-interface HexoMeta {
-  layout: string
-  title: string
-  abbrlink: string
-  tags: string[]
-  date: number
-  updated: number
-}
-interface HugoMeta {
-  title: string
-  slug: string
-  tags: string[]
-  date: string
-  lastmod: string
-}
-const root = fromMarkdown(s)
-const meta = getYamlMeta(root) as HexoMeta
-setYamlMeta(root, {
-  title: meta.title,
-  slug: meta.abbrlink,
-  tags: meta.tags,
-  date: new Date(meta.date).toISOString(),
-  lastmod: new Date(meta.updated).toISOString(),
-} as HugoMeta)
-console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { getYamlMeta, setYamlMeta } <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">`</span><br><span class="hljs-string">---</span><br><span class="hljs-string">layout: post</span><br><span class="hljs-string">title: 2. Importing and exporting notes</span><br><span class="hljs-string">abbrlink: 2ba8366ac77c4a93b9eb7595d1343eb6</span><br><span class="hljs-string">tags: []</span><br><span class="hljs-string">date: 1667644025956</span><br><span class="hljs-string">updated: 1667644025956</span><br><span class="hljs-string">---</span><br><span class="hljs-string">`</span>.<span class="hljs-title function_">trim</span>()<br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">HexoMeta</span> {<br>  <span class="hljs-attr">layout</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">abbrlink</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">tags</span>: <span class="hljs-built_in">string</span>[]<br>  <span class="hljs-attr">date</span>: <span class="hljs-built_in">number</span><br>  <span class="hljs-attr">updated</span>: <span class="hljs-built_in">number</span><br>}<br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">HugoMeta</span> {<br>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">slug</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">tags</span>: <span class="hljs-built_in">string</span>[]<br>  <span class="hljs-attr">date</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">lastmod</span>: <span class="hljs-built_in">string</span><br>}<br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-keyword">const</span> meta = <span class="hljs-title function_">getYamlMeta</span>(root) <span class="hljs-keyword">as</span> <span class="hljs-title class_">HexoMeta</span><br><span class="hljs-title function_">setYamlMeta</span>(root, {<br>  <span class="hljs-attr">title</span>: meta.<span class="hljs-property">title</span>,<br>  <span class="hljs-attr">slug</span>: meta.<span class="hljs-property">abbrlink</span>,<br>  <span class="hljs-attr">tags</span>: meta.<span class="hljs-property">tags</span>,<br>  <span class="hljs-attr">date</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(meta.<span class="hljs-property">date</span>).<span class="hljs-title function_">toISOString</span>(),<br>  <span class="hljs-attr">lastmod</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(meta.<span class="hljs-property">updated</span>).<span class="hljs-title function_">toISOString</span>(),<br>} <span class="hljs-keyword">as</span> <span class="hljs-title class_">HugoMeta</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root))<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="清除额外的空格"><a href="#清除额外的空格" class="headerlink" title="清除额外的空格"></a>清除额外的空格</h3><p>可能不太为人所知的是，markdown 对东亚字符的支持一直有问题，一个之前遇到的例子是如果粗体的结尾使用中文符号，则粗体不会生效。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">**真没想到我这么快就要死了，**她有些自暴自弃地想着。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs md"><span class="hljs-strong">**真没想到我这么快就要死了，**</span>她有些自暴自弃地想着。<br></code></pre></td></tr></tbody></table></figure>
 
 <p>会被渲染为</p>
 <p>**真没想到我这么快就要死了，**她有些自暴自弃地想着。</p>
 <p>这很奇怪，但确实存在，commonmark 的实现 markdown-it 官方的建议是添加额外的空格，例如修改为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markdown" data-language="markdown"><code class="language-markdown">**真没想到我这么快就要死了，** 她有些自暴自弃地想着。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs md"><span class="hljs-strong">**真没想到我这么快就要死了，**</span> 她有些自暴自弃地想着。<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这样就能正确渲染粗体了</p>
 <p><strong>真没想到我这么快就要死了，</strong> 她有些自暴自弃地想着。</p>
@@ -626,87 +412,14 @@ console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows">
 <li>转换为 html 语法树之后再修改</li>
 </ol>
 <p>由于这里更关注 markdown，所以会采用第一种方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Strong, Text } from 'mdast'
-import { fromMarkdown } from '../parse'
-import { toHtml } from '../stringify'
-import { flatMap } from '../utils'
-
-const s = `**真没想到我这么快就要死了，** 她有些自暴自弃地想着。`
-const root = fromMarkdown(s)
-console.log(toHtml(root)) // &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt; 她有些自暴自弃地想着。&lt;/p&gt;
-flatMap(root, (item, i, p) =&gt; {
-  if (item.type === 'strong') {
-    const v = item as Strong
-    const next = p!.children[i + 1]
-    const s = (v.children[0] as Text).value
-    if (s) {
-      const last = s.slice(s.length - 1)
-      if (
-        next &amp;&amp;
-        next.type === 'text' &amp;&amp;
-        ['，', '。', '？', '！', '〉'].includes(last) &amp;&amp;
-        next.value.startsWith(' ')
-      ) {
-        next.value = next.value.trim()
-      }
-    }
-  }
-  return [item]
-})
-console.log(toHtml(root)) // &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt;她有些自暴自弃地想着。&lt;/p&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Strong</span>, <span class="hljs-title class_">Text</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { fromMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { toHtml } <span class="hljs-keyword">from</span> <span class="hljs-string">'../stringify'</span><br><span class="hljs-keyword">import</span> { flatMap } <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">`**真没想到我这么快就要死了，** 她有些自暴自弃地想着。`</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toHtml</span>(root)) <span class="hljs-comment">// &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt; 她有些自暴自弃地想着。&lt;/p&gt;</span><br><span class="hljs-title function_">flatMap</span>(root, <span class="hljs-function">(<span class="hljs-params">item, i, p</span>) =&gt;</span> {<br>  <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> === <span class="hljs-string">'strong'</span>) {<br>    <span class="hljs-keyword">const</span> v = item <span class="hljs-keyword">as</span> <span class="hljs-title class_">Strong</span><br>    <span class="hljs-keyword">const</span> next = p!.<span class="hljs-property">children</span>[i + <span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">const</span> s = (v.<span class="hljs-property">children</span>[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> <span class="hljs-title class_">Text</span>).<span class="hljs-property">value</span><br>    <span class="hljs-keyword">if</span> (s) {<br>      <span class="hljs-keyword">const</span> last = s.<span class="hljs-title function_">slice</span>(s.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>)<br>      <span class="hljs-keyword">if</span> (<br>        next &amp;&amp;<br>        next.<span class="hljs-property">type</span> === <span class="hljs-string">'text'</span> &amp;&amp;<br>        [<span class="hljs-string">'，'</span>, <span class="hljs-string">'。'</span>, <span class="hljs-string">'？'</span>, <span class="hljs-string">'！'</span>, <span class="hljs-string">'〉'</span>].<span class="hljs-title function_">includes</span>(last) &amp;&amp;<br>        next.<span class="hljs-property">value</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">' '</span>)<br>      ) {<br>        next.<span class="hljs-property">value</span> = next.<span class="hljs-property">value</span>.<span class="hljs-title function_">trim</span>()<br>      }<br>    }<br>  }<br>  <span class="hljs-keyword">return</span> [item]<br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toHtml</span>(root)) <span class="hljs-comment">// &lt;p&gt;&lt;strong&gt;真没想到我这么快就要死了，&lt;/strong&gt;她有些自暴自弃地想着。&lt;/p&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="创建插件"><a href="#创建插件" class="headerlink" title="创建插件"></a>创建插件</h3><p>现在，我们可以来谈一下 mdast 中的插件了，更准确的说是 mdast-util-from-markdown/mdast-util-to-markdown 所支持的插件系统。我们上面写的那些其实都可以封装为插件</p>
 <p>例如最初的转换链接可以封装为插件，可以封装为 MdastExtensions 插件以便在 transforms hooks 中转换 ast</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
-import { Image } from 'mdast'
-import { selectAll } from 'unist-util-select'
-import { Extension } from 'mdast-util-from-markdown'
-
-function googleImageProxyFromMarkdown(): Extension {
-  return {
-    transforms: [
-      (root) =&gt; {
-        ;(selectAll('image', root) as Image[])
-          .filter((item) =&gt;
-            item.url.startsWith('https://lh3.googleusercontent.com/pw/'),
-          )
-          .forEach(
-            (item) =&gt;
-              (item.url = `https://image-proxy.rxliuli.com/?url=${item.url}`),
-          )
-      },
-    ],
-  }
-}
-const root = fromMarkdown(s, {
-  mdastExtensions: [googleImageProxyFromMarkdown()],
-})
-console.log(toMarkdown(root))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Image</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { selectAll } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-select'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Extension</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-from-markdown'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">googleImageProxyFromMarkdown</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Extension</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">transforms</span>: [<br>      <span class="hljs-function">(<span class="hljs-params">root</span>) =&gt;</span> {<br>        ;(<span class="hljs-title function_">selectAll</span>(<span class="hljs-string">'image'</span>, root) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Image</span>[])<br>          .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>            item.<span class="hljs-property">url</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'https://lh3.googleusercontent.com/pw/'</span>),<br>          )<br>          .<span class="hljs-title function_">forEach</span>(<br>            <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>              (item.<span class="hljs-property">url</span> = <span class="hljs-string">`https://image-proxy.rxliuli.com/?url=<span class="hljs-subst">${item.url}</span>`</span>),<br>          )<br>      },<br>    ],<br>  }<br>}<br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s, {<br>  <span class="hljs-attr">mdastExtensions</span>: [<span class="hljs-title function_">googleImageProxyFromMarkdown</span>()],<br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>也可以封装为输出插件，在 handlers hooks 中处理 image 类型的 ast</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { fromMarkdown, toMarkdown } from '../parse'
-import { Image } from 'mdast'
-import { Options } from 'mdast-util-to-markdown'
-
-function googleImageProxyToMarkdown(): Options {
-  return {
-    handlers: {
-      image(node) {
-        const l = node as Image
-        if (l.url.startsWith('https://lh3.googleusercontent.com/pw/')) {
-          l.url = `https://image-proxy.rxliuli.com/?url=${l.url}`
-        }
-        return `![${l.alt}](${l.url})`
-      },
-    },
-  }
-}
-const root = fromMarkdown(s)
-console.log(
-  toMarkdown(root, {
-    extensions: [googleImageProxyToMarkdown()],
-  }),
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown, toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'../parse'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Image</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Options</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-to-markdown'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">googleImageProxyToMarkdown</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Options</span> {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">handlers</span>: {<br>      <span class="hljs-title function_">image</span>(<span class="hljs-params">node</span>) {<br>        <span class="hljs-keyword">const</span> l = node <span class="hljs-keyword">as</span> <span class="hljs-title class_">Image</span><br>        <span class="hljs-keyword">if</span> (l.<span class="hljs-property">url</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'https://lh3.googleusercontent.com/pw/'</span>)) {<br>          l.<span class="hljs-property">url</span> = <span class="hljs-string">`https://image-proxy.rxliuli.com/?url=<span class="hljs-subst">${l.url}</span>`</span><br>        }<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">`![<span class="hljs-subst">${l.alt}</span>](<span class="hljs-subst">${l.url}</span>)`</span><br>      },<br>    },<br>  }<br>}<br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<br>  <span class="hljs-title function_">toMarkdown</span>(root, {<br>    <span class="hljs-attr">extensions</span>: [<span class="hljs-title function_">googleImageProxyToMarkdown</span>()],<br>  }),<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>就吾辈而言，一般不会将这种操作封装为插件，而是封装为简单的函数，接收一个 ast 并返回一个 ast 的函数，在需要时直接使用即可。除非一些明显适合使用插件的场景，例如要支持新的语法，例如 <code>[[wiki]]</code> 链接之类的，对这个插件感兴趣可以查看 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/mami/blob/master/packages/plugin-obsidian/src/utils/wiki.ts">https://github.com/rxliuli/mami/blob/master/packages/plugin-obsidian/src/utils/wiki.ts</a>。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>markdown 是一个有趣的格式，现在几乎所有开发者相关的平台（非国内）都支持它，所以自然而然衍生了很多相关的工具和模块，而基于个人独特的需求则衍生了更多的东西。就吾辈而言，吾辈创建的与 markdown 相关的工具或库包括</p>
@@ -1069,8 +782,6 @@ console.log(
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

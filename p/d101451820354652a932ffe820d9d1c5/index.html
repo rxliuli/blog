@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          6.4k 字
+          6.8k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          54 分钟
+          57 分钟
         
       </span>
     
@@ -326,31 +324,17 @@
 </blockquote>
 <h3 id="模板字符串类型"><a href="#模板字符串类型" class="headerlink" title="模板字符串类型"></a>模板字符串类型</h3><p>尤其适合在 CSS Properties 相关的类型定义中使用，例如 css 的 <code>width</code>，就可以使用模板字符串进行检查避免低级错误。</p>
 <p>之前</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Width = number | string
-const i: Width = '1px'
-const i2: Width = '1px2' // 不会报错<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Width</span> = <span class="hljs-built_in">number</span> | <span class="hljs-built_in">string</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">i</span>: <span class="hljs-title class_">Width</span> = <span class="hljs-string">'1px'</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">i2</span>: <span class="hljs-title class_">Width</span> = <span class="hljs-string">'1px2'</span> <span class="hljs-comment">// 不会报错</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type Unit = 'px' | '%' | 'em' | 'rem'
-type Width = number | `${number}${Unit}`
-const i: Width = '1px'
-const i2: Width = '1px2' // TS2322: Type '"1px2"' is not assignable to type 'Width'.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Unit</span> = <span class="hljs-string">'px'</span> | <span class="hljs-string">'%'</span> | <span class="hljs-string">'em'</span> | <span class="hljs-string">'rem'</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Width</span> = <span class="hljs-built_in">number</span> | <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">number</span>}</span><span class="hljs-subst">${Unit}</span>`</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">i</span>: <span class="hljs-title class_">Width</span> = <span class="hljs-string">'1px'</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">i2</span>: <span class="hljs-title class_">Width</span> = <span class="hljs-string">'1px2'</span> <span class="hljs-comment">// TS2322: Type '"1px2"' is not assignable to type 'Width'.</span><br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>该特性在 Grid 组件进行了实用，能够避免一些低级错误。</p>
 </blockquote>
 <h3 id="递归类型"><a href="#递归类型" class="headerlink" title="递归类型"></a>递归类型</h3><p>事实上，递归类型的需求由来已久。例如典型的 <code>Array.prototype.flat</code> 函数的类型定义，或是函数式中部分应用函数的类型定义。</p>
 <p>下面是一个将嵌套数组亚平的函数的类型定义示例（来自 TypeScript 官网）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ElementType&lt;T&gt; = T extends ReadonlyArray&lt;infer U&gt; ? ElementType&lt;U&gt; : T
-
-function deepFlatten&lt;T extends readonly unknown[]&gt;(x: T): ElementType&lt;T&gt;[] {
-  throw 'not implemented'
-}
-
-// All of these return the type 'number[]':
-deepFlatten([1, 2, 3])
-deepFlatten([[1], [2, 3]])
-deepFlatten([[1], [[2]], [[[3]]]])<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">ElementType</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ReadonlyArray</span>&lt;infer U&gt; ? <span class="hljs-title class_">ElementType</span>&lt;U&gt; : T<br><br><span class="hljs-keyword">function</span> deepFlatten&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-keyword">readonly</span> <span class="hljs-built_in">unknown</span>[]&gt;(<span class="hljs-attr">x</span>: T): <span class="hljs-title class_">ElementType</span>&lt;T&gt;[] {<br>  <span class="hljs-keyword">throw</span> <span class="hljs-string">'not implemented'</span><br>}<br><br><span class="hljs-comment">// All of these return the type 'number[]':</span><br><span class="hljs-title function_">deepFlatten</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>])<br><span class="hljs-title function_">deepFlatten</span>([[<span class="hljs-number">1</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">3</span>]])<br><span class="hljs-title function_">deepFlatten</span>([[<span class="hljs-number">1</span>], [[<span class="hljs-number">2</span>]], [[[<span class="hljs-number">3</span>]]]])<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="实际的使用场景"><a href="#实际的使用场景" class="headerlink" title="实际的使用场景"></a>实际的使用场景</h2><h3 id="在-i18next-中根据-key-获取翻译字符串"><a href="#在-i18next-中根据-key-获取翻译字符串" class="headerlink" title="在 i18next 中根据 key 获取翻译字符串"></a>在 i18next 中根据 key 获取翻译字符串</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://stackoverflow.com/a/58308279/8409380">i18next 的类型定义</a></p>
@@ -363,110 +347,13 @@ deepFlatten([[1], [[2]], [[[3]]]])<span aria-hidden="true" class="line-numbers-r
 <li>根据 key 获取文本并进行参数注入</li>
 </ul>
 <p>下面是吾辈对 i18next 的封装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import zhCN from '../i18n/zhCN'
-import en from '../i18n/en'
-import i18next, { TOptions } from 'i18next'
-
-//region 类型定义
-
-// returns the same string literal T, if props match, else never
-type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
-  ? A extends keyof O
-    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
-    : never
-  : T extends keyof O
-  ? T
-  : never
-
-// returns the property value from object O given property path T
-type GetDictValue&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
-  ? A extends keyof O
-    ? GetDictValue&lt;B, O[A]&gt;
-    : never
-  : T extends keyof O
-  ? O[T]
-  : never
-
-// retrieves all variable placeholder names as tuple
-type Keys&lt;S extends string&gt; = S extends ''
-  ? []
-  : S extends `${infer _}{{${infer B}}}${infer C}`
-  ? [B, ...Keys&lt;C&gt;]
-  : never
-
-// substitutes placeholder variables with input values
-type Interpolate&lt;
-  S extends string,
-  I extends Record&lt;Keys&lt;S&gt;[number], string&gt;
-&gt; = S extends ''
-  ? ''
-  : S extends `${infer A}{{${infer B}}}${infer C}`
-  ? `${A}${I[Extract&lt;B, keyof I&gt;]}${Interpolate&lt;C, I&gt;}`
-  : never
-
-//endregion
-
-type Dict = typeof zhCN | typeof en
-
-export enum LanguageEnum {
-  ZhCN = 'zhCN',
-  En = 'en',
-}
-
-export class I18nLoader {
-  constructor() {}
-
-  /**
-   * 加载国际化
-   */
-
-  async load(language: LanguageEnum) {
-    await i18next.init({
-      lng: language,
-      resources: {
-        en: {
-          translation: en,
-        },
-        zhCN: {
-          translation: zhCN,
-        },
-      },
-    })
-  }
-
-  /**
-   * 根据 key 获取翻译的文本
-   * @param key
-   */
-  getText&lt;K extends string&gt;(
-    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
-  ): GetDictValue&lt;K, Dict&gt;
-  getText&lt;
-    D extends Dict &amp; Record&lt;string, string&gt;,
-    K extends keyof D,
-    I extends Record&lt;Keys&lt;D[K]&gt;[number], string&gt;
-  &gt;(k: K, args: I): Interpolate&lt;D[K], I&gt;
-  getText&lt;K extends string&gt;(
-    key: keyof Dict | (K &amp; CheckDictString&lt;K, Dict&gt;),
-    args?: TOptions,
-  ): GetDictValue&lt;K, Dict&gt; {
-    return i18next.t(key, args)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> zhCN <span class="hljs-keyword">from</span> <span class="hljs-string">'../i18n/zhCN'</span><br><span class="hljs-keyword">import</span> en <span class="hljs-keyword">from</span> <span class="hljs-string">'../i18n/en'</span><br><span class="hljs-keyword">import</span> i18next, { <span class="hljs-title class_">TOptions</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'i18next'</span><br><br><span class="hljs-comment">//region 类型定义</span><br><br><span class="hljs-comment">// returns the same string literal T, if props match, else never</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">CheckDictString</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>, O&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-string">`<span class="hljs-subst">${infer A}</span>.<span class="hljs-subst">${infer B}</span>`</span><br>  ? A <span class="hljs-keyword">extends</span> keyof O<br>    ? <span class="hljs-string">`<span class="hljs-subst">${A}</span>.<span class="hljs-subst">${Extract&lt;CheckDictString&lt;B, O[A]&gt;, <span class="hljs-built_in">string</span>&gt;}</span>`</span><br>    : <span class="hljs-built_in">never</span><br>  : T <span class="hljs-keyword">extends</span> keyof O<br>  ? T<br>  : <span class="hljs-built_in">never</span><br><br><span class="hljs-comment">// returns the property value from object O given property path T</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">GetDictValue</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>, O&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-string">`<span class="hljs-subst">${infer A}</span>.<span class="hljs-subst">${infer B}</span>`</span><br>  ? A <span class="hljs-keyword">extends</span> keyof O<br>    ? <span class="hljs-title class_">GetDictValue</span>&lt;B, O[A]&gt;<br>    : <span class="hljs-built_in">never</span><br>  : T <span class="hljs-keyword">extends</span> keyof O<br>  ? O[T]<br>  : <span class="hljs-built_in">never</span><br><br><span class="hljs-comment">// retrieves all variable placeholder names as tuple</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Keys</span>&lt;S <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = S <span class="hljs-keyword">extends</span> <span class="hljs-string">''</span><br>  ? []<br>  : S <span class="hljs-keyword">extends</span> <span class="hljs-string">`<span class="hljs-subst">${infer _}</span>{{<span class="hljs-subst">${infer B}</span>}}<span class="hljs-subst">${infer C}</span>`</span><br>  ? [B, ...<span class="hljs-title class_">Keys</span>&lt;C&gt;]<br>  : <span class="hljs-built_in">never</span><br><br><span class="hljs-comment">// substitutes placeholder variables with input values</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Interpolate</span>&lt;<br>  S <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,<br>  I <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">Keys</span>&lt;S&gt;[<span class="hljs-built_in">number</span>], <span class="hljs-built_in">string</span>&gt;<br>&gt; = S <span class="hljs-keyword">extends</span> <span class="hljs-string">''</span><br>  ? <span class="hljs-string">''</span><br>  : S <span class="hljs-keyword">extends</span> <span class="hljs-string">`<span class="hljs-subst">${infer A}</span>{{<span class="hljs-subst">${infer B}</span>}}<span class="hljs-subst">${infer C}</span>`</span><br>  ? <span class="hljs-string">`<span class="hljs-subst">${A}</span><span class="hljs-subst">${I[Extract&lt;B, keyof I&gt;]}</span><span class="hljs-subst">${Interpolate&lt;C, I&gt;}</span>`</span><br>  : <span class="hljs-built_in">never</span><br><br><span class="hljs-comment">//endregion</span><br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Dict</span> = <span class="hljs-keyword">typeof</span> zhCN | <span class="hljs-keyword">typeof</span> en<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">LanguageEnum</span> {<br>  <span class="hljs-title class_">ZhCN</span> = <span class="hljs-string">'zhCN'</span>,<br>  <span class="hljs-title class_">En</span> = <span class="hljs-string">'en'</span>,<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">I18nLoader</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {}<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 加载国际化</span><br><span class="hljs-comment">   */</span><br><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">load</span>(<span class="hljs-params">language: LanguageEnum</span>) {<br>    <span class="hljs-keyword">await</span> i18next.<span class="hljs-title function_">init</span>({<br>      <span class="hljs-attr">lng</span>: language,<br>      <span class="hljs-attr">resources</span>: {<br>        <span class="hljs-attr">en</span>: {<br>          <span class="hljs-attr">translation</span>: en,<br>        },<br>        <span class="hljs-attr">zhCN</span>: {<br>          <span class="hljs-attr">translation</span>: zhCN,<br>        },<br>      },<br>    })<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 根据 key 获取翻译的文本</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">key</span></span><br><span class="hljs-comment">   */</span><br>  getText&lt;K <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt;(<br>    <span class="hljs-attr">key</span>: keyof <span class="hljs-title class_">Dict</span> | (K &amp; <span class="hljs-title class_">CheckDictString</span>&lt;K, <span class="hljs-title class_">Dict</span>&gt;),<br>  ): <span class="hljs-title class_">GetDictValue</span>&lt;K, <span class="hljs-title class_">Dict</span>&gt;<br>  getText&lt;<br>    D <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Dict</span> &amp; <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;,<br>    K <span class="hljs-keyword">extends</span> keyof D,<br>    I <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">Keys</span>&lt;D[K]&gt;[<span class="hljs-built_in">number</span>], <span class="hljs-built_in">string</span>&gt;<br>  &gt;(<span class="hljs-attr">k</span>: K, <span class="hljs-attr">args</span>: I): <span class="hljs-title class_">Interpolate</span>&lt;D[K], I&gt;<br>  getText&lt;K <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt;(<br>    <span class="hljs-attr">key</span>: keyof <span class="hljs-title class_">Dict</span> | (K &amp; <span class="hljs-title class_">CheckDictString</span>&lt;K, <span class="hljs-title class_">Dict</span>&gt;),<br>    args?: <span class="hljs-title class_">TOptions</span>,<br>  ): <span class="hljs-title class_">GetDictValue</span>&lt;K, <span class="hljs-title class_">Dict</span>&gt; {<br>    <span class="hljs-keyword">return</span> i18next.<span class="hljs-title function_">t</span>(key, args)<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用起来很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const i18nLoader = new I18nLoader()
-await i18nLoader.load(LanguageEnum.ZhCN)
-console.log(i18nLoader.getText('hello')) // 你好<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> i18nLoader = <span class="hljs-keyword">new</span> <span class="hljs-title function_">I18nLoader</span>()<br><span class="hljs-keyword">await</span> i18nLoader.<span class="hljs-title function_">load</span>(<span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">ZhCN</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i18nLoader.<span class="hljs-title function_">getText</span>(<span class="hljs-string">'hello'</span>)) <span class="hljs-comment">// 你好</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>接下来，我们分析以下 <code>CheckDictString</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type CheckDictString&lt;T extends string, O&gt; = T extends `${infer A}.${infer B}`
-  ? A extends keyof O
-    ? `${A}.${Extract&lt;CheckDictString&lt;B, O[A]&gt;, string&gt;}`
-    : never
-  : T extends keyof O
-  ? T
-  : never<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">CheckDictString</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>, O&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-string">`<span class="hljs-subst">${infer A}</span>.<span class="hljs-subst">${infer B}</span>`</span><br>  ? A <span class="hljs-keyword">extends</span> keyof O<br>    ? <span class="hljs-string">`<span class="hljs-subst">${A}</span>.<span class="hljs-subst">${Extract&lt;CheckDictString&lt;B, O[A]&gt;, <span class="hljs-built_in">string</span>&gt;}</span>`</span><br>    : <span class="hljs-built_in">never</span><br>  : T <span class="hljs-keyword">extends</span> keyof O<br>  ? T<br>  : <span class="hljs-built_in">never</span><br></code></pre></td></tr></tbody></table></figure>
 
 <ol>
 <li>传入泛型参数 <code>T</code> 和 <code>O</code>，<code>T</code> 必须继承自 <code>string</code></li>
@@ -527,69 +414,7 @@ console.log(i18nLoader.getText('hello')) // 你好<span aria-hidden="true" class
 </tr>
 </tbody></table>
 <h3 id="使用类型系统解析-json-字符串（好玩性质）"><a href="#使用类型系统解析-json-字符串（好玩性质）" class="headerlink" title="使用类型系统解析 json 字符串（好玩性质）"></a>使用类型系统解析 json 字符串（好玩性质）</h3><p><a target="_blank" rel="noopener" href="https://twitter.com/buildsghost/status/1301976526603206657">twitter 上</a> 甚至有人使用 TypeScript 的模板字符串和递归类型解析了 json 字符串。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type ParserError&lt;T extends string&gt; = { error: true } &amp; T
-type EatWhitespace&lt;State extends string&gt; = string extends State
-  ? ParserError&lt;'EatWhitespace got generic string type'&gt;
-  : State extends ` ${infer State}` | `\n${infer State}`
-  ? EatWhitespace&lt;State&gt;
-  : State
-type AddKeyValue&lt;
-  Memo extends Record&lt;string, any&gt;,
-  Key extends string,
-  Value extends any
-&gt; = Memo &amp; { [K in Key]: Value }
-type ParseJsonObject&lt;
-  State extends string,
-  Memo extends Record&lt;string, any&gt; = {}
-&gt; = string extends State
-  ? ParserError&lt;'ParseJsonObject got generic string type'&gt;
-  : EatWhitespace&lt;State&gt; extends `}${infer State}`
-  ? [Memo, State]
-  : EatWhitespace&lt;State&gt; extends `"${infer Key}"${infer State}`
-  ? EatWhitespace&lt;State&gt; extends `:${infer State}`
-    ? ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
-      ? EatWhitespace&lt;State&gt; extends `,${infer State}`
-        ? ParseJsonObject&lt;State, AddKeyValue&lt;Memo, Key, Value&gt;&gt;
-        : EatWhitespace&lt;State&gt; extends `}${infer State}`
-        ? [AddKeyValue&lt;Memo, Key, Value&gt;, State]
-        : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
-      : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
-    : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
-  : ParserError&lt;`ParseJsonObject received unexpected token: ${State}`&gt;
-type ParseJsonArray&lt;
-  State extends string,
-  Memo extends any[] = []
-&gt; = string extends State
-  ? ParserError&lt;'ParseJsonArray got generic string type'&gt;
-  : EatWhitespace&lt;State&gt; extends `]${infer State}`
-  ? [Memo, State]
-  : ParseJsonValue&lt;State&gt; extends [infer Value, `${infer State}`]
-  ? EatWhitespace&lt;State&gt; extends `,${infer State}`
-    ? ParseJsonArray&lt;EatWhitespace&lt;State&gt;, [...Memo, Value]&gt;
-    : EatWhitespace&lt;State&gt; extends `]${infer State}`
-    ? [[...Memo, Value], State]
-    : ParserError&lt;`ParseJsonArray received unexpected token: ${State}`&gt;
-  : ParserError&lt;`ParseJsonValue returned unexpected value for: ${State}`&gt;
-type ParseJsonValue&lt;State extends string&gt; = string extends State
-  ? ParserError&lt;'ParseJsonValue got generic string type'&gt;
-  : EatWhitespace&lt;State&gt; extends `null${infer State}`
-  ? [null, State]
-  : EatWhitespace&lt;State&gt; extends `"${infer Value}"${infer State}`
-  ? [Value, State]
-  : EatWhitespace&lt;State&gt; extends `[${infer State}`
-  ? ParseJsonArray&lt;State&gt;
-  : EatWhitespace&lt;State&gt; extends `{${infer State}`
-  ? ParseJsonObject&lt;State&gt;
-  : ParserError&lt;`ParseJsonValue received unexpected token: ${State}`&gt;
-type ParseJson&lt;T extends string&gt; = ParseJsonValue&lt;T&gt; extends infer Result
-  ? Result extends [infer Value, string]
-    ? Value
-    : Result extends ParserError&lt;any&gt;
-    ? Result
-    : ParserError&lt;'ParseJsonValue returned unexpected Result'&gt;
-  : ParserError&lt;'ParseJsonValue returned uninferrable Result'&gt;
-
-type Json = ParseJson&lt;'{ "key1": ["value1", null], "key2": "value2" }'&gt; // type Json = { key1: ["value1", null]; } &amp; { key2: "value2"; }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">ParserError</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = { <span class="hljs-attr">error</span>: <span class="hljs-literal">true</span> } &amp; T<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = <span class="hljs-built_in">string</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">State</span><br>  ? <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'EatWhitespace got generic string type'</span>&gt;<br>  : <span class="hljs-title class_">State</span> <span class="hljs-keyword">extends</span> <span class="hljs-string">` <span class="hljs-subst">${infer State}</span>`</span> | <span class="hljs-string">`\n<span class="hljs-subst">${infer State}</span>`</span><br>  ? <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt;<br>  : <span class="hljs-title class_">State</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">AddKeyValue</span>&lt;<br>  <span class="hljs-title class_">Memo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">any</span>&gt;,<br>  <span class="hljs-title class_">Key</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,<br>  <span class="hljs-title class_">Value</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">any</span><br>&gt; = <span class="hljs-title class_">Memo</span> &amp; { [K <span class="hljs-keyword">in</span> <span class="hljs-title class_">Key</span>]: <span class="hljs-title class_">Value</span> }<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">ParseJsonObject</span>&lt;<br>  <span class="hljs-title class_">State</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,<br>  <span class="hljs-title class_">Memo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">any</span>&gt; = {}<br>&gt; = <span class="hljs-built_in">string</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">State</span><br>  ? <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'ParseJsonObject got generic string type'</span>&gt;<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`}<span class="hljs-subst">${infer State}</span>`</span><br>  ? [<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">State</span>]<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`"<span class="hljs-subst">${infer Key}</span>"<span class="hljs-subst">${infer State}</span>`</span><br>  ? <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`:<span class="hljs-subst">${infer State}</span>`</span><br>    ? <span class="hljs-title class_">ParseJsonValue</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> [infer <span class="hljs-title class_">Value</span>, <span class="hljs-string">`<span class="hljs-subst">${infer State}</span>`</span>]<br>      ? <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`,<span class="hljs-subst">${infer State}</span>`</span><br>        ? <span class="hljs-title class_">ParseJsonObject</span>&lt;<span class="hljs-title class_">State</span>, <span class="hljs-title class_">AddKeyValue</span>&lt;<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">Key</span>, <span class="hljs-title class_">Value</span>&gt;&gt;<br>        : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`}<span class="hljs-subst">${infer State}</span>`</span><br>        ? [<span class="hljs-title class_">AddKeyValue</span>&lt;<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">Key</span>, <span class="hljs-title class_">Value</span>&gt;, <span class="hljs-title class_">State</span>]<br>        : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonObject received unexpected token: <span class="hljs-subst">${State}</span>`</span>&gt;<br>      : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonValue returned unexpected value for: <span class="hljs-subst">${State}</span>`</span>&gt;<br>    : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonObject received unexpected token: <span class="hljs-subst">${State}</span>`</span>&gt;<br>  : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonObject received unexpected token: <span class="hljs-subst">${State}</span>`</span>&gt;<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">ParseJsonArray</span>&lt;<br>  <span class="hljs-title class_">State</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,<br>  <span class="hljs-title class_">Memo</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">any</span>[] = []<br>&gt; = <span class="hljs-built_in">string</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">State</span><br>  ? <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'ParseJsonArray got generic string type'</span>&gt;<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`]<span class="hljs-subst">${infer State}</span>`</span><br>  ? [<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">State</span>]<br>  : <span class="hljs-title class_">ParseJsonValue</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> [infer <span class="hljs-title class_">Value</span>, <span class="hljs-string">`<span class="hljs-subst">${infer State}</span>`</span>]<br>  ? <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`,<span class="hljs-subst">${infer State}</span>`</span><br>    ? <span class="hljs-title class_">ParseJsonArray</span>&lt;<span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt;, [...<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">Value</span>]&gt;<br>    : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`]<span class="hljs-subst">${infer State}</span>`</span><br>    ? [[...<span class="hljs-title class_">Memo</span>, <span class="hljs-title class_">Value</span>], <span class="hljs-title class_">State</span>]<br>    : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonArray received unexpected token: <span class="hljs-subst">${State}</span>`</span>&gt;<br>  : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonValue returned unexpected value for: <span class="hljs-subst">${State}</span>`</span>&gt;<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">ParseJsonValue</span>&lt;<span class="hljs-title class_">State</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = <span class="hljs-built_in">string</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">State</span><br>  ? <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'ParseJsonValue got generic string type'</span>&gt;<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`null<span class="hljs-subst">${infer State}</span>`</span><br>  ? [<span class="hljs-literal">null</span>, <span class="hljs-title class_">State</span>]<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`"<span class="hljs-subst">${infer Value}</span>"<span class="hljs-subst">${infer State}</span>`</span><br>  ? [<span class="hljs-title class_">Value</span>, <span class="hljs-title class_">State</span>]<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`[<span class="hljs-subst">${infer State}</span>`</span><br>  ? <span class="hljs-title class_">ParseJsonArray</span>&lt;<span class="hljs-title class_">State</span>&gt;<br>  : <span class="hljs-title class_">EatWhitespace</span>&lt;<span class="hljs-title class_">State</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-string">`{<span class="hljs-subst">${infer State}</span>`</span><br>  ? <span class="hljs-title class_">ParseJsonObject</span>&lt;<span class="hljs-title class_">State</span>&gt;<br>  : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">`ParseJsonValue received unexpected token: <span class="hljs-subst">${State}</span>`</span>&gt;<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">ParseJson</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = <span class="hljs-title class_">ParseJsonValue</span>&lt;T&gt; <span class="hljs-keyword">extends</span> infer <span class="hljs-title class_">Result</span><br>  ? <span class="hljs-title class_">Result</span> <span class="hljs-keyword">extends</span> [infer <span class="hljs-title class_">Value</span>, <span class="hljs-built_in">string</span>]<br>    ? <span class="hljs-title class_">Value</span><br>    : <span class="hljs-title class_">Result</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-built_in">any</span>&gt;<br>    ? <span class="hljs-title class_">Result</span><br>    : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'ParseJsonValue returned unexpected Result'</span>&gt;<br>  : <span class="hljs-title class_">ParserError</span>&lt;<span class="hljs-string">'ParseJsonValue returned uninferrable Result'</span>&gt;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Json</span> = <span class="hljs-title class_">ParseJson</span>&lt;<span class="hljs-string">'{ "key1": ["value1", null], "key2": "value2" }'</span>&gt; <span class="hljs-comment">// type Json = { key1: ["value1", null]; } &amp; { key2: "value2"; }</span><br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>我想后端语言（Java/GoLang）至今也没有出现如此复杂的类型定义。</p>
@@ -946,8 +771,6 @@ type Json = ParseJson&lt;'{ "key1": ["value1", null], "key2": "value2" }'&gt; //
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

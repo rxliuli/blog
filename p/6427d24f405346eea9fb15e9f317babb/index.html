@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          89 分钟
+          92 分钟
         
       </span>
     
@@ -327,345 +325,91 @@
 </blockquote>
 <p>需要同时使用 <code>Mybatis-Plus</code> 和 <code>MongoDB</code>，所以就去了解了一下如何集成它们。</p>
 <h2 id="集成-Mybatis-Plus"><a href="#集成-Mybatis-Plus" class="headerlink" title="集成 Mybatis Plus"></a>集成 Mybatis Plus</h2><h3 id="创建-SpringBoot-项目"><a href="#创建-SpringBoot-项目" class="headerlink" title="创建 SpringBoot 项目"></a>创建 SpringBoot 项目</h3><p>使用 SpringIO 创建 SpringBoot 项目，初始依赖选择 <code>web</code>, <code>h2</code> 两个模块，gradle 配置如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-gradle" data-language="gradle"><code class="language-gradle">plugins {
-    id 'org.springframework.boot' version '2.1.3.RELEASE'
-    id 'java'
-}
-
-apply plugin: 'io.spring.dependency-management'
-
-group = 'com.rxliuli.example'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight gradle"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs gradle">plugins {<br>    id <span class="hljs-string">'org.springframework.boot'</span> version <span class="hljs-string">'2.1.3.RELEASE'</span><br>    id <span class="hljs-string">'java'</span><br>}<br><br>apply plugin: <span class="hljs-string">'io.spring.dependency-management'</span><br><br><span class="hljs-keyword">group</span> = <span class="hljs-string">'com.rxliuli.example'</span><br>version = <span class="hljs-string">'0.0.1-SNAPSHOT'</span><br><span class="hljs-keyword">sourceCompatibility</span> = <span class="hljs-string">'1.8'</span><br><br><span class="hljs-keyword">repositories</span> {<br>    mavenCentral()<br>}<br><br><span class="hljs-keyword">dependencies</span> {<br>    implementation <span class="hljs-string">'org.springframework.boot:spring-boot-starter-web'</span><br>    runtimeOnly <span class="hljs-string">'com.h2database:h2'</span><br>    testImplementation <span class="hljs-string">'org.springframework.boot:spring-boot-starter-test'</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>注：数据库吾辈这里为了简单起见直接使用了 <code>H2DB</code>，真实项目中可能需要配置 <code>MySQL</code> 之类。为了简化项目依赖配置文件，所以使用了 Gradle 而非 Maven。</p>
 </blockquote>
 <h3 id="引入-Mybatis-Plus-和-MongoDB-依赖"><a href="#引入-Mybatis-Plus-和-MongoDB-依赖" class="headerlink" title="引入 Mybatis-Plus 和 MongoDB 依赖"></a>引入 Mybatis-Plus 和 MongoDB 依赖</h3><p>在 <code>build.gradle</code> 中引入 <code>mybatis-plus-boot-starter</code> 依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-gradle" data-language="gradle"><code class="language-gradle">dependencies {
-    implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.0.7.1'
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight gradle"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">dependencies</span> {<br>    implementation <span class="hljs-keyword">group</span>: <span class="hljs-string">'com.baomidou'</span>, name: <span class="hljs-string">'mybatis-plus-boot-starter'</span>, version: <span class="hljs-string">'3.0.7.1'</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="添加测试数据库"><a href="#添加测试数据库" class="headerlink" title="添加测试数据库"></a>添加测试数据库</h3><p>在 <em>src/resources</em> 下创建两个 sql 文件 <code>schema-h2.sql</code> 和 <code>data-h2.sql</code>，简单的使用 <code>H2DB</code> 创建数据库/表并添加数据以供测试使用。</p>
 <p>数据库结构：<code>schema-h2.sql</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">create schema spring_boot_mybatis_plus_mongo;
-use spring_boot_mybatis_plus_mongo;
-
-create table user_info (
-  id   bigint primary key not null,
-  name varchar(20)        not null,
-  age  tinyint            not null,
-  sex  bool               not null
-);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">create</span> schema spring_boot_mybatis_plus_mongo;<br>use spring_boot_mybatis_plus_mongo;<br><br><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> user_info (<br>  id   <span class="hljs-type">bigint</span> <span class="hljs-keyword">primary</span> key <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span>,<br>  name <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>)        <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span>,<br>  age  tinyint            <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span>,<br>  sex  bool               <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>数据库测试数据：<code>data-h2.sql</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">use spring_boot_mybatis_plus_mongo;
-
-insert into user_info (id, name, age, sex) values (1, 'rx', 17, false);
-insert into user_info (id, name, age, sex) values (2, '琉璃', 18, false);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql">use spring_boot_mybatis_plus_mongo;<br><br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> user_info (id, name, age, sex) <span class="hljs-keyword">values</span> (<span class="hljs-number">1</span>, <span class="hljs-string">'rx'</span>, <span class="hljs-number">17</span>, <span class="hljs-literal">false</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> user_info (id, name, age, sex) <span class="hljs-keyword">values</span> (<span class="hljs-number">2</span>, <span class="hljs-string">'琉璃'</span>, <span class="hljs-number">18</span>, <span class="hljs-literal">false</span>);<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="配置-Mybatis-Plus"><a href="#配置-Mybatis-Plus" class="headerlink" title="配置 Mybatis Plus"></a>配置 Mybatis Plus</h3><p>在 <code>application.yml</code> 中添加数据源配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"># DataSource Config
-spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    schema: classpath*:db/schema-h2.sql
-    data: classpath*:db/data-h2.sql
-    url: jdbc:h2:mem:test<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># DataSource Config</span><br><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">org.h2.Driver</span><br>    <span class="hljs-attr">schema:</span> <span class="hljs-string">classpath*:db/schema-h2.sql</span><br>    <span class="hljs-attr">data:</span> <span class="hljs-string">classpath*:db/data-h2.sql</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:h2:mem:test</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="添加一些实体-x2F-Dao-x2F-Service"><a href="#添加一些实体-x2F-Dao-x2F-Service" class="headerlink" title="添加一些实体/Dao/Service"></a>添加一些实体/Dao/Service</h3><p>用户信息实体类：<code>com.rxliuli.example.springbootmybatisplusmongo.entity.UserInfo</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@TableName("user_info")
-public class UserInfo implements Serializable {
-    @TableId
-    private Long id;
-    @TableField
-    private String name;
-    @TableField
-    private Integer age;
-    @TableField
-    private Boolean sex;
-
-    public UserInfo() {
-    }
-
-    public UserInfo(Long id, String name, Integer age, Boolean sex) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.sex = sex;
-    }
-
-    // getter()/setter()
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@TableName("user_info")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfo</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> {<br>    <span class="hljs-meta">@TableId</span><br>    <span class="hljs-keyword">private</span> Long id;<br>    <span class="hljs-meta">@TableField</span><br>    <span class="hljs-keyword">private</span> String name;<br>    <span class="hljs-meta">@TableField</span><br>    <span class="hljs-keyword">private</span> Integer age;<br>    <span class="hljs-meta">@TableField</span><br>    <span class="hljs-keyword">private</span> Boolean sex;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">UserInfo</span><span class="hljs-params">()</span> {<br>    }<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">UserInfo</span><span class="hljs-params">(Long id, String name, Integer age, Boolean sex)</span> {<br>        <span class="hljs-built_in">this</span>.id = id;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = age;<br>        <span class="hljs-built_in">this</span>.sex = sex;<br>    }<br><br>    <span class="hljs-comment">// getter()/setter()</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>用户信息 Dao：<code>com.rxliuli.example.springbootmybatisplusmongo.dao.UserInfoDao</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
-public interface UserInfoDao extends BaseMapper&lt;UserInfo&gt; {
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoDao</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseMapper</span>&lt;UserInfo&gt; {<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>用户信息业务接口：<code>com.rxliuli.example.springbootmybatisplusmongo.service.UserInfoService</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoService extends IService&lt;UserInfo&gt; {
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">IService</span>&lt;UserInfo&gt; {<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>用户信息业务接口实现类：<code>com.rxliuli.example.springbootmybatisplusmongo.service.impl.UserInfoServiceImpl</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Service
-public class UserInfoServiceImpl extends ServiceImpl&lt;UserInfoDao, UserInfo&gt; implements UserInfoService {
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoServiceImpl</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ServiceImpl</span>&lt;UserInfoDao, UserInfo&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">UserInfoService</span> {<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="配置-Mybatis-Plus-扫描的路径"><a href="#配置-Mybatis-Plus-扫描的路径" class="headerlink" title="配置 Mybatis Plus 扫描的路径"></a>配置 Mybatis Plus 扫描的路径</h3><p>在启动类配置 <code>Mybatis Plus</code>，这点非常重要，以致于吾辈要单独列出，可能会出现的问题参见 <a href="@#%E8%B8%A9%E5%9D%91">踩坑</a> 部分</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@SpringBootApplication
-@MapperScan("com.rxliuli.example.springbootmybatisplusmongo.**.dao.**")
-public class SpringBootMybatisPlusMongoApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringBootMybatisPlusMongoApplication.class, args);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span><br><span class="hljs-meta">@MapperScan("com.rxliuli.example.springbootmybatisplusmongo.**.dao.**")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpringBootMybatisPlusMongoApplication</span> {<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {<br>        SpringApplication.run(SpringBootMybatisPlusMongoApplication.class, args);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="测试使用-Mybatis-Plus-的-UserInfoService"><a href="#测试使用-Mybatis-Plus-的-UserInfoService" class="headerlink" title="测试使用 Mybatis Plus 的 UserInfoService"></a>测试使用 Mybatis Plus 的 UserInfoService</h3><p>测试 Mybatis Plus 中 <code>IService</code> 接口的 <code>list()</code> 方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class UserInfoServiceTest {
-    @Autowired
-    private UserInfoService userInfoService;
-
-    @Test
-    public void list() {
-        final List&lt;UserInfo&gt; list = userInfoService.list();
-        assertThat(list)
-                .isNotEmpty();
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span><br><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoServiceTest</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> UserInfoService userInfoService;<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">list</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">final</span> List&lt;UserInfo&gt; list = userInfoService.list();<br>        assertThat(list)<br>                .isNotEmpty();<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="集成-MongoDB"><a href="#集成-MongoDB" class="headerlink" title="集成 MongoDB"></a>集成 MongoDB</h2><h3 id="引入-MongoDB-Boot-Starter"><a href="#引入-MongoDB-Boot-Starter" class="headerlink" title="引入 MongoDB Boot Starter"></a>引入 MongoDB Boot Starter</h3><p>在 <code>build.gradle</code> 中引入 <code>spring-boot-starter-data-mongodb</code> 依赖</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-gradle" data-language="gradle"><code class="language-gradle">dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight gradle"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">dependencies</span> {<br>    implementation <span class="hljs-string">'org.springframework.boot:spring-boot-starter-data-mongodb'</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="配置-MongoDB"><a href="#配置-MongoDB" class="headerlink" title="配置 MongoDB"></a>配置 MongoDB</h3><p>在 <code>application.yml</code> 中添加 MongoDB 的配置，现在 <code>application.yaml</code> 应该变成了下面这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"># DataSource Config
-spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    schema: classpath*:db/schema-h2.sql
-    data: classpath*:db/data-h2.sql
-    url: jdbc:h2:mem:test
-  data:
-    # Integration mongodb
-    mongodb:
-      uri: mongodb://XXX:XXX@XXX:XXX/XXX<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># DataSource Config</span><br><span class="hljs-attr">spring:</span><br>  <span class="hljs-attr">datasource:</span><br>    <span class="hljs-attr">driver-class-name:</span> <span class="hljs-string">org.h2.Driver</span><br>    <span class="hljs-attr">schema:</span> <span class="hljs-string">classpath*:db/schema-h2.sql</span><br>    <span class="hljs-attr">data:</span> <span class="hljs-string">classpath*:db/data-h2.sql</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:h2:mem:test</span><br>  <span class="hljs-attr">data:</span><br>    <span class="hljs-comment"># Integration mongodb</span><br>    <span class="hljs-attr">mongodb:</span><br>      <span class="hljs-attr">uri:</span> <span class="hljs-string">mongodb://XXX:XXX@XXX:XXX/XXX</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="添加-Repository"><a href="#添加-Repository" class="headerlink" title="添加 Repository"></a>添加 Repository</h3><p>定义一些简单操作的 Dao 接口：<code>com.rxliuli.example.springbootmybatisplusmongo.repository.UserInfoLogRepository</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Repository
-public interface UserInfoLogRepository extends MongoRepository&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {
-    /**
-     * 根据 id 查询用户日志信息
-     *
-     * @param id 查询的 id
-     * @return 用户日志
-     */
-    UserInfoLog findUserInfoLogByIdEquals(Long id);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoLogRepository</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">MongoRepository</span>&lt;UserInfoLog, Long&gt;, CustomUserInfoLogRepository {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据 id 查询用户日志信息</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> id 查询的 id</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户日志</span><br><span class="hljs-comment">     */</span><br>    UserInfoLog <span class="hljs-title function_">findUserInfoLogByIdEquals</span><span class="hljs-params">(Long id)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>自定义更加复杂需求的 Dao 接口：<code>com.rxliuli.example.springbootmybatisplusmongo.repository.CustomUserInfoLogRepository</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface CustomUserInfoLogRepository {
-    /**
-     * 根据一些参数查询用户信息列表
-     *
-     * @param userInfoLog 参数对象
-     * @return 用户信息列表
-     */
-    List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog);
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">CustomUserInfoLogRepository</span> {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据一些参数查询用户信息列表</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> userInfoLog 参数对象</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 用户信息列表</span><br><span class="hljs-comment">     */</span><br>    List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>具体的实现类：<code>com.rxliuli.example.springbootmybatisplusmongo.repository.UserInfoLogRepositoryImpl</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">/**
- * 数据仓库 {@link UserInfoLogRepository} 的实现类，但请务必注意，实现类继承的是 {@link CustomUserInfoLogRepository} 接口，而非本应该继承的接口
- */
-public class UserInfoLogRepositoryImpl implements CustomUserInfoLogRepository {
-    @Autowired
-    private MongoOperations mongoOperations;
-
-    @Override
-    public List&lt;UserInfoLog&gt; listByParam(UserInfoLog userInfoLog) {
-        final Criteria criteria = new Criteria();
-        if (userInfoLog.getUserId() != null) {
-            criteria.and("userId")
-                    .is(userInfoLog.getUserId());
-        }
-        if (userInfoLog.getLogTime() != null) {
-            criteria.and("logTime")
-                    .gte(userInfoLog.getLogTime());
-        }
-        if (userInfoLog.getOperate() != null) {
-            criteria.and("operate")
-                    .regex(userInfoLog.getOperate());
-        }
-        return mongoOperations.find(new Query(criteria), UserInfoLog.class);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 数据仓库 {<span class="hljs-doctag">@link</span> UserInfoLogRepository} 的实现类，但请务必注意，实现类继承的是 {<span class="hljs-doctag">@link</span> CustomUserInfoLogRepository} 接口，而非本应该继承的接口</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoLogRepositoryImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">CustomUserInfoLogRepository</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> MongoOperations mongoOperations;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> List&lt;UserInfoLog&gt; <span class="hljs-title function_">listByParam</span><span class="hljs-params">(UserInfoLog userInfoLog)</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">Criteria</span> <span class="hljs-variable">criteria</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Criteria</span>();<br>        <span class="hljs-keyword">if</span> (userInfoLog.getUserId() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"userId"</span>)<br>                    .is(userInfoLog.getUserId());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getLogTime() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"logTime"</span>)<br>                    .gte(userInfoLog.getLogTime());<br>        }<br>        <span class="hljs-keyword">if</span> (userInfoLog.getOperate() != <span class="hljs-literal">null</span>) {<br>            criteria.and(<span class="hljs-string">"operate"</span>)<br>                    .regex(userInfoLog.getOperate());<br>        }<br>        <span class="hljs-keyword">return</span> mongoOperations.find(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Query</span>(criteria), UserInfoLog.class);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="配置-MongoDB-扫描的路径"><a href="#配置-MongoDB-扫描的路径" class="headerlink" title="配置 MongoDB 扫描的路径"></a>配置 MongoDB 扫描的路径</h3><p>修改启动类，添加 <code>@EnableMongoRepositories</code> 注解用以配置 MongoDB 扫描的 <code>Repository</code> 路径</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@SpringBootApplication
-@MapperScan("com.rxliuli.example.springbootmybatisplusmongo.**.dao.**")
-@EnableMongoRepositories("com.rxliuli.example.springbootmybatisplusmongo.**.repository.**")
-public class SpringBootMybatisPlusMongoApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(SpringBootMybatisPlusMongoApplication.class, args);
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span><br><span class="hljs-meta">@MapperScan("com.rxliuli.example.springbootmybatisplusmongo.**.dao.**")</span><br><span class="hljs-meta">@EnableMongoRepositories("com.rxliuli.example.springbootmybatisplusmongo.**.repository.**")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpringBootMybatisPlusMongoApplication</span> {<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> {<br>        SpringApplication.run(SpringBootMybatisPlusMongoApplication.class, args);<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="测试使用-MongoDB-的-UserInfoLogRepository"><a href="#测试使用-MongoDB-的-UserInfoLogRepository" class="headerlink" title="测试使用 MongoDB 的 UserInfoLogRepository"></a>测试使用 MongoDB 的 UserInfoLogRepository</h3><ol>
 <li>测试 <code>UserInfoLogRepository</code> 中由 MongoDB Data 自动实现的 <code>findUserInfoLogByIdEquals()</code> 方法</li>
 <li>测试 <code>CustomUserInfoLogRepository</code> 中自定义复杂的 <code>listByParam()</code> 方法</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RunWith(SpringRunner.class)
-@SpringBootTest
-public class UserInfoLogRepositoryTest {
-    @Autowired
-    private UserInfoLogRepository userInfoLogRepository;
-
-    /**
-     * 初始数据，最开始要运行一次
-     */
-    @Test
-    public void insert() {
-        userInfoLogRepository.insert(Lists.newArrayList(
-                new UserInfoLog(1L, 1L, "登录", LocalDateTime.now()),
-                new UserInfoLog(2L, 1L, "退出", LocalDateTime.now()),
-                new UserInfoLog(3L, 2L, "登录", LocalDateTime.now()),
-                new UserInfoLog(4L, 3L, "退出", LocalDateTime.now())
-        ));
-    }
-
-    @Test
-    public void findUserInfoLogByIdEquals() {
-        final UserInfoLog result = userInfoLogRepository.findUserInfoLogByIdEquals(1L);
-        assertThat(result)
-                .isNotNull();
-    }
-
-    @Test
-    public void listByParam() {
-        final UserInfoLog userInfoLog = new UserInfoLog(null, 1L, "登",
-                LocalDateTime.parse("2019-02-22T08:22:16.000Z", DateTimeFormatter.ISO_DATE_TIME));
-        final List&lt;UserInfoLog&gt; result = userInfoLogRepository.listByParam(userInfoLog);
-        assertThat(result)
-                .isNotEmpty()
-                .allMatch(log -&gt;
-                        Objects.equals(userInfoLog.getUserId(), log.getUserId())
-                                &amp;&amp; log.getOperate().contains(userInfoLog.getOperate())
-                                &amp;&amp; log.getLogTime().isAfter(userInfoLog.getLogTime())
-                );
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RunWith(SpringRunner.class)</span><br><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoLogRepositoryTest</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> UserInfoLogRepository userInfoLogRepository;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 初始数据，最开始要运行一次</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insert</span><span class="hljs-params">()</span> {<br>        userInfoLogRepository.insert(Lists.newArrayList(<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfoLog</span>(<span class="hljs-number">1L</span>, <span class="hljs-number">1L</span>, <span class="hljs-string">"登录"</span>, LocalDateTime.now()),<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfoLog</span>(<span class="hljs-number">2L</span>, <span class="hljs-number">1L</span>, <span class="hljs-string">"退出"</span>, LocalDateTime.now()),<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfoLog</span>(<span class="hljs-number">3L</span>, <span class="hljs-number">2L</span>, <span class="hljs-string">"登录"</span>, LocalDateTime.now()),<br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfoLog</span>(<span class="hljs-number">4L</span>, <span class="hljs-number">3L</span>, <span class="hljs-string">"退出"</span>, LocalDateTime.now())<br>        ));<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">findUserInfoLogByIdEquals</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">UserInfoLog</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> userInfoLogRepository.findUserInfoLogByIdEquals(<span class="hljs-number">1L</span>);<br>        assertThat(result)<br>                .isNotNull();<br>    }<br><br>    <span class="hljs-meta">@Test</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">listByParam</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">final</span> <span class="hljs-type">UserInfoLog</span> <span class="hljs-variable">userInfoLog</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UserInfoLog</span>(<span class="hljs-literal">null</span>, <span class="hljs-number">1L</span>, <span class="hljs-string">"登"</span>,<br>                LocalDateTime.parse(<span class="hljs-string">"2019-02-22T08:22:16.000Z"</span>, DateTimeFormatter.ISO_DATE_TIME));<br>        <span class="hljs-keyword">final</span> List&lt;UserInfoLog&gt; result = userInfoLogRepository.listByParam(userInfoLog);<br>        assertThat(result)<br>                .isNotEmpty()<br>                .allMatch(log -&gt;<br>                        Objects.equals(userInfoLog.getUserId(), log.getUserId())<br>                                &amp;&amp; log.getOperate().contains(userInfoLog.getOperate())<br>                                &amp;&amp; log.getLogTime().isAfter(userInfoLog.getLogTime())<br>                );<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="同时使用-Mybatis-Dao-和-MongoDB-Repository"><a href="#同时使用-Mybatis-Dao-和-MongoDB-Repository" class="headerlink" title="同时使用 Mybatis Dao 和 MongoDB Repository"></a>同时使用 Mybatis Dao 和 MongoDB Repository</h2><h3 id="在-Service-中添加方法"><a href="#在-Service-中添加方法" class="headerlink" title="在 Service 中添加方法"></a>在 Service 中添加方法</h3><p>用户信息业务接口：<code>com.rxliuli.example.springbootmybatisplusmongo.service.UserInfoService</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">public interface UserInfoService extends IService&lt;UserInfo&gt; {
-    /**
-     * 获取用户信息与用户日志的映射表
-     *
-     * @return 以 {@link UserInfo} -&gt; {@link List&lt;UserInfoLog&gt;} 形式的 {@link Map}
-     */
-    Map&lt;UserInfo, List&lt;UserInfoLog&gt;&gt; listUserInfoAndLogMap();
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UserInfoService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">IService</span>&lt;UserInfo&gt; {<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取用户信息与用户日志的映射表</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> 以 {<span class="hljs-doctag">@link</span> UserInfo} -&gt; {<span class="hljs-doctag">@link</span> List&lt;UserInfoLog&gt;} 形式的 {<span class="hljs-doctag">@link</span> Map}</span><br><span class="hljs-comment">     */</span><br>    Map&lt;UserInfo, List&lt;UserInfoLog&gt;&gt; <span class="hljs-title function_">listUserInfoAndLogMap</span><span class="hljs-params">()</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>用户信息业务接口实现类：<code>com.rxliuli.example.springbootmybatisplusmongo.service.impl.UserInfoServiceImpl</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@Service
-public class UserInfoServiceImpl extends ServiceImpl&lt;UserInfoDao, UserInfo&gt; implements UserInfoService {
-    @Autowired
-    private UserInfoLogRepository userInfoLogRepository;
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoServiceImpl</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ServiceImpl</span>&lt;UserInfoDao, UserInfo&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">UserInfoService</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> UserInfoLogRepository userInfoLogRepository;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Map&lt;UserInfo, List&lt;UserInfoLog&gt;&gt; <span class="hljs-title function_">listUserInfoAndLogMap</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">final</span> List&lt;UserInfo&gt; userInfoList = list();<br>        <span class="hljs-keyword">final</span> List&lt;UserInfoLog&gt; userInfoLogList = userInfoLogRepository.findAll();<br>        <span class="hljs-keyword">final</span> Map&lt;Long, List&lt;UserInfoLog&gt;&gt; map = userInfoLogList.stream().collect(Collectors.groupingBy(UserInfoLog::getUserId));<br>        <span class="hljs-keyword">return</span> userInfoList.stream()<br>                .collect(Collectors.toMap(user -&gt; user, user -&gt; map.getOrDefault(user.getId(), Collections.emptyList())));<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-    @Override
-    public Map&lt;UserInfo, List&lt;UserInfoLog&gt;&gt; listUserInfoAndLogMap() {
-        final List&lt;UserInfo&gt; userInfoList = list();
-        final List&lt;UserInfoLog&gt; userInfoLogList = userInfoLogRepository.findAll();
-        final Map&lt;Long, List&lt;UserInfoLog&gt;&gt; map = userInfoLogList.stream().collect(Collectors.groupingBy(UserInfoLog::getUserId));
-        return userInfoList.stream()
-                .collect(Collectors.toMap(user -&gt; user, user -&gt; map.getOrDefault(user.getId(), Collections.emptyList())));
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<h3 id="添加简单的-RestAPI-进行测试"><a href="#添加简单的-RestAPI-进行测试" class="headerlink" title="添加简单的 RestAPI 进行测试"></a>添加简单的 RestAPI 进行测试</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RestController
-@RequestMapping("/api/user-info")
-public class UserInfoApi {
-    @Autowired
-    private UserInfoService userInfoService;
-
-    @GetMapping("/list")
-    public List&lt;UserInfo&gt; list() {
-        return userInfoService.list();
-    }
-
-    @GetMapping("/list-user-info-and-log-map")
-    public Map&lt;String, List&lt;UserInfoLog&gt;&gt; listUserInfoAndLogMap() {
-        return userInfoService.listUserInfoAndLogMap().entrySet().stream()
-                .collect(Collectors.toMap(kv -&gt; JsonUtil.toJson(kv.getKey()), Map.Entry::getValue));
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="添加简单的-RestAPI-进行测试"><a href="#添加简单的-RestAPI-进行测试" class="headerlink" title="添加简单的 RestAPI 进行测试"></a>添加简单的 RestAPI 进行测试</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping("/api/user-info")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserInfoApi</span> {<br>    <span class="hljs-meta">@Autowired</span><br>    <span class="hljs-keyword">private</span> UserInfoService userInfoService;<br><br>    <span class="hljs-meta">@GetMapping("/list")</span><br>    <span class="hljs-keyword">public</span> List&lt;UserInfo&gt; <span class="hljs-title function_">list</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> userInfoService.list();<br>    }<br><br>    <span class="hljs-meta">@GetMapping("/list-user-info-and-log-map")</span><br>    <span class="hljs-keyword">public</span> Map&lt;String, List&lt;UserInfoLog&gt;&gt; <span class="hljs-title function_">listUserInfoAndLogMap</span><span class="hljs-params">()</span> {<br>        <span class="hljs-keyword">return</span> userInfoService.listUserInfoAndLogMap().entrySet().stream()<br>                .collect(Collectors.toMap(kv -&gt; JsonUtil.toJson(kv.getKey()), Map.Entry::getValue));<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="测试-RestAPI"><a href="#测试-RestAPI" class="headerlink" title="测试 RestAPI"></a>测试 RestAPI</h3><p>现在，我们启动项目并打开浏览器，应当可以在以下地址看到对应的 JSON 数据</p>
 <ul>
 <li><p><a target="_blank" rel="noopener" href="http://localhost:8080/api/user-info/list">用户信息列表</a></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">[
-  {
-    "id": 1,
-    "name": "rx",
-    "age": 17,
-    "sex": false
-  },
-  {
-    "id": 2,
-    "name": " 琉璃 ",
-    "age": 18,
-    "sex": false
-  }
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rx"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"age"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">17</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"sex"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" 琉璃 "</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"age"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">18</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"sex"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><a target="_blank" rel="noopener" href="http://localhost:8080/api/user-info/list-user-info-and-log-map">用户信息及对应日志映射表</a></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "{\"id\":\"1\",\"name\":\"rx\",\"age\":17,\"sex\":false}": [
-    {
-      "id": 1,
-      "userId": 1,
-      "operate": " 登录 ",
-      "logTime": "2019-02-22T16:22:16.099"
-    },
-    {
-      "id": 2,
-      "userId": 1,
-      "operate": " 退出 ",
-      "logTime": "2019-02-22T16:22:16.099"
-    }
-  ],
-  "{\"id\":\"2\",\"name\":\"琉璃 \",\"age\":18,\"sex\":false}": [
-    {
-      "id": 3,
-      "userId": 2,
-      "operate": " 登录 ",
-      "logTime": "2019-02-22T16:22:16.099"
-    }
-  ]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"{\"id\":\"1\",\"name\":\"rx\",\"age\":17,\"sex\":false}"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"userId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"operate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" 登录 "</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"logTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2019-02-22T16:22:16.099"</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"userId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"operate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" 退出 "</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"logTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2019-02-22T16:22:16.099"</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"{\"id\":\"2\",\"name\":\"琉璃 \",\"age\":18,\"sex\":false}"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"userId"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"operate"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">" 登录 "</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"logTime"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2019-02-22T16:22:16.099"</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure></li>
 </ul>
 <h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><ol>
 <li><p>Mybatis Plus 扫包范围<br>使用 <code>@MapperScan</code> 限制 Mybatis Plus 扫描 <code>Dao</code> 的范围，注意不要扫到 MongoDB 的 <code>Repository</code>，否则会抛出异常</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Caused by: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name 'userInfoLogRepository' defined in null: Cannot register bean definition [Root bean: class [org.springframework.data.mongodb.repository.support.MongoRepositoryFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] for bean 'userInfoLogRepository': There is already [Generic bean: class [org.mybatis.spring.mapper.MapperFactoryBean]; scope=singleton; abstract=false; lazyInit=false; autowireMode=2; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in file [D:\Text\spring-boot\spring-boot-mybatis-plus-mongo\out\production\classes\com\rxliuli\example\springbootmybatisplusmongo\repository\UserInfoLogRepository.class]] bound.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Caused by: org.springframework.beans.factory.support.BeanDefinitionOverrideException: Invalid bean definition with name <span class="hljs-string">'userInfoLogRepository'</span> defined in <span class="hljs-literal">null</span>: Cannot register bean definition [Root bean: class [org.springframework.data.mongodb.repository.support.MongoRepositoryFactoryBean]; scope=; <span class="hljs-keyword">abstract</span>=<span class="hljs-literal">false</span>; lazyInit=<span class="hljs-literal">false</span>; autowireMode=<span class="hljs-number">0</span>; dependencyCheck=<span class="hljs-number">0</span>; autowireCandidate=<span class="hljs-literal">true</span>; primary=<span class="hljs-literal">false</span>; factoryBeanName=<span class="hljs-literal">null</span>; factoryMethodName=<span class="hljs-literal">null</span>; initMethodName=<span class="hljs-literal">null</span>; destroyMethodName=<span class="hljs-literal">null</span>] <span class="hljs-keyword">for</span> bean <span class="hljs-string">'userInfoLogRepository'</span>: There is already [Generic bean: class [org.mybatis.spring.mapper.MapperFactoryBean]; scope=singleton; <span class="hljs-keyword">abstract</span>=<span class="hljs-literal">false</span>; lazyInit=<span class="hljs-literal">false</span>; autowireMode=<span class="hljs-number">2</span>; dependencyCheck=<span class="hljs-number">0</span>; autowireCandidate=<span class="hljs-literal">true</span>; primary=<span class="hljs-literal">false</span>; factoryBeanName=<span class="hljs-literal">null</span>; factoryMethodName=<span class="hljs-literal">null</span>; initMethodName=<span class="hljs-literal">null</span>; destroyMethodName=<span class="hljs-literal">null</span>; defined in file [D:\Text\spring-boot\spring-boot-mybatis-plus-mongo\out\production\classes\com\rxliuli\example\springbootmybatisplusmongo\repository\UserInfoLogRepository.class]] bound.<br></code></pre></td></tr></tbody></table></figure>
 
 <p>原因是在 SpringMongoData 处理之前 Mybatis Plus 先扫描到并进行了代理，然后就会告诉你无法注册 SpringMongoData 相关的 <code>Repository</code></p>
 </li>
 <li><p>使用 <code>@EnableMongoRepositories</code> 限制 SpringMongoData 扫描的范围</p>
 <p>既然说到限制，自然也不得不说一下 SpringMongoData 本身，如果你已经使用了 <code>@MapperScan</code> 扫描 Mybatis 需要处理的 Dao，那么添加与否并不重要。但是，吾辈要说但是了，但是，如果你先使用的 MongoDB，那么如果没有使用 <code>@MapperScan</code> 处理 Mybatis 的 Dao 的话，就会抛出以下异常，所以为了安全起见还是都定义了吧</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userInfoServiceImpl': Unsatisfied dependency expressed through field 'baseMapper'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.rxliuli.example.springbootmybatisplusmongo.dao.UserInfoDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name <span class="hljs-string">'userInfoServiceImpl'</span>: Unsatisfied dependency expressed through field <span class="hljs-string">'baseMapper'</span>; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type <span class="hljs-string">'com.rxliuli.example.springbootmybatisplusmongo.dao.UserInfoDao'</span> available: expected at least <span class="hljs-number">1</span> bean which qualifies as autowire candidate. Dependency annotations: {<span class="hljs-meta">@org</span>.springframework.beans.factory.annotation.Autowired(required=<span class="hljs-literal">true</span>)}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>说的是自动注入 <code>BaseMapper</code> 失败，实际上是因为 Mybatis 的 Dao SpringMongoData 无法处理。</p>
 </li>
@@ -1023,8 +767,6 @@ public class UserInfoApi {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

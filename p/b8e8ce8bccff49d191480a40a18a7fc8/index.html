@@ -49,8 +49,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -256,7 +254,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          7.4k 字
+          8k 字
         
       </span>
     
@@ -268,7 +266,7 @@
         
         
           <!-- compatible with older versions-->
-          63 分钟
+          67 分钟
         
       </span>
     
@@ -343,31 +341,12 @@
 <p>下面我们将来尝试第一个，也是最简单的一个，从 module css 文件生成类型定义</p>
 <h2 id="从-css-生成类型定义"><a href="#从-css-生成类型定义" class="headerlink" title="从 css 生成类型定义"></a>从 css 生成类型定义</h2><h3 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h3><p>为什么要这样做？</p>
 <p>在使用 css module 时，我们通常使用构建工具，例如 rollup/vite/webpack 来解析 *.module.css 文件，并使得最终 bundle 中的结果符合预期。但在开发阶段，它并没有太多提示，例如定义了一个 css class，但你在 ts 中使用时，并不会有什么提示。当你将一个 css class 删除后，也不会有任何代码提示。<br>例如下面这个示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/* App.module.css */</span>
-<span class="token selector">.hide</span> <span class="token punctuation">{</span>
-  <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* App.module.css */</span><br><span class="hljs-selector-class">.hide</span> {<br>  <span class="hljs-attribute">display</span>: none;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// App.tsx
-import { useReducer } from 'react'
-import css from './App.module.css'
-
-export function App() {
-  const [hide, toggle] = useReducer((s) =&gt; !s, false)
-  return (
-    &lt;div&gt;
-      &lt;button onClick={toggle}&gt;toggle&lt;/button&gt;
-      &lt;p className={hide ? css.hide : ''}&gt;test&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// App.tsx</span><br><span class="hljs-keyword">import</span> { useReducer } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><span class="hljs-keyword">import</span> css <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.module.css'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> [hide, toggle] = <span class="hljs-title function_">useReducer</span>(<span class="hljs-function">(<span class="hljs-params">s</span>) =&gt;</span> !s, <span class="hljs-literal">false</span>)<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{toggle}</span>&gt;</span>toggle<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{hide</span> ? <span class="hljs-attr">css.hide</span> <span class="hljs-attr">:</span> ''}&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>如果我们在 App.module.css 旁边放一个 App.module.css.d.ts 文件，那么在 ts 中使用时就会很快乐</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const css: {
-  hide: string
-}
-
-export default css<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> <span class="hljs-attr">css</span>: {<br>  <span class="hljs-attr">hide</span>: <span class="hljs-built_in">string</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> css<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当然，在 ide 中也可以完成这个功能，但每个 ide 都需要实现一遍这个功能，这正是问题所在，插件无法跨 ide 使用，但基于 TypeScript 的代码提示可以做到跨 ide 使用，包括 vscode、jetbrains ide、vim 等等。</p>
 <h3 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h3><p>正如上面所言，想要生成代码，在这里需要得到 css ast 和转换 css ast 为 ts ast，而这就需要选择一个合适的解析器来解析 css 得到 ast 以及生成 ts ast 并转换为代码了。</p>
@@ -382,67 +361,19 @@ export default css<span aria-hidden="true" class="line-numbers-rows"><span></spa
 <p>Tip: 代码的 ast 可以在 <a target="_blank" rel="noopener" href="https://astexplorer.net/">https://astexplorer.net/</a> 以可视化的方式检查<br><img src="/resources/bef3bb2bf40f43dd87c724d4cfc70bdc.png" srcset="/img/loading.gif" lazyload alt="1664382002113.png"></p>
 </blockquote>
 <h3 id="解析-css"><a href="#解析-css" class="headerlink" title="解析 css"></a>解析 css</h3><p>首先，解析 css 得到 ast，并从中过滤出所有 class 选择器类名</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function parse(code: string): string[] {
-  const ast = csstree.parse(code)
-  const r: string[] = []
-  csstree.walk(ast, (node) =&gt; {
-    if (node.type === 'ClassSelector') {
-      r.push(node.name)
-    }
-  })
-  return r
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">parse</span>(<span class="hljs-params">code: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span>[] {<br>  <span class="hljs-keyword">const</span> ast = csstree.<span class="hljs-title function_">parse</span>(code)<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">r</span>: <span class="hljs-built_in">string</span>[] = []<br>  csstree.<span class="hljs-title function_">walk</span>(ast, <span class="hljs-function">(<span class="hljs-params">node</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (node.<span class="hljs-property">type</span> === <span class="hljs-string">'ClassSelector'</span>) {<br>      r.<span class="hljs-title function_">push</span>(node.<span class="hljs-property">name</span>)<br>    }<br>  })<br>  <span class="hljs-keyword">return</span> r<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后将 css 类名列表转换为 ast</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function convert(classes: string[]): n.Program {
-  return b.program([
-    b.variableDeclaration('const', [
-      b.variableDeclarator(
-        b.identifier.from({
-          name: 'css',
-          typeAnnotation: b.tsTypeAnnotation(
-            b.tsTypeLiteral(
-              classes.map((s) =&gt;
-                b.tsPropertySignature(
-                  b.identifier(s),
-                  b.tsTypeAnnotation(b.tsStringKeyword()),
-                ),
-              ),
-            ),
-          ),
-        }),
-      ),
-    ]),
-    b.exportDefaultDeclaration(b.identifier('css')),
-  ])
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">convert</span>(<span class="hljs-params">classes: <span class="hljs-built_in">string</span>[]</span>): n.<span class="hljs-property">Program</span> {<br>  <span class="hljs-keyword">return</span> b.<span class="hljs-title function_">program</span>([<br>    b.<span class="hljs-title function_">variableDeclaration</span>(<span class="hljs-string">'const'</span>, [<br>      b.<span class="hljs-title function_">variableDeclarator</span>(<br>        b.<span class="hljs-property">identifier</span>.<span class="hljs-title function_">from</span>({<br>          <span class="hljs-attr">name</span>: <span class="hljs-string">'css'</span>,<br>          <span class="hljs-attr">typeAnnotation</span>: b.<span class="hljs-title function_">tsTypeAnnotation</span>(<br>            b.<span class="hljs-title function_">tsTypeLiteral</span>(<br>              classes.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">s</span>) =&gt;</span><br>                b.<span class="hljs-title function_">tsPropertySignature</span>(<br>                  b.<span class="hljs-title function_">identifier</span>(s),<br>                  b.<span class="hljs-title function_">tsTypeAnnotation</span>(b.<span class="hljs-title function_">tsStringKeyword</span>()),<br>                ),<br>              ),<br>            ),<br>          ),<br>        }),<br>      ),<br>    ]),<br>    b.<span class="hljs-title function_">exportDefaultDeclaration</span>(b.<span class="hljs-title function_">identifier</span>(<span class="hljs-string">'css'</span>)),<br>  ])<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>最后，将 ast 转换为 ts 代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function format(ast: n.ASTNode): string {
-  return prettyPrint(ast).code
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">format</span>(<span class="hljs-params">ast: n.ASTNode</span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">prettyPrint</span>(ast).<span class="hljs-property">code</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>结合一下 3 个方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function generate(cssCode: string): string {
-  const classes = parse(cssCode)
-  const ast = convert(classes)
-  return format(ast)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">generate</span>(<span class="hljs-params">cssCode: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">const</span> classes = <span class="hljs-title function_">parse</span>(cssCode)<br>  <span class="hljs-keyword">const</span> ast = <span class="hljs-title function_">convert</span>(classes)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">format</span>(ast)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>做个最简单的测试</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">console.log(
-  generate(`/* App.module.css */
-.hide {
-  display: none;
-}
-`),
-)
-// 会得到以下代码
-// const css: {
-//     hide: string
-// };
-
-// export default css;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<br>  <span class="hljs-title function_">generate</span>(<span class="hljs-string">`/* App.module.css */</span><br><span class="hljs-string">.hide {</span><br><span class="hljs-string">  display: none;</span><br><span class="hljs-string">}</span><br><span class="hljs-string">`</span>),<br>)<br><span class="hljs-comment">// 会得到以下代码</span><br><span class="hljs-comment">// const css: {</span><br><span class="hljs-comment">//     hide: string</span><br><span class="hljs-comment">// };</span><br><br><span class="hljs-comment">// export default css;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来我们完成了基本的从 css 到 dts 的代码生成，但如果希望实用，它还需要一些额外的步骤</p>
 <ol>
@@ -450,63 +381,7 @@ export default css<span aria-hidden="true" class="line-numbers-rows"><span></spa
 <li>发布为 npm 包，或者使用某种形式的 monorepo 便于在多个项目复用</li>
 </ol>
 <p>下面使用 vite 插件作为演示</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig, Plugin, ResolvedConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { globby } from 'globby'
-import path from 'path'
-import * as csstree from 'css-tree'
-import { namedTypes as n, builders as b } from 'ast-types'
-import { prettyPrint } from 'recast'
-import fsExtra from 'fs-extra'
-import { watch } from 'chokidar'
-
-// 上面的代码。。。
-
-const { pathExists, readFile, remove, writeFile } = fsExtra
-
-function cssdts(): Plugin {
-  let config: ResolvedConfig
-  async function generateByPath(item: string) {
-    const cssPath = path.resolve(config.root, item)
-    const code = await readFile(cssPath, 'utf-8')
-    await writeFile(cssPath + '.d.ts', generate(code))
-  }
-
-  return {
-    name: 'vite-plugin-cssdts',
-    configResolved(_config) {
-      config = _config
-    },
-    async buildStart() {
-      const list = await globby('src/**/*.module.css', {
-        cwd: config.root,
-      })
-      await Promise.all(
-        list.map(async (item) =&gt; {
-          const cssPath = path.resolve(config.root, item)
-          await generateByPath(cssPath)
-        }),
-      )
-    },
-    configureServer(server) {
-      watch('src/**/*.module.css', { cwd: config.root })
-        .on('add', generateByPath)
-        .on('change', generateByPath)
-        .on('unlink', async (cssPath) =&gt; {
-          if (cssPath.endsWith('.module.css')) {
-            const dtsPath = cssPath + '.d.ts'
-            if (await pathExists(dtsPath)) {
-              await remove(dtsPath)
-            }
-          }
-        })
-    },
-  }
-}
-
-export default defineConfig({
-  plugins: [react(), cssdts()],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { defineConfig, <span class="hljs-title class_">Plugin</span>, <span class="hljs-title class_">ResolvedConfig</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> react <span class="hljs-keyword">from</span> <span class="hljs-string">'@vitejs/plugin-react'</span><br><span class="hljs-keyword">import</span> { globby } <span class="hljs-keyword">from</span> <span class="hljs-string">'globby'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> csstree <span class="hljs-keyword">from</span> <span class="hljs-string">'css-tree'</span><br><span class="hljs-keyword">import</span> { namedTypes <span class="hljs-keyword">as</span> n, builders <span class="hljs-keyword">as</span> b } <span class="hljs-keyword">from</span> <span class="hljs-string">'ast-types'</span><br><span class="hljs-keyword">import</span> { prettyPrint } <span class="hljs-keyword">from</span> <span class="hljs-string">'recast'</span><br><span class="hljs-keyword">import</span> fsExtra <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> { watch } <span class="hljs-keyword">from</span> <span class="hljs-string">'chokidar'</span><br><br><span class="hljs-comment">// 上面的代码。。。</span><br><br><span class="hljs-keyword">const</span> { pathExists, readFile, remove, writeFile } = fsExtra<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">cssdts</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">let</span> <span class="hljs-attr">config</span>: <span class="hljs-title class_">ResolvedConfig</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">generateByPath</span>(<span class="hljs-params">item: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">const</span> cssPath = path.<span class="hljs-title function_">resolve</span>(config.<span class="hljs-property">root</span>, item)<br>    <span class="hljs-keyword">const</span> code = <span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(cssPath, <span class="hljs-string">'utf-8'</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(cssPath + <span class="hljs-string">'.d.ts'</span>, <span class="hljs-title function_">generate</span>(code))<br>  }<br><br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'vite-plugin-cssdts'</span>,<br>    <span class="hljs-title function_">configResolved</span>(<span class="hljs-params">_config</span>) {<br>      config = _config<br>    },<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">buildStart</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">const</span> list = <span class="hljs-keyword">await</span> <span class="hljs-title function_">globby</span>(<span class="hljs-string">'src/**/*.module.css'</span>, {<br>        <span class="hljs-attr">cwd</span>: config.<span class="hljs-property">root</span>,<br>      })<br>      <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<br>        list.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (item) =&gt; {<br>          <span class="hljs-keyword">const</span> cssPath = path.<span class="hljs-title function_">resolve</span>(config.<span class="hljs-property">root</span>, item)<br>          <span class="hljs-keyword">await</span> <span class="hljs-title function_">generateByPath</span>(cssPath)<br>        }),<br>      )<br>    },<br>    <span class="hljs-title function_">configureServer</span>(<span class="hljs-params">server</span>) {<br>      <span class="hljs-title function_">watch</span>(<span class="hljs-string">'src/**/*.module.css'</span>, { <span class="hljs-attr">cwd</span>: config.<span class="hljs-property">root</span> })<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'add'</span>, generateByPath)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'change'</span>, generateByPath)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'unlink'</span>, <span class="hljs-keyword">async</span> (cssPath) =&gt; {<br>          <span class="hljs-keyword">if</span> (cssPath.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'.module.css'</span>)) {<br>            <span class="hljs-keyword">const</span> dtsPath = cssPath + <span class="hljs-string">'.d.ts'</span><br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">pathExists</span>(dtsPath)) {<br>              <span class="hljs-keyword">await</span> <span class="hljs-title function_">remove</span>(dtsPath)<br>            }<br>          }<br>        })<br>    },<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">react</span>(), <span class="hljs-title function_">cssdts</span>()],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，每当启动 vite 时都会自动扫描所有的 *.module.css 生成对应的类型定义，在开发模式下还会持续监听文件的变化。</p>
 <p><img src="/resources/13cdf71f96e549c9bb21188dd051a81b.gif" srcset="/img/loading.gif" lazyload alt="代码提示.gif"></p>
@@ -514,169 +389,7 @@ export default defineConfig({
 <p>效果</p>
 <p><img src="/resources/07d7086ae24e496ca1dcd291668a36ac.gif" srcset="/img/loading.gif" lazyload alt="跳转.gif"></p>
 <p>完整代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { SourceMapGenerator, SourceNode } from 'source-map'
-import { defineConfig, Plugin, ResolvedConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { globby } from 'globby'
-import path from 'path'
-import * as csstree from 'css-tree'
-import { namedTypes as n, builders as b } from 'ast-types'
-import * as recast from 'recast'
-import fsExtra from 'fs-extra'
-import { watch } from 'chokidar'
-import { keyBy } from 'lodash-es'
-import tsParser from 'recast/parsers/typescript.js'
-
-function parse(code: string): csstree.ClassSelector[] {
-  const ast = csstree.parse(code, { positions: true })
-  const r: csstree.ClassSelector[] = []
-  csstree.walk(ast, (node) =&gt; {
-    if (node.type === 'ClassSelector') {
-      r.push(node)
-    }
-  })
-  return r
-}
-
-function convert(classes: csstree.ClassSelector[]): n.Program {
-  const r = b.variableDeclaration('const', [
-    b.variableDeclarator(
-      b.identifier.from({
-        name: 'css',
-        typeAnnotation: b.tsTypeAnnotation(
-          b.tsTypeLiteral(
-            classes.map((s) =&gt;
-              b.tsPropertySignature(
-                b.identifier(s.name),
-                b.tsTypeAnnotation(b.tsStringKeyword()),
-              ),
-            ),
-          ),
-        ),
-      }),
-    ),
-  ])
-  ;(r as unknown as n.TSTypeAliasDeclaration).declare = true
-  return b.program([r, b.exportDefaultDeclaration(b.identifier('css'))])
-}
-
-function format(ast: n.ASTNode): string {
-  return recast.prettyPrint(ast).code
-}
-
-function sourcemap({
-  code,
-  classes,
-  source,
-  target,
-}: {
-  code: string
-  classes: csstree.ClassSelector[]
-  source: string
-  target: string
-}) {
-  const root = recast.parse(code, { parser: tsParser })
-  const cssSelectorsMap = keyBy(classes, (item) =&gt; item.name)
-  const map = new SourceMapGenerator({
-    file: target,
-  })
-  recast.visit(root, {
-    visitTSPropertySignature(path) {
-      const name = (path.node.key as n.Identifier).name
-      console.log((path.node.key as n.Identifier).name)
-      const css = cssSelectorsMap[name]
-      interface Pos {
-        line: number
-        column: number
-      }
-
-      function add(original: Pos, generated: Pos) {
-        map.addMapping({
-          source: source,
-          original: {
-            line: original.line,
-            column: original.column,
-          },
-          generated: {
-            line: generated.line,
-            column: generated.column,
-          },
-        })
-      }
-      add(css.loc!.start, path.node!.key.loc!.start)
-      add(css.loc!.end, path.node!.key.loc!.end)
-      return false
-    },
-  })
-  return map.toString()
-}
-
-export function generate(
-  cssCode: string,
-  source: string,
-  target: string,
-): string {
-  const classes = parse(cssCode)
-  const ast = convert(classes)
-  const code = format(ast)
-  const mapCode = sourcemap({ code, classes, source, target })
-  return (
-    code +
-    '\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,' +
-    btoa(mapCode)
-  )
-}
-
-const { pathExists, readFile, remove, writeFile } = fsExtra
-
-function cssdts(): Plugin {
-  let config: ResolvedConfig
-  async function generateByPath(item: string) {
-    const cssPath = path.resolve(config.root, item)
-    const code = await readFile(cssPath, 'utf-8')
-    const dtsPath = cssPath + '.d.ts'
-    await writeFile(dtsPath, generate(code, cssPath, dtsPath))
-  }
-
-  return {
-    name: 'vite-plugin-cssdts',
-    configResolved(_config) {
-      config = _config
-    },
-    async buildStart() {
-      const list = await globby('src/**/*.module.css', {
-        cwd: config.root,
-      })
-      await Promise.all(
-        list.map(async (item) =&gt; {
-          const cssPath = path.resolve(config.root, item)
-          await generateByPath(cssPath)
-        }),
-      )
-    },
-    configureServer(server) {
-      watch('src/**/*.module.css', { cwd: config.root })
-        .on('add', generateByPath)
-        .on('change', generateByPath)
-        .on('unlink', async (cssPath) =&gt; {
-          if (cssPath.endsWith('.module.css')) {
-            const dtsPath = cssPath + '.d.ts'
-            if (await pathExists(dtsPath)) {
-              await remove(dtsPath)
-            }
-          }
-        })
-    },
-  }
-}
-
-export default defineConfig({
-  plugins: [react(), cssdts()],
-  build: {
-    sourcemap: 'inline',
-    minify: false,
-  },
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">SourceMapGenerator</span>, <span class="hljs-title class_">SourceNode</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'source-map'</span><br><span class="hljs-keyword">import</span> { defineConfig, <span class="hljs-title class_">Plugin</span>, <span class="hljs-title class_">ResolvedConfig</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> react <span class="hljs-keyword">from</span> <span class="hljs-string">'@vitejs/plugin-react'</span><br><span class="hljs-keyword">import</span> { globby } <span class="hljs-keyword">from</span> <span class="hljs-string">'globby'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> csstree <span class="hljs-keyword">from</span> <span class="hljs-string">'css-tree'</span><br><span class="hljs-keyword">import</span> { namedTypes <span class="hljs-keyword">as</span> n, builders <span class="hljs-keyword">as</span> b } <span class="hljs-keyword">from</span> <span class="hljs-string">'ast-types'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> recast <span class="hljs-keyword">from</span> <span class="hljs-string">'recast'</span><br><span class="hljs-keyword">import</span> fsExtra <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> { watch } <span class="hljs-keyword">from</span> <span class="hljs-string">'chokidar'</span><br><span class="hljs-keyword">import</span> { keyBy } <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash-es'</span><br><span class="hljs-keyword">import</span> tsParser <span class="hljs-keyword">from</span> <span class="hljs-string">'recast/parsers/typescript.js'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">parse</span>(<span class="hljs-params">code: <span class="hljs-built_in">string</span></span>): csstree.<span class="hljs-property">ClassSelector</span>[] {<br>  <span class="hljs-keyword">const</span> ast = csstree.<span class="hljs-title function_">parse</span>(code, { <span class="hljs-attr">positions</span>: <span class="hljs-literal">true</span> })<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">r</span>: csstree.<span class="hljs-property">ClassSelector</span>[] = []<br>  csstree.<span class="hljs-title function_">walk</span>(ast, <span class="hljs-function">(<span class="hljs-params">node</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (node.<span class="hljs-property">type</span> === <span class="hljs-string">'ClassSelector'</span>) {<br>      r.<span class="hljs-title function_">push</span>(node)<br>    }<br>  })<br>  <span class="hljs-keyword">return</span> r<br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">convert</span>(<span class="hljs-params">classes: csstree.ClassSelector[]</span>): n.<span class="hljs-property">Program</span> {<br>  <span class="hljs-keyword">const</span> r = b.<span class="hljs-title function_">variableDeclaration</span>(<span class="hljs-string">'const'</span>, [<br>    b.<span class="hljs-title function_">variableDeclarator</span>(<br>      b.<span class="hljs-property">identifier</span>.<span class="hljs-title function_">from</span>({<br>        <span class="hljs-attr">name</span>: <span class="hljs-string">'css'</span>,<br>        <span class="hljs-attr">typeAnnotation</span>: b.<span class="hljs-title function_">tsTypeAnnotation</span>(<br>          b.<span class="hljs-title function_">tsTypeLiteral</span>(<br>            classes.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">s</span>) =&gt;</span><br>              b.<span class="hljs-title function_">tsPropertySignature</span>(<br>                b.<span class="hljs-title function_">identifier</span>(s.<span class="hljs-property">name</span>),<br>                b.<span class="hljs-title function_">tsTypeAnnotation</span>(b.<span class="hljs-title function_">tsStringKeyword</span>()),<br>              ),<br>            ),<br>          ),<br>        ),<br>      }),<br>    ),<br>  ])<br>  ;(r <span class="hljs-keyword">as</span> <span class="hljs-built_in">unknown</span> <span class="hljs-keyword">as</span> n.<span class="hljs-property">TSTypeAliasDeclaration</span>).<span class="hljs-property">declare</span> = <span class="hljs-literal">true</span><br>  <span class="hljs-keyword">return</span> b.<span class="hljs-title function_">program</span>([r, b.<span class="hljs-title function_">exportDefaultDeclaration</span>(b.<span class="hljs-title function_">identifier</span>(<span class="hljs-string">'css'</span>))])<br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">format</span>(<span class="hljs-params">ast: n.ASTNode</span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">return</span> recast.<span class="hljs-title function_">prettyPrint</span>(ast).<span class="hljs-property">code</span><br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">sourcemap</span>(<span class="hljs-params">{</span><br><span class="hljs-params">  code,</span><br><span class="hljs-params">  classes,</span><br><span class="hljs-params">  source,</span><br><span class="hljs-params">  target,</span><br><span class="hljs-params">}: {</span><br><span class="hljs-params">  code: <span class="hljs-built_in">string</span></span><br><span class="hljs-params">  classes: csstree.ClassSelector[]</span><br><span class="hljs-params">  source: <span class="hljs-built_in">string</span></span><br><span class="hljs-params">  target: <span class="hljs-built_in">string</span></span><br><span class="hljs-params">}</span>) {<br>  <span class="hljs-keyword">const</span> root = recast.<span class="hljs-title function_">parse</span>(code, { <span class="hljs-attr">parser</span>: tsParser })<br>  <span class="hljs-keyword">const</span> cssSelectorsMap = <span class="hljs-title function_">keyBy</span>(classes, <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item.<span class="hljs-property">name</span>)<br>  <span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SourceMapGenerator</span>({<br>    <span class="hljs-attr">file</span>: target,<br>  })<br>  recast.<span class="hljs-title function_">visit</span>(root, {<br>    <span class="hljs-title function_">visitTSPropertySignature</span>(<span class="hljs-params">path</span>) {<br>      <span class="hljs-keyword">const</span> name = (path.<span class="hljs-property">node</span>.<span class="hljs-property">key</span> <span class="hljs-keyword">as</span> n.<span class="hljs-property">Identifier</span>).<span class="hljs-property">name</span><br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>((path.<span class="hljs-property">node</span>.<span class="hljs-property">key</span> <span class="hljs-keyword">as</span> n.<span class="hljs-property">Identifier</span>).<span class="hljs-property">name</span>)<br>      <span class="hljs-keyword">const</span> css = cssSelectorsMap[name]<br>      <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Pos</span> {<br>        <span class="hljs-attr">line</span>: <span class="hljs-built_in">number</span><br>        <span class="hljs-attr">column</span>: <span class="hljs-built_in">number</span><br>      }<br><br>      <span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">original: Pos, generated: Pos</span>) {<br>        map.<span class="hljs-title function_">addMapping</span>({<br>          <span class="hljs-attr">source</span>: source,<br>          <span class="hljs-attr">original</span>: {<br>            <span class="hljs-attr">line</span>: original.<span class="hljs-property">line</span>,<br>            <span class="hljs-attr">column</span>: original.<span class="hljs-property">column</span>,<br>          },<br>          <span class="hljs-attr">generated</span>: {<br>            <span class="hljs-attr">line</span>: generated.<span class="hljs-property">line</span>,<br>            <span class="hljs-attr">column</span>: generated.<span class="hljs-property">column</span>,<br>          },<br>        })<br>      }<br>      <span class="hljs-title function_">add</span>(css.<span class="hljs-property">loc</span>!.<span class="hljs-property">start</span>, path.<span class="hljs-property">node</span>!.<span class="hljs-property">key</span>.<span class="hljs-property">loc</span>!.<span class="hljs-property">start</span>)<br>      <span class="hljs-title function_">add</span>(css.<span class="hljs-property">loc</span>!.<span class="hljs-property">end</span>, path.<span class="hljs-property">node</span>!.<span class="hljs-property">key</span>.<span class="hljs-property">loc</span>!.<span class="hljs-property">end</span>)<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    },<br>  })<br>  <span class="hljs-keyword">return</span> map.<span class="hljs-title function_">toString</span>()<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">generate</span>(<span class="hljs-params"></span><br><span class="hljs-params">  cssCode: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">  source: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">  target: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params"></span>): <span class="hljs-built_in">string</span> {<br>  <span class="hljs-keyword">const</span> classes = <span class="hljs-title function_">parse</span>(cssCode)<br>  <span class="hljs-keyword">const</span> ast = <span class="hljs-title function_">convert</span>(classes)<br>  <span class="hljs-keyword">const</span> code = <span class="hljs-title function_">format</span>(ast)<br>  <span class="hljs-keyword">const</span> mapCode = <span class="hljs-title function_">sourcemap</span>({ code, classes, source, target })<br>  <span class="hljs-keyword">return</span> (<br>    code +<br>    <span class="hljs-string">'\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,'</span> +<br>    <span class="hljs-title function_">btoa</span>(mapCode)<br>  )<br>}<br><br><span class="hljs-keyword">const</span> { pathExists, readFile, remove, writeFile } = fsExtra<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">cssdts</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">let</span> <span class="hljs-attr">config</span>: <span class="hljs-title class_">ResolvedConfig</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">generateByPath</span>(<span class="hljs-params">item: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">const</span> cssPath = path.<span class="hljs-title function_">resolve</span>(config.<span class="hljs-property">root</span>, item)<br>    <span class="hljs-keyword">const</span> code = <span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(cssPath, <span class="hljs-string">'utf-8'</span>)<br>    <span class="hljs-keyword">const</span> dtsPath = cssPath + <span class="hljs-string">'.d.ts'</span><br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(dtsPath, <span class="hljs-title function_">generate</span>(code, cssPath, dtsPath))<br>  }<br><br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'vite-plugin-cssdts'</span>,<br>    <span class="hljs-title function_">configResolved</span>(<span class="hljs-params">_config</span>) {<br>      config = _config<br>    },<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">buildStart</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">const</span> list = <span class="hljs-keyword">await</span> <span class="hljs-title function_">globby</span>(<span class="hljs-string">'src/**/*.module.css'</span>, {<br>        <span class="hljs-attr">cwd</span>: config.<span class="hljs-property">root</span>,<br>      })<br>      <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<br>        list.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (item) =&gt; {<br>          <span class="hljs-keyword">const</span> cssPath = path.<span class="hljs-title function_">resolve</span>(config.<span class="hljs-property">root</span>, item)<br>          <span class="hljs-keyword">await</span> <span class="hljs-title function_">generateByPath</span>(cssPath)<br>        }),<br>      )<br>    },<br>    <span class="hljs-title function_">configureServer</span>(<span class="hljs-params">server</span>) {<br>      <span class="hljs-title function_">watch</span>(<span class="hljs-string">'src/**/*.module.css'</span>, { <span class="hljs-attr">cwd</span>: config.<span class="hljs-property">root</span> })<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'add'</span>, generateByPath)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'change'</span>, generateByPath)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">'unlink'</span>, <span class="hljs-keyword">async</span> (cssPath) =&gt; {<br>          <span class="hljs-keyword">if</span> (cssPath.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'.module.css'</span>)) {<br>            <span class="hljs-keyword">const</span> dtsPath = cssPath + <span class="hljs-string">'.d.ts'</span><br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">pathExists</span>(dtsPath)) {<br>              <span class="hljs-keyword">await</span> <span class="hljs-title function_">remove</span>(dtsPath)<br>            }<br>          }<br>        })<br>    },<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">react</span>(), <span class="hljs-title function_">cssdts</span>()],<br>  <span class="hljs-attr">build</span>: {<br>    <span class="hljs-attr">sourcemap</span>: <span class="hljs-string">'inline'</span>,<br>    <span class="hljs-attr">minify</span>: <span class="hljs-literal">false</span>,<br>  },<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>在之后的几篇文章中，吾辈将演示代码生成的实际用途，并实现一些简单的例子，也会给出现有的更完善的的工具（如果有的话）。</p>
 <ul>
@@ -1038,8 +751,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

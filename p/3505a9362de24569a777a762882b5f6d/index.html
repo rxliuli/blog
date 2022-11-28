@@ -44,8 +44,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -251,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          980 字
+          1k 字
         
       </span>
     
@@ -317,34 +315,15 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>目前公司仍然没有做 CI 持续集成，而是使用手动方式（脚本）部署项目。有时候，已经修改了代码，而线上（测试环境）却还没有部署，导致测试人员认为问题仍然没有修复。那么，怎么确定线上部署的代码版本呢？难道是打开线上网站查看某个功能是否完成了么？有没有更高效的方法呢？<br>吾辈找到的解决方案便是 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/git-rev-sync">git-rev-sync</a>。</p>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>官网描述只有一句话: 同步获取当前的 git commit 哈希，标签，计数，分支或提交消息。从 <a target="_blank" rel="noopener" href="https://github.com/tblobaum/git-rev">git-rev</a> 分叉。<br>实际上就是一个同步获取当前 git commit 最新提交的一些信息，而我们可以将它挂载到 <code>window</code> 对象上，方便线上快速确定发布代码的版本。</p>
-<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">yarn add -D git-rev-sync<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yarn add -D git-rev-sync<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="在-vue-打包文件中读取-git-信息"><a href="#在-vue-打包文件中读取-git-信息" class="headerlink" title="在 vue 打包文件中读取 git 信息"></a>在 vue 打包文件中读取 git 信息</h3><p>只有在打包时我们才能读取到 git 信息（本地 nodejs 运行），而我们读取完之后不能直接挂载到 <code>window</code> 对象上，因为打包时处于 nodejs 环境，<code>window</code> 对象并不存在，这时候就需要用到 Vue 提供的环境变量功能了。</p>
 <blockquote>
 <p>引用<br><a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/guide/mode-and-env.html#%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BE%A7%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">Vue Cli 在客户端侧代码中使用环境变量</a></p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// vue.config.js</span>
-<span class="token keyword">const</span> git <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'git-rev-sync'</span><span class="token punctuation">)</span>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// vue.config.js</span><br><span class="hljs-keyword">const</span> git = <span class="hljs-built_in">require</span>(<span class="hljs-string">'git-rev-sync'</span>)<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 传递打包时的环境变量到前端必须是以 VUE_APP_ 开头且必须只能是字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@type</span> {<span class="hljs-type">string</span>}</span><br><span class="hljs-comment"> */</span><br>process.<span class="hljs-property">env</span>.<span class="hljs-property">VUE_APP_GIT</span> = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<br>  <span class="hljs-attr">short</span>: git.<span class="hljs-title function_">short</span>(),<br>  <span class="hljs-attr">long</span>: git.<span class="hljs-title function_">long</span>(),<br>  <span class="hljs-attr">branch</span>: git.<span class="hljs-title function_">branch</span>(),<br>  <span class="hljs-attr">count</span>: git.<span class="hljs-title function_">count</span>(),<br>  <span class="hljs-attr">date</span>: git.<span class="hljs-title function_">date</span>(),<br>  <span class="hljs-attr">isDirty</span>: git.<span class="hljs-title function_">isDirty</span>(),<br>  <span class="hljs-attr">isTagDirty</span>: git.<span class="hljs-title function_">isTagDirty</span>(),<br>  <span class="hljs-attr">message</span>: git.<span class="hljs-title function_">message</span>(),<br>  <span class="hljs-attr">remoteUrl</span>: git.<span class="hljs-title function_">remoteUrl</span>(),<br>  <span class="hljs-attr">tag</span>: git.<span class="hljs-title function_">tag</span>(),<br>})<br></code></pre></td></tr></tbody></table></figure>
 
-<span class="token comment">/**
- * 传递打包时的环境变量到前端必须是以 VUE_APP_ 开头且必须只能是字符串
- * @type {string}
- */</span>
-process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">VUE_APP_GIT</span> <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  <span class="token literal-property property">short</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">short</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">long</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">long</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">branch</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">branch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">count</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">date</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">isDirty</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">isDirty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">isTagDirty</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">isTagDirty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">message</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">message</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">remoteUrl</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">remoteUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">tag</span><span class="token operator">:</span> git<span class="token punctuation">.</span><span class="token function">tag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<h3 id="在-main-js-中读取环境变量并挂载到-window-对象上"><a href="#在-main-js-中读取环境变量并挂载到-window-对象上" class="headerlink" title="在 main.js 中读取环境变量并挂载到 window 对象上"></a>在 main.js 中读取环境变量并挂载到 window 对象上</h3><figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//在 window 对象上添加 git 属性便于查看指定版本</span>
-window<span class="token punctuation">.</span>git <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">VUE_APP_GIT</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<h3 id="在-main-js-中读取环境变量并挂载到-window-对象上"><a href="#在-main-js-中读取环境变量并挂载到-window-对象上" class="headerlink" title="在 main.js 中读取环境变量并挂载到 window 对象上"></a>在 main.js 中读取环境变量并挂载到 window 对象上</h3><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//在 window 对象上添加 git 属性便于查看指定版本</span><br><span class="hljs-variable language_">window</span>.<span class="hljs-property">git</span> = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(process.<span class="hljs-property">env</span>.<span class="hljs-property">VUE_APP_GIT</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h3><p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20190927082613.png" srcset="/img/loading.gif" lazyload alt="效果图"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>说到底需要这个工具的原因是因为部署的代码与最新的代码不一致，如果有了持续集成工具自动部署的话便不会存在这个问题了呢（这或许就是为什么该项目 <a target="_blank" rel="noopener" href="https://github.com/kurttheviking/git-rev-sync-js/stargazers">star</a> 这么少的原因？）</p>
@@ -699,8 +678,6 @@ window<span class="token punctuation">.</span>git <span class="token operator">=
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

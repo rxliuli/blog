@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          6.4k 字
+          6.8k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          54 分钟
+          57 分钟
         
       </span>
     
@@ -329,126 +327,16 @@
 <li><input disabled="" type="checkbox"> uglify</li>
 <li><input disabled="" type="checkbox"> eslint</li>
 </ul>
-<h3 id="需要打包的代码"><a href="#需要打包的代码" class="headerlink" title="需要打包的代码"></a>需要打包的代码</h3><figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// src/wait.js</span>
-<span class="token comment">/**
- * 等待指定的时间/等待指定表达式成立
- * @param {Number|Function} param 等待时间/等待条件
- * @returns {Promise} Promise 对象
- */</span>
-<span class="token keyword">function</span> <span class="token function">wait</span><span class="token punctuation">(</span><span class="token parameter">param</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> param <span class="token operator">===</span> <span class="token string">'number'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">setTimeout</span><span class="token punctuation">(</span>resolve<span class="token punctuation">,</span> param<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> param <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">var</span> timer <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">param</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          <span class="token function">clearInterval</span><span class="token punctuation">(</span>timer<span class="token punctuation">)</span>
-          <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">}</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-      <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> wait
-
-<span class="token comment">// src/fetchTimeout.js</span>
-<span class="token comment">/**
- * 为 fetch 请求添加超时选项
- * 注：超时选项并非真正意义上的超时即取消请求，请求依旧正常执行完成，但会提前返回 reject 结果
- * @param {Promise} fetchPromise fetch 请求的 Promise
- * @param {Number} timeout 超时时间
- * @returns {Promise} 如果超时就提前返回 reject, 否则正常返回 fetch 结果
- */</span>
-<span class="token keyword">function</span> <span class="token function">fetchTimeout</span><span class="token punctuation">(</span><span class="token parameter">fetchPromise<span class="token punctuation">,</span> timeout</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">var</span> abortFn <span class="token operator">=</span> <span class="token keyword">null</span>
-  <span class="token comment">//这是一个可以被 reject 的 Promise</span>
-  <span class="token keyword">var</span> abortPromise <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token function-variable function">abortFn</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token function">reject</span><span class="token punctuation">(</span><span class="token string">'abort promise'</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token comment">// 有一个 Promise 完成就立刻结束</span>
-  <span class="token keyword">var</span> abortablePromise <span class="token operator">=</span> Promise<span class="token punctuation">.</span><span class="token function">race</span><span class="token punctuation">(</span><span class="token punctuation">[</span>fetchPromise<span class="token punctuation">,</span> abortPromise<span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token function">abortFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span> timeout<span class="token punctuation">)</span>
-  <span class="token keyword">return</span> abortablePromise
-<span class="token punctuation">}</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> fetchTimeout
-
-<span class="token comment">// src/main.js</span>
-<span class="token keyword">import</span> wait <span class="token keyword">from</span> <span class="token string">'./wait'</span>
-<span class="token keyword">import</span> fetchTimeout <span class="token keyword">from</span> <span class="token string">'./fetchTimeout'</span>
-
-<span class="token comment">/**
- * 限制并发请求数量的 fetch 封装
- */</span>
-<span class="token keyword">class</span> <span class="token class-name">FetchLimiting</span> <span class="token punctuation">{</span>
-  <span class="token function">constructor</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> timeout <span class="token operator">=</span> <span class="token number">10000</span><span class="token punctuation">,</span> limit <span class="token operator">=</span> <span class="token number">10</span> <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>timeout <span class="token operator">=</span> timeout
-    <span class="token keyword">this</span><span class="token punctuation">.</span>limit <span class="token operator">=</span> limit
-    <span class="token keyword">this</span><span class="token punctuation">.</span>execCount <span class="token operator">=</span> <span class="token number">0</span>
-    <span class="token comment">// 等待队列</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>waitArr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-
-  <span class="token comment">/**
-   * 执行一个请求
-   * 如果到达最大并发限制时就进行等待
-   * 注：该方法的请求顺序是无序的，与代码里的顺序无关
-   * @param {RequestInfo} url 请求 url 信息
-   * @param {RequestInit} init 请求的其他可选项
-   * @returns {Promise} 如果超时就提前返回 reject, 否则正常返回 fetch 结果
-   */</span>
-  <span class="token keyword">async</span> <span class="token function">_fetch</span><span class="token punctuation">(</span><span class="token parameter">url<span class="token punctuation">,</span> init</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> <span class="token function-variable function">_innerFetch</span> <span class="token operator">=</span> <span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>
-        <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">执行 execCount: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token keyword">this</span><span class="token punctuation">.</span>execCount<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">, waitArr length: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>waitArr<span class="token punctuation">.</span>length
-        <span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">, index: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>waitArr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-      <span class="token punctuation">)</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>execCount<span class="token operator">++</span>
-      <span class="token keyword">const</span> args <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>waitArr<span class="token punctuation">.</span><span class="token function">shift</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
-      <span class="token keyword">try</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">await</span> <span class="token function">fetchTimeout</span><span class="token punctuation">(</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token operator">...</span>args<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>timeout<span class="token punctuation">)</span>
-      <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>execCount<span class="token operator">--</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>waitArr<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>arguments<span class="token punctuation">)</span>
-    <span class="token keyword">await</span> <span class="token function">wait</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>execCount <span class="token operator">&lt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>limit<span class="token punctuation">)</span>
-    <span class="token comment">// 尝试启动等待队列</span>
-    <span class="token keyword">return</span> <span class="token function">_innerFetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> FetchLimiting<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="需要打包的代码"><a href="#需要打包的代码" class="headerlink" title="需要打包的代码"></a>需要打包的代码</h3><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// src/wait.js</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 等待指定的时间/等待指定表达式成立</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Number|Function</span>} param 等待时间/等待条件</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Promise</span>} Promise 对象</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">wait</span>(<span class="hljs-params">param</span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> param === <span class="hljs-string">'number'</span>) {<br>      <span class="hljs-built_in">setTimeout</span>(resolve, param)<br>    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> param === <span class="hljs-string">'function'</span>) {<br>      <span class="hljs-keyword">var</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {<br>        <span class="hljs-keyword">if</span> (<span class="hljs-title function_">param</span>()) {<br>          <span class="hljs-built_in">clearInterval</span>(timer)<br>          <span class="hljs-title function_">resolve</span>()<br>        }<br>      }, <span class="hljs-number">100</span>)<br>    } <span class="hljs-keyword">else</span> {<br>      <span class="hljs-title function_">resolve</span>()<br>    }<br>  })<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> wait<br><br><span class="hljs-comment">// src/fetchTimeout.js</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 为 fetch 请求添加超时选项</span><br><span class="hljs-comment"> * 注：超时选项并非真正意义上的超时即取消请求，请求依旧正常执行完成，但会提前返回 reject 结果</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Promise</span>} fetchPromise fetch 请求的 Promise</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Number</span>} timeout 超时时间</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Promise</span>} 如果超时就提前返回 reject, 否则正常返回 fetch 结果</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchTimeout</span>(<span class="hljs-params">fetchPromise, timeout</span>) {<br>  <span class="hljs-keyword">var</span> abortFn = <span class="hljs-literal">null</span><br>  <span class="hljs-comment">//这是一个可以被 reject 的 Promise</span><br>  <span class="hljs-keyword">var</span> abortPromise = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">resolve, reject</span>) {<br>    abortFn = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {<br>      <span class="hljs-title function_">reject</span>(<span class="hljs-string">'abort promise'</span>)<br>    }<br>  })<br>  <span class="hljs-comment">// 有一个 Promise 完成就立刻结束</span><br>  <span class="hljs-keyword">var</span> abortablePromise = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>([fetchPromise, abortPromise])<br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {<br>    <span class="hljs-title function_">abortFn</span>()<br>  }, timeout)<br>  <span class="hljs-keyword">return</span> abortablePromise<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> fetchTimeout<br><br><span class="hljs-comment">// src/main.js</span><br><span class="hljs-keyword">import</span> wait <span class="hljs-keyword">from</span> <span class="hljs-string">'./wait'</span><br><span class="hljs-keyword">import</span> fetchTimeout <span class="hljs-keyword">from</span> <span class="hljs-string">'./fetchTimeout'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 限制并发请求数量的 fetch 封装</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">FetchLimiting</span> {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{ timeout = <span class="hljs-number">10000</span>, limit = <span class="hljs-number">10</span> }</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">timeout</span> = timeout<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">limit</span> = limit<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">execCount</span> = <span class="hljs-number">0</span><br>    <span class="hljs-comment">// 等待队列</span><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">waitArr</span> = []<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 执行一个请求</span><br><span class="hljs-comment">   * 如果到达最大并发限制时就进行等待</span><br><span class="hljs-comment">   * 注：该方法的请求顺序是无序的，与代码里的顺序无关</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> {<span class="hljs-type">RequestInfo</span>} url 请求 url 信息</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> {<span class="hljs-type">RequestInit</span>} init 请求的其他可选项</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Promise</span>} 如果超时就提前返回 reject, 否则正常返回 fetch 结果</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">_fetch</span>(<span class="hljs-params">url, init</span>) {<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">_innerFetch</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<br>        <span class="hljs-string">`执行 execCount: <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.execCount}</span>, waitArr length: <span class="hljs-subst">${</span></span><br><span class="hljs-subst"><span class="hljs-string">          <span class="hljs-variable language_">this</span>.waitArr.length</span></span><br><span class="hljs-subst"><span class="hljs-string">        }</span>, index: <span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-variable language_">this</span>.waitArr[<span class="hljs-number">0</span>])}</span>`</span>,<br>      )<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">execCount</span>++<br>      <span class="hljs-keyword">const</span> args = <span class="hljs-variable language_">this</span>.<span class="hljs-property">waitArr</span>.<span class="hljs-title function_">shift</span>(<span class="hljs-number">0</span>)<br>      <span class="hljs-keyword">try</span> {<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetchTimeout</span>(<span class="hljs-title function_">fetch</span>(...args), <span class="hljs-variable language_">this</span>.<span class="hljs-property">timeout</span>)<br>      } <span class="hljs-keyword">finally</span> {<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">execCount</span>--<br>      }<br>    }<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">waitArr</span>.<span class="hljs-title function_">push</span>(<span class="hljs-variable language_">arguments</span>)<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">wait</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">execCount</span> &lt; <span class="hljs-variable language_">this</span>.<span class="hljs-property">limit</span>)<br>    <span class="hljs-comment">// 尝试启动等待队列</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">_innerFetch</span>()<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">FetchLimiting</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用-rollup-直接打包"><a href="#使用-rollup-直接打包" class="headerlink" title="使用 rollup 直接打包"></a>使用 rollup 直接打包</h3><p>安装 <code>rollup</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npm i rollup -D<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm i rollup -D<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在根目录创建一个 <code>rollup.config.js</code> 配置文件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 入口文件</span>
-  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token string">'src/main.js'</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 打包名称</span>
-    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">'bundlea'</span><span class="token punctuation">,</span>
-    <span class="token comment">// 打包的文件</span>
-    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token string">'dist/bundle.js'</span><span class="token punctuation">,</span>
-    <span class="token comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span>
-    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-comment">// 入口文件</span><br>  <span class="hljs-attr">input</span>: <span class="hljs-string">'src/main.js'</span>,<br>  <span class="hljs-attr">output</span>: {<br>    <span class="hljs-comment">// 打包名称</span><br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'bundlea'</span>,<br>    <span class="hljs-comment">// 打包的文件</span><br>    <span class="hljs-attr">file</span>: <span class="hljs-string">'dist/bundle.js'</span>,<br>    <span class="hljs-comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span><br>    <span class="hljs-attr">format</span>: <span class="hljs-string">'umd'</span>,<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>添加一个 <code>npm script</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">"scripts": {
-  "build": "rollup -c"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"build"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rollup -c"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后运行 <code>npm run build</code> 测试打包，可以看到 <em>dist</em> 目录下已经有 <code>bundle.js</code> 文件了</p>
 <blockquote>
@@ -460,55 +348,28 @@
 <p>附：babel 被称为现代前端的 jquery。</p>
 </blockquote>
 <p>首先，安装 babel 需要的包</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npm i -D rollup-plugin-babel @babel/core @babel/plugin-external-helpers @babel/preset-env<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm i -D rollup-plugin-babel @babel/core @babel/plugin-external-helpers @babel/preset-env<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在 <code>rollup.config.js</code> 中添加 <code>plugins</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> babel <span class="token keyword">from</span> <span class="token string">'rollup-plugin-babel'</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token comment">// 引入 babel 插件</span>
-    <span class="token function">babel</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-      <span class="token literal-property property">exclude</span><span class="token operator">:</span> <span class="token string">'node_modules/**'</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> babel <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-babel'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-comment">// 引入 babel 插件</span><br>    <span class="hljs-title function_">babel</span>({<br>      <span class="hljs-attr">exclude</span>: <span class="hljs-string">'node_modules/**'</span>,<br>    }),<br>  ],<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>添加 babel 的配置文件 <code>.babelrc</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "modules": false
-      }
-    ]
-  ],
-  "plugins": ["@babel/plugin-external-helpers"]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"presets"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">[</span><br>      <span class="hljs-string">"@babel/preset-env"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"modules"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"plugins"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"@babel/plugin-external-helpers"</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>再重新运行 <code>npm run build</code>，可以看到 <code>bundle.js</code> 中的代码已经被编译成 ES5 了。</p>
 <h3 id="使用-uglify-压缩生产环境代码"><a href="#使用-uglify-压缩生产环境代码" class="headerlink" title="使用 uglify 压缩生产环境代码"></a>使用 uglify 压缩生产环境代码</h3><p>那么，生产中的代码还需要做什么呢？是的，压缩，减小 js 代码的体积是必要的。接下来，我们还需要使用 <code>uglify</code> 压缩我们打包后的 <code>bundle.js</code> 代码。</p>
 <p>首先仍然是安装 <code>uglify</code> 相关的包</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npm i -D rollup-plugin-uglify<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm i -D rollup-plugin-uglify<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后在 <code>rollup.config.js</code> 中引入插件就好了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// 注意，这里引入需要使用 { uglify } 而非 uglify，因为 uglify 导出自身时使用的是 exports.uglify</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> uglify <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup-plugin-uglify'</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token comment">// js 压缩插件，需要在最后引入</span>
-    <span class="token function">uglify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 注意，这里引入需要使用 { uglify } 而非 uglify，因为 uglify 导出自身时使用的是 exports.uglify</span><br><span class="hljs-keyword">import</span> { uglify } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-uglify'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-comment">// js 压缩插件，需要在最后引入</span><br>    <span class="hljs-title function_">uglify</span>(),<br>  ],<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用-ESLint-检查代码"><a href="#使用-ESLint-检查代码" class="headerlink" title="使用 ESLint 检查代码"></a>使用 ESLint 检查代码</h3><p>如果我们想要需要多人协作统一代码风格，那么可以使用 ESLint 来强制规范。</p>
 <p>首先，全局安装 <code>eslint</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npm i eslint -g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm i eslint -g<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后使用 <code>eslint cli</code> 初始化</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">eslint --init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">eslint --init<br></code></pre></td></tr></tbody></table></figure>
 
 <p>下面的三项问题选择</p>
 <ol>
@@ -518,130 +379,35 @@
 <li>Would you like to install them now with npm?<br><code>y</code></li>
 </ol>
 <p>然后，我们发现项目根目录下多出了 <code>.eslintrc.js</code>，这是 eslit 的配置文件。然而，我们需要对其稍微修改一下，不然如果我们的代码中出现了浏览器中的对象，例如 <code>document</code>，eslint 就会傻傻的认为那是个错误！<br>修改后的 <code>.eslintrc.js</code> 配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
-  <span class="token keyword">extends</span><span class="token operator">:</span> <span class="token string">'standard'</span><span class="token punctuation">,</span>
-  <span class="token comment">// 添加了运行环境设定，设置 browser 为 true</span>
-  <span class="token literal-property property">env</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">browser</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {<br>  <span class="hljs-attr">extends</span>: <span class="hljs-string">'standard'</span>,<br>  <span class="hljs-comment">// 添加了运行环境设定，设置 browser 为 true</span><br>  <span class="hljs-attr">env</span>: {<br>    <span class="hljs-attr">browser</span>: <span class="hljs-literal">true</span>,<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当我们查看打包后的 <code>bundle.js</code> 时发现 eslint 给我们报了一堆错误，所以我们需要排除掉 dist 文件夹<br>添加 <code>.eslintignore</code> 文件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-ignore" data-language="ignore"><code class="language-ignore">dist<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ignore">dist<br></code></pre></td></tr></tbody></table></figure>
 
 <p>添加 <code>rollup-plugin-eslint</code> 插件，在打包之前进行格式校验</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npm i -D rollup-plugin-eslint<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm i -D rollup-plugin-eslint<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后引入它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> eslint <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup-plugin-eslint'</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token comment">// 引入 eslint 插件</span>
-    <span class="token function">eslint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> { eslint } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-eslint'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-comment">// 引入 eslint 插件</span><br>    <span class="hljs-title function_">eslint</span>(),<br>  ],<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这个时候，当你运行 <code>npm run build</code> 的时候，eslint 可能提示你一堆代码格式错误，难道我们还要一个个的去修复么？不，eslint 早已考虑到了这一点，我们可以添加一个 npm 脚本用于全局修复格式错误。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">"scripts": {
-  "lint": "eslint --fix src"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"lint"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"eslint --fix src"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后运行 <code>npm run lint</code>，eslint 会尽可能修复格式错误，如果不能修复，会在控制台打印异常文件的路径，然后我们手动修复就好啦</p>
 <h3 id="其他-rollup-配置"><a href="#其他-rollup-配置" class="headerlink" title="其他 rollup 配置"></a>其他 rollup 配置</h3><h4 id="添加代码映射文件"><a href="#添加代码映射文件" class="headerlink" title="添加代码映射文件"></a>添加代码映射文件</h4><p>其实很简单，只要在 <code>rollup.config.js</code> 启用一个配置就好了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 启用代码映射，便于调试之用</span>
-    <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-attr">output</span>: {<br>    <span class="hljs-comment">// 启用代码映射，便于调试之用</span><br>    <span class="hljs-attr">sourcemap</span>: <span class="hljs-literal">true</span>,<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h4 id="多环境打包"><a href="#多环境打包" class="headerlink" title="多环境打包"></a>多环境打包</h4><p>首先移除掉根目录下的 <code>rollup.config.js</code> 配置文件，然后创建 build 目录并添加下面四个文件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// build/util.js</span>
-<span class="token keyword">import</span> path <span class="token keyword">from</span> <span class="token string">'path'</span>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// build/util.js</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 根据相对路径计算真是的路径</span><br><span class="hljs-comment"> * 从当前类的文件夹开始计算，这里是 /build</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">String</span>} relaPath 相对路径</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">String</span>} 绝对路径</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">calcPath</span>(<span class="hljs-params">relaPath</span>) {<br>  <span class="hljs-keyword">return</span> path.<span class="hljs-title function_">resolve</span>(__dirname, relaPath)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<span class="token comment">/**
- * 根据相对路径计算真是的路径
- * 从当前类的文件夹开始计算，这里是 /build
- * @param {String} relaPath 相对路径
- * @returns {String} 绝对路径
- */</span>
-<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token parameter">relaPath</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">return</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> relaPath<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// build/rollup.config.dev.js</span><br><span class="hljs-keyword">import</span> { eslint } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-eslint'</span><br><span class="hljs-keyword">import</span> { calcPath } <span class="hljs-keyword">from</span> <span class="hljs-string">'./util'</span><br><span class="hljs-keyword">import</span> { name } <span class="hljs-keyword">from</span> <span class="hljs-string">'../package.json'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-comment">// 入口文件</span><br>  <span class="hljs-attr">input</span>: <span class="hljs-title function_">calcPath</span>(<span class="hljs-string">'../src/main.js'</span>),<br>  <span class="hljs-attr">output</span>: {<br>    <span class="hljs-comment">// 打包名称</span><br>    name,<br>    <span class="hljs-comment">// 打包的文件</span><br>    <span class="hljs-attr">file</span>: <span class="hljs-title function_">calcPath</span>(<span class="hljs-string">`../dist/<span class="hljs-subst">${name}</span>.js`</span>),<br>    <span class="hljs-comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span><br>    <span class="hljs-attr">format</span>: <span class="hljs-string">'umd'</span>,<br>    <span class="hljs-comment">// 启用代码映射，便于调试之用</span><br>    <span class="hljs-attr">sourcemap</span>: <span class="hljs-literal">true</span>,<br>  },<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-comment">// 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码</span><br>    <span class="hljs-title function_">eslint</span>(),<br>  ],<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// build/rollup.config.dev.js</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> eslint <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup-plugin-eslint'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> calcPath <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./util'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../package.json'</span>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// build/rollup.config.prod.js</span><br><span class="hljs-keyword">import</span> babel <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-babel'</span><br><span class="hljs-comment">// 注意，这里引入需要使用 { uglify } 而非 uglify，因为 uglify 导出自身时使用的是 exports.uglify</span><br><span class="hljs-keyword">import</span> { uglify } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-uglify'</span><br><span class="hljs-keyword">import</span> { eslint } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup-plugin-eslint'</span><br><span class="hljs-keyword">import</span> { calcPath } <span class="hljs-keyword">from</span> <span class="hljs-string">'./util'</span><br><span class="hljs-keyword">import</span> dev <span class="hljs-keyword">from</span> <span class="hljs-string">'./rollup.config.dev'</span><br><span class="hljs-keyword">import</span> { name } <span class="hljs-keyword">from</span> <span class="hljs-string">'../package.json'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> [<br>  dev,<br>  {<br>    <span class="hljs-comment">// 入口文件</span><br>    <span class="hljs-attr">input</span>: <span class="hljs-title function_">calcPath</span>(<span class="hljs-string">'../src/main.js'</span>),<br>    <span class="hljs-attr">output</span>: {<br>      <span class="hljs-comment">// 打包名称</span><br>      name,<br>      <span class="hljs-comment">// 打包的文件</span><br>      <span class="hljs-attr">file</span>: <span class="hljs-title function_">calcPath</span>(<span class="hljs-string">`../dist/<span class="hljs-subst">${name}</span>.min.js`</span>),<br>      <span class="hljs-comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span><br>      <span class="hljs-attr">format</span>: <span class="hljs-string">'umd'</span>,<br>    },<br>    <span class="hljs-attr">plugins</span>: [<br>      <span class="hljs-comment">// 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码</span><br>      <span class="hljs-title function_">eslint</span>(),<br>      <span class="hljs-comment">// 引入 babel 插件</span><br>      <span class="hljs-title function_">babel</span>({<br>        <span class="hljs-attr">exclude</span>: <span class="hljs-title function_">calcPath</span>(<span class="hljs-string">'../node_modules/**'</span>),<br>      }),<br>      <span class="hljs-comment">// js 压缩插件，需要在最后引入</span><br>      <span class="hljs-title function_">uglify</span>(),<br>    ],<br>  },<br>]<br></code></pre></td></tr></tbody></table></figure>
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 入口文件</span>
-  <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token string">'../src/main.js'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 打包名称</span>
-    name<span class="token punctuation">,</span>
-    <span class="token comment">// 打包的文件</span>
-    <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">../dist/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.js</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span>
-    <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
-    <span class="token comment">// 启用代码映射，便于调试之用</span>
-    <span class="token literal-property property">sourcemap</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token comment">// 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码</span>
-    <span class="token function">eslint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// build/rollup.config.prod.js</span>
-<span class="token keyword">import</span> babel <span class="token keyword">from</span> <span class="token string">'rollup-plugin-babel'</span>
-<span class="token comment">// 注意，这里引入需要使用 { uglify } 而非 uglify，因为 uglify 导出自身时使用的是 exports.uglify</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> uglify <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup-plugin-uglify'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> eslint <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'rollup-plugin-eslint'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> calcPath <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./util'</span>
-<span class="token keyword">import</span> dev <span class="token keyword">from</span> <span class="token string">'./rollup.config.dev'</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> name <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../package.json'</span>
-
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">[</span>
-  dev<span class="token punctuation">,</span>
-  <span class="token punctuation">{</span>
-    <span class="token comment">// 入口文件</span>
-    <span class="token literal-property property">input</span><span class="token operator">:</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token string">'../src/main.js'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token comment">// 打包名称</span>
-      name<span class="token punctuation">,</span>
-      <span class="token comment">// 打包的文件</span>
-      <span class="token literal-property property">file</span><span class="token operator">:</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">../dist/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.min.js</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token comment">// 打包的格式，umd 支持 commonjs/amd/life 三种方式</span>
-      <span class="token literal-property property">format</span><span class="token operator">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token comment">// 引入 eslint 插件，必须在 babel 之前引入，因为 babel 编译之后的代码未必符合 eslint 规范，eslint 仅针对我们 [原本] 的代码</span>
-      <span class="token function">eslint</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token comment">// 引入 babel 插件</span>
-      <span class="token function">babel</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-        <span class="token literal-property property">exclude</span><span class="token operator">:</span> <span class="token function">calcPath</span><span class="token punctuation">(</span><span class="token string">'../node_modules/**'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-      <span class="token comment">// js 压缩插件，需要在最后引入</span>
-      <span class="token function">uglify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// build/rollup.config.js</span>
-<span class="token keyword">import</span> dev <span class="token keyword">from</span> <span class="token string">'./rollup.config.dev'</span>
-<span class="token keyword">import</span> prod <span class="token keyword">from</span> <span class="token string">'./rollup.config.prod'</span>
-
-<span class="token comment">// 如果当前环境时 production，则使用 prod 配置，否则使用 dev 配置</span>
-<span class="token keyword">export</span> <span class="token keyword">default</span> process<span class="token punctuation">.</span>env<span class="token punctuation">.</span><span class="token constant">NODE_ENV</span> <span class="token operator">===</span> <span class="token string">'production'</span> <span class="token operator">?</span> prod <span class="token operator">:</span> dev<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// build/rollup.config.js</span><br><span class="hljs-keyword">import</span> dev <span class="hljs-keyword">from</span> <span class="hljs-string">'./rollup.config.dev'</span><br><span class="hljs-keyword">import</span> prod <span class="hljs-keyword">from</span> <span class="hljs-string">'./rollup.config.prod'</span><br><br><span class="hljs-comment">// 如果当前环境时 production，则使用 prod 配置，否则使用 dev 配置</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> === <span class="hljs-string">'production'</span> ? prod : dev<br></code></pre></td></tr></tbody></table></figure>
 
 <p>修改 npm 脚本</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">"scripts": {
-  "build:dev": "rollup -c build/rollup.config.js --environment NODE_ENV:development",
-  "build:prod": "rollup -c build/rollup.config.js --environment NODE_ENV:production",
-  "build": "npm run build:dev &amp;&amp; npm run build:prod",
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"build:dev"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rollup -c build/rollup.config.js --environment NODE_ENV:development"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"build:prod"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"rollup -c build/rollup.config.js --environment NODE_ENV:production"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"build"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"npm run build:dev &amp;&amp; npm run build:prod"</span><span class="hljs-punctuation">,</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>那么，关于使用 rollup 打包 JavaScript 的内容就先到这里了，有需要的话后续吾辈还会继续更新的！</p>
@@ -996,8 +762,6 @@
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

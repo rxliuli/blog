@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景今天在使用 v-model 进行组件双向数据绑定的时候遇到了一个奇怪的问题，网页本身运行正常，浏览器一直出现警告信息。 [Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a da">
+    <meta name="description" content="场景今天在使用 v-model 进行组件双向数据绑定的时候遇到了一个奇怪的问题，网页本身运行正常，浏览器一直出现警告信息。 1[Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a d">
 <meta property="og:type" content="article">
 <meta property="og:title" content="vue 使用 v-model 双向绑定父子组件的值">
 <meta property="og:url" content="https://blog.rxliuli.com/p/f21600fda3914f5d8b5604534ca78138/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景今天在使用 v-model 进行组件双向数据绑定的时候遇到了一个奇怪的问题，网页本身运行正常，浏览器一直出现警告信息。 [Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a da">
+<meta property="og:description" content="场景今天在使用 v-model 进行组件双向数据绑定的时候遇到了一个奇怪的问题，网页本身运行正常，浏览器一直出现警告信息。 1[Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a d">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-02T14:15:37.909Z">
 <meta property="article:modified_time" content="2020-12-30T04:59:59.911Z">
@@ -40,8 +40,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.8k 字
+          1.9k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          15 分钟
+          16 分钟
         
       </span>
     
@@ -313,48 +311,16 @@
               <div class="markdown-body">
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>今天在使用 <code>v-model</code> 进行组件双向数据绑定的时候遇到了一个奇怪的问题，网页本身运行正常，浏览器一直出现警告信息。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">[Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "value"<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">[Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop<span class="hljs-string">'s value. Prop being mutated: "value"</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>引发这个警告的是一个自定义组件 <code>RxSelect</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span><span class="token string">'RxSelect'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">model</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">prop</span><span class="token operator">:</span> <span class="token string">'value'</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">event</span><span class="token operator">:</span> <span class="token string">'change'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">value</span><span class="token operator">:</span> <span class="token punctuation">[</span>Number<span class="token punctuation">,</span> String<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">map</span><span class="token operator">:</span> Map<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">template</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
-        &lt;select
-          v-model="value"
-          @change="$emit('change', value)"
-        &gt;
-          &lt;option
-            v-for="[k,v] in map"
-            :value="k"
-            :key="k"
-          &gt;{{v}}&lt;/option&gt;
-        &lt;/select&gt;
-        </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">component</span>(<span class="hljs-string">'RxSelect'</span>, {<br>  <span class="hljs-attr">model</span>: {<br>    <span class="hljs-attr">prop</span>: <span class="hljs-string">'value'</span>,<br>    <span class="hljs-attr">event</span>: <span class="hljs-string">'change'</span>,<br>  },<br>  <span class="hljs-attr">props</span>: {<br>    <span class="hljs-attr">value</span>: [<span class="hljs-title class_">Number</span>, <span class="hljs-title class_">String</span>],<br>    <span class="hljs-attr">map</span>: <span class="hljs-title class_">Map</span>,<br>  },<br>  <span class="hljs-attr">template</span>: <span class="hljs-string">`</span><br><span class="hljs-string">        &lt;select</span><br><span class="hljs-string">          v-model="value"</span><br><span class="hljs-string">          @change="$emit('change', value)"</span><br><span class="hljs-string">        &gt;</span><br><span class="hljs-string">          &lt;option</span><br><span class="hljs-string">            v-for="[k,v] in map"</span><br><span class="hljs-string">            :value="k"</span><br><span class="hljs-string">            :key="k"</span><br><span class="hljs-string">          &gt;{{v}}&lt;/option&gt;</span><br><span class="hljs-string">        &lt;/select&gt;</span><br><span class="hljs-string">        `</span>,<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>吾辈使用的代码看起来代码貌似没什么问题？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>app<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-  当前选择的性别是: {{map.get(sex)}}
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rx-select</span> <span class="token attr-name">:map</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>map<span class="token punctuation">"</span></span> <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sex<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
-  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"app"</span>&gt;</span><br>  当前选择的性别是: {{map.get(sex)}}<br>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">rx-select</span> <span class="hljs-attr">:map</span>=<span class="hljs-string">"map"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"sex"</span> /&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>JavaScript 代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">new</span> <span class="token class-name">Vue</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-  <span class="token literal-property property">el</span><span class="token operator">:</span> <span class="token string">'#app'</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">data</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">map</span><span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'保密'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'男'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token string">'女'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">sex</span><span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>({<br>  <span class="hljs-attr">el</span>: <span class="hljs-string">'#app'</span>,<br>  <span class="hljs-attr">data</span>: {<br>    <span class="hljs-attr">map</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'保密'</span>).<span class="hljs-title function_">set</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'男'</span>).<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'女'</span>),<br>    <span class="hljs-attr">sex</span>: <span class="hljs-string">''</span>,<br>  },<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>经测试，程序本身运行正常，父子组件的传值也没什么问题，双向数据绑定确实生效了，然而浏览器就是一直报错。</p>
 <h2 id="尝试解决"><a href="#尝试解决" class="headerlink" title="尝试解决"></a>尝试解决</h2><p>吾辈找到一种方式</p>
@@ -364,70 +330,11 @@
 <li>监听 <code>value</code> 的变化，在父组件中 <code>value</code> 变化时修改 <code>innerValue</code> 的值</li>
 <li>监听 <code>innerValue</code> 的变化，在变化时使用 <code>this.$emit('change', val)</code> 告诉父组件需要更新 <code>value</code> 的值</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span><span class="token string">'RxSelect'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">model</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">prop</span><span class="token operator">:</span> <span class="token string">'value'</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">event</span><span class="token operator">:</span> <span class="token string">'change'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">value</span><span class="token operator">:</span> <span class="token punctuation">[</span>Number<span class="token punctuation">,</span> String<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">map</span><span class="token operator">:</span> Map<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token punctuation">{</span>
-      <span class="token literal-property property">innerValue</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>value<span class="token punctuation">,</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">watch</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token function">value</span><span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span>innerValue <span class="token operator">=</span> val
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function">innerValue</span><span class="token punctuation">(</span><span class="token parameter">val</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$emit</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">template</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
-  &lt;select v-model="innerValue"&gt;
-    &lt;option
-      v-for="[k,v] in map"
-      :value="k"
-      :key="k"
-    &gt;{{v}}&lt;/option&gt;
-  &lt;/select&gt;
-  </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">component</span>(<span class="hljs-string">'RxSelect'</span>, {<br>  <span class="hljs-attr">model</span>: {<br>    <span class="hljs-attr">prop</span>: <span class="hljs-string">'value'</span>,<br>    <span class="hljs-attr">event</span>: <span class="hljs-string">'change'</span>,<br>  },<br>  <span class="hljs-attr">props</span>: {<br>    <span class="hljs-attr">value</span>: [<span class="hljs-title class_">Number</span>, <span class="hljs-title class_">String</span>],<br>    <span class="hljs-attr">map</span>: <span class="hljs-title class_">Map</span>,<br>  },<br>  <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">return</span> {<br>      <span class="hljs-attr">innerValue</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">value</span>,<br>    }<br>  },<br>  <span class="hljs-attr">watch</span>: {<br>    <span class="hljs-title function_">value</span>(<span class="hljs-params">val</span>) {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">innerValue</span> = val<br>    },<br>    <span class="hljs-title function_">innerValue</span>(<span class="hljs-params">val</span>) {<br>      <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">'change'</span>, val)<br>    },<br>  },<br>  <span class="hljs-attr">template</span>: <span class="hljs-string">`</span><br><span class="hljs-string">  &lt;select v-model="innerValue"&gt;</span><br><span class="hljs-string">    &lt;option</span><br><span class="hljs-string">      v-for="[k,v] in map"</span><br><span class="hljs-string">      :value="k"</span><br><span class="hljs-string">      :key="k"</span><br><span class="hljs-string">    &gt;{{v}}&lt;/option&gt;</span><br><span class="hljs-string">  &lt;/select&gt;</span><br><span class="hljs-string">  `</span>,<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用代码完全一样，然而组件 <code>RxSelect</code> 的代码却多了许多。。。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>一种更优雅的方式是使用 <code>computed</code> 计算属性以及其的 <code>get/set</code>，代码增加的程度还是可以接受的</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">Vue<span class="token punctuation">.</span><span class="token function">component</span><span class="token punctuation">(</span><span class="token string">'RxSelect'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">model</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">prop</span><span class="token operator">:</span> <span class="token string">'value'</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">event</span><span class="token operator">:</span> <span class="token string">'change'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">value</span><span class="token operator">:</span> <span class="token punctuation">[</span>Number<span class="token punctuation">,</span> String<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token literal-property property">map</span><span class="token operator">:</span> Map<span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">computed</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token literal-property property">innerValue</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>value
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      <span class="token function">set</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">$emit</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> val<span class="token punctuation">)</span>
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">template</span><span class="token operator">:</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">
-  &lt;select v-model="innerValue"&gt;
-    &lt;option
-      v-for="[k,v] in map"
-      :value="k"
-      :key="k"
-    &gt;{{v}}&lt;/option&gt;
-  &lt;/select&gt;
-  </span><span class="token template-punctuation string">`</span></span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">component</span>(<span class="hljs-string">'RxSelect'</span>, {<br>  <span class="hljs-attr">model</span>: {<br>    <span class="hljs-attr">prop</span>: <span class="hljs-string">'value'</span>,<br>    <span class="hljs-attr">event</span>: <span class="hljs-string">'change'</span>,<br>  },<br>  <span class="hljs-attr">props</span>: {<br>    <span class="hljs-attr">value</span>: [<span class="hljs-title class_">Number</span>, <span class="hljs-title class_">String</span>],<br>    <span class="hljs-attr">map</span>: <span class="hljs-title class_">Map</span>,<br>  },<br>  <span class="hljs-attr">computed</span>: {<br>    <span class="hljs-attr">innerValue</span>: {<br>      <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) {<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">value</span><br>      },<br>      <span class="hljs-title function_">set</span>(<span class="hljs-params">val</span>) {<br>        <span class="hljs-variable language_">this</span>.$emit(<span class="hljs-string">'change'</span>, val)<br>      },<br>    },<br>  },<br>  <span class="hljs-attr">template</span>: <span class="hljs-string">`</span><br><span class="hljs-string">  &lt;select v-model="innerValue"&gt;</span><br><span class="hljs-string">    &lt;option</span><br><span class="hljs-string">      v-for="[k,v] in map"</span><br><span class="hljs-string">      :value="k"</span><br><span class="hljs-string">      :key="k"</span><br><span class="hljs-string">    &gt;{{v}}&lt;/option&gt;</span><br><span class="hljs-string">  &lt;/select&gt;</span><br><span class="hljs-string">  `</span>,<br>})<br></code></pre></td></tr></tbody></table></figure>
 
                 
               </div>
@@ -777,8 +684,6 @@
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

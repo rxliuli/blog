@@ -47,8 +47,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -254,7 +252,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.8k 字
+          2.9k 字
         
       </span>
     
@@ -266,7 +264,7 @@
         
         
           <!-- compatible with older versions-->
-          23 分钟
+          25 分钟
         
       </span>
     
@@ -326,110 +324,20 @@
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
 <p>这个 cli 本身国际化配置的类型定义生成也是由 cli 完成的（自举）</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">i18next-dts-gen --dirs src/i18n # 扫描这个目录下的 json 文件并生成 index.d.ts 类型定义<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">i18next-dts-gen --dirs src/i18n # 扫描这个目录下的 json 文件并生成 index.d.ts 类型定义<br></code></pre></td></tr></tbody></table></figure>
 
 <p>详情</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ i18next-dts-gen -h
-Usage: bin [options]
-
-根据 json 生成 .d.ts 类型定义
-
-Options:
-  -i, --dirs &lt;dirs...&gt;  包含一或多个翻译文件的目录
-  -w, --watch             是否使用监视模式
-  -h, --help              display help for command<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">i18next-dts-gen -h</span><br>Usage: bin [options]<br><br>根据 json 生成 .d.ts 类型定义<br><br>Options:<br>  -i, --dirs &lt;dirs...&gt;  包含一或多个翻译文件的目录<br>  -w, --watch             是否使用监视模式<br>  -h, --help              display help for command<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>下面是在 nodejs 中使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/util/I18nextUtil.ts
-import i18next from 'i18next'
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/util/I18nextUtil.ts</span><br><span class="hljs-keyword">import</span> i18next <span class="hljs-keyword">from</span> <span class="hljs-string">'i18next'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">LanguageEnum</span> {<br>  <span class="hljs-title class_">En</span> = <span class="hljs-string">'en'</span>,<br>  <span class="hljs-title class_">ZhCN</span> = <span class="hljs-string">'zhCN'</span>,<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">I18nextUtil</span>&lt;<br>  T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<br>    <span class="hljs-built_in">string</span>,<br>    {<br>      <span class="hljs-attr">params</span>: [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>] | [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">params</span>: <span class="hljs-built_in">object</span>]<br>      <span class="hljs-attr">value</span>: <span class="hljs-built_in">string</span><br>    }<br>  &gt;,<br>&gt; {<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {}<br><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">changeLang</span>(<span class="hljs-params">lang: LanguageEnum</span>) {<br>    <span class="hljs-keyword">await</span> i18next.<span class="hljs-title function_">changeLanguage</span>(lang)<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 加载国际化</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">init</span>(<span class="hljs-params">resources: Record&lt;LanguageEnum, <span class="hljs-built_in">object</span>&gt;, language: LanguageEnum</span>) {<br>    <span class="hljs-keyword">await</span> i18next.<span class="hljs-title function_">init</span>({<br>      <span class="hljs-attr">lng</span>: language,<br>      <span class="hljs-attr">resources</span>: <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(resources).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">res, [k, v]</span>) =&gt;</span> {<br>        <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">set</span>(res, k, {<br>          <span class="hljs-attr">translation</span>: v,<br>        })<br>        <span class="hljs-keyword">return</span> res<br>      }, {}),<br>      <span class="hljs-attr">keySeparator</span>: <span class="hljs-literal">false</span>,<br>    })<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 根据 key 获取翻译的文本</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">args</span></span><br><span class="hljs-comment">   */</span><br>  t&lt;K <span class="hljs-keyword">extends</span> keyof T&gt;(...<span class="hljs-attr">args</span>: T[K][<span class="hljs-string">'params'</span>]): T[K][<span class="hljs-string">'value'</span>] {<br>    <span class="hljs-comment">// @ts-ignore</span><br>    <span class="hljs-keyword">return</span> i18next.<span class="hljs-title function_">t</span>(args[<span class="hljs-number">0</span>], args[<span class="hljs-number">1</span>])<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-export enum LanguageEnum {
-  En = 'en',
-  ZhCN = 'zhCN',
-}
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/constants/i18n.ts</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">TranslateType</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'../i18n'</span><br><span class="hljs-keyword">import</span> osLocale <span class="hljs-keyword">from</span> <span class="hljs-string">'os-locale'</span><br><span class="hljs-keyword">import</span> { I18nextUtil, <span class="hljs-title class_">LanguageEnum</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'../util/I18nextUtil'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getLanguage</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">LanguageEnum</span>&gt; {<br>  <span class="hljs-keyword">const</span> language = <span class="hljs-keyword">await</span> <span class="hljs-title function_">osLocale</span>()<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * os-locale =&gt; i18next 的语言类型字符串映射</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">map</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">LanguageEnum</span>&gt; = {<br>    <span class="hljs-string">'zh-CN'</span>: <span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">ZhCN</span>,<br>    <span class="hljs-string">'en-US'</span>: <span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">En</span>,<br>  }<br>  <span class="hljs-keyword">return</span> map[language] || <span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">En</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> i18n = <span class="hljs-keyword">new</span> I18nextUtil&lt;<span class="hljs-title class_">TranslateType</span>&gt;()<br></code></pre></td></tr></tbody></table></figure>
 
-export class I18nextUtil&lt;
-  T extends Record&lt;
-    string,
-    {
-      params: [key: string] | [key: string, params: object]
-      value: string
-    }
-  &gt;,
-&gt; {
-  constructor() {}
-
-  async changeLang(lang: LanguageEnum) {
-    await i18next.changeLanguage(lang)
-  }
-
-  /**
-   * 加载国际化
-   */
-  async init(resources: Record&lt;LanguageEnum, object&gt;, language: LanguageEnum) {
-    await i18next.init({
-      lng: language,
-      resources: Object.entries(resources).reduce((res, [k, v]) =&gt; {
-        Reflect.set(res, k, {
-          translation: v,
-        })
-        return res
-      }, {}),
-      keySeparator: false,
-    })
-  }
-
-  /**
-   * 根据 key 获取翻译的文本
-   * @param args
-   */
-  t&lt;K extends keyof T&gt;(...args: T[K]['params']): T[K]['value'] {
-    // @ts-ignore
-    return i18next.t(args[0], args[1])
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/constants/i18n.ts
-import { TranslateType } from '../i18n'
-import osLocale from 'os-locale'
-import { I18nextUtil, LanguageEnum } from '../util/I18nextUtil'
-
-export async function getLanguage(): Promise&lt;LanguageEnum&gt; {
-  const language = await osLocale()
-  /**
-   * os-locale =&gt; i18next 的语言类型字符串映射
-   */
-  const map: Record&lt;string, LanguageEnum&gt; = {
-    'zh-CN': LanguageEnum.ZhCN,
-    'en-US': LanguageEnum.En,
-  }
-  return map[language] || LanguageEnum.En
-}
-
-export const i18n = new I18nextUtil&lt;TranslateType&gt;()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/bin.ts
-async function main() {
-  await i18n.init({ en, zhCN }, await getLanguage())
-  console.log(i18n.t('hello', { name: 'liuli' }))
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/bin.ts</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">await</span> i18n.<span class="hljs-title function_">init</span>({ en, zhCN }, <span class="hljs-keyword">await</span> <span class="hljs-title function_">getLanguage</span>())<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i18n.<span class="hljs-title function_">t</span>(<span class="hljs-string">'hello'</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">'liuli'</span> }))<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者在浏览器中</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// App.tsx
-function getLanguage() {
-  return navigator.language.startsWith('zh')
-    ? LanguageEnum.ZhCN
-    : LanguageEnum.En
-}
-
-export const App: React.FC&lt;AppProps&gt; = () =&gt; {
-  useMount(async () =&gt; {
-    await i18n.init({ en, zhCN }, getLanguage())
-    // 然后再做其它的事情，例如加载路由
-  })
-
-  return &lt;div /&gt;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// App.tsx</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getLanguage</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">return</span> navigator.<span class="hljs-property">language</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'zh'</span>)<br>    ? <span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">ZhCN</span><br>    : <span class="hljs-title class_">LanguageEnum</span>.<span class="hljs-property">En</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">AppProps</span>&gt; = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-title function_">useMount</span>(<span class="hljs-keyword">async</span> () =&gt; {<br>    <span class="hljs-keyword">await</span> i18n.<span class="hljs-title function_">init</span>({ en, zhCN }, <span class="hljs-title function_">getLanguage</span>())<br>    <span class="hljs-comment">// 然后再做其它的事情，例如加载路由</span><br>  })<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> /&gt;</span></span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当然，如果你需要在其他环境中使用，应该仅需实现对应的 <code>getLanguage</code> 函数即可。</p>
 <h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><p>提示</p>
@@ -817,8 +725,6 @@ export const App: React.FC&lt;AppProps&gt; = () =&gt; {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

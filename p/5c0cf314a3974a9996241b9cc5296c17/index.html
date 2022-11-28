@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="场景面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦 行转列指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧 例如下面这个 exam 表 drop table if exists exam; create table exam (   nam">
+    <meta name="description" content="场景面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦 行转列指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧 例如下面这个 exam 表 1234567891011121314151617drop table if exists exam;c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL 行列转换">
 <meta property="og:url" content="https://blog.rxliuli.com/p/5c0cf314a3974a9996241b9cc5296c17/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="场景面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦 行转列指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧 例如下面这个 exam 表 drop table if exists exam; create table exam (   nam">
+<meta property="og:description" content="场景面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦 行转列指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧 例如下面这个 exam 表 1234567891011121314151617drop table if exists exam;c">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-18T14:14:09.413Z">
 <meta property="article:modified_time" content="2020-12-30T05:18:46.671Z">
@@ -40,8 +40,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          7.2k 字
+          7.7k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          60 分钟
+          65 分钟
         
       </span>
     
@@ -315,23 +313,7 @@
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>面试的时候遇到的一个问题，之前没有碰到过这种场景，所以却是无论如何都回答不了呢！然而本着遇到的坑跌倒过一次就够了的理念，回来时吾辈稍微 Google 了一下这个问题，结果便在此记录一下好啦</p>
 <h2 id="行转列"><a href="#行转列" class="headerlink" title="行转列"></a>行转列</h2><p>指的是将数据行根据状态区分为不同的列，主要应用场景应该是统计报表吧</p>
 <p>例如下面这个 <code>exam</code> 表</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">drop table if exists exam;
-create table exam (
-  name    varchar(20) not null
-  comment '姓名',
-  subject varchar(20) not null
-  comment '考试科目',
-  score   int         null
-  comment '考试成绩'
-)
-  comment '考试记录';
-
-insert into exam values ('琉璃', '语文', 90);
-insert into exam values ('琉璃', '英语', 85);
-insert into exam values ('楚轩', '数学', 100);
-insert into exam values ('楚轩', '物理', 100);
-insert into exam values ('张三', '化学', 40);
-insert into exam values ('李四', '生物', 100);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> if <span class="hljs-keyword">exists</span> exam;<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> exam (<br>  name    <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'姓名'</span>,<br>  subject <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'考试科目'</span>,<br>  score   <span class="hljs-type">int</span>         <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'考试成绩'</span><br>)<br>  comment <span class="hljs-string">'考试记录'</span>;<br><br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'琉璃'</span>, <span class="hljs-string">'语文'</span>, <span class="hljs-number">90</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'琉璃'</span>, <span class="hljs-string">'英语'</span>, <span class="hljs-number">85</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'楚轩'</span>, <span class="hljs-string">'数学'</span>, <span class="hljs-number">100</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'楚轩'</span>, <span class="hljs-string">'物理'</span>, <span class="hljs-number">100</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'张三'</span>, <span class="hljs-string">'化学'</span>, <span class="hljs-number">40</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam <span class="hljs-keyword">values</span> (<span class="hljs-string">'李四'</span>, <span class="hljs-string">'生物'</span>, <span class="hljs-number">100</span>);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>直接查询会是下面这个样子</p>
 <table>
@@ -425,24 +407,10 @@ insert into exam values ('李四', '生物', 100);<span aria-hidden="true" class
 </tbody></table>
 <p>大致的实现思路是判断 <code>subject</code> 的值，如果等于 <code>转换列</code> 的值，就将之设置为该 <code>转换列</code> 的值。（此处的 <code>转换列</code> 指的是根据 <code>subject</code> 的值查询的新列）</p>
 <p>目前网络上能找到的方法有下面两种</p>
-<h3 id="使用-if-实现行转列"><a href="#使用-if-实现行转列" class="headerlink" title="使用 if 实现行转列"></a>使用 if 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                              as '姓名',
-  max(if(subject = '语文', score, 0)) as '语文',
-  max(if(subject = '数学', score, 0)) as '数学',
-  max(if(subject = '英语', score, 0)) as '英语',
-  max(if(subject = '物理', score, 0)) as '物理',
-  max(if(subject = '化学', score, 0)) as '化学',
-  max(if(subject = '生物', score, 0)) as '生物'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-if-实现行转列"><a href="#使用-if-实现行转列" class="headerlink" title="使用 if 实现行转列"></a>使用 if 实现行转列</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name                              <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'语文'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'语文'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'数学'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'数学'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'英语'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'英语'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'物理'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'物理'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'化学'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'化学'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'生物'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'生物'</span><br><span class="hljs-keyword">from</span> exam<br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>优点：简单方便，即便是将几列合并也可以简单做到。例如我们想要统计主科/副科的总分</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                                                                  as '姓名',
-  sum(if(subject = '语文' or subject = '数学' or subject = '英语', score, 0)) as '主科',
-  sum(if(subject = '物理' or subject = '化学' or subject = '生物', score, 0)) as '副科'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name                                                                  <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-built_in">sum</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'语文'</span> <span class="hljs-keyword">or</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'数学'</span> <span class="hljs-keyword">or</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'英语'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'主科'</span>,<br>  <span class="hljs-built_in">sum</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'物理'</span> <span class="hljs-keyword">or</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'化学'</span> <span class="hljs-keyword">or</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'生物'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'副科'</span><br><span class="hljs-keyword">from</span> exam<br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>查询结果</p>
 <table>
@@ -475,20 +443,7 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 </tr>
 </tbody></table>
 <p>或者简单的实现小计</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  -- 这里的 ifnull 其实是为了让最后一行的统计不为 null
-  ifnull(name, 'total')             as '姓名',
-  max(if(subject = '语文', score, 0)) as '语文',
-  max(if(subject = '数学', score, 0)) as '数学',
-  max(if(subject = '英语', score, 0)) as '英语',
-  max(if(subject = '物理', score, 0)) as '物理',
-  max(if(subject = '化学', score, 0)) as '化学',
-  max(if(subject = '生物', score, 0)) as '生物',
-  -- 统计每一行数据
-  sum(score)                        as total
-from exam
--- 按照 name 进行分组并进行小计
-group by name with rollup;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  <span class="hljs-comment">-- 这里的 ifnull 其实是为了让最后一行的统计不为 null</span><br>  ifnull(name, <span class="hljs-string">'total'</span>)             <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'语文'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'语文'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'数学'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'数学'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'英语'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'英语'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'物理'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'物理'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'化学'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'化学'</span>,<br>  <span class="hljs-built_in">max</span>(if(subject <span class="hljs-operator">=</span> <span class="hljs-string">'生物'</span>, score, <span class="hljs-number">0</span>)) <span class="hljs-keyword">as</span> <span class="hljs-string">'生物'</span>,<br>  <span class="hljs-comment">-- 统计每一行数据</span><br>  <span class="hljs-built_in">sum</span>(score)                        <span class="hljs-keyword">as</span> total<br><span class="hljs-keyword">from</span> exam<br><span class="hljs-comment">-- 按照 name 进行分组并进行小计</span><br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name <span class="hljs-keyword">with</span> <span class="hljs-keyword">rollup</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>查询结果</p>
 <table>
@@ -555,43 +510,13 @@ group by name with rollup;<span aria-hidden="true" class="line-numbers-rows"><sp
 <td>590</td>
 </tr>
 </tbody></table>
-<h3 id="使用-case-when-实现行转列"><a href="#使用-case-when-实现行转列" class="headerlink" title="使用 case when 实现行转列"></a>使用 case when 实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name as '姓名',
-  max(case subject when '语文' then score else 0 end) as '语文',
-  max(case subject when '数学' then score else 0 end) as '数学',
-  max(case subject when '英语' then score else 0 end) as '英语',
-  max(case subject when '物理' then score else 0 end) as '物理',
-  max(case subject when '化学' then score else 0 end) as '化学',
-  max(case subject when '生物' then score else 0 end) as '生物'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-case-when-实现行转列"><a href="#使用-case-when-实现行转列" class="headerlink" title="使用 case when 实现行转列"></a>使用 case when 实现行转列</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'语文'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'语文'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'数学'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'数学'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'英语'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'英语'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'物理'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'物理'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'化学'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'化学'</span>,<br>  <span class="hljs-built_in">max</span>(<span class="hljs-keyword">case</span> subject <span class="hljs-keyword">when</span> <span class="hljs-string">'生物'</span> <span class="hljs-keyword">then</span> score <span class="hljs-keyword">else</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'生物'</span><br><span class="hljs-keyword">from</span> exam<br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>优点：相比于 <code>if</code> 更加灵活，可以对每个 <code>转换列</code> 的值进行单独的处理。例如我们想要统计主科/副科的总分，并设置计算语文/数学时增加一半，而英语的分数则忽略不计</p>
 <blockquote>
 <p>感觉这个优势相当的小，当然如果用到的话却是无需多言的</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name     as '姓名',
-  sum(case subject
-      when '语文'
-        then score * 1.5
-      when '数学'
-        then score * 1.5
-      when '英语'
-        then 0
-      else 0
-      end) as '主科',
-  sum(case subject
-      when '物理'
-        then score
-      when '化学'
-        then score
-      when '生物'
-        then score
-      else 0
-      end) as '副科'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name     <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-built_in">sum</span>(<span class="hljs-keyword">case</span> subject<br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'语文'</span><br>        <span class="hljs-keyword">then</span> score <span class="hljs-operator">*</span> <span class="hljs-number">1.5</span><br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'数学'</span><br>        <span class="hljs-keyword">then</span> score <span class="hljs-operator">*</span> <span class="hljs-number">1.5</span><br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'英语'</span><br>        <span class="hljs-keyword">then</span> <span class="hljs-number">0</span><br>      <span class="hljs-keyword">else</span> <span class="hljs-number">0</span><br>      <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'主科'</span>,<br>  <span class="hljs-built_in">sum</span>(<span class="hljs-keyword">case</span> subject<br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'物理'</span><br>        <span class="hljs-keyword">then</span> score<br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'化学'</span><br>        <span class="hljs-keyword">then</span> score<br>      <span class="hljs-keyword">when</span> <span class="hljs-string">'生物'</span><br>        <span class="hljs-keyword">then</span> score<br>      <span class="hljs-keyword">else</span> <span class="hljs-number">0</span><br>      <span class="hljs-keyword">end</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'副科'</span><br><span class="hljs-keyword">from</span> exam<br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>查询结果</p>
 <table>
@@ -623,34 +548,11 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 <td>0</td>
 </tr>
 </tbody></table>
-<h3 id="使用子查询实现行转列"><a href="#使用子查询实现行转列" class="headerlink" title="使用子查询实现行转列"></a>使用子查询实现行转列</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name,
-  if(language != 'null', language, 0)       as '语文',
-  if(mathematics != 'null', mathematics, 0) as '数学',
-  if(english != 'null', english, 0)         as '英语',
-  if(physical != 'null', physical, 0)       as '物理',
-  if(chemistry != 'null', chemistry, 0)     as '化学',
-  if(biological != 'null', biological, 0)   as '生物'
-from (
-       select
-         e.name,
-         (select e1.score from exam e1 where subject = '语文' and e1.name = e.name limit 1) as language,
-         (select e1.score from exam e1 where subject = '数学' and e1.name = e.name limit 1) as mathematics,
-         (select e1.score from exam e1 where subject = '英语' and e1.name = e.name limit 1) as english,
-         (select e1.score from exam e1 where subject = '物理' and e1.name = e.name limit 1) as physical,
-         (select e1.score from exam e1 where subject = '化学' and e1.name = e.name limit 1) as chemistry,
-         (select e1.score from exam e1 where subject = '生物' and e1.name = e.name limit 1) as biological
-       from exam e
-       group by name
-     ) temp;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用子查询实现行转列"><a href="#使用子查询实现行转列" class="headerlink" title="使用子查询实现行转列"></a>使用子查询实现行转列</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name,<br>  if(<span class="hljs-keyword">language</span> <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, <span class="hljs-keyword">language</span>, <span class="hljs-number">0</span>)       <span class="hljs-keyword">as</span> <span class="hljs-string">'语文'</span>,<br>  if(mathematics <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, mathematics, <span class="hljs-number">0</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">'数学'</span>,<br>  if(english <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, english, <span class="hljs-number">0</span>)         <span class="hljs-keyword">as</span> <span class="hljs-string">'英语'</span>,<br>  if(physical <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, physical, <span class="hljs-number">0</span>)       <span class="hljs-keyword">as</span> <span class="hljs-string">'物理'</span>,<br>  if(chemistry <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, chemistry, <span class="hljs-number">0</span>)     <span class="hljs-keyword">as</span> <span class="hljs-string">'化学'</span>,<br>  if(biological <span class="hljs-operator">!=</span> <span class="hljs-string">'null'</span>, biological, <span class="hljs-number">0</span>)   <span class="hljs-keyword">as</span> <span class="hljs-string">'生物'</span><br><span class="hljs-keyword">from</span> (<br>       <span class="hljs-keyword">select</span><br>         e.name,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'语文'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">language</span>,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'数学'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> mathematics,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'英语'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> english,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'物理'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> physical,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'化学'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> chemistry,<br>         (<span class="hljs-keyword">select</span> e1.score <span class="hljs-keyword">from</span> exam e1 <span class="hljs-keyword">where</span> subject <span class="hljs-operator">=</span> <span class="hljs-string">'生物'</span> <span class="hljs-keyword">and</span> e1.name <span class="hljs-operator">=</span> e.name limit <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> biological<br>       <span class="hljs-keyword">from</span> exam e<br>       <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name<br>     ) temp;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>优点：使用起来最灵活，但代码量也是最大的。可以对每一个列的多条/单条数据进行单独的处理，不需要必须使用统计函数（<code>sum/avg/max/min/count</code>）。例如上面就是如果查到了多条数据就直接取第一条，当然也可以对第一条数据做后续处理。</p>
 <h3 id="使用-group-concat-简单的行连接"><a href="#使用-group-concat-简单的行连接" class="headerlink" title="使用 group_concat 简单的行连接"></a>使用 group_concat 简单的行连接</h3><p>并非是真正的行转列，实际上只是把不同字段的数据 <em>连接</em> 了起来</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name                              as '姓名',
-  group_concat(subject, ' ', score) as '成绩单'
-from exam
-group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name                              <span class="hljs-keyword">as</span> <span class="hljs-string">'姓名'</span>,<br>  group_concat(subject, <span class="hljs-string">' '</span>, score) <span class="hljs-keyword">as</span> <span class="hljs-string">'成绩单'</span><br><span class="hljs-keyword">from</span> exam<br><span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> name;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>查询结果</p>
 <table>
@@ -679,31 +581,7 @@ group by name;<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 </tbody></table>
 <h2 id="列转行"><a href="#列转行" class="headerlink" title="列转行"></a>列转行</h2><p>将类似的列按照某种规则变成一列，并生成等同倍数的行。</p>
 <p>我们需要将上面行转列得到的表转换回来，例如下面的 <code>exam_score</code> 表</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">create table exam_score (
-  name        varchar(20) not null
-  comment '姓名',
-  language    int         not null
-  comment '语文',
-  mathematics int         not null
-  comment '数学',
-  english     int         not null
-  comment '英语',
-  physical    int         not null
-  comment '物理',
-  chemistry   int         not null
-  comment '化学',
-  biological  int         not null
-  comment '生物'
-)
-  comment '考试成绩';
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('张三', 0, 0, 0, 0, 40, 0);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('李四', 0, 0, 0, 0, 0, 100);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('楚轩', 0, 100, 0, 100, 0, 0);
-insert into exam_score (name, language, mathematics, english, physical, chemistry, biological)
-values ('琉璃', 90, 0, 85, 0, 0, 0);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> exam_score (<br>  name        <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'姓名'</span>,<br>  <span class="hljs-keyword">language</span>    <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'语文'</span>,<br>  mathematics <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'数学'</span>,<br>  english     <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'英语'</span>,<br>  physical    <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'物理'</span>,<br>  chemistry   <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'化学'</span>,<br>  biological  <span class="hljs-type">int</span>         <span class="hljs-keyword">not</span> <span class="hljs-keyword">null</span><br>  comment <span class="hljs-string">'生物'</span><br>)<br>  comment <span class="hljs-string">'考试成绩'</span>;<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam_score (name, <span class="hljs-keyword">language</span>, mathematics, english, physical, chemistry, biological)<br><span class="hljs-keyword">values</span> (<span class="hljs-string">'张三'</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">40</span>, <span class="hljs-number">0</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam_score (name, <span class="hljs-keyword">language</span>, mathematics, english, physical, chemistry, biological)<br><span class="hljs-keyword">values</span> (<span class="hljs-string">'李四'</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">100</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam_score (name, <span class="hljs-keyword">language</span>, mathematics, english, physical, chemistry, biological)<br><span class="hljs-keyword">values</span> (<span class="hljs-string">'楚轩'</span>, <span class="hljs-number">0</span>, <span class="hljs-number">100</span>, <span class="hljs-number">0</span>, <span class="hljs-number">100</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> exam_score (name, <span class="hljs-keyword">language</span>, mathematics, english, physical, chemistry, biological)<br><span class="hljs-keyword">values</span> (<span class="hljs-string">'琉璃'</span>, <span class="hljs-number">90</span>, <span class="hljs-number">0</span>, <span class="hljs-number">85</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br></code></pre></td></tr></tbody></table></figure>
 
 <p>直接查询结果是</p>
 <table>
@@ -795,214 +673,21 @@ values ('琉璃', 90, 0, 85, 0, 0, 0);<span aria-hidden="true" class="line-numbe
 <td>100</td>
 </tr>
 </tbody></table>
-<h3 id="使用-union-all-联合查询"><a href="#使用-union-all-联合查询" class="headerlink" title="使用 union all 联合查询"></a>使用 union all 联合查询</h3><figure><div class="code-wrapper"><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">select
-  name,
-  '语文'     as 'subject',
-  language as score
-from exam_score
-where language != 0
-union all
-select
-  name,
-  '数学'        as 'subject',
-  mathematics as score
-from exam_score
-where mathematics != 0
-union all
-select
-  name,
-  '英语'    as 'subject',
-  english as score
-from exam_score
-where english != 0
-union all
-select
-  name,
-  '物理'     as 'subject',
-  physical as score
-from exam_score
-where physical != 0
-union all
-select
-  name,
-  '化学'      as 'subject',
-  chemistry as score
-from exam_score
-where chemistry != 0
-union all
-select
-  name,
-  '生物'       as 'subject',
-  biological as score
-from exam_score
-where biological != 0;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="使用-union-all-联合查询"><a href="#使用-union-all-联合查询" class="headerlink" title="使用 union all 联合查询"></a>使用 union all 联合查询</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'语文'</span>     <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  <span class="hljs-keyword">language</span> <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> <span class="hljs-keyword">language</span> <span class="hljs-operator">!=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'数学'</span>        <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  mathematics <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> mathematics <span class="hljs-operator">!=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'英语'</span>    <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  english <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> english <span class="hljs-operator">!=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'物理'</span>     <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  physical <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> physical <span class="hljs-operator">!=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'化学'</span>      <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  chemistry <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> chemistry <span class="hljs-operator">!=</span> <span class="hljs-number">0</span><br><span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span><br>  name,<br>  <span class="hljs-string">'生物'</span>       <span class="hljs-keyword">as</span> <span class="hljs-string">'subject'</span>,<br>  biological <span class="hljs-keyword">as</span> score<br><span class="hljs-keyword">from</span> exam_score<br><span class="hljs-keyword">where</span> biological <span class="hljs-operator">!=</span> <span class="hljs-number">0</span>;<br></code></pre></td></tr></tbody></table></figure>
 
 <p>唔，好长的 sql 语句，这还只是 6 个 <code>转换列</code>，如果有更多的话恐怕。。。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="sql-行转列的问题"><a href="#sql-行转列的问题" class="headerlink" title="sql 行转列的问题"></a>sql 行转列的问题</h3><p>sql 的技巧确实很多，然而相比之下 sql 只是一门 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SQL">结构化查询语言</a>，并不算是真正的编程语言呢！行转列/列转行这些需求放到真正的编程语言中是很容易处理的，下面演示使用 js 的实现</p>
 <h3 id="使用-JavaScript-实现行转列"><a href="#使用-JavaScript-实现行转列" class="headerlink" title="使用 JavaScript 实现行转列"></a>使用 JavaScript 实现行转列</h3><p>假设有下面这样一个 json 数据</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">[
-  {
-    "name": "琉璃",
-    "subject": "语文",
-    "score": 75
-  },
-  {
-    "name": "琉璃",
-    "subject": "语文",
-    "score": 90
-  },
-  {
-    "name": "琉璃",
-    "subject": "英语",
-    "score": 85
-  },
-  {
-    "name": "楚轩",
-    "subject": "数学",
-    "score": 100
-  },
-  {
-    "name": "楚轩",
-    "subject": "物理",
-    "score": 100
-  },
-  {
-    "name": "张三",
-    "subject": "化学",
-    "score": 40
-  },
-  {
-    "name": "李四",
-    "subject": "生物",
-    "score": 100
-  }
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"琉璃"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"语文"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">75</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"琉璃"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"语文"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">90</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"琉璃"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"英语"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">85</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"楚轩"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"数学"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"楚轩"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"物理"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"张三"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"化学"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">40</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"李四"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"subject"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"生物"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"score"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>转换方法</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
- * 行转列
- * @param {Array} arr 需要进行行转列的数组
- * @returns {Array} 行转列得到的数组
- */</span>
-<span class="token keyword">function</span> <span class="token function">rowToCol</span><span class="token punctuation">(</span><span class="token parameter">arr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">/**
-   * js 数组按照某个条件进行分组
-   * 注：分组完成后会得到一个二维数组，并且顺序会被打乱
-   * 时间复杂度为 2On
-   * @param {Function} {fn} 元素分组的方法，默认使用 {@link JSON.stringify()}
-   * @returns {Array} 新的数组
-   */</span>
-  <span class="token class-name">Array</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">groupBy</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token function-variable function">fn</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// 将元素按照分组条件进行分组得到一个 条件 -&gt; 数组 的对象</span>
-    <span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-      <span class="token keyword">const</span> name <span class="token operator">=</span> <span class="token function">fn</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span>
-      <span class="token comment">// 如果已经有这个键了就直接追加, 否则先将之赋值为 [] 再追加元素</span>
-      <span class="token punctuation">;</span><span class="token punctuation">(</span>obj<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token punctuation">(</span>obj<span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-    <span class="token comment">// 将对象转换为数组</span>
-    <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">key</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> obj<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-
-  <span class="token comment">/**
-   * js 的数组去重方法
-   * @param {Function} {fn} 唯一标识元素的方法，默认使用 {@link JSON.stringify()}
-   * @returns {Array} 进行去重操作之后得到的新的数组 (原数组并未改变)
-   */</span>
-  <span class="token class-name">Array</span><span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function-variable function">uniqueBy</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token function-variable function">fn</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">const</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">item</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-      <span class="token keyword">return</span> obj<span class="token punctuation">.</span><span class="token function">hasOwnProperty</span><span class="token punctuation">(</span><span class="token function">fn</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token boolean">false</span> <span class="token operator">:</span> <span class="token punctuation">(</span>obj<span class="token punctuation">[</span><span class="token function">fn</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">}</span>
-
-  <span class="token comment">/**
-   * 获取所有的科目 -&gt; 分数映射表
-   * 看起来函数有点奇怪，但实际上只是一个闭包函数而已
-   * @returns {Object} 所有的科目 -&gt; 分数映射表的拷贝
-   */</span>
-  <span class="token keyword">const</span> subjectMap <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">obj</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span>
-    arr
-      <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">row</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> row<span class="token punctuation">.</span>subject<span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">uniqueBy</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">res<span class="token punctuation">,</span> subject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-        res<span class="token punctuation">[</span>subject<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
-        <span class="token keyword">return</span> res
-      <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-  <span class="token keyword">return</span> arr
-    <span class="token punctuation">.</span><span class="token function">groupBy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">row</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> row<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">arr</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-      arr
-        <span class="token punctuation">.</span><span class="token function">uniqueBy</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">row</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> row<span class="token punctuation">.</span>subject<span class="token punctuation">)</span>
-        <span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">res<span class="token punctuation">,</span> temp</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-          res <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token function">subjectMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span>
-          res<span class="token punctuation">.</span>name <span class="token operator">=</span> temp<span class="token punctuation">.</span>name
-          res<span class="token punctuation">[</span>temp<span class="token punctuation">.</span>subject<span class="token punctuation">]</span> <span class="token operator">=</span> temp<span class="token punctuation">.</span>score
-          <span class="token keyword">return</span> res
-        <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 行转列</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Array</span>} arr 需要进行行转列的数组</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Array</span>} 行转列得到的数组</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">rowToCol</span>(<span class="hljs-params">arr</span>) {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * js 数组按照某个条件进行分组</span><br><span class="hljs-comment">   * 注：分组完成后会得到一个二维数组，并且顺序会被打乱</span><br><span class="hljs-comment">   * 时间复杂度为 2On</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Function</span>} {<span class="hljs-type">fn</span>} 元素分组的方法，默认使用 {<span class="hljs-doctag">@link</span> JSON.stringify()}</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Array</span>} 新的数组</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">groupBy</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">fn = (item) =&gt; <span class="hljs-built_in">JSON</span>.stringify(item)</span>) {<br>    <span class="hljs-comment">// 将元素按照分组条件进行分组得到一个 条件 -&gt; 数组 的对象</span><br>    <span class="hljs-keyword">const</span> obj = {}<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> name = <span class="hljs-title function_">fn</span>(item)<br>      <span class="hljs-comment">// 如果已经有这个键了就直接追加, 否则先将之赋值为 [] 再追加元素</span><br>      ;(obj[name] || (obj[name] = [])).<span class="hljs-title function_">push</span>(item)<br>    })<br>    <span class="hljs-comment">// 将对象转换为数组</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(obj).<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> obj[key])<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * js 的数组去重方法</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Function</span>} {<span class="hljs-type">fn</span>} 唯一标识元素的方法，默认使用 {<span class="hljs-doctag">@link</span> JSON.stringify()}</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Array</span>} 进行去重操作之后得到的新的数组 (原数组并未改变)</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">uniqueBy</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">fn = (item) =&gt; <span class="hljs-built_in">JSON</span>.stringify(item)</span>) {<br>    <span class="hljs-keyword">const</span> obj = {}<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">item</span>) {<br>      <span class="hljs-keyword">return</span> obj.<span class="hljs-title function_">hasOwnProperty</span>(<span class="hljs-title function_">fn</span>(item)) ? <span class="hljs-literal">false</span> : (obj[<span class="hljs-title function_">fn</span>(item)] = <span class="hljs-literal">true</span>)<br>    })<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 获取所有的科目 -&gt; 分数映射表</span><br><span class="hljs-comment">   * 看起来函数有点奇怪，但实际上只是一个闭包函数而已</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Object</span>} 所有的科目 -&gt; 分数映射表的拷贝</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">const</span> subjectMap = (<span class="hljs-function">(<span class="hljs-params">obj</span>) =&gt;</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>({}, obj))(<br>    arr<br>      .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> row.<span class="hljs-property">subject</span>)<br>      .<span class="hljs-title function_">uniqueBy</span>()<br>      .<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">res, subject</span>) =&gt;</span> {<br>        res[subject] = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">return</span> res<br>      }, {}),<br>  )<br>  <span class="hljs-keyword">return</span> arr<br>    .<span class="hljs-title function_">groupBy</span>(<span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> row.<span class="hljs-property">name</span>)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span><br>      arr<br>        .<span class="hljs-title function_">uniqueBy</span>(<span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span> row.<span class="hljs-property">subject</span>)<br>        .<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">res, temp</span>) =&gt;</span> {<br>          res = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(<span class="hljs-title function_">subjectMap</span>(), res)<br>          res.<span class="hljs-property">name</span> = temp.<span class="hljs-property">name</span><br>          res[temp.<span class="hljs-property">subject</span>] = temp.<span class="hljs-property">score</span><br>          <span class="hljs-keyword">return</span> res<br>        }, {}),<br>    )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来好像更长了？但实际上 <code>groupBy()/uniqueBy()</code> 都是通用的函数，所以实际代码应该不超过 20 行。转换后的数据如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">[
-  {
-    "语文": 75,
-    "英语": 85,
-    "数学": 0,
-    "物理": 0,
-    "化学": 0,
-    "生物": 0,
-    "name": "琉璃"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 100,
-    "物理": 100,
-    "化学": 0,
-    "生物": 0,
-    "name": "楚轩"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 0,
-    "物理": 0,
-    "化学": 40,
-    "生物": 0,
-    "name": "张三"
-  },
-  {
-    "语文": 0,
-    "英语": 0,
-    "数学": 0,
-    "物理": 0,
-    "化学": 0,
-    "生物": 100,
-    "name": "李四"
-  }
-]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"语文"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">75</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"英语"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">85</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"数学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"物理"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"化学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"生物"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"琉璃"</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"语文"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"英语"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"数学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"物理"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"化学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"生物"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"楚轩"</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"语文"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"英语"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"数学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"物理"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"化学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">40</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"生物"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"张三"</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"语文"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"英语"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"数学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"物理"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"化学"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"生物"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"李四"</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用-JavaScript-实现列转行"><a href="#使用-JavaScript-实现列转行" class="headerlink" title="使用 JavaScript 实现列转行"></a>使用 JavaScript 实现列转行</h3><p>那么，如何转换回来呢？转换回来的话却是简单许多了呢</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">/**
- * 列转行
- * @param {Array} arr 需要进行列转行的数组
- * @returns {Array} 列转行得到的数组
- */</span>
-<span class="token keyword">function</span> <span class="token function">colToRow</span><span class="token punctuation">(</span><span class="token parameter">arr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">// 定义好需要进行合并列的数组</span>
-  <span class="token keyword">var</span> cols <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'语文'</span><span class="token punctuation">,</span> <span class="token string">'英语'</span><span class="token punctuation">,</span> <span class="token string">'数学'</span><span class="token punctuation">,</span> <span class="token string">'物理'</span><span class="token punctuation">,</span> <span class="token string">'化学'</span><span class="token punctuation">,</span> <span class="token string">'生物'</span><span class="token punctuation">]</span>
-  <span class="token keyword">return</span> arr<span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">row</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span>
-    cols
-      <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">subject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-        <span class="token literal-property property">name</span><span class="token operator">:</span> row<span class="token punctuation">.</span>name<span class="token punctuation">,</span>
-        <span class="token literal-property property">subject</span><span class="token operator">:</span> subject<span class="token punctuation">,</span>
-        <span class="token literal-property property">score</span><span class="token operator">:</span> row<span class="token punctuation">[</span>subject<span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-      <span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">newRow</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> newRow<span class="token punctuation">.</span>score <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 列转行</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">Array</span>} arr 需要进行列转行的数组</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">Array</span>} 列转行得到的数组</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">colToRow</span>(<span class="hljs-params">arr</span>) {<br>  <span class="hljs-comment">// 定义好需要进行合并列的数组</span><br>  <span class="hljs-keyword">var</span> cols = [<span class="hljs-string">'语文'</span>, <span class="hljs-string">'英语'</span>, <span class="hljs-string">'数学'</span>, <span class="hljs-string">'物理'</span>, <span class="hljs-string">'化学'</span>, <span class="hljs-string">'生物'</span>]<br>  <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">row</span>) =&gt;</span><br>    cols<br>      .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">subject</span>) =&gt;</span> ({<br>        <span class="hljs-attr">name</span>: row.<span class="hljs-property">name</span>,<br>        <span class="hljs-attr">subject</span>: subject,<br>        <span class="hljs-attr">score</span>: row[subject],<br>      }))<br>      .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">newRow</span>) =&gt;</span> newRow.<span class="hljs-property">score</span> != <span class="hljs-number">0</span>),<br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>那么，关于 MySQL 行列转换的问题就到这里啦</p>
@@ -1355,8 +1040,6 @@ where biological != 0;<span aria-hidden="true" class="line-numbers-rows"><span><
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

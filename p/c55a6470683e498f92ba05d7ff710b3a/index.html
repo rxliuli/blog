@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.5k 字
+          5.7k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          46 分钟
+          48 分钟
         
       </span>
     
@@ -335,7 +333,7 @@
 </li>
 </ul>
 <p>BasicList 使用步骤</p>
-<pre><code class="mermaid">graph TD;
+<pre><code class=" mermaid">graph TD;
 A[添加 api class 实现 BasicListApi] --&gt; B[添加配置项]
 B --&gt; C{是否需要动态修改};
 C --&gt; |是| C1[使用 useMemo 声明]
@@ -352,10 +350,11 @@ E --&gt; |是| E1[使用 filterOperate 配置]
 E --&gt; |否| E2[不声明 filter 配置]
 E1 --&gt; F
 E2 --&gt; F
-F[列表渲染]</code></pre>
+F[列表渲染]
+</code></pre>
 
 <p>BasicList 渲染流程</p>
-<pre><code class="mermaid">graph TB
+<pre><code class=" mermaid">graph TB
 A[从 props 拿到配置项列表] --&gt; B{header 是否为 ReactElement}
 B --&gt; |是| B1[直接渲染]
 B --&gt; |否| B2[使用 ListHeader 渲染 header 配置项]
@@ -369,158 +368,35 @@ C --&gt; |否| C2[不渲染]
 C1A --&gt; D
 C1B --&gt; D
 C2 --&gt; D
-D[渲染列表]</code></pre>
+D[渲染列表]
+</code></pre>
 
 <h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="使用基本-API"><a href="#使用基本-API" class="headerlink" title="使用基本 API"></a>使用基本 API</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/BasicListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>如下所示，我们想要构造下面这样一个简单的列表页面，包含一个面包屑导航列表、搜索框、过滤条件选择器和一个表格。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import * as React from 'react'
-import { Button } from 'antd'
-import { Link } from 'react-router-dom'
-import { Moment } from 'moment'
-import { LabeledValue } from 'antd/es/select'
-import { userApi } from './api/UserApi'
-import {
-  BasicList,
-  BasicListPropsType,
-  FilterFieldTypeEnum,
-} from '../../components/list'
-
-type PropsType = {}
-
-type Config = Omit&lt;BasicListPropsType, 'params'&gt; &amp; {
-  params?: {
-    keyword?: string
-    test?: number
-    birthdayTimeRange?: [Moment, Moment]
-  }
-}
-const testOptionList: LabeledValue[] = [
-  { value: 0, label: '测试 0' },
-  { value: 1, label: '测试 1' },
-  { value: 2, label: '测试 2' },
-]
-
-//列表配置项
-const config: Config = {
-  header: {
-    placeholder: '用户名/住址',
-    list: ['用户', '列表'],
-  },
-  filters: [
-    {
-      type: FilterFieldTypeEnum.Select,
-      label: '测试字段',
-      field: 'test',
-      options: testOptionList,
-    },
-    {
-      type: FilterFieldTypeEnum.TimeRange,
-      label: '生日',
-      field: 'birthdayTimeRange',
-    },
-  ],
-  columns: [
-    { field: 'id', title: 'ID' },
-    { field: 'name', title: '姓名' },
-    { field: 'birthday', title: '生日' },
-    {
-      field: 'operate',
-      title: '操作',
-      slot: (param) =&gt; &lt;Link to={`/system/user/${param.record.id}`}&gt;详情&lt;/Link&gt;,
-    },
-  ],
-  api: userApi,
-}
-
-/**
- * 一个基本的列表页面
- * @constructor
- */
-const BasicListExample: React.FC&lt;PropsType&gt; = () =&gt; {
-  return &lt;BasicList {...config} /&gt;
-}
-
-export default BasicListExample<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Button</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Link</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Moment</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'moment'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">LabeledValue</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'antd/es/select'</span><br><span class="hljs-keyword">import</span> { userApi } <span class="hljs-keyword">from</span> <span class="hljs-string">'./api/UserApi'</span><br><span class="hljs-keyword">import</span> {<br>  <span class="hljs-title class_">BasicList</span>,<br>  <span class="hljs-title class_">BasicListPropsType</span>,<br>  <span class="hljs-title class_">FilterFieldTypeEnum</span>,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">'../../components/list'</span><br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">PropsType</span> = {}<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Config</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">BasicListPropsType</span>, <span class="hljs-string">'params'</span>&gt; &amp; {<br>  params?: {<br>    keyword?: <span class="hljs-built_in">string</span><br>    test?: <span class="hljs-built_in">number</span><br>    birthdayTimeRange?: [<span class="hljs-title class_">Moment</span>, <span class="hljs-title class_">Moment</span>]<br>  }<br>}<br><span class="hljs-keyword">const</span> <span class="hljs-attr">testOptionList</span>: <span class="hljs-title class_">LabeledValue</span>[] = [<br>  { <span class="hljs-attr">value</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'测试 0'</span> },<br>  { <span class="hljs-attr">value</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'测试 1'</span> },<br>  { <span class="hljs-attr">value</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'测试 2'</span> },<br>]<br><br><span class="hljs-comment">//列表配置项</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">config</span>: <span class="hljs-title class_">Config</span> = {<br>  <span class="hljs-attr">header</span>: {<br>    <span class="hljs-attr">placeholder</span>: <span class="hljs-string">'用户名/住址'</span>,<br>    <span class="hljs-attr">list</span>: [<span class="hljs-string">'用户'</span>, <span class="hljs-string">'列表'</span>],<br>  },<br>  <span class="hljs-attr">filters</span>: [<br>    {<br>      <span class="hljs-attr">type</span>: <span class="hljs-title class_">FilterFieldTypeEnum</span>.<span class="hljs-property">Select</span>,<br>      <span class="hljs-attr">label</span>: <span class="hljs-string">'测试字段'</span>,<br>      <span class="hljs-attr">field</span>: <span class="hljs-string">'test'</span>,<br>      <span class="hljs-attr">options</span>: testOptionList,<br>    },<br>    {<br>      <span class="hljs-attr">type</span>: <span class="hljs-title class_">FilterFieldTypeEnum</span>.<span class="hljs-property">TimeRange</span>,<br>      <span class="hljs-attr">label</span>: <span class="hljs-string">'生日'</span>,<br>      <span class="hljs-attr">field</span>: <span class="hljs-string">'birthdayTimeRange'</span>,<br>    },<br>  ],<br>  <span class="hljs-attr">columns</span>: [<br>    { <span class="hljs-attr">field</span>: <span class="hljs-string">'id'</span>, <span class="hljs-attr">title</span>: <span class="hljs-string">'ID'</span> },<br>    { <span class="hljs-attr">field</span>: <span class="hljs-string">'name'</span>, <span class="hljs-attr">title</span>: <span class="hljs-string">'姓名'</span> },<br>    { <span class="hljs-attr">field</span>: <span class="hljs-string">'birthday'</span>, <span class="hljs-attr">title</span>: <span class="hljs-string">'生日'</span> },<br>    {<br>      <span class="hljs-attr">field</span>: <span class="hljs-string">'operate'</span>,<br>      <span class="hljs-attr">title</span>: <span class="hljs-string">'操作'</span>,<br>      <span class="hljs-attr">slot</span>: <span class="hljs-function">(<span class="hljs-params">param</span>) =&gt;</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">to</span>=<span class="hljs-string">{</span>`/<span class="hljs-attr">system</span>/<span class="hljs-attr">user</span>/${<span class="hljs-attr">param.record.id</span>}`}&gt;</span>详情<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>,<br>    },<br>  ],<br>  <span class="hljs-attr">api</span>: userApi,<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 一个基本的列表页面</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@constructor</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">BasicListExample</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">PropsType</span>&gt; = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">BasicList</span> {<span class="hljs-attr">...config</span>} /&gt;</span></span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">BasicListExample</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用自定义过滤器组件"><a href="#使用自定义过滤器组件" class="headerlink" title="使用自定义过滤器组件"></a>使用自定义过滤器组件</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/CustomFilterListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>事实上，总有各种奇怪的过滤器无法满足，这时候就需要添加一个自定义的过滤器了。<br>例如下面这个过滤器，包含了年龄的值和单位，是不是感觉很奇怪</p>
 <p>关键代码配置如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const config: Config = {
-  filters: [
-    {
-      type: FilterFieldTypeEnum.Slot,
-      label: '年龄',
-      field: 'age',
-      children: (
-        &lt;Input.Group compact&gt;
-          &lt;Form.Item name={['age', 'value']} noStyle&gt;
-            &lt;InputNumber style={{ width: 'calc(100% - 64px)' }} /&gt;
-          &lt;/Form.Item&gt;
-          &lt;Form.Item name={['age', 'unit']} noStyle&gt;
-            &lt;Select style={{ width: 64 }} options={ageUnitOptionList} /&gt;
-          &lt;/Form.Item&gt;
-        &lt;/Input.Group&gt;
-      ),
-    },
-  ],
-  // 此处是为了添加过滤器的默认值
-  params: {
-    age: {
-      unit: 0,
-    },
-  },
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-attr">config</span>: <span class="hljs-title class_">Config</span> = {<br>  <span class="hljs-attr">filters</span>: [<br>    {<br>      <span class="hljs-attr">type</span>: <span class="hljs-title class_">FilterFieldTypeEnum</span>.<span class="hljs-property">Slot</span>,<br>      <span class="hljs-attr">label</span>: <span class="hljs-string">'年龄'</span>,<br>      <span class="hljs-attr">field</span>: <span class="hljs-string">'age'</span>,<br>      <span class="hljs-attr">children</span>: (<br>        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Input.Group</span> <span class="hljs-attr">compact</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Form.Item</span> <span class="hljs-attr">name</span>=<span class="hljs-string">{[</span>'<span class="hljs-attr">age</span>', '<span class="hljs-attr">value</span>']} <span class="hljs-attr">noStyle</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">InputNumber</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">width:</span> '<span class="hljs-attr">calc</span>(<span class="hljs-attr">100</span>% <span class="hljs-attr">-</span> <span class="hljs-attr">64px</span>)' }} /&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">Form.Item</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Form.Item</span> <span class="hljs-attr">name</span>=<span class="hljs-string">{[</span>'<span class="hljs-attr">age</span>', '<span class="hljs-attr">unit</span>']} <span class="hljs-attr">noStyle</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">Select</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">width:</span> <span class="hljs-attr">64</span> }} <span class="hljs-attr">options</span>=<span class="hljs-string">{ageUnitOptionList}</span> /&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">Form.Item</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">Input.Group</span>&gt;</span></span><br>      ),<br>    },<br>  ],<br>  <span class="hljs-comment">// 此处是为了添加过滤器的默认值</span><br>  <span class="hljs-attr">params</span>: {<br>    <span class="hljs-attr">age</span>: {<br>      <span class="hljs-attr">unit</span>: <span class="hljs-number">0</span>,<br>    },<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="添加表格的额外操作"><a href="#添加表格的额外操作" class="headerlink" title="添加表格的额外操作"></a>添加表格的额外操作</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/TableOperationListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>有时候，我们需要添加一个额外的表格操作，例如导出/导入数据/删除选中数据。</p>
 <p>关键代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">async function handleBatchDelete({
-  selectedRowKeys,
-  setSelectedRowKeys,
-  searchPage,
-}: ListTableOperateParam) {
-  if (selectedRowKeys.length === 0) {
-    return
-  }
-  await userApi.batchDelete(selectedRowKeys)
-  setSelectedRowKeys([])
-  await searchPage()
-}
-
-const config = useMemo&lt;Config&gt;(
-  () =&gt; ({
-    tableOperate: (params) =&gt; (
-      &lt;Button onClick={() =&gt; handleBatchDelete(params)}&gt;删除选中&lt;/Button&gt;
-    ),
-  }),
-  [],
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">handleBatchDelete</span>(<span class="hljs-params">{</span><br><span class="hljs-params">  selectedRowKeys,</span><br><span class="hljs-params">  setSelectedRowKeys,</span><br><span class="hljs-params">  searchPage,</span><br><span class="hljs-params">}: ListTableOperateParam</span>) {<br>  <span class="hljs-keyword">if</span> (selectedRowKeys.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {<br>    <span class="hljs-keyword">return</span><br>  }<br>  <span class="hljs-keyword">await</span> userApi.<span class="hljs-title function_">batchDelete</span>(selectedRowKeys)<br>  <span class="hljs-title function_">setSelectedRowKeys</span>([])<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">searchPage</span>()<br>}<br><br><span class="hljs-keyword">const</span> config = useMemo&lt;<span class="hljs-title class_">Config</span>&gt;(<br>  <span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-attr">tableOperate</span>: <span class="hljs-function">(<span class="hljs-params">params</span>) =&gt;</span> (<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handleBatchDelete(params)}&gt;删除选中<span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span></span><br>    ),<br>  }),<br>  [],<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="过滤器的下拉框数据来源是异步的"><a href="#过滤器的下拉框数据来源是异步的" class="headerlink" title="过滤器的下拉框数据来源是异步的"></a>过滤器的下拉框数据来源是异步的</h3><blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/example/blob/master/basic_list/src/pages/example/AsyncSelectOptionsListExample.tsx">GitHub 代码示例</a></p>
 </blockquote>
 <p>很多时候，我们的数据来源并不是由前端写死，而是从后台获取的，这就要求我们传入的值是 react 的一个 State 而非一个固定值。</p>
 <p>关键代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">const testOptionList = useAsyncMemo([], dictApi.list)
-const config = useMemo&lt;Config&gt;(
-  () =&gt; ({
-    filters: [
-      {
-        type: FilterFieldTypeEnum.Select,
-        label: '测试字段',
-        field: 'test',
-        options: testOptionList,
-      },
-    ],
-  }),
-  [testOptionList],
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> testOptionList = <span class="hljs-title function_">useAsyncMemo</span>([], dictApi.<span class="hljs-property">list</span>)<br><span class="hljs-keyword">const</span> config = useMemo&lt;<span class="hljs-title class_">Config</span>&gt;(<br>  <span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-attr">filters</span>: [<br>      {<br>        <span class="hljs-attr">type</span>: <span class="hljs-title class_">FilterFieldTypeEnum</span>.<span class="hljs-property">Select</span>,<br>        <span class="hljs-attr">label</span>: <span class="hljs-string">'测试字段'</span>,<br>        <span class="hljs-attr">field</span>: <span class="hljs-string">'test'</span>,<br>        <span class="hljs-attr">options</span>: testOptionList,<br>      },<br>    ],<br>  }),<br>  [testOptionList],<br>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="组件-API"><a href="#组件-API" class="headerlink" title="组件 API"></a>组件 API</h2><h3 id="BasicList"><a href="#BasicList" class="headerlink" title="BasicList"></a>BasicList</h3><p>参考 <em>src/components/common/table/js/BasicListOptions.d.ts</em></p>
 <table>
@@ -1233,8 +1109,6 @@ const config = useMemo&lt;Config&gt;(
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

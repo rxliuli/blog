@@ -48,8 +48,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -255,7 +253,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          4k 字
+          4.2k 字
         
       </span>
     
@@ -267,7 +265,7 @@
         
         
           <!-- compatible with older versions-->
-          34 分钟
+          36 分钟
         
       </span>
     
@@ -342,46 +340,7 @@
 <li>preact: react 的一个更小的实现</li>
 </ul>
 <h2 id="拖拽图片显示"><a href="#拖拽图片显示" class="headerlink" title="拖拽图片显示"></a>拖拽图片显示</h2><p>首先，我们实现一个可以拖拽图片到网页并显示的 web 应用，好吧，这实际上没什么难的。这里的关键是通过 event 获取到 File 对象，然后就可以创建 blob url 渲染图片了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import css from './App.module.css'
-import 'file-system-access'
-import { useEffect, useState } from 'preact/hooks'
-
-export function App() {
-  const [url, setUrl] = useState&lt;string&gt;()
-
-  async function onDrop(ev: DragEvent) {
-    ev.preventDefault()
-    const items = [...(ev.dataTransfer?.items ?? [])].filter(
-      (item) =&gt; item.kind === 'file' &amp;&amp; item.type.startsWith('image/'),
-    )
-    if (items.length === 0) {
-      alert('找不到图片文件')
-      return
-    }
-    const file = items[0].getAsFile()
-    if (!file) {
-      alert('无法读取文件')
-      return
-    }
-    setUrl(URL.createObjectURL(file))
-  }
-  function onDragOver(ev: DragEvent) {
-    ev.preventDefault()
-  }
-  useEffect(() =&gt; {
-    window.addEventListener('drop', onDrop)
-    window.addEventListener('dragover', onDragOver)
-    return () =&gt; {
-      window.removeEventListener('drop', onDrop)
-      window.removeEventListener('dragover', onDragOver)
-    }
-  }, [])
-  return url ? (
-    &lt;img class={css.img} src={url} /&gt;
-  ) : (
-    &lt;div class={css.content}&gt;拖拽图片到这儿&lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> css <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.module.css'</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">'file-system-access'</span><br><span class="hljs-keyword">import</span> { useEffect, useState } <span class="hljs-keyword">from</span> <span class="hljs-string">'preact/hooks'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> [url, setUrl] = useState&lt;<span class="hljs-built_in">string</span>&gt;()<br><br>  <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">onDrop</span>(<span class="hljs-params">ev: DragEvent</span>) {<br>    ev.<span class="hljs-title function_">preventDefault</span>()<br>    <span class="hljs-keyword">const</span> items = [...(ev.<span class="hljs-property">dataTransfer</span>?.<span class="hljs-property">items</span> ?? [])].<span class="hljs-title function_">filter</span>(<br>      <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item.<span class="hljs-property">kind</span> === <span class="hljs-string">'file'</span> &amp;&amp; item.<span class="hljs-property">type</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'image/'</span>),<br>    )<br>    <span class="hljs-keyword">if</span> (items.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {<br>      <span class="hljs-title function_">alert</span>(<span class="hljs-string">'找不到图片文件'</span>)<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">const</span> file = items[<span class="hljs-number">0</span>].<span class="hljs-title function_">getAsFile</span>()<br>    <span class="hljs-keyword">if</span> (!file) {<br>      <span class="hljs-title function_">alert</span>(<span class="hljs-string">'无法读取文件'</span>)<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-title function_">setUrl</span>(<span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">createObjectURL</span>(file))<br>  }<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">onDragOver</span>(<span class="hljs-params">ev: DragEvent</span>) {<br>    ev.<span class="hljs-title function_">preventDefault</span>()<br>  }<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'drop'</span>, onDrop)<br>    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'dragover'</span>, onDragOver)<br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> {<br>      <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">'drop'</span>, onDrop)<br>      <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">'dragover'</span>, onDragOver)<br>    }<br>  }, [])<br>  <span class="hljs-keyword">return</span> url ? (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">class</span>=<span class="hljs-string">{css.img}</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{url}</span> /&gt;</span></span><br>  ) : (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">{css.content}</span>&gt;</span>拖拽图片到这儿<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当然，这里需要需要导入 file-system-access 模块，因为这个 api 是 chrome 系独有，firefox/safari 不支持，需要使用 polyfill 添加正确的类型定义。</p>
 <p><img src="/resources/41b8430a157c45c5a82f19f06c05065a.png" srcset="/img/loading.gif" lazyload alt="1669386555147.png"></p>
@@ -390,40 +349,7 @@ export function App() {
 <li>自定义应用的显示名，使用 <code>name/short_name</code></li>
 <li>自定义应用 icon，使用 <code>icons</code></li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'vite'
-import preact from '@preact/preset-vite'
-import { cssdts } from '@liuli-util/vite-plugin-css-dts'
-import { VitePWA } from 'vite-plugin-pwa'
-
-export default defineConfig({
-  plugins: [
-    preact(),
-    cssdts(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true,
-      },
-      manifest: {
-        id: 'rxliuli.image-viewer',
-        short_name: '图片查看器',
-        name: '图片查看器',
-        icons: [
-          {
-            src: '/icons/logo512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-          {
-            src: '/icons/logo.svg',
-            sizes: 'any',
-            type: 'image/svg',
-          },
-        ],
-      },
-    }),
-  ],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { defineConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> preact <span class="hljs-keyword">from</span> <span class="hljs-string">'@preact/preset-vite'</span><br><span class="hljs-keyword">import</span> { cssdts } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/vite-plugin-css-dts'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">VitePWA</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite-plugin-pwa'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-title function_">preact</span>(),<br>    <span class="hljs-title function_">cssdts</span>(),<br>    <span class="hljs-title class_">VitePWA</span>({<br>      <span class="hljs-attr">registerType</span>: <span class="hljs-string">'autoUpdate'</span>,<br>      <span class="hljs-attr">devOptions</span>: {<br>        <span class="hljs-attr">enabled</span>: <span class="hljs-literal">true</span>,<br>      },<br>      <span class="hljs-attr">manifest</span>: {<br>        <span class="hljs-attr">id</span>: <span class="hljs-string">'rxliuli.image-viewer'</span>,<br>        <span class="hljs-attr">short_name</span>: <span class="hljs-string">'图片查看器'</span>,<br>        <span class="hljs-attr">name</span>: <span class="hljs-string">'图片查看器'</span>,<br>        <span class="hljs-attr">icons</span>: [<br>          {<br>            <span class="hljs-attr">src</span>: <span class="hljs-string">'/icons/logo512x512.png'</span>,<br>            <span class="hljs-attr">sizes</span>: <span class="hljs-string">'512x512'</span>,<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">'image/png'</span>,<br>          },<br>          {<br>            <span class="hljs-attr">src</span>: <span class="hljs-string">'/icons/logo.svg'</span>,<br>            <span class="hljs-attr">sizes</span>: <span class="hljs-string">'any'</span>,<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">'image/svg'</span>,<br>          },<br>        ],<br>      },<br>    }),<br>  ],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，它应该可以被安装并作为独立窗口打开了，并且能在的应用程序列表中看到</p>
 <p><img src="/resources/9bf1c2d16d8c4b1aa1d46219a9beb675.png" srcset="/img/loading.gif" lazyload alt="1669386797740.png"><br><img src="/resources/cc3114f170ac4be89e1ab96113afea02.png" srcset="/img/loading.gif" lazyload alt="1669386739999.png"><br><img src="/resources/9449067cd9e9496cb9bbf166c9c13ba7.png" srcset="/img/loading.gif" lazyload alt="1669386864465.png"></p>
@@ -432,85 +358,13 @@ export default defineConfig({
 <li>在 manifest 中声明 <code>file_handlers</code></li>
 <li>访问 <code>window.launchQueue</code> 获取打开的文件</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export default defineConfig({
-  plugins: [
-    // 其他配置...
-    VitePWA({
-      // 其他配置...
-      manifest: {
-        // 其他配置...
-        file_handlers: [
-          {
-            action: './',
-            accept: {
-              // ref: https://developer.mozilla.org/zh-CN/docs/Web/Media/Formats/Image_types
-              'image/*': [
-                '.apng',
-                '.avif',
-                '.bmp',
-                '.gif',
-                '.ico',
-                '.cur',
-                '.jpg',
-                '.jpeg',
-                '.jfif',
-                '.pjpeg',
-                '.pjp',
-                '.png',
-                '.svg',
-                '.tif',
-                '.tiff',
-                '.webp',
-              ],
-            },
-          },
-        ],
-      },
-    }),
-  ],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-comment">// 其他配置...</span><br>    <span class="hljs-title class_">VitePWA</span>({<br>      <span class="hljs-comment">// 其他配置...</span><br>      <span class="hljs-attr">manifest</span>: {<br>        <span class="hljs-comment">// 其他配置...</span><br>        <span class="hljs-attr">file_handlers</span>: [<br>          {<br>            <span class="hljs-attr">action</span>: <span class="hljs-string">'./'</span>,<br>            <span class="hljs-attr">accept</span>: {<br>              <span class="hljs-comment">// ref: https://developer.mozilla.org/zh-CN/docs/Web/Media/Formats/Image_types</span><br>              <span class="hljs-string">'image/*'</span>: [<br>                <span class="hljs-string">'.apng'</span>,<br>                <span class="hljs-string">'.avif'</span>,<br>                <span class="hljs-string">'.bmp'</span>,<br>                <span class="hljs-string">'.gif'</span>,<br>                <span class="hljs-string">'.ico'</span>,<br>                <span class="hljs-string">'.cur'</span>,<br>                <span class="hljs-string">'.jpg'</span>,<br>                <span class="hljs-string">'.jpeg'</span>,<br>                <span class="hljs-string">'.jfif'</span>,<br>                <span class="hljs-string">'.pjpeg'</span>,<br>                <span class="hljs-string">'.pjp'</span>,<br>                <span class="hljs-string">'.png'</span>,<br>                <span class="hljs-string">'.svg'</span>,<br>                <span class="hljs-string">'.tif'</span>,<br>                <span class="hljs-string">'.tiff'</span>,<br>                <span class="hljs-string">'.webp'</span>,<br>              ],<br>            },<br>          },<br>        ],<br>      },<br>    }),<br>  ],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>好吧，可能是这个 api 太新（chrome 102 添加），导致现在仍然没有类型定义，不过这不复杂，所以自己定义一下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">declare global {
-  export const launchQueue: LaunchQueue
-
-  interface LaunchQueue {
-    setConsumer(consumer: LaunchConsumer): void
-  }
-
-  interface LaunchConsumer {
-    (launchParams: LaunchParams): void
-  }
-
-  class LaunchParams {
-    readonly files: readonly FileSystemFileHandle[]
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">declare</span> <span class="hljs-variable language_">global</span> {<br>  <span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">launchQueue</span>: <span class="hljs-title class_">LaunchQueue</span><br><br>  <span class="hljs-keyword">interface</span> <span class="hljs-title class_">LaunchQueue</span> {<br>    <span class="hljs-title function_">setConsumer</span>(<span class="hljs-attr">consumer</span>: <span class="hljs-title class_">LaunchConsumer</span>): <span class="hljs-built_in">void</span><br>  }<br><br>  <span class="hljs-keyword">interface</span> <span class="hljs-title class_">LaunchConsumer</span> {<br>    (<span class="hljs-attr">launchParams</span>: <span class="hljs-title class_">LaunchParams</span>): <span class="hljs-built_in">void</span><br>  }<br><br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">LaunchParams</span> {<br>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">files</span>: <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">FileSystemFileHandle</span>[]<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后就可以访问它了</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">export function App() {
-  // 其他代码...
-  const [mounted, setMounted] = useState(false)
-  useEffect(() =&gt; {
-    if ('launchQueue' in window &amp;&amp; 'files' in LaunchParams.prototype) {
-      launchQueue.setConsumer(async (launchParams) =&gt; {
-        if (!launchParams.files.length) {
-          return
-        }
-        setUrl(URL.createObjectURL(await launchParams.files[0].getFile()))
-      })
-    }
-    setMounted(true)
-  }, [])
-  return (
-    mounted &amp;&amp;
-    (url ? (
-      &lt;img class={css.img} src={url} /&gt;
-    ) : (
-      &lt;div class={css.content}&gt;拖拽图片到这儿&lt;/div&gt;
-    ))
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-comment">// 其他代码...</span><br>  <span class="hljs-keyword">const</span> [mounted, setMounted] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">false</span>)<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (<span class="hljs-string">'launchQueue'</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">window</span> &amp;&amp; <span class="hljs-string">'files'</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">LaunchParams</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>) {<br>      launchQueue.<span class="hljs-title function_">setConsumer</span>(<span class="hljs-keyword">async</span> (launchParams) =&gt; {<br>        <span class="hljs-keyword">if</span> (!launchParams.<span class="hljs-property">files</span>.<span class="hljs-property">length</span>) {<br>          <span class="hljs-keyword">return</span><br>        }<br>        <span class="hljs-title function_">setUrl</span>(<span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">createObjectURL</span>(<span class="hljs-keyword">await</span> launchParams.<span class="hljs-property">files</span>[<span class="hljs-number">0</span>].<span class="hljs-title function_">getFile</span>()))<br>      })<br>    }<br>    <span class="hljs-title function_">setMounted</span>(<span class="hljs-literal">true</span>)<br>  }, [])<br>  <span class="hljs-keyword">return</span> (<br>    mounted &amp;&amp;<br>    (url ? (<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">class</span>=<span class="hljs-string">{css.img}</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{url}</span> /&gt;</span></span><br>    ) : (<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">{css.content}</span>&gt;</span>拖拽图片到这儿<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>    ))<br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，我们可以从系统文件管理器中打开它了</p>
 <p><img src="/resources/6e028b5f898d4ac097769594dcf4a2e8.png" srcset="/img/loading.gif" lazyload alt="1669387508422.png"></p>
@@ -868,8 +722,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

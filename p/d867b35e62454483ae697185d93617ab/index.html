@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言既之前的 代码生成-从 module css 生成 dts 之后，这篇来实现从环境变量生成接口，便于开发时能够有正确的类型提示。 动机在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。 我们通常使用以下两种方式访问环境变量 在 vite 中使用 import.meta.env import.meta.env.NOD">
+    <meta name="description" content="前言既之前的 代码生成-从 module css 生成 dts 之后，这篇来实现从环境变量生成接口，便于开发时能够有正确的类型提示。 动机在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。 我们通常使用以下两种方式访问环境变量 在 vite 中使用 import.meta.env 1import.meta.env.NO">
 <meta property="og:type" content="article">
 <meta property="og:title" content="代码生成-从环境变量生成类型定义">
 <meta property="og:url" content="https://blog.rxliuli.com/p/d867b35e62454483ae697185d93617ab/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="前言既之前的 代码生成-从 module css 生成 dts 之后，这篇来实现从环境变量生成接口，便于开发时能够有正确的类型提示。 动机在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。 我们通常使用以下两种方式访问环境变量 在 vite 中使用 import.meta.env import.meta.env.NOD">
+<meta property="og:description" content="前言既之前的 代码生成-从 module css 生成 dts 之后，这篇来实现从环境变量生成接口，便于开发时能够有正确的类型提示。 动机在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。 我们通常使用以下两种方式访问环境变量 在 vite 中使用 import.meta.env 1import.meta.env.NO">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/3f4cd03fa7564d6a99abab7d2c11d826.svg">
 <meta property="article:published_time" content="2022-09-29T12:18:51.145Z">
@@ -42,8 +42,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -250,7 +248,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.7k 字
+          3.9k 字
         
       </span>
     
@@ -262,7 +260,7 @@
         
         
           <!-- compatible with older versions-->
-          31 分钟
+          33 分钟
         
       </span>
     
@@ -318,168 +316,45 @@
 <h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>在前端日常开发中，环境变量经常用于区分不同环境的配置，最常见的像是服务端地址。但在使用时，往往不能得到提示，或是一个环境变量没有。</p>
 <p>我们通常使用以下两种方式访问环境变量</p>
 <p>在 vite 中使用 <code>import.meta.env</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import.meta.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>在 vite importMeta.d.ts 中的类型定义为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface ImportMeta {
-  // 其他属性。。。
-  readonly env: ImportMetaEnv
-}
-
-interface ImportMetaEnv {
-  [key: string]: any
-  BASE_URL: string
-  MODE: string
-  DEV: boolean
-  PROD: boolean
-  SSR: boolean
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImportMeta</span> {<br>  <span class="hljs-comment">// 其他属性。。。</span><br>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">env</span>: <span class="hljs-title class_">ImportMetaEnv</span><br>}<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImportMetaEnv</span> {<br>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">any</span><br>  <span class="hljs-attr">BASE_URL</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">MODE</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">DEV</span>: <span class="hljs-built_in">boolean</span><br>  <span class="hljs-attr">PROD</span>: <span class="hljs-built_in">boolean</span><br>  <span class="hljs-attr">SSR</span>: <span class="hljs-built_in">boolean</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者在普通 nodejs 项目中使用 <code>process.env</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">process.env.NODE_ENV<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts">process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>在 nodejs process.d.ts 中的类型定义为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface Dict&lt;T&gt; {
-  [key: string]: T | undefined
-}
-
-interface ProcessEnv extends Dict&lt;string&gt; {
-  /**
-   * Can be used to change the default timezone at runtime
-   */
-  TZ?: string
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Dict</span>&lt;T&gt; {<br>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: T | <span class="hljs-literal">undefined</span><br>}<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProcessEnv</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Dict</span>&lt;<span class="hljs-built_in">string</span>&gt; {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * Can be used to change the default timezone at runtime</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-variable constant_">TZ</span>?: <span class="hljs-built_in">string</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但无论如何，它们都不能定义一些项目中定制的环境变量，这需要我们手动完成。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>这里使用 vite 举例，如果需要在代码中使用 <code>import.meta.env</code> 时能够提示自定义的环境变量的话，需要在 <em>vite-env.d.ts</em> 中添加 <code>ImportMetaEnv</code>。<br>例如添加环境变量 VITE_PORT/VITE_AUTH_TOKEN 的类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface ImportMetaEnv {
-  VITE_PORT?: string
-  VITE_AUTH_TOKEN?: string
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImportMetaEnv</span> {<br>  <span class="hljs-variable constant_">VITE_PORT</span>?: <span class="hljs-built_in">string</span><br>  <span class="hljs-variable constant_">VITE_AUTH_TOKEN</span>?: <span class="hljs-built_in">string</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，使用环境变量的流程变成：<strong>在 .env 中添加环境变量</strong> =&gt; <strong>在 vite-env.d.ts 中添加类型定义</strong> =&gt; <strong>在代码中使用环境变量</strong>，可以看到，我们基本上重复添加了两次环境变量，只是使用了不同的语法，这正是我们要解决的问题，从环境变量自动生成类型定义。</p>
 <p><img src="/resources/3f4cd03fa7564d6a99abab7d2c11d826.svg" srcset="/img/loading.gif" lazyload alt="从环境变量生成类型定义.drawio.svg"></p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>获取环境变量的路径（vite 的环境变量类型定义文件发生过一次变化，需要做下兼容）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">async function getEnvPath(cwd: string) {
-  let envPath = path.resolve(cwd, 'src/vite-env.d.ts')
-
-  if (await pathExists(envPath)) {
-    return envPath
-  }
-
-  envPath = path.resolve(cwd, 'src/env.d.ts')
-
-  if (await pathExists(envPath)) {
-    return envPath
-  }
-
-  throw new Error('未找到环境变量配置文件')
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getEnvPath</span>(<span class="hljs-params">cwd: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">let</span> envPath = path.<span class="hljs-title function_">resolve</span>(cwd, <span class="hljs-string">'src/vite-env.d.ts'</span>)<br><br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">pathExists</span>(envPath)) {<br>    <span class="hljs-keyword">return</span> envPath<br>  }<br><br>  envPath = path.<span class="hljs-title function_">resolve</span>(cwd, <span class="hljs-string">'src/env.d.ts'</span>)<br><br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">pathExists</span>(envPath)) {<br>    <span class="hljs-keyword">return</span> envPath<br>  }<br><br>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'未找到环境变量配置文件'</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>扫描所有的环境变量</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function scan(dir: string): Promise&lt;string[]&gt; {
-  const files = await FastGlob('.env*', {
-    cwd: path.resolve(dir),
-  })
-
-  const configs = await Promise.all(
-    files.map((file) =&gt; readFile(path.resolve(dir, file), 'utf-8')),
-  )
-  return uniqueBy(configs.map((s) =&gt; Object.keys(parse(s))).flat())
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">scan</span>(<span class="hljs-params">dir: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>[]&gt; {<br>  <span class="hljs-keyword">const</span> files = <span class="hljs-keyword">await</span> <span class="hljs-title class_">FastGlob</span>(<span class="hljs-string">'.env*'</span>, {<br>    <span class="hljs-attr">cwd</span>: path.<span class="hljs-title function_">resolve</span>(dir),<br>  })<br><br>  <span class="hljs-keyword">const</span> configs = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<br>    files.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">file</span>) =&gt;</span> <span class="hljs-title function_">readFile</span>(path.<span class="hljs-title function_">resolve</span>(dir, file), <span class="hljs-string">'utf-8'</span>)),<br>  )<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">uniqueBy</span>(configs.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">s</span>) =&gt;</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-title function_">parse</span>(s))).<span class="hljs-title function_">flat</span>())<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>对比环境变量与类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export function eq(a: string[], b: string[]): boolean {
-  const f = (a: string, b: string) =&gt; a.localeCompare(b)
-  return JSON.stringify([...a].sort(f)) === JSON.stringify([...b].sort(f))
-}
-
-export function getEnvs(ast: n.ASTNode): string[] {
-  return CodeUtil.iterator(ast, n.TSInterfaceDeclaration)
-    .filter((item) =&gt; (item.id as n.Identifier).name === 'ImportMetaEnv')
-    .flatMap((ast) =&gt; CodeUtil.iterator(ast, n.TSPropertySignature))
-    .flatMap((ast) =&gt; CodeUtil.iterator(ast, n.Identifier))
-    .map((item) =&gt; item.name)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">eq</span>(<span class="hljs-params">a: <span class="hljs-built_in">string</span>[], b: <span class="hljs-built_in">string</span>[]</span>): <span class="hljs-built_in">boolean</span> {<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">f</span> = (<span class="hljs-params">a: <span class="hljs-built_in">string</span>, b: <span class="hljs-built_in">string</span></span>) =&gt; a.<span class="hljs-title function_">localeCompare</span>(b)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([...a].<span class="hljs-title function_">sort</span>(f)) === <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([...b].<span class="hljs-title function_">sort</span>(f))<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getEnvs</span>(<span class="hljs-params">ast: n.ASTNode</span>): <span class="hljs-built_in">string</span>[] {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">iterator</span>(ast, n.<span class="hljs-property">TSInterfaceDeclaration</span>)<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> (item.<span class="hljs-property">id</span> <span class="hljs-keyword">as</span> n.<span class="hljs-property">Identifier</span>).<span class="hljs-property">name</span> === <span class="hljs-string">'ImportMetaEnv'</span>)<br>    .<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">ast</span>) =&gt;</span> <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">iterator</span>(ast, n.<span class="hljs-property">TSPropertySignature</span>))<br>    .<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">ast</span>) =&gt;</span> <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">iterator</span>(ast, n.<span class="hljs-property">Identifier</span>))<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> item.<span class="hljs-property">name</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>修改类型定义</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">function convert(ast: n.ASTNode, envs: string[]): n.ASTNode {
-  let envInterface = CodeUtil.iterator(ast, n.TSInterfaceDeclaration).find(
-    (item) =&gt; (item.id as n.Identifier).name === 'ImportMetaEnv',
-  )
-
-  if (!envInterface) {
-    envInterface = b.tsInterfaceDeclaration(
-      b.identifier('ImportMetaEnv'),
-      b.tsInterfaceBody([]),
-    )
-    ;(ast as n.File).program.body.push(envInterface)
-  }
-
-  envInterface.body.body = envs.map((name) =&gt;
-    b.tsPropertySignature.from({
-      key: b.identifier(name),
-      typeAnnotation: b.tsTypeAnnotation(b.tsStringKeyword()),
-      readonly: true,
-    }),
-  )
-
-  return ast
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">convert</span>(<span class="hljs-params">ast: n.ASTNode, envs: <span class="hljs-built_in">string</span>[]</span>): n.<span class="hljs-property">ASTNode</span> {<br>  <span class="hljs-keyword">let</span> envInterface = <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">iterator</span>(ast, n.<span class="hljs-property">TSInterfaceDeclaration</span>).<span class="hljs-title function_">find</span>(<br>    <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> (item.<span class="hljs-property">id</span> <span class="hljs-keyword">as</span> n.<span class="hljs-property">Identifier</span>).<span class="hljs-property">name</span> === <span class="hljs-string">'ImportMetaEnv'</span>,<br>  )<br><br>  <span class="hljs-keyword">if</span> (!envInterface) {<br>    envInterface = b.<span class="hljs-title function_">tsInterfaceDeclaration</span>(<br>      b.<span class="hljs-title function_">identifier</span>(<span class="hljs-string">'ImportMetaEnv'</span>),<br>      b.<span class="hljs-title function_">tsInterfaceBody</span>([]),<br>    )<br>    ;(ast <span class="hljs-keyword">as</span> n.<span class="hljs-property">File</span>).<span class="hljs-property">program</span>.<span class="hljs-property">body</span>.<span class="hljs-title function_">push</span>(envInterface)<br>  }<br><br>  envInterface.<span class="hljs-property">body</span>.<span class="hljs-property">body</span> = envs.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">name</span>) =&gt;</span><br>    b.<span class="hljs-property">tsPropertySignature</span>.<span class="hljs-title function_">from</span>({<br>      <span class="hljs-attr">key</span>: b.<span class="hljs-title function_">identifier</span>(name),<br>      <span class="hljs-attr">typeAnnotation</span>: b.<span class="hljs-title function_">tsTypeAnnotation</span>(b.<span class="hljs-title function_">tsStringKeyword</span>()),<br>      <span class="hljs-attr">readonly</span>: <span class="hljs-literal">true</span>,<br>    }),<br>  )<br><br>  <span class="hljs-keyword">return</span> ast<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>最后，将它们连接起来</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export async function gen(cwd: string): Promise&lt;void&gt; {
-  const envPath = await getEnvPath(cwd)
-  const code = await readFile(envPath, 'utf-8')
-  const ast = CodeUtil.parse(code)
-  const envNames = await scan(cwd)
-
-  if (eq(envNames, getEnvs(ast))) {
-    return
-  }
-
-  await writeFile(envPath, CodeUtil.print(convert(ast, envNames)))
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">gen</span>(<span class="hljs-params">cwd: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {<br>  <span class="hljs-keyword">const</span> envPath = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getEnvPath</span>(cwd)<br>  <span class="hljs-keyword">const</span> code = <span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(envPath, <span class="hljs-string">'utf-8'</span>)<br>  <span class="hljs-keyword">const</span> ast = <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">parse</span>(code)<br>  <span class="hljs-keyword">const</span> envNames = <span class="hljs-keyword">await</span> <span class="hljs-title function_">scan</span>(cwd)<br><br>  <span class="hljs-keyword">if</span> (<span class="hljs-title function_">eq</span>(envNames, <span class="hljs-title function_">getEnvs</span>(ast))) {<br>    <span class="hljs-keyword">return</span><br>  }<br><br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(envPath, <span class="hljs-title class_">CodeUtil</span>.<span class="hljs-title function_">print</span>(<span class="hljs-title function_">convert</span>(ast, envNames)))<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>实现 vite 插件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin } from 'vite'
-import { gen } from './gen'
-import * as path from 'path'
-
-export function envDtsGen(): Plugin {
-  let rootPath: string
-  return {
-    name: 'vite-plugin-env-dts-gen',
-    configResolved(resolveConfig) {
-      rootPath = resolveConfig.root
-    },
-    configureServer(server) {
-      server.watcher.add('.env*')
-      const listener = async (filePath: string) =&gt; {
-        const relative = path.relative(rootPath, filePath)
-        // console.log('filePath: ', relative)
-        if (relative.startsWith('.env')) {
-          await gen(rootPath)
-        }
-      }
-      server.watcher.on('change', listener)
-      server.watcher.on('add', listener)
-    },
-    async buildStart() {
-      await gen(rootPath)
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> { gen } <span class="hljs-keyword">from</span> <span class="hljs-string">'./gen'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">envDtsGen</span>(<span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">let</span> <span class="hljs-attr">rootPath</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'vite-plugin-env-dts-gen'</span>,<br>    <span class="hljs-title function_">configResolved</span>(<span class="hljs-params">resolveConfig</span>) {<br>      rootPath = resolveConfig.<span class="hljs-property">root</span><br>    },<br>    <span class="hljs-title function_">configureServer</span>(<span class="hljs-params">server</span>) {<br>      server.<span class="hljs-property">watcher</span>.<span class="hljs-title function_">add</span>(<span class="hljs-string">'.env*'</span>)<br>      <span class="hljs-keyword">const</span> <span class="hljs-title function_">listener</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">filePath: <span class="hljs-built_in">string</span></span>) =&gt; {<br>        <span class="hljs-keyword">const</span> relative = path.<span class="hljs-title function_">relative</span>(rootPath, filePath)<br>        <span class="hljs-comment">// console.log('filePath: ', relative)</span><br>        <span class="hljs-keyword">if</span> (relative.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'.env'</span>)) {<br>          <span class="hljs-keyword">await</span> <span class="hljs-title function_">gen</span>(rootPath)<br>        }<br>      }<br>      server.<span class="hljs-property">watcher</span>.<span class="hljs-title function_">on</span>(<span class="hljs-string">'change'</span>, listener)<br>      server.<span class="hljs-property">watcher</span>.<span class="hljs-title function_">on</span>(<span class="hljs-string">'add'</span>, listener)<br>    },<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">buildStart</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">await</span> <span class="hljs-title function_">gen</span>(rootPath)<br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>完整代码 ref: <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/blob/master/libs/vite-plugin-env-dts-gen">https://github.com/rxliuli/liuli-tools/blob/master/libs/vite-plugin-env-dts-gen</a></p>
 </blockquote>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'vite'
-import { envDtsGen } from '@liuli-util/vite-plugin-env-dts-gen'
-
-export default defineConfig({
-  plugins: [envDtsGen()],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { defineConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> { envDtsGen } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/vite-plugin-env-dts-gen'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">envDtsGen</span>()],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，每当修改环境变量文件时，都会自动修改对应的类型定义，编写代码时也会有提示和校验了。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>之后，将演示两个现有的代码生成的实例。</p>
@@ -836,8 +711,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

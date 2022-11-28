@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          6.9k 字
+          7k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          58 分钟
+          59 分钟
         
       </span>
     
@@ -337,220 +335,107 @@
 <li><input checked="" disabled="" type="checkbox"> esbuild 支持 – esbuild 正在成为 lib bundle 标准</li>
 </ul>
 <h2 id="修改-package-声明"><a href="#修改-package-声明" class="headerlink" title="修改 package 声明"></a>修改 package 声明</h2><p>第一步是修改包的模块类型，修改 <code>"type": "module"</code> 即可将包声明为 esm，所有 js 代码将默认以 esm 模块运行。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "type": "module"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"module"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="TypeScript-支持"><a href="#TypeScript-支持" class="headerlink" title="TypeScript 支持"></a>TypeScript 支持</h2><p>从 ts4.7 开始支持 NodeNext，所以需要更改 tsconfig.json</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "NodeNext"
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ESNext"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"moduleResolution"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"NodeNext"</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>另外，在 ts 文件中导入其他 ts 文件必须使用 .js 后缀</p>
 <p>这是一个奇怪的限制，参考 <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#type-in-packagejson-and-new-extensions">ts 4.7 发布文档</a></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { helper } from './foo.js' // works in ESM &amp; CJS
-helper()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { helper } <span class="hljs-keyword">from</span> <span class="hljs-string">'./foo.js'</span> <span class="hljs-comment">// works in ESM &amp; CJS</span><br><span class="hljs-title function_">helper</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来是否会很奇怪，但现在只能这样写，typescript 甚至会这样提示</p>
 <h2 id="jest-x2F-wallaby-支持"><a href="#jest-x2F-wallaby-支持" class="headerlink" title="jest/wallaby 支持"></a>jest/wallaby 支持</h2><p>例如使用 <code>pnpm jest src/__tests__/lodash.test.ts</code> 命令运行以下代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { uniq } from 'lodash-es'
-
-it('uniq', () =&gt; {
-  console.log(uniq([1, 2, 1]))
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { uniq } <span class="hljs-keyword">from</span> <span class="hljs-string">'lodash-es'</span><br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'uniq'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">uniq</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]))<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>出现错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Jest encountered an unexpected token<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">Jest encountered an unexpected token<br></code></pre></td></tr></tbody></table></figure>
 
 <p>从 jest 28 开始支持实验性的 esm 支持，wallaby/ts-jest 也都可以通过配置支持，按照以下步骤即可处理</p>
 <ol>
 <li><p>配置 ts-jest</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "jest": {
-    "preset": "ts-jest/presets/default-esm",
-    "globals": {
-      "ts-jest": {
-        "useESM": true
-      }
-    },
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
-    "testMatch": ["&lt;rootDir&gt;/src/**/__tests__/*.test.ts"]
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"jest"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"preset"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ts-jest/presets/default-esm"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"globals"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"ts-jest"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"useESM"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"moduleNameMapper"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"^(\\.{1,2}/.*)\\.js$"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"$1"</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"testMatch"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"&lt;rootDir&gt;/src/**/__tests__/*.test.ts"</span><span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>修改命令为 <code>node --experimental-vm-modules node_modules/jest/bin/jest.js src/__tests__/lodash.test.ts</code></p>
 </li>
 <li><p>配置 wallaby</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "wallaby": {
-    "env": {
-      "params": {
-        "runner": "--experimental-vm-modules"
-      }
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"wallaby"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"env"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"params"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"runner"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"--experimental-vm-modules"</span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 </li>
 <li><p>由于 esm 的导入是静态的，所以还需要卸载 <code>@types/jest</code> 使用 <code>@jest/globals</code> 包导入测试需要的函数，例如 <code>it/expect/describe/beforeEach</code> 等等</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { it, expect } from '@jest/globals'
-
-it('basic', () =&gt; {
-  expect(1 + 2).toBe(3)
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { it, expect } <span class="hljs-keyword">from</span> <span class="hljs-string">'@jest/globals'</span><br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">'basic'</span>, <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-title function_">expect</span>(<span class="hljs-number">1</span> + <span class="hljs-number">2</span>).<span class="hljs-title function_">toBe</span>(<span class="hljs-number">3</span>)<br>})<br></code></pre></td></tr></tbody></table></figure></li>
 </ol>
 <h2 id="nodejs-支持"><a href="#nodejs-支持" class="headerlink" title="nodejs 支持"></a>nodejs 支持</h2><p>nodejs 自从 14 就开始支持 esm，但直到目前 18 为止迁移仍然不是平滑的，主要遇到了以下问题。</p>
 <h3 id="导入-cjs-only-模块"><a href="#导入-cjs-only-模块" class="headerlink" title="导入 cjs only 模块"></a>导入 cjs only 模块</h3><p>遗憾的是，现存的大量包都是 cjs only 模块的，不可能短时间迁移，而 nodejs 中 esm 与 cjs 的互操作性并不太好，所以需要处理一下。下面以 fs-extra 为例：</p>
 <p>之前一般会这样写</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { readdir } from 'fs-extra'
-import path from 'path'
-
-console.log(await readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { readdir } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">readdir</span>(path.<span class="hljs-title function_">resolve</span>()))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>使用 tsx 运行时会出现错误 <code>SyntaxError: The requested module 'fs-extra' does not provide an export named 'readdir'</code>，这似乎是一个已知错误，参考：<a target="_blank" rel="noopener" href="https://github.com/esbuild-kit/tsx/issues/38">https://github.com/esbuild-kit/tsx/issues/38</a></p>
 <p>现在需要修改为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import fsExtra from 'fs-extra'
-import path from 'path'
-
-console.log(await fsExtra.readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> fsExtra <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> fsExtra.<span class="hljs-title function_">readdir</span>(path.<span class="hljs-title function_">resolve</span>()))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>或者修改为以下代码使用 <code>ts-node --esm &lt;file&gt;</code> 运行（tsx 不支持这种方式）</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import fsExtra = require('fs-extra')
-import path from 'path'
-
-console.log(await fsExtra.readdir(path.resolve()))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> fsExtra = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs-extra'</span>)<br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> fsExtra.<span class="hljs-title function_">readdir</span>(path.<span class="hljs-title function_">resolve</span>()))<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用-dirname"><a href="#使用-dirname" class="headerlink" title="使用 __dirname"></a>使用 <code>__dirname</code></h3><p>是的，你没看错，在 esm 模块下 <code>__dirname</code> 不可用了，取而代之的是 <code>import.meta.url</code>，总而言之，现在的使用方式是</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-console.log(__dirname)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> { fileURLToPath } <span class="hljs-keyword">from</span> <span class="hljs-string">'url'</span><br><br><span class="hljs-keyword">const</span> __filename = <span class="hljs-title function_">fileURLToPath</span>(<span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>)<br><span class="hljs-keyword">const</span> __dirname = path.<span class="hljs-title function_">dirname</span>(__filename)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(__dirname)<br></code></pre></td></tr></tbody></table></figure>
 
 <p>参考文章 <a target="_blank" rel="noopener" href="https://flaviocopes.com/fix-dirname-not-defined-es-module-scope/">https://flaviocopes.com/fix-dirname-not-defined-es-module-scope/</a>，之后在谈到 esbuild 时再说打包 cjs bundle 如何处理 <code>import.meta.url</code>（在 cjs 中不支持，又是二选一）。</p>
 <h2 id="lib-维护与使用"><a href="#lib-维护与使用" class="headerlink" title="lib 维护与使用"></a>lib 维护与使用</h2><h3 id="新的-esm-与-cjs-双包支持配置"><a href="#新的-esm-与-cjs-双包支持配置" class="headerlink" title="新的 esm 与 cjs 双包支持配置"></a>新的 esm 与 cjs 双包支持配置</h3><p>之前，我们通过 main/module 字段区分模块</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"main"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/index.js"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/index.esm.js"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"types"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/index.d.ts"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>但在 esm 项目中引用会报错</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">SyntaxError: The requested module 'cjs-and-esm-lib' does not provide an export named 'hello'<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">SyntaxError: The requested module <span class="hljs-string">'cjs-and-esm-lib'</span> does not provide an <span class="hljs-built_in">export</span> named <span class="hljs-string">'hello'</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>esm 项目不认这个，它新定义了 exports 字段，所以需要增加（注意 main 字段仍需保留兼容旧版本 node）exports 字段</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "exports": {
-    ".": {
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"exports"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"."</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"import"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"./dist/index.esm.js"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"require"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"./dist/index.js"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"types"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"./dist/index.d.ts"</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>参考该回答：<a target="_blank" rel="noopener" href="https://stackoverflow.com/a/70020984">https://stackoverflow.com/a/70020984</a></p>
 <h2 id="esbuild-支持"><a href="#esbuild-支持" class="headerlink" title="esbuild 支持"></a>esbuild 支持</h2><p>原以为 esbuild 天生支持 esm 所以应该会很简单，但实际上也遇到了相当多的问题。</p>
 <p>捆绑以下代码为 cjs 会出现错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
-import { fileURLToPath } from 'url'
-import fsExtra from 'fs-extra'
-
-const { readdir } = fsExtra
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-console.log(__dirname)
-console.log(await readdir(__dirname))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> { fileURLToPath } <span class="hljs-keyword">from</span> <span class="hljs-string">'url'</span><br><span class="hljs-keyword">import</span> fsExtra <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><br><span class="hljs-keyword">const</span> { readdir } = fsExtra<br><br><span class="hljs-keyword">const</span> __filename = <span class="hljs-title function_">fileURLToPath</span>(<span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>)<br><span class="hljs-keyword">const</span> __dirname = path.<span class="hljs-title function_">dirname</span>(__filename)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(__dirname)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">readdir</span>(__dirname))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>命令</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --format=esm
-esbuild src/bin.ts --platform=node --outfile=dist/bin.js --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --format=esm<br>esbuild src/bin.ts --platform=node --outfile=dist/bin.js --bundle --sourcemap --format=cjs<br></code></pre></td></tr></tbody></table></figure>
 
 <p>错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">[ERROR] Top-level await is currently not supported with the "cjs" output format<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">[ERROR] Top-level await is currently not supported with the <span class="hljs-string">"cjs"</span> output format<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这里是因为 cjs 不能包含顶级 await，修改为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import path from 'path'
-import { fileURLToPath } from 'url'
-import fsExtra from 'fs-extra'
-
-const { readdir } = fsExtra
-
-;(async () =&gt; {
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = path.dirname(__filename)
-  console.log(__dirname)
-  console.log(await readdir(__dirname))
-})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> { fileURLToPath } <span class="hljs-keyword">from</span> <span class="hljs-string">'url'</span><br><span class="hljs-keyword">import</span> fsExtra <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><br><span class="hljs-keyword">const</span> { readdir } = fsExtra<br><br>;(<span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> __filename = <span class="hljs-title function_">fileURLToPath</span>(<span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>)<br>  <span class="hljs-keyword">const</span> __dirname = path.<span class="hljs-title function_">dirname</span>(__filename)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(__dirname)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">readdir</span>(__dirname))<br>})()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>捆绑没有问题，但运行会出错</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">node dist/bin.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">node dist/bin.js<br></code></pre></td></tr></tbody></table></figure>
 
 <p>首先是第一个错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">var import_path = __toESM(require("path"), 1);
-                  ^
-
-ReferenceError: require is not defined in ES module scope, you can use import instead
-This file is being treated as an ES module because it has a '.js' file extension and 'esm-demo\packages\esm-include-cjs-lib\package.json' contains "type": "module". To
-treat it as a CommonJS script, rename it to use the '.cjs' file extension.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">var import_path = __toESM(require(<span class="hljs-string">"path"</span>), 1);<br>                  ^<br><br>ReferenceError: require is not defined <span class="hljs-keyword">in</span> ES module scope, you can use import instead<br>This file is being treated as an ES module because it has a <span class="hljs-string">'.js'</span> file extension and <span class="hljs-string">'esm-demo\packages\esm-include-cjs-lib\package.json'</span> contains <span class="hljs-string">"type"</span>: <span class="hljs-string">"module"</span>. To<br>treat it as a CommonJS script, rename it to use the <span class="hljs-string">'.cjs'</span> file extension.<br></code></pre></td></tr></tbody></table></figure>
 
 <p>它说这是一个 esm 包，默认代码是 esm 模块，如果希望是以 cjs 模块执行，需要修改为 cjs 后缀。</p>
 <p>修改命令</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --bundle --sourcemap --format=cjs<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后出现了第二个错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string or an instance of URL. Received undefined<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">TypeError [ERR_INVALID_ARG_TYPE]: The <span class="hljs-string">"path"</span> argument must be of <span class="hljs-built_in">type</span> string or an instance of URL. Received undefined<br></code></pre></td></tr></tbody></table></figure>
 
 <p>相关代码</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// src/bin.ts</span>
-<span class="token keyword">var</span> import_path <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-<span class="token keyword">var</span> import_url <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span>
-<span class="token keyword">var</span> import_fs_extra <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require_lib</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-<span class="token keyword">var</span> import_meta <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token keyword">var</span> <span class="token punctuation">{</span> readdir <span class="token punctuation">}</span> <span class="token operator">=</span> import_fs_extra<span class="token punctuation">.</span>default
-<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> __filename <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> import_url<span class="token punctuation">.</span>fileURLToPath<span class="token punctuation">)</span><span class="token punctuation">(</span>import_meta<span class="token punctuation">.</span>url<span class="token punctuation">)</span> <span class="token comment">// 这里是关键，因为 import.meta.url 在 cjs 代码中是空的</span>
-  <span class="token keyword">const</span> __dirname <span class="token operator">=</span> import_path<span class="token punctuation">.</span>default<span class="token punctuation">.</span><span class="token function">dirname</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
-  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span>
-  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">await</span> <span class="token function">readdir</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// src/bin.ts</span><br><span class="hljs-keyword">var</span> import_path = <span class="hljs-title function_">__toESM</span>(<span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>), <span class="hljs-number">1</span>)<br><span class="hljs-keyword">var</span> import_url = <span class="hljs-built_in">require</span>(<span class="hljs-string">'url'</span>)<br><span class="hljs-keyword">var</span> import_fs_extra = <span class="hljs-title function_">__toESM</span>(require_lib(), <span class="hljs-number">1</span>)<br><span class="hljs-keyword">var</span> import_meta = {}<br><span class="hljs-keyword">var</span> { readdir } = import_fs_extra.<span class="hljs-property">default</span><br>;(<span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> __filename = (<span class="hljs-number">0</span>, import_url.<span class="hljs-property">fileURLToPath</span>)(import_meta.<span class="hljs-property">url</span>) <span class="hljs-comment">// 这里是关键，因为 import.meta.url 在 cjs 代码中是空的</span><br>  <span class="hljs-keyword">const</span> __dirname = import_path.<span class="hljs-property">default</span>.<span class="hljs-title function_">dirname</span>(__filename)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(__dirname)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">readdir</span>(__dirname))<br>})()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>根据<a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/1492#issuecomment-893144483">这个 issue 中作者的回答</a>，修改命令</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --inject:./import-meta-url.js --define:import.meta.url=import_meta_url --bundle --sourcemap --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --inject:./import-meta-url.js --define:import.meta.url=import_meta_url --bundle --sourcemap --format=cjs<br></code></pre></td></tr></tbody></table></figure>
 
 <p>遗憾的是，这不再生效，bundle 的代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// import-meta-url.js</span>
-<span class="token keyword">var</span> import_meta_url2 <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pathToFileURL</span><span class="token punctuation">(</span>__filename<span class="token punctuation">)</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>import_meta_url2<span class="token punctuation">)</span>
-
-<span class="token comment">// src/bin.ts</span>
-<span class="token keyword">var</span> import_path <span class="token operator">=</span> <span class="token function">__toESM</span><span class="token punctuation">(</span><span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-<span class="token keyword">var</span> import_url <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'url'</span><span class="token punctuation">)</span>
-<span class="token punctuation">;</span><span class="token punctuation">(</span><span class="token keyword">async</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-  <span class="token keyword">const</span> __filename2 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> import_url<span class="token punctuation">.</span>fileURLToPath<span class="token punctuation">)</span><span class="token punctuation">(</span>import_meta_url<span class="token punctuation">)</span>
-  <span class="token keyword">const</span> __dirname <span class="token operator">=</span> import_path<span class="token punctuation">.</span>default<span class="token punctuation">.</span><span class="token function">dirname</span><span class="token punctuation">(</span>__filename2<span class="token punctuation">)</span>
-  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// import-meta-url.js</span><br><span class="hljs-keyword">var</span> import_meta_url2 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'url'</span>).<span class="hljs-title function_">pathToFileURL</span>(__filename)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(import_meta_url2)<br><br><span class="hljs-comment">// src/bin.ts</span><br><span class="hljs-keyword">var</span> import_path = <span class="hljs-title function_">__toESM</span>(<span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>), <span class="hljs-number">1</span>)<br><span class="hljs-keyword">var</span> import_url = <span class="hljs-built_in">require</span>(<span class="hljs-string">'url'</span>)<br>;(<span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> __filename2 = (<span class="hljs-number">0</span>, import_url.<span class="hljs-property">fileURLToPath</span>)(import_meta_url)<br>  <span class="hljs-keyword">const</span> __dirname = import_path.<span class="hljs-property">default</span>.<span class="hljs-title function_">dirname</span>(__filename2)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(__dirname)<br>})()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以明显看到，注入的脚本的变量名被修改了，从 <code>import_meta_url</code> =&gt; <code>import_meta_url2</code>，这是奇怪的问题。。。</p>
 <p>或许可以替换 <code>--inject</code> =&gt; <code>--banner</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --define:import.meta.url=import_meta_url --bundle --sourcemap --banner:js="var import_meta_url = require('url').pathToFileURL(__filename)" --format=cjs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">esbuild src/bin.ts --platform=node --outfile=dist/bin.cjs --define:import.meta.url=import_meta_url --bundle --sourcemap --banner:js=<span class="hljs-string">"var import_meta_url = require('url').pathToFileURL(__filename)"</span> --format=cjs<br></code></pre></td></tr></tbody></table></figure>
 
 <p>这样就生效了</p>
 <hr>
 <p>那么，运行 esm bundle 呢？<br>也会出现错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">throw new Error('Dynamic require of "' + x + '" is not supported')
-
-Error: Dynamic require of "fs" is not supported<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Dynamic require of "'</span> + x + <span class="hljs-string">'" is not supported'</span>)<br><br><span class="hljs-title class_">Error</span>: <span class="hljs-title class_">Dynamic</span> <span class="hljs-built_in">require</span> <span class="hljs-keyword">of</span> <span class="hljs-string">"fs"</span> is not supported<br></code></pre></td></tr></tbody></table></figure>
 
 <p>按照<a target="_blank" rel="noopener" href="https://github.com/evanw/esbuild/issues/1921#issuecomment-1152991694">这里</a>的解决方法修改命令</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --banner:js="import { createRequire } from 'module';const require = createRequire(import.meta.url);" --format=esm<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">esbuild src/bin.ts --platform=node --outfile=dist/bin.esm.js --bundle --sourcemap --banner:js=<span class="hljs-string">"import { createRequire } from 'module';const require = createRequire(import.meta.url);"</span> --format=esm<br></code></pre></td></tr></tbody></table></figure>
 
 <p>现在，bundle 后的代码可以终于运行了。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>或许 esm only 看起来很好，也有 tree shaking 看起来很棒的想法，但现在，它都还没有真正在生产中可用。包括一系列重要的项目都没有迁移，包括 react/vscode/electron/vite 等等。实际上，在此之前，许多人（吾辈亦然）也都使用 esm 模块来编写代码，只是最终的 bundle 产物可能不是 esm，例如在浏览器中可能是 iife，在 nodejs 中是 cjs，但绝大多数的应用层开发者并不关心这些，只有 lib 的维护者才会关心，esm only 则将包的复杂度也转移给了使用者，而且在 cjs 中引用 esm only 的包并没有真正可用的方案。相比于 esbuild/vite 这种解决实际问题的项目而言，esm only 运动更像是一场 web 前端圈内的狂欢。</p>
@@ -903,8 +788,6 @@ Error: Dynamic require of "fs" is not supported<span aria-hidden="true" class="l
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

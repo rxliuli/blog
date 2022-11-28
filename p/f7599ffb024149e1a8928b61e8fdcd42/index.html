@@ -43,8 +43,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -262,7 +260,7 @@
         
         
           <!-- compatible with older versions-->
-          89 分钟
+          92 分钟
         
       </span>
     
@@ -352,42 +350,10 @@
 </li>
 </ul>
 <p>异步组件和 vue 稍微有点差别，虽然也是需要 <code>import()</code> 语法，但却需要使用高阶组件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React from 'react'
-
-function AsyncRoute(
-  importComponent: () =&gt; PromiseLike&lt;{ default: any }&gt; | { default: any },
-) {
-  class AsyncComponent extends React.Component&lt;any, any&gt; {
-    constructor(props: any) {
-      super(props)
-      this.state = {
-        component: null,
-      }
-    }
-
-    async componentDidMount() {
-      const { default: component } = await importComponent()
-      this.setState({
-        component: component,
-      })
-    }
-
-    render() {
-      const C = this.state.component
-      return C ? &lt;C {...this.props} /&gt; : null
-    }
-  }
-
-  return AsyncComponent
-}
-
-export default AsyncRoute<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">AsyncRoute</span>(<span class="hljs-params"></span><br><span class="hljs-params">  importComponent: () =&gt; PromiseLike&lt;{ <span class="hljs-keyword">default</span>: any }&gt; | { <span class="hljs-keyword">default</span>: any },</span><br><span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">AsyncComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">React.Component</span>&lt;any, any&gt; {<br>    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">props: any</span>) {<br>      <span class="hljs-variable language_">super</span>(props)<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = {<br>        <span class="hljs-attr">component</span>: <span class="hljs-literal">null</span>,<br>      }<br>    }<br><br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">componentDidMount</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">const</span> { <span class="hljs-attr">default</span>: component } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">importComponent</span>()<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setState</span>({<br>        <span class="hljs-attr">component</span>: component,<br>      })<br>    }<br><br>    <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) {<br>      <span class="hljs-keyword">const</span> C = <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">component</span><br>      <span class="hljs-keyword">return</span> C ? <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">C</span> {<span class="hljs-attr">...this.props</span>} /&gt;</span></span> : <span class="hljs-literal">null</span><br>    }<br>  }<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">AsyncComponent</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">AsyncRoute</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后使用高阶组件包装即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">&lt;Route
-  path={'/system/task'}
-  component={AsyncRoute(() =&gt; import('../../index/HelloWorld'))}
-/&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs jsx">&lt;<span class="hljs-title class_">Route</span><br>  path={<span class="hljs-string">'/system/task'</span>}<br>  component={<span class="hljs-title class_">AsyncRoute</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">import</span>(<span class="hljs-string">'../../index/HelloWorld'</span>))}<br>/&gt;<br></code></pre></td></tr></tbody></table></figure>
 
 <blockquote>
 <p>注：高阶组件和高阶函数类似，指的是接收一个组件/返回一个组件的组件。</p>
@@ -426,42 +392,10 @@ export default AsyncRoute<span aria-hidden="true" class="line-numbers-rows"><spa
 <h3 id="修改默认配置"><a href="#修改默认配置" class="headerlink" title="修改默认配置"></a>修改默认配置</h3><p>cra 默认提供了脚本命令 <code>reject</code>，用于将 cra 封装的配置全部解压出来 – 当然，此操作是不可逆的！但除了这种破坏性的方式之外，也有人找到了和 vue-cli 中类似的方式，不过需要第三方包 <code>react-app-rewired</code> 的支持。</p>
 <p>并在根目录添加配置文件 <code>config-overrides.js</code>，里面暴露出一个函数，即可修改 cra 的默认配置了。</p>
 <p>下面是一个简单的示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> WorkerPlugin <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'worker-plugin'</span><span class="token punctuation">)</span>
-
-<span class="token comment">/* config-overrides.js */</span>
-module<span class="token punctuation">.</span><span class="token function-variable function">exports</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token function">override</span><span class="token punctuation">(</span><span class="token parameter">config<span class="token punctuation">,</span> env</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment">//region WebWorker 配置</span>
-
-  <span class="token comment">//do stuff with the webpack config...</span>
-  config<span class="token punctuation">.</span>output<span class="token punctuation">.</span>globalObject <span class="token operator">=</span> <span class="token string">'this'</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>config<span class="token punctuation">.</span>plugins<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    config<span class="token punctuation">.</span>plugins <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
-  <span class="token punctuation">}</span>
-  config<span class="token punctuation">.</span>plugins<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">WorkerPlugin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-  <span class="token comment">//endregion</span>
-
-  <span class="token keyword">return</span> config
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">WorkerPlugin</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">'worker-plugin'</span>)<br><br><span class="hljs-comment">/* config-overrides.js */</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span> <span class="hljs-title function_">override</span>(<span class="hljs-params">config, env</span>) {<br>  <span class="hljs-comment">//region WebWorker 配置</span><br><br>  <span class="hljs-comment">//do stuff with the webpack config...</span><br>  config.<span class="hljs-property">output</span>.<span class="hljs-property">globalObject</span> = <span class="hljs-string">'this'</span><br>  <span class="hljs-keyword">if</span> (!config.<span class="hljs-property">plugins</span>) {<br>    config.<span class="hljs-property">plugins</span> = []<br>  }<br>  config.<span class="hljs-property">plugins</span>.<span class="hljs-title function_">push</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">WorkerPlugin</span>())<br><br>  <span class="hljs-comment">//endregion</span><br><br>  <span class="hljs-keyword">return</span> config<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h2><h3 id="this-的值"><a href="#this-的值" class="headerlink" title="this 的值"></a>this 的值</h3><p>在 <code>class</code> 中使用箭头函数以直接绑定当前组件的实例，尽量不要使用 <code>function</code>，否则 <code>this</code> 可能是不明确的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React, { Component } from 'react'
-
-class HelloWorld extends Component {
-  logMsg = () =&gt; {
-    console.log('msg')
-  }
-  render() {
-    return (
-      &lt;div&gt;
-        &lt;h1&gt;hello world&lt;/h1&gt;
-        &lt;button onClick={this.logMsg}&gt;打印&lt;/button&gt;
-      &lt;/div&gt;
-    )
-  }
-}
-
-export default HelloWorld<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, { <span class="hljs-title class_">Component</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HelloWorld</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Component</span> {<br>  logMsg = <span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'msg'</span>)<br>  }<br>  <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">return</span> (<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>hello world<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{this.logMsg}</span>&gt;</span>打印<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>    )<br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">HelloWorld</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="CSS-样式隔离"><a href="#CSS-样式隔离" class="headerlink" title="CSS 样式隔离"></a>CSS 样式隔离</h3><p>cra 创建的项目默认支持 css module，是 react 项目流行的一种 CSS 隔离方案。</p>
 <p>使用步骤</p>
@@ -471,15 +405,9 @@ export default HelloWorld<span aria-hidden="true" class="line-numbers-rows"><spa
 <li>在 <code>className={styles.*}</code> 使用 class 样式</li>
 </ol>
 <p>示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token selector">.helloWorld</span> <span class="token punctuation">{</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> #000<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.helloWorld</span> {<br>  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#000</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import styles from 'HelloWorld.module.css'
-
-export default function HelloWorld() {
-  return &lt;div className={styles.helloWorld}&gt;hello world&lt;/div&gt;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'HelloWorld.module.css'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">HelloWorld</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{styles.helloWorld}</span>&gt;</span>hello world<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>注：</p>
 <ul>
@@ -488,18 +416,14 @@ export default function HelloWorld() {
 <li>CSS 只要被引入了，就不会被删除，即便组件被销毁了亦然，所以页面内的 CSS 只会增加，不会减少</li>
 </ul>
 <p>如何添加多个，默认使用 cra 创建的项目支持使用模板字符串</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">className={`${styles.className1} ${styles.className2}`}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx">className={<span class="hljs-string">`<span class="hljs-subst">${styles.className1}</span> <span class="hljs-subst">${styles.className2}</span>`</span>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来很丑？可以试试 <a target="_blank" rel="noopener" href="https://github.com/JedWatson/classnames">classnames</a></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import classNames from 'classnames'
-
-className={classNames(globalStyles.global, globalStyles.margin)}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> classNames <span class="hljs-keyword">from</span> <span class="hljs-string">'classnames'</span><br><br>className={<span class="hljs-title function_">classNames</span>(globalStyles.<span class="hljs-property">global</span>, globalStyles.<span class="hljs-property">margin</span>)}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但仍然很丑，正如 Sindre Sorhus 所说：<a target="_blank" rel="noopener" href="https://twitter.com/sindresorhus/status/1001355913930858502">React 把简单的事情变复杂，复杂的事情变简单</a></p>
 <p>另一种个 API 是 <code>classNames.bind</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import classNames from 'classnames'
-const cx={classNames.bind(globalStyles)}
-className={cx('global', 'margin')}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> classNames <span class="hljs-keyword">from</span> <span class="hljs-string">'classnames'</span><br><span class="hljs-keyword">const</span> cx={classNames.<span class="hljs-title function_">bind</span>(globalStyles)}<br>className={<span class="hljs-title function_">cx</span>(<span class="hljs-string">'global'</span>, <span class="hljs-string">'margin'</span>)}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>但这会让 WebStorm 损失所有的 CSS 关联，影响了包括代码提示/跳转/重构等功能，考虑到维护成本实在得不偿失。</p>
 <p>还有人提出了 typed css module，为所有的 <code>.module.css</code> 生成 <code>.d.ts</code> 类型定义，但这会和 css in js 一样丧失 css 预处理器的优势 —- 并且，所有的工具链都需要重新支持这种关联，将之认为是 css。</p>
@@ -513,18 +437,10 @@ className={cx('global', 'margin')}<span aria-hidden="true" class="line-numbers-r
 </blockquote>
 <h3 id="引入图片"><a href="#引入图片" class="headerlink" title="引入图片"></a>引入图片</h3><p>在任何一个项目中，都少不了引入图片的需求。而 React 中，并未像 Vue 对 <code>img, audio, video</code> 这些标签进行特殊处理，以支持直接使用路径即可将对应的媒体文件打包进来，React 需要使用 <code>import img from '*'</code> 的<strong>原始</strong>形式让 webpack <strong>知道</strong>这是一个需要打包的资源。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import img from 'img.png'
-
-function render() {
-  reutrn(&lt;img src={img} alt="img" /&gt;)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> img <span class="hljs-keyword">from</span> <span class="hljs-string">'img.png'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-title function_">reutrn</span>(<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">{img}</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">"img"</span> /&gt;</span></span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>而对于 SVG 类型的图片，React 支持使用组件的形式引入。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import { ReactComponent as IconAudio } from '../../assets/icon/icon-audio.svg'
-
-function render() {
-  reutrn(&lt;IconAudio /&gt;)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ReactComponent</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">IconAudio</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'../../assets/icon/icon-audio.svg'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-title function_">reutrn</span>(<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">IconAudio</span> /&gt;</span></span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="slot"><a href="#slot" class="headerlink" title="slot"></a>slot</h3><p>两种方案</p>
 <ol>
@@ -536,18 +452,9 @@ function render() {
 <p>吐槽：函数式已经是政治正确了。</p>
 </blockquote>
 <p>使用函数式的 <code>slot</code> 时必须检查函数是否存在，如果不存在则不要调用，不像是 vue 中的 <code>slot</code> 是自动处理这一步的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">{
-  this.props.tableOperate &amp;&amp; this.props.tableOperate(this.state.innerValue)
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx">{<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">props</span>.<span class="hljs-property">tableOperate</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">props</span>.<span class="hljs-title function_">tableOperate</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">innerValue</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<h3 id="watch-监听-props"><a href="#watch-监听-props" class="headerlink" title="watch 监听 props"></a>watch 监听 props</h3><figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">componentDidUpdate(prevProps: PropsType) {
-  // 典型用法（不要忘记比较 props）：
-  if (this.props.value !== prevProps.value) {
-    this.setState({
-      innerValue: this.props.value,
-    })
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="watch-监听-props"><a href="#watch-监听-props" class="headerlink" title="watch 监听 props"></a>watch 监听 props</h3><figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">componentDidUpdate</span>(<span class="hljs-params">prevProps: PropsType</span>) {<br>  <span class="hljs-comment">// 典型用法（不要忘记比较 props）：</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">props</span>.<span class="hljs-property">value</span> !== prevProps.<span class="hljs-property">value</span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setState</span>({<br>      <span class="hljs-attr">innerValue</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">props</span>.<span class="hljs-property">value</span>,<br>    })<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>相比于 Vue 的生命周期，React 显然更加<strong>复杂</strong>与<strong>混乱</strong>，而且，老实说有时候真的很难用。</p>
 <p>例如非常常见的生命周期 <code>componentWillUpdate</code>，它承担的责任实在是太多了，不仅 <code>watch</code> <code>state/props</code> 中的数据要用这个，连 React Router 的路由变化同样依赖于此。</p>
@@ -571,21 +478,11 @@ function render() {
 </ul>
 <h3 id="简化-state-修改"><a href="#简化-state-修改" class="headerlink" title="简化 state 修改"></a>简化 state 修改</h3><p>使用 <code>setState</code> 很烦的一点是当你需要深度为某个属性赋值的时候，要为该属性上面所有的对象全部使用 <code>...</code> 或者其他方式拷贝一遍。</p>
 <p>例如</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">this.setState({
-  user: {
-    ...this.state.user,
-    address: {
-      ...this.state.user.address,
-      city: newCity,
-    },
-  },
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setState</span>({<br>  <span class="hljs-attr">user</span>: {<br>    ...<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">user</span>,<br>    <span class="hljs-attr">address</span>: {<br>      ...<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">user</span>.<span class="hljs-property">address</span>,<br>      <span class="hljs-attr">city</span>: newCity,<br>    },<br>  },<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>当有多个属性需要赋值时就尤其的繁琐，而 <a target="_blank" rel="noopener" href="https://github.com/immerjs/immer">immerjs</a> 正好可以解决这种痛点</p>
 <p>使用 immer 重构之后</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">this.setState(produce(this.state, draft =&gt; {
-  draft.user.address.city = newCity
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setState</span>(<span class="hljs-title function_">produce</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>, <span class="hljs-function"><span class="hljs-params">draft</span> =&gt;</span> {<br>  draft.<span class="hljs-property">user</span>.<span class="hljs-property">address</span>.<span class="hljs-property">city</span> = newCity<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>代码变得很简单了，虽然看起来是直接赋值，不过 immer 使用了 <code>Proxy</code> 和 <code>Object.freeze</code> 实现了对使用者友好的不可变数据修改，具体参考 。</p>
 <h3 id="React-Hooks"><a href="#React-Hooks" class="headerlink" title="React Hooks"></a>React Hooks</h3><p>React Hooks 是在 React 16.8 之后添加的一项新特性，一如既往，很多人又是吹的天花乱坠。老实说最开始 React Hooks 流行并且在各个地方大肆宣传时，吾辈非常讨厌它，因为它又向函数式靠近了一步—-函数式政治正确真的很讨厌！所以，自正式学习 React 以来，吾辈都没有接触过 React Hooks，都是用 Class Component 实现组件。<br>但现在，架不住好奇心和一些朋友的推荐，吾辈稍微看了一下这个新特性。</p>
@@ -595,57 +492,7 @@ function render() {
 <li><code>useEffect</code>：声明一些副作用代码</li>
 </ul>
 <p>使用看起来很简单</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">import React, { useEffect, useRef, useState } from 'react'
-
-const HelloHooks: React.FC = function() {
-  //region 计数器
-
-  const [count, setCount] = useState(1)
-  const [list, setList] = useState&lt;string[]&gt;([])
-  const countAdd = () =&gt; setCount(count + 1)
-  useEffect(() =&gt; {
-    console.log('count changed: ', count)
-    setList(
-      Array(count)
-        .fill(0)
-        .map((_, i) =&gt; `第 ${i + 1} 个元素`),
-    )
-    //监听 count 变化
-  }, [count])
-
-  //endregion
-
-  //region 自动聚焦输入框
-
-  const inputRef = useRef&lt;HTMLInputElement&gt;(null as any)
-  useEffect(() =&gt; {
-    inputRef.current.focus()
-    //不监听任何值变化，只在第一次渲染运行
-  }, [])
-
-  //endregion
-
-  return (
-    &lt;div&gt;
-      &lt;div&gt;
-        &lt;input
-          ref={inputRef}
-          value={count}
-          type="number"
-          onChange={e =&gt; setCount(parseInt(e.target.value))}
-        /&gt;
-        &lt;button onClick={countAdd}&gt;增加&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;ul&gt;
-        {list.map((v, i) =&gt; (
-          &lt;li key={i}&gt;{v}&lt;/li&gt;
-        ))}
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  )
-}
-
-export default HelloHooks<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, { useEffect, useRef, useState } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">HelloHooks</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-comment">//region 计数器</span><br><br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">1</span>)<br>  <span class="hljs-keyword">const</span> [list, setList] = useState&lt;string[]&gt;([])<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">countAdd</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-title function_">setCount</span>(count + <span class="hljs-number">1</span>)<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'count changed: '</span>, count)<br>    <span class="hljs-title function_">setList</span>(<br>      <span class="hljs-title class_">Array</span>(count)<br>        .<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>)<br>        .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">_, i</span>) =&gt;</span> <span class="hljs-string">`第 <span class="hljs-subst">${i + <span class="hljs-number">1</span>}</span> 个元素`</span>),<br>    )<br>    <span class="hljs-comment">//监听 count 变化</span><br>  }, [count])<br><br>  <span class="hljs-comment">//endregion</span><br><br>  <span class="hljs-comment">//region 自动聚焦输入框</span><br><br>  <span class="hljs-keyword">const</span> inputRef = useRef&lt;<span class="hljs-title class_">HTMLInputElement</span>&gt;(<span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> any)<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    inputRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">focus</span>()<br>    <span class="hljs-comment">//不监听任何值变化，只在第一次渲染运行</span><br>  }, [])<br><br>  <span class="hljs-comment">//endregion</span><br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">input</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">ref</span>=<span class="hljs-string">{inputRef}</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">value</span>=<span class="hljs-string">{count}</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">type</span>=<span class="hljs-string">"number"</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">onChange</span>=<span class="hljs-string">{e</span> =&gt;</span> setCount(parseInt(e.target.value))}</span><br><span class="language-xml">        /&gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{countAdd}</span>&gt;</span>增加<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span></span><br><span class="language-xml">        {list.map((v, i) =&gt; (</span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{i}</span>&gt;</span>{v}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span><br><span class="language-xml">        ))}</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">HelloHooks</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，上面用 <code>useState/useEffect</code> 两个函数实现了一些常见的功能：<code>state, componentDidMount, componentDidUpdate</code>，<code>useEffect</code> 甚至默认支持类似 vue <code>watch</code> 的使用方式。</p>
 <p>同时，使用 Hooks 可以轻易地封装出 <code>useModel</code>, vue 中的 <code>watch/computed</code> 甚至原生自带了！</p>
@@ -714,55 +561,9 @@ React props 基本上能传递任何东西，所以承担了 vue 中的多个特
 </blockquote>
 <p>一个可能解决方案是在指定元素外面包一层，在页面数据未加载之前，在元素上方添加一个 Loading 遮罩层提示<strong>正在加载中</strong>，等到数据加载完成后删除浮层。</p>
 <p>下面是一个简单的实现</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-css" data-language="css"><code class="language-css"><span class="token comment">/* ComponentLoading.module.css */</span>
-<span class="token selector">.componentLoadingDialog</span> <span class="token punctuation">{</span>
-  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
-  <span class="token property">left</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-  <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
-  <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
-  <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
-  <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
-  <span class="token property">z-index</span><span class="token punctuation">:</span> 10<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* ComponentLoading.module.css */</span><br><span class="hljs-selector-class">.componentLoadingDialog</span> {<br>  <span class="hljs-attribute">position</span>: absolute;<br>  <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>;<br>  <span class="hljs-attribute">top</span>: <span class="hljs-number">0</span>;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">display</span>: flex;<br>  <span class="hljs-attribute">justify-content</span>: center;<br>  <span class="hljs-attribute">align-items</span>: center;<br>  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">10</span>;<br>  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#fff</span>;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx">// ComponentLoading.tsx
-import React from 'react'
-import { Spin } from 'antd'
-import styles from './ComponentLoading.module.css'
-
-type PropsType = {
-  /**
-   * 是否显示 loading?
-   */
-  isLoading: boolean
-  tip?: string
-}
-
-/**
- * 控制 Ajax 请求未完成前某个区域不展示默认数据
- * @param props
- * @constructor
- */
-const ComponentLoading: React.FC&lt;PropsType&gt; = function(props) {
-  const { isLoading, tip = '正在加载中。。。' } = props
-  return (
-    &lt;div style={{ position: 'relative' }}&gt;
-      {isLoading &amp;&amp; (
-        &lt;div className={styles.componentLoadingDialog}&gt;
-          &lt;Spin tip={tip} /&gt;
-        &lt;/div&gt;
-      )}
-
-      {/*注：默认会渲染 children 组件*/}
-      {props.children}
-    &lt;/div&gt;
-  )
-}
-
-export default ComponentLoading<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight jsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// ComponentLoading.tsx</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Spin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'antd'</span><br><span class="hljs-keyword">import</span> styles <span class="hljs-keyword">from</span> <span class="hljs-string">'./ComponentLoading.module.css'</span><br><br>type <span class="hljs-title class_">PropsType</span> = {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 是否显示 loading?</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-attr">isLoading</span>: boolean<br>  tip?: string<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 控制 Ajax 请求未完成前某个区域不展示默认数据</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">props</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@constructor</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">ComponentLoading</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">PropsType</span>&gt; = <span class="hljs-keyword">function</span>(<span class="hljs-params">props</span>) {<br>  <span class="hljs-keyword">const</span> { isLoading, tip = <span class="hljs-string">'正在加载中。。。'</span> } = props<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{{</span> <span class="hljs-attr">position:</span> '<span class="hljs-attr">relative</span>' }}&gt;</span></span><br><span class="language-xml">      {isLoading &amp;&amp; (</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{styles.componentLoadingDialog}</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Spin</span> <span class="hljs-attr">tip</span>=<span class="hljs-string">{tip}</span> /&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      )}</span><br><span class="language-xml"></span><br><span class="language-xml">      {/*注：默认会渲染 children 组件*/}</span><br><span class="language-xml">      {props.children}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">ComponentLoading</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="React-和-vue-3-的对比"><a href="#React-和-vue-3-的对比" class="headerlink" title="React 和 vue 3 的对比"></a>React 和 vue 3 的对比</h3><p>vue 3 新增了 <code>Function-base</code> 的组件，看起来很像 React Hooks，但目前仍然无法在生产中实用。</p>
 <p>目前看来有以下缺点</p>
@@ -794,36 +595,7 @@ export default ComponentLoading<span aria-hidden="true" class="line-numbers-rows
 <li><p>创建文件 <code>src/setupProxy.ts</code></p>
 </li>
 <li><p>编写配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import proxy from 'http-proxy-middleware'
-const fs = require('fs-extra')
-const path = require('path')
-
-/**
- * 开发环境代理
- * @param app
- * @return {string|*}
- */
-module.exports = function (app: any) {
-  const proxyConfig: proxy.Config = {
-    target: 'https://localhost:8000',
-    changeOrigin: true,
-    secure: false,
-    ws: true,
-    pathRewrite(api: string) {
-      const mockApiList = fs.readJSONSync(
-        path.resolve(__dirname, './config/mockApiList.json'),
-      )
-      return (
-        api +
-        (mockApiList.some((mockApi: string) =&gt; api.includes(mockApi))
-          ? '?mock=default&amp;errCode=200'
-          : '')
-      )
-    },
-  }
-
-  app.use(proxy('/api', proxyConfig))
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> proxy <span class="hljs-keyword">from</span> <span class="hljs-string">'http-proxy-middleware'</span><br><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs-extra'</span>)<br><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>)<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 开发环境代理</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">app</span></span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span> {<span class="hljs-type">string|*</span>}</span><br><span class="hljs-comment"> */</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">app: <span class="hljs-built_in">any</span></span>) {<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">proxyConfig</span>: proxy.<span class="hljs-property">Config</span> = {<br>    <span class="hljs-attr">target</span>: <span class="hljs-string">'https://localhost:8000'</span>,<br>    <span class="hljs-attr">changeOrigin</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-attr">secure</span>: <span class="hljs-literal">false</span>,<br>    <span class="hljs-attr">ws</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-title function_">pathRewrite</span>(<span class="hljs-params">api: <span class="hljs-built_in">string</span></span>) {<br>      <span class="hljs-keyword">const</span> mockApiList = fs.<span class="hljs-title function_">readJSONSync</span>(<br>        path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">'./config/mockApiList.json'</span>),<br>      )<br>      <span class="hljs-keyword">return</span> (<br>        api +<br>        (mockApiList.<span class="hljs-title function_">some</span>(<span class="hljs-function">(<span class="hljs-params">mockApi: <span class="hljs-built_in">string</span></span>) =&gt;</span> api.<span class="hljs-title function_">includes</span>(mockApi))<br>          ? <span class="hljs-string">'?mock=default&amp;errCode=200'</span><br>          : <span class="hljs-string">''</span>)<br>      )<br>    },<br>  }<br><br>  app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">proxy</span>(<span class="hljs-string">'/api'</span>, proxyConfig))<br>}<br></code></pre></td></tr></tbody></table></figure></li>
 </ol>
 <blockquote>
 <p>参考：</p>
@@ -836,19 +608,7 @@ module.exports = function (app: any) {
 <li><p>修改 <code>package.json</code> 中字段 <code>homepage</code> 的值为 <code>.</code></p>
 </li>
 <li><p>使用 react router 中的 hash mode，具体而言就是修改 <em>index.tsx</em> 中使用如下代码，关键是 <code>HashRouter</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import React from 'react'
-import ReactDOM from 'react-dom'
-import { HashRouter } from 'react-router-dom'
-import App from './App.tsx'
-
-ReactDOM.render(
-  &lt;React.StrictMode&gt;
-    &lt;HashRouter&gt;
-      &lt;App /&gt;
-    &lt;/HashRouter&gt;
-  &lt;/React.StrictMode&gt;,
-  document.getElementById('app'),
-)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure></li>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactDOM</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">HashRouter</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router-dom'</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">App</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'./App.tsx'</span><br><br><span class="hljs-title class_">ReactDOM</span>.<span class="hljs-title function_">render</span>(<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">React.StrictMode</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">HashRouter</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">HashRouter</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">React.StrictMode</span>&gt;</span></span>,<br>  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'app'</span>),<br>)<br></code></pre></td></tr></tbody></table></figure></li>
 </ol>
 <h3 id="为什么-react-hooks-总是有奇怪的问题"><a href="#为什么-react-hooks-总是有奇怪的问题" class="headerlink" title="为什么 react hooks 总是有奇怪的问题"></a>为什么 react hooks 总是有奇怪的问题</h3><p>根源在于 react 的 render 函数是多次执行，导致如果没有正确的声明依赖项或者顺序，就会导致出现奇怪的问题。</p>
 <p>典型的依赖声明问题</p>
@@ -1209,8 +969,6 @@ ReactDOM.render(
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

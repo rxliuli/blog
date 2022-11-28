@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -248,7 +246,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.1k 字
+          5.6k 字
         
       </span>
     
@@ -260,7 +258,7 @@
         
         
           <!-- compatible with older versions-->
-          43 分钟
+          47 分钟
         
       </span>
     
@@ -324,30 +322,7 @@
 <p>例如有一个开关，控制灯泡怎么变化，在指定状态下点击会触发不同的行为，然后改变状态。</p>
 <h2 id="基本示例"><a href="#基本示例" class="headerlink" title="基本示例"></a>基本示例</h2><p>想象以下场景，有一个开关控制着一个灯泡，灯泡有三种状态：关闭、打开弱光和打开强光，轮流变化。</p>
 <h3 id="使用原生代码实现"><a href="#使用原生代码实现" class="headerlink" title="使用原生代码实现"></a>使用原生代码实现</h3><p>首先，我们尝试简单的使用 <code>if/else</code> 判断进行实现。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  private state: 'off' | 'weak' | 'strong' = 'off'
-  click() {
-    switch (this.state) {
-      case 'off':
-        console.log('打开弱光')
-        this.state = 'weak'
-        break
-      case 'weak':
-        console.log('打开强光')
-        this.state = 'strong'
-        break
-      case 'strong':
-        console.log('关灯')
-        this.state = 'off'
-        break
-    }
-  }
-}
-
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Light</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">state</span>: <span class="hljs-string">'off'</span> | <span class="hljs-string">'weak'</span> | <span class="hljs-string">'strong'</span> = <span class="hljs-string">'off'</span><br>  <span class="hljs-title function_">click</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-keyword">switch</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>) {<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'off'</span>:<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'weak'</span><br>        <span class="hljs-keyword">break</span><br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'weak'</span>:<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开强光'</span>)<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'strong'</span><br>        <span class="hljs-keyword">break</span><br>      <span class="hljs-keyword">case</span> <span class="hljs-string">'strong'</span>:<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'关灯'</span>)<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'off'</span><br>        <span class="hljs-keyword">break</span><br>    }<br>  }<br>}<br><br><span class="hljs-keyword">const</span> light = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Light</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然而，这种代码充斥着判断，同时代码本身也都耦合在了一起。目前只有一个 <code>flag</code> 的时候还没太大问题，如果有更多的 flag（例如典型的用户角色与状态同时控制指定操作的行为），代码将非常混乱。</p>
 <blockquote>
@@ -358,64 +333,11 @@ light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 <li>将不同的逻辑抽离为单独的方法</li>
 <li>使用 Map 消除条件判断</li>
 </ol>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  private state: 'off' | 'weak' | 'strong' = 'off'
-  private map = {
-    off: this.offClick.bind(this),
-    weak: this.weakClick.bind(this),
-    strong: this.strongClick.bind(this),
-  }
-  click() {
-    this.map[this.state]()
-  }
-
-  private offClick() {
-    console.log('打开弱光')
-    this.state = 'weak'
-  }
-  private weakClick() {
-    console.log('打开强光')
-    this.state = 'strong'
-  }
-  private strongClick() {
-    console.log('关灯')
-    this.state = 'off'
-  }
-}
-
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Light</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-attr">state</span>: <span class="hljs-string">'off'</span> | <span class="hljs-string">'weak'</span> | <span class="hljs-string">'strong'</span> = <span class="hljs-string">'off'</span><br>  <span class="hljs-keyword">private</span> map = {<br>    <span class="hljs-attr">off</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">offClick</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">this</span>),<br>    <span class="hljs-attr">weak</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">weakClick</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">this</span>),<br>    <span class="hljs-attr">strong</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">strongClick</span>.<span class="hljs-title function_">bind</span>(<span class="hljs-variable language_">this</span>),<br>  }<br>  <span class="hljs-title function_">click</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">map</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>]()<br>  }<br><br>  <span class="hljs-keyword">private</span> <span class="hljs-title function_">offClick</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'weak'</span><br>  }<br>  <span class="hljs-keyword">private</span> <span class="hljs-title function_">weakClick</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开强光'</span>)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'strong'</span><br>  }<br>  <span class="hljs-keyword">private</span> <span class="hljs-title function_">strongClick</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'关灯'</span>)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = <span class="hljs-string">'off'</span><br>  }<br>}<br><br><span class="hljs-keyword">const</span> light = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Light</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>事实上，第一种方式是卓有成效且任何人都能够无师自通的（分离了实现和控制），但第二种，虽然这里可以简化逻辑的控制，但稍微复杂或是由多个 <code>flag</code> 控制的状态流转则无法使用这种方式抽离出来。</p>
 <h3 id="使用简单的状态模式"><a href="#使用简单的状态模式" class="headerlink" title="使用简单的状态模式"></a>使用简单的状态模式</h3><p>下面是用简单的状态模式来简化代码的控制逻辑</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">class Light {
-  toggle: (light: Light) =&gt; void = FSM.off
-  click() {
-    this.toggle(this)
-  }
-}
-
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.toggle = FSM.weak
-  },
-  weak(light: Light) {
-    console.log('打开强光')
-    light.toggle = FSM.strong
-  },
-  strong(light: Light) {
-    console.log('关灯')
-    light.toggle = FSM.off
-  },
-}
-
-const light = new Light()
-light.click()
-light.click()
-light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Light</span> {<br>  <span class="hljs-attr">toggle</span>: <span class="hljs-function">(<span class="hljs-params">light: Light</span>) =&gt;</span> <span class="hljs-built_in">void</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">off</span><br>  <span class="hljs-title function_">click</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">toggle</span>(<span class="hljs-variable language_">this</span>)<br>  }<br>}<br><br><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">FSM</span> = {<br>  <span class="hljs-title function_">off</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">weak</span><br>  },<br>  <span class="hljs-title function_">weak</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开强光'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">strong</span><br>  },<br>  <span class="hljs-title function_">strong</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'关灯'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">off</span><br>  },<br>}<br><br><span class="hljs-keyword">const</span> light = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Light</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br>light.<span class="hljs-title function_">click</span>()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>仔细观察变化</p>
 <ol>
@@ -424,187 +346,18 @@ light.click()<span aria-hidden="true" class="line-numbers-rows"><span></span><sp
 </ol>
 <p>其实本质上状态模式是将控制流程分散到了各个子流程中，不再集中在一个地方控制。</p>
 <h3 id="结合-react-与状态模式"><a href="#结合-react-与状态模式" class="headerlink" title="结合 react 与状态模式"></a>结合 react 与状态模式</h3><p>然后，有趣的地方来了：如何结合状态模式与现有框架？</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import React from 'react'
-import ReactDOM from 'react-dom'
-import { useState } from 'react'
-
-class Light {
-  toggle: (light: Light) =&gt; void = FSM.off
-  click() {
-    this.toggle(this)
-  }
-}
-
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.toggle = FSM.weak
-  },
-  weak(light: Light) {
-    console.log('打开强光')
-    light.toggle = FSM.strong
-  },
-  strong(light: Light) {
-    console.log('关灯')
-    light.toggle = FSM.off
-  },
-}
-
-function App() {
-  const [light] = useState(new Light())
-  return (
-    &lt;div&gt;
-      &lt;h2&gt;app&lt;/h2&gt;
-      &lt;button onClick={() =&gt; light.click()}&gt;灯的开关&lt;/button&gt;
-    &lt;/div&gt;
-  )
-}
-
-ReactDOM.render(&lt;App /&gt;, document.querySelector('#app'))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactDOM</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span><br><span class="hljs-keyword">import</span> { useState } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Light</span> {<br>  <span class="hljs-attr">toggle</span>: <span class="hljs-function">(<span class="hljs-params">light: Light</span>) =&gt;</span> <span class="hljs-built_in">void</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">off</span><br>  <span class="hljs-title function_">click</span>(<span class="hljs-params"></span>) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">toggle</span>(<span class="hljs-variable language_">this</span>)<br>  }<br>}<br><br><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">FSM</span> = {<br>  <span class="hljs-title function_">off</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">weak</span><br>  },<br>  <span class="hljs-title function_">weak</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开强光'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">strong</span><br>  },<br>  <span class="hljs-title function_">strong</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'关灯'</span>)<br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">off</span><br>  },<br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> [light] = <span class="hljs-title function_">useState</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Light</span>())<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>app<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> light.click()}&gt;灯的开关<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br><br><span class="hljs-title class_">ReactDOM</span>.<span class="hljs-title function_">render</span>(<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span></span>, <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#app'</span>))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然而，当我们想要即时显示当前状态时，却发现了问题，是的，状态模式中将状态放在 <code>Light</code> 类中，而它并不在 react 的控制范围之内！</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">// 其他代码
-
-class Light {
-  state: 'off' | 'weak' | 'strong' = 'off'
-  // 其他代码
-}
-
-const FSM = {
-  off(light: Light) {
-    console.log('打开弱光')
-    light.state = 'weak'
-    light.toggle = FSM.weak
-  },
-  // 其他状态的代码
-}
-
-function App() {
-  const [light] = useState(new Light())
-  return (
-    &lt;div&gt;
-      &lt;h2&gt;app&lt;/h2&gt;
-      &lt;button onClick={() =&gt; light.click()}&gt;灯的开关&lt;/button&gt;
-      &lt;p&gt;{light.state}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}
-
-// 其他代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// 其他代码</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Light</span> {<br>  <span class="hljs-attr">state</span>: <span class="hljs-string">'off'</span> | <span class="hljs-string">'weak'</span> | <span class="hljs-string">'strong'</span> = <span class="hljs-string">'off'</span><br>  <span class="hljs-comment">// 其他代码</span><br>}<br><br><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">FSM</span> = {<br>  <span class="hljs-title function_">off</span>(<span class="hljs-params">light: Light</span>) {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>    light.<span class="hljs-property">state</span> = <span class="hljs-string">'weak'</span><br>    light.<span class="hljs-property">toggle</span> = <span class="hljs-variable constant_">FSM</span>.<span class="hljs-property">weak</span><br>  },<br>  <span class="hljs-comment">// 其他状态的代码</span><br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> [light] = <span class="hljs-title function_">useState</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Light</span>())<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>app<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> light.click()}&gt;灯的开关<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{light.state}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br><br><span class="hljs-comment">// 其他代码</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>即便这样做，仍然不会发生变化，因为 Light 是个对象，而我们并未使用 <code>setLight</code> 修改它，所以自然不会发生变化</p>
 <h3 id="尝试-react-useReducer"><a href="#尝试-react-useReducer" class="headerlink" title="尝试 react + useReducer"></a>尝试 react + useReducer</h3><p>当然，我们可以使用 <code>useReducer</code> 试试，毕竟它是专门应对复杂逻辑处理的 hooks。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type LightState = 'off' | 'weak' | 'strong'
-const FSM: Record&lt;LightState, () =&gt; LightState&gt; = {
-  off(): LightState {
-    console.log('打开弱光')
-    return 'weak'
-  },
-  weak(): LightState {
-    console.log('打开强光')
-    return 'strong'
-  },
-  strong(): LightState {
-    console.log('关灯')
-    return 'off'
-  },
-}
-
-const App: React.FC = () =&gt; {
-  const [num, setNum] = useState(0)
-  const [lightState, lightSend] = useReducer&lt;(state: LightState) =&gt; LightState&gt;(
-    (state) =&gt; {
-      return FSM[state]()
-    },
-    'off',
-  )
-
-  return (
-    &lt;div className="App"&gt;
-      &lt;header&gt;
-        &lt;button onClick={() =&gt; lightSend()}&gt;切换&lt;/button&gt;
-        每次从 off =&gt; weak 就改变状态
-      &lt;/header&gt;
-      &lt;p&gt;{lightState}&lt;/p&gt;
-      &lt;p&gt;当前 useState 的值: {num}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">LightState</span> = <span class="hljs-string">'off'</span> | <span class="hljs-string">'weak'</span> | <span class="hljs-string">'strong'</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">FSM</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">LightState</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">LightState</span>&gt; = {<br>  <span class="hljs-title function_">off</span>(): <span class="hljs-title class_">LightState</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开弱光'</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">'weak'</span><br>  },<br>  <span class="hljs-title function_">weak</span>(): <span class="hljs-title class_">LightState</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'打开强光'</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">'strong'</span><br>  },<br>  <span class="hljs-title function_">strong</span>(): <span class="hljs-title class_">LightState</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'关灯'</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">'off'</span><br>  },<br>}<br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span> = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> [num, setNum] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br>  <span class="hljs-keyword">const</span> [lightState, lightSend] = useReducer&lt;<span class="hljs-function">(<span class="hljs-params">state: LightState</span>) =&gt;</span> <span class="hljs-title class_">LightState</span>&gt;(<br>    <span class="hljs-function">(<span class="hljs-params">state</span>) =&gt;</span> {<br>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">FSM</span>[state]()<br>    },<br>    <span class="hljs-string">'off'</span>,<br>  )<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> lightSend()}&gt;切换<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">        每次从 off =&gt; weak 就改变状态</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{lightState}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>当前 useState 的值: {num}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然而，可以看到，FSM 逻辑代码在 react 组件外部时，想要修改 react 组件内部的状态仍然非常困难，只能维护状态机自身的状态，而这显然是没多大用处的。解决方案很简单，使用回调的形式将具体的实现函数放在 react 组件内部，而这，正是 xstate 集成 react 实现的功能之一。</p>
 <h2 id="使用-xstate"><a href="#使用-xstate" class="headerlink" title="使用 xstate"></a>使用 xstate</h2><h3 id="react-状态机-xstate"><a href="#react-状态机-xstate" class="headerlink" title="react + 状态机 xstate"></a>react + 状态机 xstate</h3><p>下面是一个使用状态机控制点击开关控制灯泡的示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">enum LightStateEnum {
-  Off = 'off',
-  Weak = 'weak',
-  Strong = 'strong',
-}
-
-enum LightEventEnum {
-  Click = 'click',
-}
-interface LightEvent extends EventObject {
-  type: LightEventEnum.Click
-  num: number
-}
-
-enum LightActionEnum {
-  EntryWeak = 'entryWeak',
-}
-
-const lightStateMachine = Machine&lt;{}, LightEvent&gt;({
-  initial: LightStateEnum.Off,
-  states: {
-    [LightStateEnum.Off]: {
-      on: {
-        [LightEventEnum.Click]: {
-          target: LightStateEnum.Weak,
-          actions: LightActionEnum.EntryWeak,
-        },
-      },
-    },
-    [LightStateEnum.Weak]: {
-      on: {
-        [LightEventEnum.Click]: LightStateEnum.Strong,
-      },
-    },
-    [LightStateEnum.Strong]: {
-      on: {
-        [LightEventEnum.Click]: LightStateEnum.Off,
-      },
-    },
-  },
-})
-
-const App: React.FC = () =&gt; {
-  const [num, setNum] = useState(0)
-  const [lightState, lightSend] = useMachine(lightStateMachine, {
-    actions: {
-      [LightActionEnum.EntryWeak](_context, event) {
-        console.log('entryOff: ', event.num)
-        setNum(num + event.num)
-      },
-    },
-  })
-  return (
-    &lt;div className="App"&gt;
-      &lt;header&gt;
-        &lt;button
-          onClick={() =&gt;
-            lightSend({
-              type: LightEventEnum.Click,
-              num: 1,
-            })
-          }
-        &gt;
-          切换
-        &lt;/button&gt;
-        每次从 off =&gt; weak 就改变状态
-      &lt;/header&gt;
-      &lt;p&gt;{lightState.value}&lt;/p&gt;
-      &lt;p&gt;当前 useState 的值: {num}&lt;/p&gt;
-    &lt;/div&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">enum</span> <span class="hljs-title class_">LightStateEnum</span> {<br>  <span class="hljs-title class_">Off</span> = <span class="hljs-string">'off'</span>,<br>  <span class="hljs-title class_">Weak</span> = <span class="hljs-string">'weak'</span>,<br>  <span class="hljs-title class_">Strong</span> = <span class="hljs-string">'strong'</span>,<br>}<br><br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">LightEventEnum</span> {<br>  <span class="hljs-title class_">Click</span> = <span class="hljs-string">'click'</span>,<br>}<br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LightEvent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">EventObject</span> {<br>  <span class="hljs-attr">type</span>: <span class="hljs-title class_">LightEventEnum</span>.<span class="hljs-property">Click</span><br>  <span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span><br>}<br><br><span class="hljs-keyword">enum</span> <span class="hljs-title class_">LightActionEnum</span> {<br>  <span class="hljs-title class_">EntryWeak</span> = <span class="hljs-string">'entryWeak'</span>,<br>}<br><br><span class="hljs-keyword">const</span> lightStateMachine = <span class="hljs-title class_">Machine</span>&lt;{}, <span class="hljs-title class_">LightEvent</span>&gt;({<br>  <span class="hljs-attr">initial</span>: <span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Off</span>,<br>  <span class="hljs-attr">states</span>: {<br>    [<span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Off</span>]: {<br>      <span class="hljs-attr">on</span>: {<br>        [<span class="hljs-title class_">LightEventEnum</span>.<span class="hljs-property">Click</span>]: {<br>          <span class="hljs-attr">target</span>: <span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Weak</span>,<br>          <span class="hljs-attr">actions</span>: <span class="hljs-title class_">LightActionEnum</span>.<span class="hljs-property">EntryWeak</span>,<br>        },<br>      },<br>    },<br>    [<span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Weak</span>]: {<br>      <span class="hljs-attr">on</span>: {<br>        [<span class="hljs-title class_">LightEventEnum</span>.<span class="hljs-property">Click</span>]: <span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Strong</span>,<br>      },<br>    },<br>    [<span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Strong</span>]: {<br>      <span class="hljs-attr">on</span>: {<br>        [<span class="hljs-title class_">LightEventEnum</span>.<span class="hljs-property">Click</span>]: <span class="hljs-title class_">LightStateEnum</span>.<span class="hljs-property">Off</span>,<br>      },<br>    },<br>  },<br>})<br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span> = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> [num, setNum] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br>  <span class="hljs-keyword">const</span> [lightState, lightSend] = <span class="hljs-title function_">useMachine</span>(lightStateMachine, {<br>    <span class="hljs-attr">actions</span>: {<br>      [<span class="hljs-title class_">LightActionEnum</span>.<span class="hljs-property">EntryWeak</span>](_context, event) {<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'entryOff: '</span>, event.<span class="hljs-property">num</span>)<br>        <span class="hljs-title function_">setNum</span>(num + event.<span class="hljs-property">num</span>)<br>      },<br>    },<br>  })<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">"App"</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span></span><br><span class="language-xml">            lightSend({</span><br><span class="language-xml">              type: LightEventEnum.Click,</span><br><span class="language-xml">              num: 1,</span><br><span class="language-xml">            })</span><br><span class="language-xml">          }</span><br><span class="language-xml">        &gt;</span><br><span class="language-xml">          切换</span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">        每次从 off =&gt; weak 就改变状态</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{lightState.value}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>当前 useState 的值: {num}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看的出来，上面多了很多<strong>模板</strong>代码，但状态机的意图我们却能以声明式的形式构造出来，具体 <code>actions</code> 的实现细节则被分离在 hooks 中。</p>
 <h2 id="xstate-概述"><a href="#xstate-概述" class="headerlink" title="xstate 概述"></a>xstate 概述</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><blockquote>
@@ -978,8 +731,6 @@ const App: React.FC = () =&gt; {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

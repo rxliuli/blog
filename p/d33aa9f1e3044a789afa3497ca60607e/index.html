@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="GitHub example  场景在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 Map&lt;Integer, Integer&gt;l。然而浏览器传递过来的是 Map&lt;String, String&gt;。然而，此时 SpringMVC 并没有直接说参数类型错误。 Controller 大概是下面这样 @RestController @RequestMap">
+    <meta name="description" content="GitHub example  场景在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 Map&lt;Integer, Integer&gt;l。然而浏览器传递过来的是 Map&lt;String, String&gt;。然而，此时 SpringMVC 并没有直接说参数类型错误。 Controller 大概是下面这样 123456789101112@RestControl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringMVC @RequestParam 参数不能自动转换泛型集合">
 <meta property="og:url" content="https://blog.rxliuli.com/p/d33aa9f1e3044a789afa3497ca60607e/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="GitHub example  场景在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 Map&lt;Integer, Integer&gt;l。然而浏览器传递过来的是 Map&lt;String, String&gt;。然而，此时 SpringMVC 并没有直接说参数类型错误。 Controller 大概是下面这样 @RestController @RequestMap">
+<meta property="og:description" content="GitHub example  场景在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 Map&lt;Integer, Integer&gt;l。然而浏览器传递过来的是 Map&lt;String, String&gt;。然而，此时 SpringMVC 并没有直接说参数类型错误。 Controller 大概是下面这样 123456789101112@RestControl">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://img.rxliuli.com/20190117180704.png">
 <meta property="article:published_time" content="2020-04-18T14:14:09.396Z">
@@ -42,8 +42,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -250,7 +248,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.6k 字
+          2.7k 字
         
       </span>
     
@@ -262,7 +260,7 @@
         
         
           <!-- compatible with older versions-->
-          22 分钟
+          23 分钟
         
       </span>
     
@@ -319,39 +317,13 @@
 </blockquote>
 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在使用 SpringMVC 传参的时候遇到的一个问题，本来需要的参数类型是 <code>Map&lt;Integer, Integer&gt;l</code>。然而浏览器传递过来的是 <code>Map&lt;String, String&gt;</code>。然而，此时 SpringMVC 并没有直接说参数类型错误。</p>
 <p>Controller 大概是下面这样</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RestController
-@RequestMapping("/")
-public class HomeApi {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @PostMapping("testMap")
-    public Map&lt;Integer, Integer&gt; testMap(@RequestParam Map&lt;Integer, Integer&gt; map) {
-        // 简单的打印 map
-        log.info("map: {}", map);
-        return map;
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping("/")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomeApi</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(<span class="hljs-built_in">this</span>.getClass());<br><br>    <span class="hljs-meta">@PostMapping("testMap")</span><br>    <span class="hljs-keyword">public</span> Map&lt;Integer, Integer&gt; <span class="hljs-title function_">testMap</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam</span> Map&lt;Integer, Integer&gt; map)</span> {<br>        <span class="hljs-comment">// 简单的打印 map</span><br>        log.info(<span class="hljs-string">"map: {}"</span>, map);<br>        <span class="hljs-keyword">return</span> map;<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然而，当吾辈调用这个接口时，却出现了错误</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> fd <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FormData</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-fd<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
-fd<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
-fd<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
-<span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'/testMap'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'post'</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">body</span><span class="token operator">:</span> fd<span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">res</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">json</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>json<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> fd = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>()<br>fd.<span class="hljs-title function_">append</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>fd.<span class="hljs-title function_">append</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br>fd.<span class="hljs-title function_">append</span>(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)<br><span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/testMap'</span>, {<br>  <span class="hljs-attr">method</span>: <span class="hljs-string">'post'</span>,<br>  <span class="hljs-attr">body</span>: fd,<br>})<br>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> res.<span class="hljs-title function_">json</span>())<br>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">json</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(json))<br></code></pre></td></tr></tbody></table></figure>
 
 <p>报错信息</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "timestamp": "2019-01-17T09:59:16.809+0000",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "Could not write JSON: java.lang.String cannot be cast to java.lang.Number; nested exception is com.fasterxml.jackson.databind.JsonMappingException: java.lang.String cannot be cast to java.lang.Number",
-  "path": "/testMap"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"timestamp"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2019-01-17T09:59:16.809+0000"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"status"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">500</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"error"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Internal Server Error"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"message"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Could not write JSON: java.lang.String cannot be cast to java.lang.Number; nested exception is com.fasterxml.jackson.databind.JsonMappingException: java.lang.String cannot be cast to java.lang.Number"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"path"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"/testMap"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>可以看到，Spring 告诉我们，不能转换 <code>String</code> 为 <code>Integer</code>。这是为什么呢？让我们来调试一下！</p>
 <p>可以看到，确实进入了方法，然而最后一步却报错了<br><img src="https://img.rxliuli.com/20190117180704.png" srcset="/img/loading.gif" lazyload alt="进入了方法"></p>
@@ -361,60 +333,18 @@ fd<span class="token punctuation">.</span><span class="token function">append</s
 <li>最终转换类型为 <code>Map&lt;Integer, Integer&gt;</code> 的时候发现类型错误</li>
 </ul>
 <p>那么，我们是否可以手动将之转换为 <code>Map&lt;Integer, Integer&gt;</code> 呢？修改代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RestController
-@RequestMapping("/")
-public class HomeApi {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @PostMapping("testMap")
-    public Map&lt;Integer, Integer&gt; testMap(@RequestParam Map&lt;Integer, Integer&gt; map) {
-        log.info("map: {}", map);
-        return map.entrySet().stream().collect(Collectors.toMap(kv -&gt; Integer.parseInt(kv.getKey()), kv -&gt; Integer.parseInt(kv.getValue())));
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping("/")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomeApi</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(<span class="hljs-built_in">this</span>.getClass());<br><br>    <span class="hljs-meta">@PostMapping("testMap")</span><br>    <span class="hljs-keyword">public</span> Map&lt;Integer, Integer&gt; <span class="hljs-title function_">testMap</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam</span> Map&lt;Integer, Integer&gt; map)</span> {<br>        log.info(<span class="hljs-string">"map: {}"</span>, map);<br>        <span class="hljs-keyword">return</span> map.entrySet().stream().collect(Collectors.toMap(kv -&gt; Integer.parseInt(kv.getKey()), kv -&gt; Integer.parseInt(kv.getValue())));<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>再次调用，发现在 <code>kv.getKey()</code> 这里就已经发生了异常。那么，我们应该如何解决呢？</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="使用-Map-lt-String-String-gt"><a href="#使用-Map-lt-String-String-gt" class="headerlink" title="使用 Map<String, String>"></a>使用 <code>Map&lt;String, String&gt;</code></h3><p>其实，我们只要将参数类型声明为 <code>Map&lt;String, String&gt;</code>，然后再手动转换即可</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RestController
-@RequestMapping("/")
-public class HomeApi {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @PostMapping("testMap")
-    public Map&lt;Integer, Integer&gt; testMap(@RequestParam Map&lt;String, String&gt; map) {
-        log.info("map: {}", map);
-        return map.entrySet().stream().collect(Collectors.toMap(kv -&gt; Integer.parseInt(kv.getKey()), kv -&gt; Integer.parseInt(kv.getValue())));
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping("/")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomeApi</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(<span class="hljs-built_in">this</span>.getClass());<br><br>    <span class="hljs-meta">@PostMapping("testMap")</span><br>    <span class="hljs-keyword">public</span> Map&lt;Integer, Integer&gt; <span class="hljs-title function_">testMap</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam</span> Map&lt;String, String&gt; map)</span> {<br>        log.info(<span class="hljs-string">"map: {}"</span>, map);<br>        <span class="hljs-keyword">return</span> map.entrySet().stream().collect(Collectors.toMap(kv -&gt; Integer.parseInt(kv.getKey()), kv -&gt; Integer.parseInt(kv.getValue())));<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>再次调用，一切恢复了正常！</p>
 <h3 id="使用-RequestBody"><a href="#使用-RequestBody" class="headerlink" title="使用 @RequestBody"></a>使用 <code>@RequestBody</code></h3><p>除此之外，我们或许还有另外一种方法，使用支持泛型的参数的 <code>@RequestBody</code> 标识为 <code>json</code> 参数。修改代码如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">@RestController
-@RequestMapping("/")
-public class HomeApi {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @PostMapping("testMap")
-    public Map&lt;Integer, Integer&gt; testMap(@RequestBody Map&lt;Integer, Integer&gt; map) {
-        log.info("map: {}", map);
-        return map;
-    }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping("/")</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomeApi</span> {<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">log</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(<span class="hljs-built_in">this</span>.getClass());<br><br>    <span class="hljs-meta">@PostMapping("testMap")</span><br>    <span class="hljs-keyword">public</span> Map&lt;Integer, Integer&gt; <span class="hljs-title function_">testMap</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> Map&lt;Integer, Integer&gt; map)</span> {<br>        log.info(<span class="hljs-string">"map: {}"</span>, map);<br>        <span class="hljs-keyword">return</span> map;<br>    }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>同时，客户端也要修改为以 <code>json</code> 的形式，将参数传递给服务端</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'/testMap'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-  <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'post'</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token number">1</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
-    <span class="token number">2</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
-    <span class="token number">3</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token string-property property">'content-type'</span><span class="token operator">:</span> <span class="token string">'application/json'</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">res</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> res<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">json</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>json<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/testMap'</span>, {<br>  <span class="hljs-attr">method</span>: <span class="hljs-string">'post'</span>,<br>  <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<br>    <span class="hljs-number">1</span>: <span class="hljs-number">1</span>,<br>    <span class="hljs-number">2</span>: <span class="hljs-number">2</span>,<br>    <span class="hljs-number">3</span>: <span class="hljs-number">3</span>,<br>  }),<br>  <span class="hljs-attr">headers</span>: {<br>    <span class="hljs-string">'content-type'</span>: <span class="hljs-string">'application/json'</span>,<br>  },<br>})<br>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> res.<span class="hljs-title function_">json</span>())<br>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">json</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(json))<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>那么，关于 SpringMVC 不能自动转换泛型集合便到这里就结束啦</p>
@@ -767,8 +697,6 @@ public class HomeApi {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

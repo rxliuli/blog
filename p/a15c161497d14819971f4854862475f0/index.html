@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -700,33 +698,9 @@
 <td></td>
 </tr>
 </tbody></table>
-<h2 id="一些示例"><a href="#一些示例" class="headerlink" title="一些示例"></a>一些示例</h2><h3 id="常见-Stream-操作"><a href="#常见-Stream-操作" class="headerlink" title="常见 Stream 操作"></a>常见 Stream 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final List&lt;String&gt; collect = Stream.of("1", "12", "", "123", "2", "12", "321", "")
-                //过滤
-                .filter(s -&gt; !s.isEmpty())
-                //提取出组成字符串的字符
-                .flatMap(s -&gt; Arrays.stream(s.split("")))
-                //去重
-                .distinct()
-                //转换为集合
-                .collect(Collectors.toList());
-System.out.println(collect); //结果是 [1, 2, 3]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h2 id="一些示例"><a href="#一些示例" class="headerlink" title="一些示例"></a>一些示例</h2><h3 id="常见-Stream-操作"><a href="#常见-Stream-操作" class="headerlink" title="常见 Stream 操作"></a>常见 Stream 操作</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> List&lt;String&gt; collect = Stream.of(<span class="hljs-string">"1"</span>, <span class="hljs-string">"12"</span>, <span class="hljs-string">""</span>, <span class="hljs-string">"123"</span>, <span class="hljs-string">"2"</span>, <span class="hljs-string">"12"</span>, <span class="hljs-string">"321"</span>, <span class="hljs-string">""</span>)<br>                <span class="hljs-comment">//过滤</span><br>                .filter(s -&gt; !s.isEmpty())<br>                <span class="hljs-comment">//提取出组成字符串的字符</span><br>                .flatMap(s -&gt; Arrays.stream(s.split(<span class="hljs-string">""</span>)))<br>                <span class="hljs-comment">//去重</span><br>                .distinct()<br>                <span class="hljs-comment">//转换为集合</span><br>                .collect(Collectors.toList());<br>System.out.println(collect); <span class="hljs-comment">//结果是 [1, 2, 3]</span><br></code></pre></td></tr></tbody></table></figure>
 
-<h3 id="常见-Collectors-操作"><a href="#常见-Collectors-操作" class="headerlink" title="常见 Collectors 操作"></a>常见 Collectors 操作</h3><figure><div class="code-wrapper"><pre class="line-numbers language-java" data-language="java"><code class="language-java">final Map&lt;Integer, List&lt;List&lt;String&gt;&gt;&gt; collect = Stream.of("1", "12", "", "123", "2", "13", "321", "")
-        .collect(
-                //分组
-                Collectors.groupingBy(
-                        //分组条件
-                        String::length,
-                        //分组之前对每个元素进行映射
-                        Collectors.mapping(
-                                //映射函数
-                                s -&gt; Arrays.asList(s.split("")),
-                                //最后将 Stream 转换为 List
-                                Collectors.toList()
-                        )
-                )
-        );
-System.out.println(collect); //结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [1, 3]], 3=[[1, 2, 3], [3, 2, 1]]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<h3 id="常见-Collectors-操作"><a href="#常见-Collectors-操作" class="headerlink" title="常见 Collectors 操作"></a>常见 Collectors 操作</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> Map&lt;Integer, List&lt;List&lt;String&gt;&gt;&gt; collect = Stream.of(<span class="hljs-string">"1"</span>, <span class="hljs-string">"12"</span>, <span class="hljs-string">""</span>, <span class="hljs-string">"123"</span>, <span class="hljs-string">"2"</span>, <span class="hljs-string">"13"</span>, <span class="hljs-string">"321"</span>, <span class="hljs-string">""</span>)<br>        .collect(<br>                <span class="hljs-comment">//分组</span><br>                Collectors.groupingBy(<br>                        <span class="hljs-comment">//分组条件</span><br>                        String::length,<br>                        <span class="hljs-comment">//分组之前对每个元素进行映射</span><br>                        Collectors.mapping(<br>                                <span class="hljs-comment">//映射函数</span><br>                                s -&gt; Arrays.asList(s.split(<span class="hljs-string">""</span>)),<br>                                <span class="hljs-comment">//最后将 Stream 转换为 List</span><br>                                Collectors.toList()<br>                        )<br>                )<br>        );<br>System.out.println(collect); <span class="hljs-comment">//结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [1, 3]], 3=[[1, 2, 3], [3, 2, 1]]}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>最后，Java8 有很多有趣的功能，或许我们所使用的不过是其中一个很小的子集，然而了解的越多越是觉得 Java8 的改进很多呢</p>
@@ -1082,8 +1056,6 @@ System.out.println(collect); //结果是 {0=[[], []], 1=[[1], [2]], 2=[[1, 2], [
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

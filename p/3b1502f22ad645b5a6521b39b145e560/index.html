@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          5.1k 字
+          5.4k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          43 分钟
+          46 分钟
         
       </span>
     
@@ -321,96 +319,10 @@
 <li>自动清理 emitter 对象和 emitter listener。</li>
 </ul>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="实现基本的-EventEmitter"><a href="#实现基本的-EventEmitter" class="headerlink" title="实现基本的 EventEmitter"></a>实现基本的 EventEmitter</h3><p>首先，实现一个基本的 EventEmitter，这里之前吾辈曾经就有 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/rx-util/blob/master/src/module/event/EventEmitter.ts">实现过</a>，所以直接拿过来了。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type EventType = string | number
-
-export type BaseEvents = Record&lt;EventType, any[]&gt;
-
-/**
- * 事件总线
- * 实际上就是发布订阅模式的一种简单实现
- * 类型定义受到 {@link https://github.com/andywer/typed-emitter/blob/master/index.d.ts} 的启发，不过只需要声明参数就好了，而不需要返回值（应该是 {@code void}）
- */
-export class EventEmitter&lt;Events extends BaseEvents&gt; {
-  private readonly events = new Map&lt;keyof Events, Function[]&gt;()
-
-  /**
-   * 添加一个事件监听程序
-   * @param type 监听类型
-   * @param callback 处理回调
-   * @returns {@code this}
-   */
-  add&lt;E extends keyof Events&gt;(type: E, callback: (...args: Events[E]) =&gt; void) {
-    const callbacks = this.events.get(type) || []
-    callbacks.push(callback)
-    this.events.set(type, callbacks)
-    return this
-  }
-  /**
-   * 移除一个事件监听程序
-   * @param type 监听类型
-   * @param callback 处理回调
-   * @returns {@code this}
-   */
-  remove&lt;E extends keyof Events&gt;(
-    type: E,
-    callback: (...args: Events[E]) =&gt; void
-  ) {
-    const callbacks = this.events.get(type) || []
-    this.events.set(
-      type,
-      callbacks.filter((fn: any) =&gt; fn !== callback)
-    )
-    return this
-  }
-  /**
-   * 移除一类事件监听程序
-   * @param type 监听类型
-   * @returns {@code this}
-   */
-  removeByType&lt;E extends keyof Events&gt;(type: E) {
-    this.events.delete(type)
-    return this
-  }
-  /**
-   * 触发一类事件监听程序
-   * @param type 监听类型
-   * @param args 处理回调需要的参数
-   * @returns {@code this}
-   */
-  emit&lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) {
-    const callbacks = this.events.get(type) || []
-    callbacks.forEach((fn) =&gt; {
-      fn(...args)
-    })
-    return this
-  }
-
-  /**
-   * 获取一类事件监听程序
-   * @param type 监听类型
-   * @returns 一个只读的数组，如果找不到，则返回空数组 {@code []}
-   */
-  listeners&lt;E extends keyof Events&gt;(type: E) {
-    return Object.freeze(this.events.get(type) || [])
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">EventType</span> = <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">BaseEvents</span> = <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">EventType</span>, <span class="hljs-built_in">any</span>[]&gt;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 事件总线</span><br><span class="hljs-comment"> * 实际上就是发布订阅模式的一种简单实现</span><br><span class="hljs-comment"> * 类型定义受到 {<span class="hljs-doctag">@link</span> https://github.com/andywer/typed-emitter/blob/master/index.d.ts} 的启发，不过只需要声明参数就好了，而不需要返回值（应该是 {<span class="hljs-doctag">@code</span> void}）</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">EventEmitter</span>&lt;<span class="hljs-title class_">Events</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseEvents</span>&gt; {<br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> events = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;keyof <span class="hljs-title class_">Events</span>, <span class="hljs-title class_">Function</span>[]&gt;()<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 添加一个事件监听程序</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> type 监听类型</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> callback 处理回调</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">@code this</span>}</span><br><span class="hljs-comment">   */</span><br>  add&lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;(<span class="hljs-attr">type</span>: E, <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">...args: Events[E]</span>) =&gt;</span> <span class="hljs-built_in">void</span>) {<br>    <span class="hljs-keyword">const</span> callbacks = <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">type</span>) || []<br>    callbacks.<span class="hljs-title function_">push</span>(callback)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">set</span>(<span class="hljs-keyword">type</span>, callbacks)<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span><br>  }<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 移除一个事件监听程序</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> type 监听类型</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> callback 处理回调</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">@code this</span>}</span><br><span class="hljs-comment">   */</span><br>  remove&lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;(<br>    <span class="hljs-attr">type</span>: E,<br>    <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">...args: Events[E]</span>) =&gt;</span> <span class="hljs-built_in">void</span><br>  ) {<br>    <span class="hljs-keyword">const</span> callbacks = <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">type</span>) || []<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">set</span>(<br>      <span class="hljs-keyword">type</span>,<br>      callbacks.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">fn: <span class="hljs-built_in">any</span></span>) =&gt;</span> fn !== callback)<br>    )<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span><br>  }<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 移除一类事件监听程序</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> type 监听类型</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">@code this</span>}</span><br><span class="hljs-comment">   */</span><br>  removeByType&lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;(<span class="hljs-attr">type</span>: E) {<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">delete</span>(<span class="hljs-keyword">type</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span><br>  }<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 触发一类事件监听程序</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> type 监听类型</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> args 处理回调需要的参数</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">@code this</span>}</span><br><span class="hljs-comment">   */</span><br>  emit&lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;(<span class="hljs-attr">type</span>: E, ...<span class="hljs-attr">args</span>: <span class="hljs-title class_">Events</span>[E]) {<br>    <span class="hljs-keyword">const</span> callbacks = <span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">type</span>) || []<br>    callbacks.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">fn</span>) =&gt;</span> {<br>      <span class="hljs-title function_">fn</span>(...args)<br>    })<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span><br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 获取一类事件监听程序</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> type 监听类型</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@returns</span> 一个只读的数组，如果找不到，则返回空数组 {<span class="hljs-doctag">@code</span> []}</span><br><span class="hljs-comment">   */</span><br>  listeners&lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;(<span class="hljs-attr">type</span>: E) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">events</span>.<span class="hljs-title function_">get</span>(<span class="hljs-keyword">type</span>) || [])<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="结合-context-实现一个包裹组件"><a href="#结合-context-实现一个包裹组件" class="headerlink" title="结合 context 实现一个包裹组件"></a>结合 context 实现一个包裹组件</h3><p>包裹组件的目的是为了能直接提供一个包裹组件，以及提供 provider 的默认值，不需要使用者直接接触 emitter 对象。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">import * as React from "react"
-import { createContext, PropsWithChildren } from "react"
-import { BaseEvents, EventEmitter } from "./util/EventEmitter"
-
-export const EventEmitterContext = createContext&lt;EventEmitter&lt;any&gt;&gt;(null as any)
-
-export function EventEmitterRC&lt;T extends BaseEvents&gt;(
-  props: PropsWithChildren&lt;{ value: EventEmitter&lt;T&gt; }&gt;
-) {
-  return (
-    &lt;EventEmitterContext.Provider value={props.value}&gt;
-      {props.children}
-    &lt;/EventEmitterContext.Provider&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> <span class="hljs-title class_">React</span> <span class="hljs-keyword">from</span> <span class="hljs-string">"react"</span><br><span class="hljs-keyword">import</span> { createContext, <span class="hljs-title class_">PropsWithChildren</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"react"</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">BaseEvents</span>, <span class="hljs-title class_">EventEmitter</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"./util/EventEmitter"</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">EventEmitterContext</span> = createContext&lt;<span class="hljs-title class_">EventEmitter</span>&lt;<span class="hljs-built_in">any</span>&gt;&gt;(<span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title class_">EventEmitterRC</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseEvents</span>&gt;(<br>  <span class="hljs-attr">props</span>: <span class="hljs-title class_">PropsWithChildren</span>&lt;{ <span class="hljs-attr">value</span>: <span class="hljs-title class_">EventEmitter</span>&lt;T&gt; }&gt;<br>) {<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">EventEmitterContext.Provider</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{props.value}</span>&gt;</span></span><br><span class="language-xml">      {props.children}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">EventEmitterContext.Provider</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="使用-hooks-暴露-emitter-api"><a href="#使用-hooks-暴露-emitter-api" class="headerlink" title="使用 hooks 暴露 emitter api"></a>使用 hooks 暴露 emitter api</h3><p>我们主要需要暴露的 API 只有三个</p>
 <ul>
@@ -418,53 +330,7 @@ export function EventEmitterRC&lt;T extends BaseEvents&gt;(
 <li><code>emit</code>: 触发监听器，直接调用即可</li>
 <li><code>emitter</code>: 在当前组件树生效的 emitter 对象</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import {
-  DependencyList,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react"
-import { EventEmitterContext } from "../EventEmitterRC"
-// noinspection ES6PreferShortImport
-import { BaseEvents, EventEmitter } from "../util/EventEmitter"
-
-function useEmit&lt;Events extends BaseEvents&gt;() {
-  const em = useContext(EventEmitterContext)
-  return useCallback(
-    &lt;E extends keyof Events&gt;(type: E, ...args: Events[E]) =&gt; {
-      console.log("emitter emit: ", type, args)
-      em.emit(type, ...args)
-    },
-    [em]
-  )
-}
-
-export function useEventEmitter&lt;Events extends BaseEvents&gt;() {
-  const emit = useEmit&lt;Events&gt;()
-  // 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次
-  const emitter = useMemo(() =&gt; new EventEmitter&lt;Events&gt;(), [])
-  return {
-    useListener: &lt;E extends keyof Events&gt;(
-      type: E,
-      listener: (...args: Events[E]) =&gt; void,
-      deps: DependencyList = []
-    ) =&gt; {
-      const em = useContext(EventEmitterContext)
-      useEffect(() =&gt; {
-        console.log("emitter add: ", type, listener.name)
-        em.add(type, listener)
-        return () =&gt; {
-          console.log("emitter remove: ", type, listener.name)
-          em.remove(type, listener)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [listener, type, ...deps])
-    },
-    emit,
-    emitter,
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> {<br>  <span class="hljs-title class_">DependencyList</span>,<br>  useCallback,<br>  useContext,<br>  useEffect,<br>  useMemo,<br>} <span class="hljs-keyword">from</span> <span class="hljs-string">"react"</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">EventEmitterContext</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"../EventEmitterRC"</span><br><span class="hljs-comment">// noinspection ES6PreferShortImport</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">BaseEvents</span>, <span class="hljs-title class_">EventEmitter</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"../util/EventEmitter"</span><br><br><span class="hljs-keyword">function</span> useEmit&lt;<span class="hljs-title class_">Events</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseEvents</span>&gt;() {<br>  <span class="hljs-keyword">const</span> em = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">EventEmitterContext</span>)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useCallback</span>(<br>    &lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">type</span>: E, ...args: Events[E]</span>) =&gt;</span> {<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"emitter emit: "</span>, <span class="hljs-keyword">type</span>, args)<br>      em.<span class="hljs-title function_">emit</span>(<span class="hljs-keyword">type</span>, ...args)<br>    },<br>    [em]<br>  )<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useEventEmitter&lt;<span class="hljs-title class_">Events</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseEvents</span>&gt;() {<br>  <span class="hljs-keyword">const</span> emit = useEmit&lt;<span class="hljs-title class_">Events</span>&gt;()<br>  <span class="hljs-comment">// 这里使用 useMemo 产生的 emitter 对象的原因是在当前组件树 emitter 仅初始化一次</span><br>  <span class="hljs-keyword">const</span> emitter = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">EventEmitter</span>&lt;<span class="hljs-title class_">Events</span>&gt;(), [])<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">useListener</span>: &lt;E <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">Events</span>&gt;<span class="hljs-function">(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">      <span class="hljs-keyword">type</span>: E,</span></span><br><span class="hljs-params"><span class="hljs-function">      listener: (...args: Events[E]) =&gt; <span class="hljs-built_in">void</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">      deps: DependencyList = []</span></span><br><span class="hljs-params"><span class="hljs-function">    </span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> em = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">EventEmitterContext</span>)<br>      <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"emitter add: "</span>, <span class="hljs-keyword">type</span>, listener.<span class="hljs-property">name</span>)<br>        em.<span class="hljs-title function_">add</span>(<span class="hljs-keyword">type</span>, listener)<br>        <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> {<br>          <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"emitter remove: "</span>, <span class="hljs-keyword">type</span>, listener.<span class="hljs-property">name</span>)<br>          em.<span class="hljs-title function_">remove</span>(<span class="hljs-keyword">type</span>, listener)<br>        }<br>        <span class="hljs-comment">// eslint-disable-next-line react-hooks/exhaustive-deps</span><br>      }, [listener, <span class="hljs-keyword">type</span>, ...deps])<br>    },<br>    emit,<br>    emitter,<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用起来非常简单，在需要使用的 emitter hooks 的组件外部包裹一个 <code>EventEmitterRC</code> 组件，然后就可以使用 <code>useEventEmitter</code> 了。</p>
 <p>下面是一个简单的 Todo 示例，使用 emitter 实现了 todo 表单 与 todo 列表之间的通信。</p>
@@ -486,80 +352,18 @@ export function useEventEmitter&lt;Events extends BaseEvents&gt;() {
 </li>
 </ul>
 <p>Todo 父组件，使用 <code>EventEmitterRC</code> 包裹子组件</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const Todo: React.FC&lt;PropsType&gt; = () =&gt; {
-  const { emitter } = useEventEmitter()
-  return (
-    &lt;EventEmitterRC value={emitter}&gt;
-      &lt;TodoForm /&gt;
-      &lt;TodoList /&gt;
-    &lt;/EventEmitterRC&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">Todo</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">PropsType</span>&gt; = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> { emitter } = <span class="hljs-title function_">useEventEmitter</span>()<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">EventEmitterRC</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{emitter}</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">TodoForm</span> /&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">TodoList</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">EventEmitterRC</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在表单组件中使用 <code>useEventEmitter</code> hooks 获得 <code>emit</code> 方法，然后在添加 todo 时触发它。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoForm: React.FC&lt;PropsType&gt; = () =&gt; {
-  const { emit } = useEventEmitter&lt;TodoEvents&gt;()
-
-  const [title, setTitle] = useState("")
-
-  function handleAddTodo(e: FormEvent&lt;HTMLFormElement&gt;) {
-    e.preventDefault()
-    emit("addTodo", {
-      title,
-    })
-    setTitle("")
-  }
-
-  return (
-    &lt;form onSubmit={handleAddTodo}&gt;
-      &lt;div&gt;
-        &lt;label htmlFor={"title"}&gt;标题：&lt;/label&gt;
-        &lt;input
-          value={title}
-          onChange={(e) =&gt; setTitle(e.target.value)}
-          id={"title"}
-        /&gt;
-        &lt;button type={"submit"}&gt;添加&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/form&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">TodoForm</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">PropsType</span>&gt; = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> { emit } = useEventEmitter&lt;<span class="hljs-title class_">TodoEvents</span>&gt;()<br><br>  <span class="hljs-keyword">const</span> [title, setTitle] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">""</span>)<br><br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">handleAddTodo</span>(<span class="hljs-params">e: FormEvent&lt;HTMLFormElement&gt;</span>) {<br>    e.<span class="hljs-title function_">preventDefault</span>()<br>    <span class="hljs-title function_">emit</span>(<span class="hljs-string">"addTodo"</span>, {<br>      title,<br>    })<br>    <span class="hljs-title function_">setTitle</span>(<span class="hljs-string">""</span>)<br>  }<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">onSubmit</span>=<span class="hljs-string">{handleAddTodo}</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">htmlFor</span>=<span class="hljs-string">{</span>"<span class="hljs-attr">title</span>"}&gt;</span>标题：<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">input</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">value</span>=<span class="hljs-string">{title}</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">onChange</span>=<span class="hljs-string">{(e)</span> =&gt;</span> setTitle(e.target.value)}</span><br><span class="language-xml">          id={"title"}</span><br><span class="language-xml">        /&gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">{</span>"<span class="hljs-attr">submit</span>"}&gt;</span>添加<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在列表组件中使用 <code>useEventEmitter</code> hooks 获得 <code>useListener</code> hooks，然后监听添加 todo 的事件。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx">const TodoList: React.FC&lt;PropsType&gt; = () =&gt; {
-  const [list, setList] = useState&lt;TodoEntity[]&gt;([])
-  const { useListener } = useEventEmitter&lt;TodoEvents&gt;()
-  useListener(
-    "addTodo",
-    (todo) =&gt; {
-      setList([...list, todo])
-    },
-    [list]
-  )
-  const em = { useListener }
-  useEffect(() =&gt; {
-    console.log("em: ", em)
-  }, [em])
-  return (
-    &lt;ul&gt;
-      {list.map((todo, i) =&gt; (
-        &lt;li key={i}&gt;{todo.title}&lt;/li&gt;
-      ))}
-    &lt;/ul&gt;
-  )
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">TodoList</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;<span class="hljs-title class_">PropsType</span>&gt; = <span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> [list, setList] = useState&lt;<span class="hljs-title class_">TodoEntity</span>[]&gt;([])<br>  <span class="hljs-keyword">const</span> { useListener } = useEventEmitter&lt;<span class="hljs-title class_">TodoEvents</span>&gt;()<br>  <span class="hljs-title function_">useListener</span>(<br>    <span class="hljs-string">"addTodo"</span>,<br>    <span class="hljs-function">(<span class="hljs-params">todo</span>) =&gt;</span> {<br>      <span class="hljs-title function_">setList</span>([...list, todo])<br>    },<br>    [list]<br>  )<br>  <span class="hljs-keyword">const</span> em = { useListener }<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">"em: "</span>, em)<br>  }, [em])<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ul</span>&gt;</span></span><br><span class="language-xml">      {list.map((todo, i) =&gt; (</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{i}</span>&gt;</span>{todo.title}<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span><br><span class="language-xml">      ))}</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>下面是一些 TypeScript 类型</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface TodoEntity {
-  title: string
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">TodoEntity</span> {<br>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { BaseEvents } from "../../../components/emitter"
-import { TodoEntity } from "./TodoEntity"
-
-export interface TodoEvents extends BaseEvents {
-  addTodo: [entity: TodoEntity]
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">BaseEvents</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"../../../components/emitter"</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">TodoEntity</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">"./TodoEntity"</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">TodoEvents</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseEvents</span> {<br>  <span class="hljs-attr">addTodo</span>: [<span class="hljs-attr">entity</span>: <span class="hljs-title class_">TodoEntity</span>]<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://medium.com/@dominikdosoudil/building-event-emitter-using-react-hooks-650f94a057ea">Building event emitter using react hooks</a></li>
@@ -916,8 +720,6 @@ export interface TodoEvents extends BaseEvents {
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

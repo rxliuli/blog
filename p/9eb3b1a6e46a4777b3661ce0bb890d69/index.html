@@ -45,8 +45,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -252,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.7k 字
+          1.8k 字
         
       </span>
     
@@ -325,65 +323,12 @@
 <li>它没有处理 monorepo 项目中其他模块的资源</li>
 </ul>
 <p>实现起来并不困难，核心是拦截 .svg 的 load，将之替换为一个 js 文件，其中默认导出 svg dataUri 字符串。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { createFilter, FilterPattern } from '@rollup/pluginutils'
-import { readFile } from 'fs-extra'
-import svgToMiniDataURI from 'mini-svg-data-uri'
-import * as path from 'path'
-import { optimize, OptimizedSvg } from 'svgo'
-import { Plugin } from 'vite'
-
-const defaults = {
-  exclude: null,
-  include: null,
-}
-
-export function svgPatch(opts?: {
-  include?: FilterPattern
-  exclude?: FilterPattern
-}): Plugin {
-  const options = Object.assign({}, defaults, opts)
-  const filter = createFilter(options.include, options.exclude)
-
-  return {
-    name: 'vite-plugin-svg-patch',
-    enforce: 'pre',
-    resolveId(id: string, importer: string) {
-      if (this.meta.watchMode) {
-        return null
-      }
-      if (id.endsWith('.svg')) {
-        return path.resolve(path.dirname(importer), id)
-      }
-    },
-    async load(id) {
-      if (this.meta.watchMode) {
-        return null
-      }
-      if (!filter(id) || !id.endsWith('.svg')) {
-        return null
-      }
-      const source = optimize(
-        (await readFile(id, 'utf-8')).replace(/[\r\n]+/gm, ''),
-      )
-      if (source.error || source.modernError) {
-        console.error('svg optimization failed: ', id)
-      }
-      const dataUri = svgToMiniDataURI((source as OptimizedSvg).data)
-      return `export default "${dataUri}";`
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { createFilter, <span class="hljs-title class_">FilterPattern</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@rollup/pluginutils'</span><br><span class="hljs-keyword">import</span> { readFile } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><span class="hljs-keyword">import</span> svgToMiniDataURI <span class="hljs-keyword">from</span> <span class="hljs-string">'mini-svg-data-uri'</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> { optimize, <span class="hljs-title class_">OptimizedSvg</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'svgo'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><br><span class="hljs-keyword">const</span> defaults = {<br>  <span class="hljs-attr">exclude</span>: <span class="hljs-literal">null</span>,<br>  <span class="hljs-attr">include</span>: <span class="hljs-literal">null</span>,<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">svgPatch</span>(<span class="hljs-params">opts?: {</span><br><span class="hljs-params">  include?: FilterPattern</span><br><span class="hljs-params">  exclude?: FilterPattern</span><br><span class="hljs-params">}</span>): <span class="hljs-title class_">Plugin</span> {<br>  <span class="hljs-keyword">const</span> options = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>({}, defaults, opts)<br>  <span class="hljs-keyword">const</span> filter = <span class="hljs-title function_">createFilter</span>(options.<span class="hljs-property">include</span>, options.<span class="hljs-property">exclude</span>)<br><br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'vite-plugin-svg-patch'</span>,<br>    <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span>,<br>    <span class="hljs-title function_">resolveId</span>(<span class="hljs-params">id: <span class="hljs-built_in">string</span>, importer: <span class="hljs-built_in">string</span></span>) {<br>      <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">watchMode</span>) {<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>      }<br>      <span class="hljs-keyword">if</span> (id.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'.svg'</span>)) {<br>        <span class="hljs-keyword">return</span> path.<span class="hljs-title function_">resolve</span>(path.<span class="hljs-title function_">dirname</span>(importer), id)<br>      }<br>    },<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">load</span>(<span class="hljs-params">id</span>) {<br>      <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">watchMode</span>) {<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>      }<br>      <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">filter</span>(id) || !id.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'.svg'</span>)) {<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>      }<br>      <span class="hljs-keyword">const</span> source = <span class="hljs-title function_">optimize</span>(<br>        (<span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(id, <span class="hljs-string">'utf-8'</span>)).<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[\r\n]+/gm</span>, <span class="hljs-string">''</span>),<br>      )<br>      <span class="hljs-keyword">if</span> (source.<span class="hljs-property">error</span> || source.<span class="hljs-property">modernError</span>) {<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">'svg optimization failed: '</span>, id)<br>      }<br>      <span class="hljs-keyword">const</span> dataUri = <span class="hljs-title function_">svgToMiniDataURI</span>((source <span class="hljs-keyword">as</span> <span class="hljs-title class_">OptimizedSvg</span>).<span class="hljs-property">data</span>)<br>      <span class="hljs-keyword">return</span> <span class="hljs-string">`export default "<span class="hljs-subst">${dataUri}</span>";`</span><br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
 <p>已发布为 npm 包 <a target="_blank" rel="noopener" href="https://npmjs.com/@liuli-util/vite-plugin-svg-patch">@liuli-util/vite-plugin-svg-patch</a></p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { svgPatch } from '@liuli-util/vite-plugin-svg-patch'
-
-export default defineConfig({
-  plugins: [vue(), svgPatch()],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { defineConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'vite'</span><br><span class="hljs-keyword">import</span> vue <span class="hljs-keyword">from</span> <span class="hljs-string">'@vitejs/plugin-vue'</span><br><span class="hljs-keyword">import</span> { svgPatch } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/vite-plugin-svg-patch'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">vue</span>(), <span class="hljs-title function_">svgPatch</span>()],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>以下是使用插件之后，可以看到 svg 文件没有被单独分割为一个文件了。</p>
 <p><img src="/resources/f71f59c5dc304863928734a1ed0a281c.png" srcset="/img/loading.gif" lazyload alt="1653919908486"></p>
@@ -742,8 +687,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

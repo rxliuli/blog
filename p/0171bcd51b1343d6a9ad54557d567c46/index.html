@@ -42,8 +42,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -249,7 +247,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.1k 字
+          3.2k 字
         
       </span>
     
@@ -261,7 +259,7 @@
         
         
           <!-- compatible with older versions-->
-          26 分钟
+          27 分钟
         
       </span>
     
@@ -325,62 +323,14 @@
 <h2 id="浏览器"><a href="#浏览器" class="headerlink" title="浏览器"></a>浏览器</h2><blockquote>
 <p>目前 vite 对此默认支持浏览器 worker，不再需要任何配置，仅使用 comlink 简化使用体验即可。</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// hello.worker.ts
-import { expose } from 'comlink'
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// hello.worker.ts</span><br><span class="hljs-keyword">import</span> { expose } <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>}<br><br><span class="hljs-title function_">expose</span>(hello)<br></code></pre></td></tr></tbody></table></figure>
 
-export function hello(name: string) {
-  return `hello ${name}`
-}
-
-expose(hello)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-import type { hello } from './hello.worker'
-import HelloWorker from './hello.worker?worker'
-import { wrap } from 'comlink'
-;(async () =&gt; {
-  const asyncHello = wrap&lt;typeof hello&gt;(new HelloWorker())
-  const res = await asyncHello('liuli')
-  console.log(res)
-})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// main.ts</span><br><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { hello } <span class="hljs-keyword">from</span> <span class="hljs-string">'./hello.worker'</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">HelloWorker</span> <span class="hljs-keyword">from</span> <span class="hljs-string">'./hello.worker?worker'</span><br><span class="hljs-keyword">import</span> { wrap } <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink'</span><br>;(<span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-keyword">const</span> asyncHello = wrap&lt;<span class="hljs-keyword">typeof</span> hello&gt;(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HelloWorker</span>())<br>  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncHello</span>(<span class="hljs-string">'liuli'</span>)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(res)<br>})()<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="nodejs"><a href="#nodejs" class="headerlink" title="nodejs"></a>nodejs</h2><h3 id="nodejs-本身提供的解决方案"><a href="#nodejs-本身提供的解决方案" class="headerlink" title="nodejs 本身提供的解决方案"></a>nodejs 本身提供的解决方案</h3><p>nodejs 仍然像浏览器一样基于文件系统使用 worker_threads，但官方确实提供了一种有趣的解决方案 – 在同一个文件中包含主线程与 worker 线程的代码，然后在其中使用逻辑判断。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// worker.ts
-import { isMainThread, parentPort, Worker } from 'worker_threads'
-import { expose, wrap } from 'comlink'
-import nodeEndpoint from 'comlink/dist/umd/node-adapter'
-import { wait } from '@liuli-util/async'
-import { worker as helloType } from './worker'
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// worker.ts</span><br><span class="hljs-keyword">import</span> { isMainThread, parentPort, <span class="hljs-title class_">Worker</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'worker_threads'</span><br><span class="hljs-keyword">import</span> { expose, wrap } <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink'</span><br><span class="hljs-keyword">import</span> nodeEndpoint <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink/dist/umd/node-adapter'</span><br><span class="hljs-keyword">import</span> { wait } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/async'</span><br><span class="hljs-keyword">import</span> { worker <span class="hljs-keyword">as</span> helloType } <span class="hljs-keyword">from</span> <span class="hljs-string">'./worker'</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">_hello</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">wait</span>(<span class="hljs-number">100</span>)<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>}<br><br><span class="hljs-keyword">let</span> <span class="hljs-attr">hello</span>: <span class="hljs-function">(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;<br><br><span class="hljs-keyword">if</span> (isMainThread) {<br>  hello = <span class="hljs-keyword">async</span> (<span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>) =&gt; {<br>    <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(__filename)<br>    <span class="hljs-keyword">try</span> {<br>      <span class="hljs-keyword">const</span> helloWorker = wrap&lt;<span class="hljs-keyword">typeof</span> helloType&gt;(<span class="hljs-title function_">nodeEndpoint</span>(worker))<br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">helloWorker</span>(name)<br>    } <span class="hljs-keyword">finally</span> {<br>      worker.<span class="hljs-title function_">unref</span>()<br>    }<br>  }<br>} <span class="hljs-keyword">else</span> {<br>  hello = _hello<br>  <span class="hljs-title function_">expose</span>(_hello, <span class="hljs-title function_">nodeEndpoint</span>(parentPort!))<br>}<br><br><span class="hljs-keyword">export</span> { hello }<br></code></pre></td></tr></tbody></table></figure>
 
-async function _hello(name: string) {
-  await wait(100)
-  return `hello ${name}`
-}
-
-let hello: (name: string) =&gt; Promise&lt;string&gt;
-
-if (isMainThread) {
-  hello = async (name: string) =&gt; {
-    const worker = new Worker(__filename)
-    try {
-      const helloWorker = wrap&lt;typeof helloType&gt;(nodeEndpoint(worker))
-      return await helloWorker(name)
-    } finally {
-      worker.unref()
-    }
-  }
-} else {
-  hello = _hello
-  expose(_hello, nodeEndpoint(parentPort!))
-}
-
-export { hello }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-import { hello } from './worker.js'
-;(async () =&gt; {
-  console.log(await mixingThreadHello('liuli'))
-})()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// main.ts</span><br><span class="hljs-keyword">import</span> { hello } <span class="hljs-keyword">from</span> <span class="hljs-string">'./worker.js'</span><br>;(<span class="hljs-keyword">async</span> () =&gt; {<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">mixingThreadHello</span>(<span class="hljs-string">'liuli'</span>))<br>})()<br></code></pre></td></tr></tbody></table></figure>
 
 <p>看起来很简洁，但这种方案也并非尽善尽美，吾辈实际使用时发现以下问题</p>
 <ul>
@@ -409,50 +359,11 @@ import { hello } from './worker.js'
 <p>目前没有找到满意的插件，后续可能不得不写一个 rollup 插件。还是那句话，没有对比就没有伤害，如果没有 vite 对 ts+worker 的良好支持，或许吾辈还能忍受这种糟糕的开发体验。</p>
 <p>尝试编写 rollup 插件 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/liuli-tools/tree/master/libs/rollup-plugin-worker-threads">rollup-plugin-worker-threads</a>，以在 nodejs 中对 <code>worker_threads</code> 提供类似 vite 的开发体验。</p>
 <p>大致使用方式如下</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/util/wrapWorkerFunc.ts
-import { expose, Remote, wrap } from 'comlink'
-import path from 'path'
-import { isMainThread, parentPort, Worker } from 'worker_threads'
-import nodeEndpoint from 'comlink/dist/umd/node-adapter'
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/util/wrapWorkerFunc.ts</span><br><span class="hljs-keyword">import</span> { expose, <span class="hljs-title class_">Remote</span>, wrap } <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink'</span><br><span class="hljs-keyword">import</span> path <span class="hljs-keyword">from</span> <span class="hljs-string">'path'</span><br><span class="hljs-keyword">import</span> { isMainThread, parentPort, <span class="hljs-title class_">Worker</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'worker_threads'</span><br><span class="hljs-keyword">import</span> nodeEndpoint <span class="hljs-keyword">from</span> <span class="hljs-string">'comlink/dist/umd/node-adapter'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 包装需要放到 worker 中执行的函数</span><br><span class="hljs-comment"> * 1. 当检查到当前文件不是 js 文件时会直接返回函数</span><br><span class="hljs-comment"> * 2. 当检查到在主线程时执行时，使用 Worker 包装并执行它</span><br><span class="hljs-comment"> * 3. 当检查到在 Worker 线程时，使用 expose 包装它然后执行</span><br><span class="hljs-comment"> * 注：目前是每次都创建新的 Worker，也许可以考虑支持复用 Worker</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">ep</span></span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> wrapWorkerFunc&lt;T <span class="hljs-keyword">extends</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; <span class="hljs-built_in">any</span>&gt;(<br>  <span class="hljs-attr">ep</span>: T,<br>): <span class="hljs-title class_">Remote</span>&lt;T&gt; {<br>  <span class="hljs-keyword">if</span> (path.<span class="hljs-title function_">extname</span>(__filename) !== <span class="hljs-string">'.js'</span>) {<br>    <span class="hljs-keyword">return</span> ep <span class="hljs-keyword">as</span> <span class="hljs-title class_">Remote</span>&lt;T&gt;<br>  }<br>  <span class="hljs-keyword">if</span> (isMainThread) {<br>    <span class="hljs-keyword">return</span> (<span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(__filename)<br>      <span class="hljs-keyword">const</span> fn = wrap&lt;T&gt;(<span class="hljs-title function_">nodeEndpoint</span>(worker))<br>      <span class="hljs-keyword">return</span> (<span class="hljs-title function_">fn</span>(...args) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">any</span>&gt;).<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> worker.<span class="hljs-title function_">unref</span>())<br>    }) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Remote</span>&lt;T&gt;<br>  }<br>  <span class="hljs-title function_">expose</span>(ep, <span class="hljs-title function_">nodeEndpoint</span>(parentPort!))<br>  <span class="hljs-keyword">return</span> ep <span class="hljs-keyword">as</span> <span class="hljs-title class_">Remote</span>&lt;T&gt;<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-/**
- * 包装需要放到 worker 中执行的函数
- * 1. 当检查到当前文件不是 js 文件时会直接返回函数
- * 2. 当检查到在主线程时执行时，使用 Worker 包装并执行它
- * 3. 当检查到在 Worker 线程时，使用 expose 包装它然后执行
- * 注：目前是每次都创建新的 Worker，也许可以考虑支持复用 Worker
- * @param ep
- */
-export function wrapWorkerFunc&lt;T extends (...args: any[]) =&gt; any&gt;(
-  ep: T,
-): Remote&lt;T&gt; {
-  if (path.extname(__filename) !== '.js') {
-    return ep as Remote&lt;T&gt;
-  }
-  if (isMainThread) {
-    return ((...args: any[]) =&gt; {
-      const worker = new Worker(__filename)
-      const fn = wrap&lt;T&gt;(nodeEndpoint(worker))
-      return (fn(...args) as Promise&lt;any&gt;).finally(() =&gt; worker.unref())
-    }) as Remote&lt;T&gt;
-  }
-  expose(ep, nodeEndpoint(parentPort!))
-  return ep as Remote&lt;T&gt;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/hello.worker.ts</span><br><span class="hljs-keyword">import</span> { wait } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/async'</span><br><span class="hljs-keyword">import</span> { wrapWorkerFunc } <span class="hljs-keyword">from</span> <span class="hljs-string">'./util/wrapWorkerFunc'</span><br><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">_hello</span>(<span class="hljs-params">name: <span class="hljs-built_in">string</span></span>) {<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">wait</span>(<span class="hljs-number">100</span>)<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> hello = <span class="hljs-title function_">wrapWorkerFunc</span>(_hello)<br></code></pre></td></tr></tbody></table></figure>
 
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// src/hello.worker.ts
-import { wait } from '@liuli-util/async'
-import { wrapWorkerFunc } from './util/wrapWorkerFunc'
-
-async function _hello(name: string) {
-  await wait(100)
-  return `hello ${name}`
-}
-
-export const hello = wrapWorkerFunc(_hello)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// index.ts
-export * from './hello.worker'<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// index.ts</span><br><span class="hljs-keyword">export</span> * <span class="hljs-keyword">from</span> <span class="hljs-string">'./hello.worker'</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a target="_blank" rel="noopener" href="https://blog.logrocket.com/integrating-web-workers-in-a-react-app-with-comlink/">Integrating web workers in a React app with Comlink</a></li>
@@ -810,8 +721,6 @@ export * from './hello.worker'<span aria-hidden="true" class="line-numbers-rows"
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

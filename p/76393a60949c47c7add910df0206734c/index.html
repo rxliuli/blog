@@ -44,8 +44,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -251,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          6.5k 字
+          6.9k 字
         
       </span>
     
@@ -263,7 +261,7 @@
         
         
           <!-- compatible with older versions-->
-          54 分钟
+          58 分钟
         
       </span>
     
@@ -347,273 +345,37 @@
 </blockquote>
 <p>大致实现</p>
 <p>electron_ipc_type: 通用的基本接口定义，必须包含一个 <code>namespace</code> 属性</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export interface BaseDefine&lt;T extends string&gt; {
-  namespace: T
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">BaseDefine</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; {<br>  <span class="hljs-attr">namespace</span>: T<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>electron_ipc_main: 封装主进程实现相关代码，主要保证类型安全</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type FilteredKeys&lt;T, U&gt; = {
-  [P in keyof T]: T[P] extends U ? P : never
-}[keyof T]
-
-/**
- * 转换为一个主进程可以实现的接口
- */
-export type IpcMainDefine&lt;T&gt; = {
-  [P in FilteredKeys&lt;T, (...args: any[]) =&gt; void&gt;]: (
-    e: IpcMainInvokeEvent,
-    ...args: Parameters&lt;T[P]&gt;
-  ) =&gt; Promise&lt;ReturnType&lt;T[P]&gt;&gt;
-}
-
-export class IpcMainProvider {
-  private readonly clazzMap = new Map&lt;string, object&gt;()
-
-  /**
-   * 计算主进程监听的 key
-   * @param namespace
-   * @param method
-   * @private
-   */
-  private static getKey&lt;T&gt;(namespace: string, method: PropertyKey) {
-    return namespace + '.' + method.toString()
-  }
-
-  register&lt;T extends BaseDefine&lt;string&gt;&gt;(
-    namespace: T['namespace'],
-    api: IpcMainDefine&lt;T&gt;,
-  ): IpcMainDefine&lt;T&gt; {
-    const instance = ClassUtil.bindMethodThis(api)
-    const methods = ClassUtil.scan(instance)
-    methods.forEach((method) =&gt; {
-      const key = IpcMainProvider.getKey(namespace, method)
-      ipcMain.handle(key, instance[method] as any)
-      console.log('Register ipcMain.handle: ', key)
-    })
-    this.clazzMap.set(namespace, instance)
-    return instance
-  }
-
-  unregister&lt;T extends BaseDefine&lt;string&gt;&gt;(
-    namespace: T['namespace'],
-    api: IpcMainDefine&lt;T&gt;,
-  ): void {
-    const methods = ClassUtil.scan(api)
-    methods.forEach((method) =&gt; {
-      const key = IpcMainProvider.getKey(namespace, method)
-      ipcMain.removeHandler(key)
-    })
-    this.clazzMap.delete(namespace)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">FilteredKeys</span>&lt;T, U&gt; = {<br>  [P <span class="hljs-keyword">in</span> keyof T]: T[P] <span class="hljs-keyword">extends</span> U ? P : <span class="hljs-built_in">never</span><br>}[keyof T]<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 转换为一个主进程可以实现的接口</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">IpcMainDefine</span>&lt;T&gt; = {<br>  [P <span class="hljs-keyword">in</span> <span class="hljs-title class_">FilteredKeys</span>&lt;T, <span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">void</span>&gt;]: <span class="hljs-function">(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">    e: IpcMainInvokeEvent,</span></span><br><span class="hljs-params"><span class="hljs-function">    ...args: Parameters&lt;T[P]&gt;</span></span><br><span class="hljs-params"><span class="hljs-function">  </span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[P]&gt;&gt;<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">IpcMainProvider</span> {<br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> clazzMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">object</span>&gt;()<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 计算主进程监听的 key</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">namespace</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">method</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@private</span></span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> getKey&lt;T&gt;(<span class="hljs-attr">namespace</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">method</span>: <span class="hljs-title class_">PropertyKey</span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">namespace</span> + '.' + method.toString()<br>  }<br><br>  register&lt;T extends <span class="hljs-title class_">BaseDefine</span>&lt;string&gt;&gt;(<br>    <span class="hljs-keyword">namespace</span>: T['<span class="hljs-keyword">namespace</span>'],<br>    api: <span class="hljs-title class_">IpcMainDefine</span>&lt;T&gt;,<br>  ): <span class="hljs-title class_">IpcMainDefine</span>&lt;T&gt; {<br>    <span class="hljs-keyword">const</span> instance = <span class="hljs-title class_">ClassUtil</span>.<span class="hljs-title function_">bindMethodThis</span>(api)<br>    <span class="hljs-keyword">const</span> methods = <span class="hljs-title class_">ClassUtil</span>.<span class="hljs-title function_">scan</span>(instance)<br>    methods.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">method</span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> key = <span class="hljs-title class_">IpcMainProvider</span>.<span class="hljs-title function_">getKey</span>(<span class="hljs-keyword">namespace</span>, method)<br>      ipcMain.handle(key, instance[method] as any)<br>      console.log('<span class="hljs-title class_">Register</span> ipcMain.handle: ', key)<br>    })<br>    this.clazzMap.set(<span class="hljs-keyword">namespace</span>, instance)<br>    return instance<br>  }<br><br>  unregister&lt;T extends <span class="hljs-title class_">BaseDefine</span>&lt;string&gt;&gt;(<br>    <span class="hljs-keyword">namespace</span>: T['<span class="hljs-keyword">namespace</span>'],<br>    api: <span class="hljs-title class_">IpcMainDefine</span>&lt;T&gt;,<br>  ): void {<br>    <span class="hljs-keyword">const</span> methods = <span class="hljs-title class_">ClassUtil</span>.<span class="hljs-title function_">scan</span>(api)<br>    methods.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">method</span>) =&gt;</span> {<br>      <span class="hljs-keyword">const</span> key = <span class="hljs-title class_">IpcMainProvider</span>.<span class="hljs-title function_">getKey</span>(<span class="hljs-keyword">namespace</span>, method)<br>      ipcMain.removeHandler(key)<br>    })<br>    this.clazzMap.delete(<span class="hljs-keyword">namespace</span>)<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>electron_ipc_renderer: 渲染进程</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">export type FilteredKeys&lt;T, U&gt; = {
-  [P in keyof T]: T[P] extends U ? P : never
-}[keyof T]
-
-/**
- * 转换为一个渲染进程可以调用的 Proxy 对象
- */
-export type IpcRendererDefine&lt;T&gt; = {
-  [P in FilteredKeys&lt;T, (...args: any[]) =&gt; void&gt;]: (
-    ...args: Parameters&lt;T[P]&gt;
-  ) =&gt; Promise&lt;ReturnType&lt;T[P]&gt;&gt;
-}
-
-export class NotElectronEnvError extends Error {}
-
-export class IpcRendererClient {
-  /**
-   * 生成一个客户端实例
-   * @param namespace
-   */
-  static gen&lt;T extends BaseDefine&lt;string&gt;&gt;(
-    namespace: T['namespace'],
-  ): IpcRendererDefine&lt;T&gt; {
-    return new Proxy(Object.create(null), {
-      get(target: any, api: string): any {
-        const key = namespace + '.' + api
-        return function (...args: any[]) {
-          const ipcRenderer = IpcRendererClient.getRenderer()
-          if (!ipcRenderer) {
-            throw new NotElectronEnvError('当前你不在 electron 进程中')
-          }
-          return ipcRenderer.invoke(key, ...args)
-        }
-      },
-    })
-  }
-
-  /**
-   * 获取 electron ipc renderer 实例
-   */
-  static getRenderer(): IpcRenderer | null {
-    if (!isElectron()) {
-      return null
-    }
-    return window.require('electron').ipcRenderer as IpcRenderer
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">FilteredKeys</span>&lt;T, U&gt; = {<br>  [P <span class="hljs-keyword">in</span> keyof T]: T[P] <span class="hljs-keyword">extends</span> U ? P : <span class="hljs-built_in">never</span><br>}[keyof T]<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 转换为一个渲染进程可以调用的 Proxy 对象</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">IpcRendererDefine</span>&lt;T&gt; = {<br>  [P <span class="hljs-keyword">in</span> <span class="hljs-title class_">FilteredKeys</span>&lt;T, <span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">void</span>&gt;]: <span class="hljs-function">(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">    ...args: Parameters&lt;T[P]&gt;</span></span><br><span class="hljs-params"><span class="hljs-function">  </span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[P]&gt;&gt;<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NotElectronEnvError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">IpcRendererClient</span> {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 生成一个客户端实例</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">namespace</span></span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">static</span> gen&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;(<br>    <span class="hljs-attr">namespace</span>: T[<span class="hljs-string">'namespace'</span>],<br>  ): <span class="hljs-title class_">IpcRendererDefine</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">create</span>(<span class="hljs-literal">null</span>), {<br>      <span class="hljs-title function_">get</span>(<span class="hljs-attr">target</span>: <span class="hljs-built_in">any</span>, <span class="hljs-attr">api</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">any</span> {<br>        <span class="hljs-keyword">const</span> key = <span class="hljs-keyword">namespace</span> + '.' + api<br>        return function (...args: any[]) {<br>          <span class="hljs-keyword">const</span> ipcRenderer = <span class="hljs-title class_">IpcRendererClient</span>.<span class="hljs-title function_">getRenderer</span>()<br>          <span class="hljs-keyword">if</span> (!ipcRenderer) {<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NotElectronEnvError</span>(<span class="hljs-string">'当前你不在 electron 进程中'</span>)<br>          }<br>          <span class="hljs-keyword">return</span> ipcRenderer.<span class="hljs-title function_">invoke</span>(key, ...args)<br>        }<br>      },<br>    })<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 获取 electron ipc renderer 实例</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">static</span> <span class="hljs-title function_">getRenderer</span>(): <span class="hljs-title class_">IpcRenderer</span> | <span class="hljs-literal">null</span> {<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isElectron</span>()) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>    }<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">window</span>.<span class="hljs-built_in">require</span>(<span class="hljs-string">'electron'</span>).<span class="hljs-property">ipcRenderer</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">IpcRenderer</span><br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>使用</p>
 <p>在 apps 下创建一个模块 <code>shared_type</code>，里面包含一些渲染进程与主进程之间共享的类型，下面是一个简单的示例</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// HelloDefine.ts
-export interface HelloDefine extends BaseDefine&lt;'HelloApi'&gt; {
-  hello(name: string): string
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// HelloDefine.ts</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">HelloDefine</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;'<span class="hljs-title class_">HelloApi</span>'&gt; {<br>  <span class="hljs-title function_">hello</span>(<span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span><br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在主进程中使用 class 实现它并注册</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// main.ts
-
-class HelloApi {
-  async hello(e: IpcMainInvokeEvent, name: string) {
-    return `hello ${name}`
-  }
-}
-const ipcMainProvider = new IpcMainProvider()
-
-ipcMainProvider.register&lt;HelloDefine&gt;('HelloApi', new HelloApi())<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// main.ts</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HelloApi</span> {<br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">hello</span>(<span class="hljs-params">e: IpcMainInvokeEvent, name: <span class="hljs-built_in">string</span></span>) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>  }<br>}<br><span class="hljs-keyword">const</span> ipcMainProvider = <span class="hljs-keyword">new</span> <span class="hljs-title class_">IpcMainProvider</span>()<br><br>ipcMainProvider.<span class="hljs-property">register</span>&lt;<span class="hljs-title class_">HelloDefine</span>&gt;(<span class="hljs-string">'HelloApi'</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">HelloApi</span>())<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在渲染进程中创建客户端对象并使用</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const helloApi = IpcRendererClient.gen&lt;HelloDefine&gt;('HelloApi')
-
-const str = await helloApi.hello('liuli')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> helloApi = <span class="hljs-title class_">IpcRendererClient</span>.<span class="hljs-property">gen</span>&lt;<span class="hljs-title class_">HelloDefine</span>&gt;(<span class="hljs-string">'HelloApi'</span>)<br><br><span class="hljs-keyword">const</span> str = <span class="hljs-keyword">await</span> helloApi.<span class="hljs-title function_">hello</span>(<span class="hljs-string">'liuli'</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="实现主进程-x3D-gt-渲染进程"><a href="#实现主进程-x3D-gt-渲染进程" class="headerlink" title="实现主进程 => 渲染进程"></a>实现主进程 =&gt; 渲染进程</h2><p>由于吾辈的 ui 层框架使用了 react，所以基于 class 的模式在此并不适用，需要使用某种变通的方式（吾辈仍然不愿意放弃将 class 作为命名空间的想法）。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">type IpcRendererProviderDefine&lt;
-  T extends BaseDefine&lt;string&gt;,
-  P extends FunctionKeys&lt;T&gt; = FunctionKeys&lt;T&gt;
-&gt; = [
-  type: P,
-  callback: (e: any, ...args: Parameters&lt;T[P]&gt;) =&gt; Promise&lt;ReturnType&lt;T[P]&gt;&gt;,
-]
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">IpcRendererProviderDefine</span>&lt;<br>  T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;<span class="hljs-built_in">string</span>&gt;,<br>  P <span class="hljs-keyword">extends</span> <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt; = <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt;<br>&gt; = [<br>  <span class="hljs-attr">type</span>: P,<br>  <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">e: <span class="hljs-built_in">any</span>, ...args: Parameters&lt;T[P]&gt;</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[P]&gt;&gt;,<br>]<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">IpcRendererProviderHooksDefine</span>&lt;<br>  T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;<span class="hljs-built_in">string</span>&gt;,<br>  P <span class="hljs-keyword">extends</span> <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt; = <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt;<br>&gt; = [<br>  <span class="hljs-attr">type</span>: P,<br>  <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">e: <span class="hljs-built_in">any</span>, ...args: Parameters&lt;T[P]&gt;</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[P]&gt;&gt;,<br>  deps?: <span class="hljs-title class_">DependencyList</span>,<br>]<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 在渲染层管理提供者</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">IpcRendererProvider</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;<span class="hljs-built_in">any</span>&gt;&gt; {<br>  <span class="hljs-keyword">private</span> apiMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-function">(<span class="hljs-params">...args: <span class="hljs-built_in">any</span>[]</span>) =&gt;</span> <span class="hljs-built_in">any</span>&gt;()<br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> <span class="hljs-keyword">namespace</span>: T[<span class="hljs-string">'namespace'</span>]</span>) {}<br><br>  <span class="hljs-title function_">register</span>(<span class="hljs-params">...[<span class="hljs-keyword">type</span>, callback]: IpcRendererProviderDefine&lt;T&gt;</span>) {<br>    <span class="hljs-keyword">const</span> ipcRenderer = <span class="hljs-title class_">IpcRendererClient</span>.<span class="hljs-title function_">getRenderer</span>()<br>    <span class="hljs-keyword">if</span> (ipcRenderer === <span class="hljs-literal">null</span>) {<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">warn</span>(<span class="hljs-string">'不在 electron 环境，取消注册: '</span>, <span class="hljs-keyword">type</span>)<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">const</span> key = <span class="hljs-variable language_">this</span>.<span class="hljs-property">namespace</span> + <span class="hljs-string">'.'</span> + <span class="hljs-keyword">type</span><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'IpcRendererProvider.register: '</span>, key)<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">listener</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">event: <span class="hljs-built_in">any</span>, id: <span class="hljs-built_in">string</span>, ...args: <span class="hljs-built_in">any</span>[]</span>) =&gt; {<br>      <span class="hljs-keyword">try</span> {<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'IpcRendererProvider.listener: '</span>, event, id, args)<br>        <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">callback</span>(event, ...(args <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>))<br>        <span class="hljs-keyword">await</span> ipcRenderer.<span class="hljs-title function_">send</span>(id, <span class="hljs-literal">null</span>, res)<br>      } <span class="hljs-keyword">catch</span> (e) {<br>        <span class="hljs-keyword">await</span> ipcRenderer.<span class="hljs-title function_">send</span>(id, e)<br>      }<br>    }<br>    ipcRenderer.<span class="hljs-title function_">on</span>(key, listener)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">apiMap</span>.<span class="hljs-title function_">set</span>(key, listener)<br>  }<br><br>  <span class="hljs-title function_">unregister</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: IpcRendererProviderDefine&lt;T&gt;[<span class="hljs-number">0</span>]</span>) {<br>    <span class="hljs-keyword">const</span> ipcRenderer = <span class="hljs-title class_">IpcRendererClient</span>.<span class="hljs-title function_">getRenderer</span>()<br>    <span class="hljs-keyword">if</span> (ipcRenderer === <span class="hljs-literal">null</span>) {<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">const</span> key = <span class="hljs-variable language_">this</span>.<span class="hljs-property">namespace</span> + <span class="hljs-string">'.'</span> + <span class="hljs-keyword">type</span><br>    ipcRenderer.<span class="hljs-title function_">off</span>(key, <span class="hljs-variable language_">this</span>.<span class="hljs-property">apiMap</span>.<span class="hljs-title function_">get</span>(key)!)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">apiMap</span>.<span class="hljs-title function_">delete</span>(key)<br>  }<br><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * react 中的注册钩子，自动管理清理的操作</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">type</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">callback</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">deps</span></span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-title function_">useIpcProvider</span>(<span class="hljs-params"></span><br><span class="hljs-params">    ...[<span class="hljs-keyword">type</span>, callback, deps = []]: IpcRendererProviderHooksDefine&lt;T&gt;</span><br><span class="hljs-params">  </span>) {<br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">register</span>(<span class="hljs-keyword">type</span>, callback)<br>      <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">unregister</span>(<span class="hljs-keyword">type</span>)<br>    }, deps)<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
-type IpcRendererProviderHooksDefine&lt;
-  T extends BaseDefine&lt;string&gt;,
-  P extends FunctionKeys&lt;T&gt; = FunctionKeys&lt;T&gt;
-&gt; = [
-  type: P,
-  callback: (e: any, ...args: Parameters&lt;T[P]&gt;) =&gt; Promise&lt;ReturnType&lt;T[P]&gt;&gt;,
-  deps?: DependencyList,
-]
-
-/**
- * 在渲染层管理提供者
- */
-export class IpcRendererProvider&lt;T extends BaseDefine&lt;any&gt;&gt; {
-  private apiMap = new Map&lt;string, (...args: any[]) =&gt; any&gt;()
-
-  constructor(private namespace: T['namespace']) {}
-
-  register(...[type, callback]: IpcRendererProviderDefine&lt;T&gt;) {
-    const ipcRenderer = IpcRendererClient.getRenderer()
-    if (ipcRenderer === null) {
-      console.warn('不在 electron 环境，取消注册: ', type)
-      return
-    }
-    const key = this.namespace + '.' + type
-    console.log('IpcRendererProvider.register: ', key)
-    const listener = async (event: any, id: string, ...args: any[]) =&gt; {
-      try {
-        console.log('IpcRendererProvider.listener: ', event, id, args)
-        const res = await callback(event, ...(args as any))
-        await ipcRenderer.send(id, null, res)
-      } catch (e) {
-        await ipcRenderer.send(id, e)
-      }
-    }
-    ipcRenderer.on(key, listener)
-    this.apiMap.set(key, listener)
-  }
-
-  unregister(type: IpcRendererProviderDefine&lt;T&gt;[0]) {
-    const ipcRenderer = IpcRendererClient.getRenderer()
-    if (ipcRenderer === null) {
-      return
-    }
-    const key = this.namespace + '.' + type
-    ipcRenderer.off(key, this.apiMap.get(key)!)
-    this.apiMap.delete(key)
-  }
-
-  /**
-   * react 中的注册钩子，自动管理清理的操作
-   * @param type
-   * @param callback
-   * @param deps
-   */
-  useIpcProvider(
-    ...[type, callback, deps = []]: IpcRendererProviderHooksDefine&lt;T&gt;
-  ) {
-    useEffect(() =&gt; {
-      this.register(type, callback)
-      return () =&gt; this.unregister(type)
-    }, deps)
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
-
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">/**
- * 转换为一个渲染进程可以调用的 Proxy 对象
- */
-export type IpcClientDefine&lt;T extends object&gt; = {
-  [P in FunctionKeys&lt;T&gt;]: (
-    ...args: Parameters&lt;T[P]&gt;
-  ) =&gt; Promise&lt;ReturnType&lt;T[P]&gt;&gt;
-}
-
-/**
- * 客户端
- */
-export class IpcMainClient {
-  /**
-   * 生成一个客户端实例
-   * @param namespace
-   * @param win
-   */
-  static gen&lt;T extends BaseDefine&lt;string&gt;&gt;(
-    namespace: T['namespace'],
-    win: BrowserWindow,
-  ): IpcClientDefine&lt;T&gt; {
-    return new Proxy(Object.create(null), {
-      get&lt;K extends FunctionKeys&lt;T&gt;&gt;(target: any, api: K): any {
-        const key = namespace + '.' + api
-        return function (...args: any[]) {
-          return new Promise&lt;ReturnType&lt;T[K]&gt;&gt;((resolve, reject) =&gt; {
-            const id = Date.now() + '-' + Math.random()
-            ipcMain.once(id, (event, err, res) =&gt; {
-              console.log('callback: ', err, res)
-              if (err) {
-                reject(err)
-                return
-              }
-              resolve(res)
-            })
-            console.log('send: ', key, id, args)
-            win.webContents.send(key, id, ...(args as any))
-          })
-        }
-      },
-    })
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 转换为一个渲染进程可以调用的 Proxy 对象</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">IpcClientDefine</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span>&gt; = {<br>  [P <span class="hljs-keyword">in</span> <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt;]: <span class="hljs-function">(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">    ...args: Parameters&lt;T[P]&gt;</span></span><br><span class="hljs-params"><span class="hljs-function">  </span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[P]&gt;&gt;<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 客户端</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">IpcMainClient</span> {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 生成一个客户端实例</span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">namespace</span></span><br><span class="hljs-comment">   * <span class="hljs-doctag">@param</span> <span class="hljs-variable">win</span></span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-keyword">static</span> gen&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseDefine</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;(<br>    <span class="hljs-attr">namespace</span>: T[<span class="hljs-string">'namespace'</span>],<br>    <span class="hljs-attr">win</span>: <span class="hljs-title class_">BrowserWindow</span>,<br>  ): <span class="hljs-title class_">IpcClientDefine</span>&lt;T&gt; {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">create</span>(<span class="hljs-literal">null</span>), {<br>      get&lt;K <span class="hljs-keyword">extends</span> <span class="hljs-title class_">FunctionKeys</span>&lt;T&gt;&gt;(<span class="hljs-attr">target</span>: <span class="hljs-built_in">any</span>, <span class="hljs-attr">api</span>: K): <span class="hljs-built_in">any</span> {<br>        <span class="hljs-keyword">const</span> key = <span class="hljs-keyword">namespace</span> + '.' + api<br>        return function (...args: any[]) {<br>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;T[K]&gt;&gt;(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {<br>            <span class="hljs-keyword">const</span> id = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() + <span class="hljs-string">'-'</span> + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>()<br>            ipcMain.<span class="hljs-title function_">once</span>(id, <span class="hljs-function">(<span class="hljs-params">event, err, res</span>) =&gt;</span> {<br>              <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'callback: '</span>, err, res)<br>              <span class="hljs-keyword">if</span> (err) {<br>                <span class="hljs-title function_">reject</span>(err)<br>                <span class="hljs-keyword">return</span><br>              }<br>              <span class="hljs-title function_">resolve</span>(res)<br>            })<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'send: '</span>, key, id, args)<br>            win.<span class="hljs-property">webContents</span>.<span class="hljs-title function_">send</span>(key, id, ...(args <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>))<br>          })<br>        }<br>      },<br>    })<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <hr>
 <p>使用</p>
 <p>在渲染进程使用 hooks 注册它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const ipcRendererProvider = new IpcRendererProvider&lt;HelloApiDefine&gt;('HelloApi')
-
-ipcRendererProvider.useIpcProvider('hello', async (e, name) =&gt; {
-  return `hello ${name}`
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> ipcRendererProvider = <span class="hljs-keyword">new</span> <span class="hljs-title class_">IpcRendererProvider</span>&lt;<span class="hljs-title class_">HelloApiDefine</span>&gt;(<span class="hljs-string">'HelloApi'</span>)<br><br>ipcRendererProvider.<span class="hljs-title function_">useIpcProvider</span>(<span class="hljs-string">'hello'</span>, <span class="hljs-keyword">async</span> (e, name) =&gt; {<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">`hello <span class="hljs-subst">${name}</span>`</span><br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>在主进程生成客户端实例调用它</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">const helloApi = IpcMainClient.gen&lt;HelloApiDefine&gt;(
-  'HelloApi',
-  new BrowserWindow(),
-)
-const str = await helloApi.hello('liuli')<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> helloApi = <span class="hljs-title class_">IpcMainClient</span>.<span class="hljs-property">gen</span>&lt;<span class="hljs-title class_">HelloApiDefine</span>&gt;(<br>  <span class="hljs-string">'HelloApi'</span>,<br>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">BrowserWindow</span>(),<br>)<br><span class="hljs-keyword">const</span> str = <span class="hljs-keyword">await</span> helloApi.<span class="hljs-title function_">hello</span>(<span class="hljs-string">'liuli'</span>)<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="约定俗成"><a href="#约定俗成" class="headerlink" title="约定俗成"></a>约定俗成</h2><ul>
 <li>在 <code>shared_type</code> 模块中的接口定义总是 <code>*Define</code> 形式，且实现的 <code>BaseDefine&lt;T&gt;</code> 泛型参数是 <code>*Api</code> 形式</li>
@@ -973,8 +735,6 @@ const str = await helloApi.hello('liuli')<span aria-hidden="true" class="line-nu
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

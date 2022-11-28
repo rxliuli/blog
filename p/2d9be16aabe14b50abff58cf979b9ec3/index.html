@@ -16,12 +16,12 @@
   <meta name="author" content="rxliuli">
   <meta name="keywords" content="">
   
-    <meta name="description" content="问题在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。 enum TypeEnum {   A,   B, }  type A &#x3D; {   a: string } type B &#x3D; {   b: number }  &#x2F;&#x2F;region 普通参数  function fn1(type: TypeEnum.A, obj: A): void function fn1(type: TypeEnum.B">
+    <meta name="description" content="问题在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。 12345678910111213141516171819enum TypeEnum {  A,  B,}type A &#x3D; {  a: string}type B &#x3D; {  b: number}&#x2F;&#x2F;region 普通参数function fn1(type: TypeEnum.A, obj: A): voidfunction fn1(ty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TypeScript 函数根据第一个参数推导后面参数的类型">
 <meta property="og:url" content="https://blog.rxliuli.com/p/2d9be16aabe14b50abff58cf979b9ec3/index.html">
 <meta property="og:site_name" content="rxliuli blog">
-<meta property="og:description" content="问题在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。 enum TypeEnum {   A,   B, }  type A &#x3D; {   a: string } type B &#x3D; {   b: number }  &#x2F;&#x2F;region 普通参数  function fn1(type: TypeEnum.A, obj: A): void function fn1(type: TypeEnum.B">
+<meta property="og:description" content="问题在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。 12345678910111213141516171819enum TypeEnum {  A,  B,}type A &#x3D; {  a: string}type B &#x3D; {  b: number}&#x2F;&#x2F;region 普通参数function fn1(type: TypeEnum.A, obj: A): voidfunction fn1(ty">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402140820.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145908.png">
@@ -45,8 +45,6 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
@@ -253,7 +251,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.9k 字
+          2k 字
         
       </span>
     
@@ -265,7 +263,7 @@
         
         
           <!-- compatible with older versions-->
-          16 分钟
+          17 分钟
         
       </span>
     
@@ -318,66 +316,20 @@
               <div class="markdown-body">
                 
                 <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>在编写一个重载函数时，吾辈发现了 ts 的方法签名问题。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">enum TypeEnum {
-  A,
-  B,
-}
-
-type A = {
-  a: string
-}
-type B = {
-  b: number
-}
-
-//region 普通参数
-
-function fn1(type: TypeEnum.A, obj: A): void
-function fn1(type: TypeEnum.B, obj: B): void
-function fn1(type: TypeEnum, obj: A | B) {}
-
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">enum</span> <span class="hljs-title class_">TypeEnum</span> {<br>  A,<br>  B,<br>}<br><br><span class="hljs-keyword">type</span> A = {<br>  <span class="hljs-attr">a</span>: <span class="hljs-built_in">string</span><br>}<br><span class="hljs-keyword">type</span> B = {<br>  <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span><br>}<br><br><span class="hljs-comment">//region 普通参数</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn1</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum.A, obj: A</span>): <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn1</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum.B, obj: B</span>): <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn1</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum, obj: A | B</span>) {}<br><br><span class="hljs-comment">//endregion</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>上面是一个简单的重载函数，吾辈希望在输入第一个参数 <code>type</code> 之后，ts 就能匹配到正确的参数，然而事实上，ts 并没能完全做到。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402140820.png" srcset="/img/loading.gif" lazyload alt="ts 类型提示"></p>
 <p>当然，如果真的这样写 ts 的类型检查仍然能正确地抛出错误消息，然而未能推导终究是有点问题的。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// TS2769: No overload matches this call. &nbsp;&nbsp;Overload 1 of 2, '(type: TypeEnum.A, obj: A): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type '{ a: string; b: number; }' is not assignable to parameter of type 'A'. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object literal may only specify known properties, and 'b' does not exist in type 'A'. &nbsp;&nbsp;Overload 2 of 2, '(type: TypeEnum.B, obj: B): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type 'TypeEnum.A' is not assignable to parameter of type 'TypeEnum.B'
-fn1(TypeEnum.A, {
-  a: '',
-  b: 1,
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// TS2769: No overload matches this call. &nbsp;&nbsp;Overload 1 of 2, '(type: TypeEnum.A, obj: A): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type '{ a: string; b: number; }' is not assignable to parameter of type 'A'. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object literal may only specify known properties, and 'b' does not exist in type 'A'. &nbsp;&nbsp;Overload 2 of 2, '(type: TypeEnum.B, obj: B): void', gave the following error. &nbsp;&nbsp;&nbsp;&nbsp;Argument of type 'TypeEnum.A' is not assignable to parameter of type 'TypeEnum.B'</span><br><span class="hljs-title function_">fn1</span>(<span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">A</span>, {<br>  <span class="hljs-attr">a</span>: <span class="hljs-string">''</span>,<br>  <span class="hljs-attr">b</span>: <span class="hljs-number">1</span>,<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>然后，吾辈想到了几种方式可以尝试解决。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>尝试使用继承限制字段的类型。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 对象参数
-
-function fn2(arg: { type: TypeEnum.A; obj: A }): void
-function fn2(arg: { type: TypeEnum.B; obj: B }): void
-function fn2(arg: { type: TypeEnum; obj: A | B }) {}
-
-fn2({
-  type: TypeEnum.A,
-  obj: {
-    a: '',
-  },
-})
-
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">//region 对象参数</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn2</span>(<span class="hljs-params">arg: { <span class="hljs-keyword">type</span>: TypeEnum.A; obj: A }</span>): <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn2</span>(<span class="hljs-params">arg: { <span class="hljs-keyword">type</span>: TypeEnum.B; obj: B }</span>): <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn2</span>(<span class="hljs-params">arg: { <span class="hljs-keyword">type</span>: TypeEnum; obj: A | B }</span>) {}<br><br><span class="hljs-title function_">fn2</span>({<br>  <span class="hljs-attr">type</span>: <span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">A</span>,<br>  <span class="hljs-attr">obj</span>: {<br>    <span class="hljs-attr">a</span>: <span class="hljs-string">''</span>,<br>  },<br>})<br><br><span class="hljs-comment">//endregion</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>很遗憾的是，这是行不通的，即便是下面的这种变体，仍然是不可行的。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145908.png" srcset="/img/loading.gif" lazyload alt="继承"></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">interface Base&lt;T extends TypeEnum&gt; {
-  type: T
-}
-
-interface IA extends Base&lt;TypeEnum.A&gt; {
-  obj: A
-}
-interface IB extends Base&lt;TypeEnum.B&gt; {
-  obj: B
-}
-
-function fn2(arg: IA | IB) {}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Base</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TypeEnum</span>&gt; {<br>  <span class="hljs-attr">type</span>: T<br>}<br><br><span class="hljs-keyword">interface</span> IA <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Base</span>&lt;<span class="hljs-title class_">TypeEnum</span>.A&gt; {<br>  <span class="hljs-attr">obj</span>: A<br>}<br><span class="hljs-keyword">interface</span> IB <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Base</span>&lt;<span class="hljs-title class_">TypeEnum</span>.B&gt; {<br>  <span class="hljs-attr">obj</span>: B<br>}<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn2</span>(<span class="hljs-params">arg: IA | IB</span>) {}<br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><p>事实上，使用泛型确实可以做到让 ts 的类型更加 <strong>正确</strong>。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145745.png" srcset="/img/loading.gif" lazyload alt="泛型"></p>
@@ -386,21 +338,7 @@ function fn2(arg: IA | IB) {}<span aria-hidden="true" class="line-numbers-rows">
 <li>不能使用 ts 的重载</li>
 <li>需要函数的作者改变思维</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 泛型
-
-type EnumTypeMapGen&lt;T extends string[], M extends { [P in TypeEnum]: any }&gt; = []
-type TypeMap = {
-  [TypeEnum.A]: A
-  [TypeEnum.B]: B
-}
-
-function fn3&lt;T extends TypeEnum, Arg extends TypeMap[T]&gt;(type: T, obj: Arg) {}
-
-fn3(TypeEnum.A, {
-  a: '',
-})
-
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">//region 泛型</span><br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">EnumTypeMapGen</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>[], M <span class="hljs-keyword">extends</span> { [P <span class="hljs-keyword">in</span> <span class="hljs-title class_">TypeEnum</span>]: <span class="hljs-built_in">any</span> }&gt; = []<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeMap</span> = {<br>  [<span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">A</span>]: A<br>  [<span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">B</span>]: B<br>}<br><br><span class="hljs-keyword">function</span> fn3&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TypeEnum</span>, <span class="hljs-title class_">Arg</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TypeMap</span>[T]&gt;(<span class="hljs-attr">type</span>: T, <span class="hljs-attr">obj</span>: <span class="hljs-title class_">Arg</span>) {}<br><br><span class="hljs-title function_">fn3</span>(<span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">A</span>, {<br>  <span class="hljs-attr">a</span>: <span class="hljs-string">''</span>,<br>})<br><br><span class="hljs-comment">//endregion</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h3 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h3><p>最后，高阶函数可以简单的解决这个问题，它将一次调用更改为两次调用，第一次调用返回的函数便已经确认了类型。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/rxliuli/img-bed/20200402145633.png" srcset="/img/loading.gif" lazyload alt="高阶函数"></p>
@@ -408,17 +346,7 @@ fn3(TypeEnum.A, {
 <ul>
 <li>需要使用者接收这种 <strong>函数式</strong> 的调用方式</li>
 </ul>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">//region 高阶函数
-
-function fn4(type: TypeEnum.A): (obj: A) =&gt; void
-function fn4(type: TypeEnum.B): (obj: B) =&gt; void
-function fn4(type: TypeEnum): any {}
-
-fn4(TypeEnum.A)({
-  a: '',
-})
-
-//endregion<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">//region 高阶函数</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn4</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum.A</span>): <span class="hljs-function">(<span class="hljs-params">obj: A</span>) =&gt;</span> <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn4</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum.B</span>): <span class="hljs-function">(<span class="hljs-params">obj: B</span>) =&gt;</span> <span class="hljs-built_in">void</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn4</span>(<span class="hljs-params"><span class="hljs-keyword">type</span>: TypeEnum</span>): <span class="hljs-built_in">any</span> {}<br><br><span class="hljs-title function_">fn4</span>(<span class="hljs-title class_">TypeEnum</span>.<span class="hljs-property">A</span>)({<br>  <span class="hljs-attr">a</span>: <span class="hljs-string">''</span>,<br>})<br><br><span class="hljs-comment">//endregion</span><br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的而言，泛型和高阶函数都能解决这个问题，吾辈个人倾向于泛型，因为它并未改变调用者的使用方式，而是让作者去改变，避免改变函数的接口本身。</p>
 
@@ -770,8 +698,6 @@ fn4(TypeEnum.A)({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -43,8 +43,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -250,7 +248,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          2.5k 字
+          2.6k 字
         
       </span>
     
@@ -262,7 +260,7 @@
         
         
           <!-- compatible with older versions-->
-          22 分钟
+          23 分钟
         
       </span>
     
@@ -329,27 +327,13 @@
 <blockquote>
 <p>这种 monorepo 中 lib 无构建的优化方式在 <a href="/p/f35319c382cf488082a1df13dad35005">如何减少 monorepo 中 lib 的初始化时间</a> 提到过</p>
 </blockquote>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "name": "lib-a",
-  "main": "src/index.ts",
-  "module": "src/index.ts",
-  "types": "src/index.ts"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"lib-a"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"main"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src/index.ts"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src/index.ts"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"types"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src/index.ts"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>而当发布后，则需要修改为</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "name": "lib-a",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "src/index.ts"
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"lib-a"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"main"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/index.js"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist/index.esm.js"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"types"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src/index.ts"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>这就导致我们至少需要添加一个 setup 脚本，以供第一次拉取项目的人批量执行所有模块的初始化动作。例如 pnpm 的命令可能是 <code>pnpm --filter . run setup</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-json" data-language="json"><code class="language-json">{
-  "scripts": {
-    "setup": "npm run build"
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"setup"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"npm run build"</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>如果模块只有一两个，那么可能不会花太多时间。但如果模块有几十个（我们的生产项目中，大约有 37 个），就算一个模块的初始化构建仅需要几秒钟，那么累积起来也需要几分钟。目前有许多做法</p>
 <ul>
@@ -360,74 +344,19 @@
 </ul>
 <p>由于吾辈大部分 web 项目均基于 vite 开发，所以便考虑使用创建一个 vite/rollup 插件来重写 module resolve，将 import 的模块直接重写指向源码而非 dist/index.js，即便这样会增加每个模块开发时的时间，但平均到每个模块中依赖的其他 lib 不超过 10 个，额外增加的时间几乎是微不足道的（主要是在一个 nodejs 进程并且使用 esbuild 编译）。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>在自行实现之前，吾辈也检索过现有的插件，例如 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@rollup/plugin-alias">@rollup/plugin-alias</a>，但它的配置是静态的，例如吾辈需要配置 <code>@liuli-util/*</code> 全部指向 <code>@liuli-util/*/src/index.ts</code>，这需要为每个模块单独配置。</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { defineConfig } from 'rollup'
-import alias from '@rollup/plugin-alias'
-
-export default defineConfig({
-  plugins: [
-    alias({
-      entries: [
-        {
-          find: '@liuli-util/async',
-          replacement: '@liuli-util/async/src/index.ts',
-        },
-        {
-          find: '@liuli-util/array',
-          replacement: '@liuli-util/array/src/index.ts',
-        },
-        // 可能还有更多
-      ],
-    }),
-  ],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { defineConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup'</span><br><span class="hljs-keyword">import</span> alias <span class="hljs-keyword">from</span> <span class="hljs-string">'@rollup/plugin-alias'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-title function_">alias</span>({<br>      <span class="hljs-attr">entries</span>: [<br>        {<br>          <span class="hljs-attr">find</span>: <span class="hljs-string">'@liuli-util/async'</span>,<br>          <span class="hljs-attr">replacement</span>: <span class="hljs-string">'@liuli-util/async/src/index.ts'</span>,<br>        },<br>        {<br>          <span class="hljs-attr">find</span>: <span class="hljs-string">'@liuli-util/array'</span>,<br>          <span class="hljs-attr">replacement</span>: <span class="hljs-string">'@liuli-util/array/src/index.ts'</span>,<br>        },<br>        <span class="hljs-comment">// 可能还有更多</span><br>      ],<br>    }),<br>  ],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>而吾辈期望专注于做这件事情，所以便单独开发了一个插件 <code>rollup-plugin-ts-alias</code></p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">import { Plugin, ResolveIdResult } from 'rollup'
-import { pathExists } from 'fs-extra'
-
-export function tsAlias(
-  includes: (string | RegExp)[],
-  excludes: (string | RegExp)[] = [],
-): Plugin &amp; { enforce: 'pre' | 'post' } {
-  return {
-    name: 'rollup-plugin-ts-alias',
-    enforce: 'pre',
-    async resolveId(source: string): Promise&lt;ResolveIdResult&gt; {
-      excludes.push(/\/.*\//)
-      const predicate = (item: string | RegExp) =&gt;
-        typeof item === 'string' ? source.startsWith(item) : item.test(source)
-      if (includes.some(predicate) &amp;&amp; !excludes.some(predicate)) {
-        let res: string
-        try {
-          res = require.resolve(source + '/src/index.ts')
-        } catch (e) {
-          return null
-        }
-        if (!(await pathExists(res))) {
-          console.warn('path not exists: ', res)
-          return null
-        }
-        console.log('rewrite: ', res)
-        return res
-      }
-      return null
-    },
-  }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Plugin</span>, <span class="hljs-title class_">ResolveIdResult</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'rollup'</span><br><span class="hljs-keyword">import</span> { pathExists } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs-extra'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">tsAlias</span>(<span class="hljs-params"></span><br><span class="hljs-params">  includes: (<span class="hljs-built_in">string</span> | <span class="hljs-built_in">RegExp</span>)[],</span><br><span class="hljs-params">  excludes: (<span class="hljs-built_in">string</span> | <span class="hljs-built_in">RegExp</span>)[] = [],</span><br><span class="hljs-params"></span>): <span class="hljs-title class_">Plugin</span> &amp; { <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span> | <span class="hljs-string">'post'</span> } {<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">'rollup-plugin-ts-alias'</span>,<br>    <span class="hljs-attr">enforce</span>: <span class="hljs-string">'pre'</span>,<br>    <span class="hljs-keyword">async</span> <span class="hljs-title function_">resolveId</span>(<span class="hljs-attr">source</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">ResolveIdResult</span>&gt; {<br>      excludes.<span class="hljs-title function_">push</span>(<span class="hljs-regexp">/\/.*\//</span>)<br>      <span class="hljs-keyword">const</span> <span class="hljs-title function_">predicate</span> = (<span class="hljs-params">item: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">RegExp</span></span>) =&gt;<br>        <span class="hljs-keyword">typeof</span> item === <span class="hljs-string">'string'</span> ? source.<span class="hljs-title function_">startsWith</span>(item) : item.<span class="hljs-title function_">test</span>(source)<br>      <span class="hljs-keyword">if</span> (includes.<span class="hljs-title function_">some</span>(predicate) &amp;&amp; !excludes.<span class="hljs-title function_">some</span>(predicate)) {<br>        <span class="hljs-keyword">let</span> <span class="hljs-attr">res</span>: <span class="hljs-built_in">string</span><br>        <span class="hljs-keyword">try</span> {<br>          res = <span class="hljs-built_in">require</span>.<span class="hljs-title function_">resolve</span>(source + <span class="hljs-string">'/src/index.ts'</span>)<br>        } <span class="hljs-keyword">catch</span> (e) {<br>          <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>        }<br>        <span class="hljs-keyword">if</span> (!(<span class="hljs-keyword">await</span> <span class="hljs-title function_">pathExists</span>(res))) {<br>          <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">warn</span>(<span class="hljs-string">'path not exists: '</span>, res)<br>          <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>        }<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'rewrite: '</span>, res)<br>        <span class="hljs-keyword">return</span> res<br>      }<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span><br>    },<br>  }<br>}<br></code></pre></td></tr></tbody></table></figure>
 
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><blockquote>
 <p>该插件已发布至 npm <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/rollup-plugin-ts-alias">@liuli-util/rollup-plugin-ts-alias</a></p>
 </blockquote>
 <p>安装</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">pnpm i -D @liuli-util/rollup-plugin-ts-alias<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></div></figure>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">pnpm i -D @liuli-util/rollup-plugin-ts-alias<br></code></pre></td></tr></tbody></table></figure>
 
 <p>配置</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript">// vite.config.ts
-import { tsAlias } from '@liuli-util/rollup-plugin-ts-alias'
-
-export default defineConfig({
-  plugins: [tsAlias(['@liuli-util/'])],
-})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// vite.config.ts</span><br><span class="hljs-keyword">import</span> { tsAlias } <span class="hljs-keyword">from</span> <span class="hljs-string">'@liuli-util/rollup-plugin-ts-alias'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineConfig</span>({<br>  <span class="hljs-attr">plugins</span>: [<span class="hljs-title function_">tsAlias</span>([<span class="hljs-string">'@liuli-util/'</span>])],<br>})<br></code></pre></td></tr></tbody></table></figure>
 
 <p>之后，在 monorepo 直接修改 lib 的源码便能热更新，不需要启动额外的 terminal，也不再需要添加 <code>setup</code> 命令供全部初始化。下面可以看到，依赖的 lib <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/react-router">@liuli-util/react-router</a> 已经被指向源码了</p>
 <p><img src="/resources/7c84fdda7f6d4e74943e7bde752176c1.png" srcset="/img/loading.gif" lazyload alt="1642080421952"></p>
@@ -784,8 +713,6 @@ export default defineConfig({
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 

@@ -41,8 +41,6 @@
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.css" />
-
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
@@ -314,9 +312,7 @@
                 
                 <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>这两天使用 SpringMVC 时突然发现了一个问题，在 <code>spring-mvc.xml</code> 中配置静态资源访问以后，突然发现访问什么 <code>Controller</code> 控制的页面都 404 了。<br>如果把这个配置删除后，就能正常访问了，后来在与曾经的项目配置文件对比时发现是缺少了配置 <code>&lt;mvc:annotation-driven/&gt;</code>。<br>然而，在没有添加静态资源访问时，没有这个配置也能够使用 <code>Controller</code> 控制器。吾辈好奇的去网络上查询了一下 <code>&lt;mvc:annotation-driven/&gt;</code> 相关的信息，在此记录到 blogger 中，以供日后查阅。</p>
 <p>吾辈的 <code>spring-mvc.xml</code> 中的静态资源访问配置：</p>
-<figure><div class="code-wrapper"><pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token comment">&lt;!--扫描静态资源文件--&gt;</span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>default-servlet-handler</span><span class="token punctuation">/&gt;</span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token namespace">mvc:</span>resources</span> <span class="token attr-name">mapping</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/statics/**<span class="token punctuation">"</span></span> <span class="token attr-name">location</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/statics/<span class="token punctuation">"</span></span><span class="token punctuation">/&gt;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></div></figure>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--扫描静态资源文件--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">mvc:default-servlet-handler</span>/&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">mvc:resources</span> <span class="hljs-attr">mapping</span>=<span class="hljs-string">"/statics/**"</span> <span class="hljs-attr">location</span>=<span class="hljs-string">"/statics/"</span>/&gt;</span><br></code></pre></td></tr></tbody></table></figure>
 
 <p>那么，下面就说一下 <code>&lt;mvc:annotation-driven/&gt;</code> 具体有什么作用好啦！<br><code>&lt;mvc:annotation-driven&gt;</code> 相当于注册了 <code>Spring MVC</code> 分发请求到控制器所必须 <code>DefaultAnnotationHandlerMapping</code> 和 <code>AnnotationMethodHandlerAdapter</code> 两个 Bean，配置一些 messageconvert。即解决了 <code>@Controller</code> 注解的使用前提配置。</p>
 <p>配置中如果没有 <code>&lt;mvc:annotation-driven/&gt;</code>，那么所有的 <code>Controller</code> 可能就没有解析，所有当有请求时候都没有匹配的处理请求类，就都去 <code>&lt;mvc:default-servlet-handler/&gt;</code> 即 <code>default servlet</code> 处理了。添加上 <code>&lt;mvc:annotation-driven/&gt;</code> 后，相应的请求被 <code>Controller</code> 处理，而静态资源因为没有相应的 <code>Controller</code> 就会被 <code>default servlet</code> 处理。总之没有相应的 <code>Controller</code> 就会被 <code>default servlet</code> 处理就 ok 了。</p>
@@ -679,8 +675,6 @@
   });
 </script>
 
-
-  <script  src="https://lib.baomitu.com/prism/1.28.0/plugins/line-numbers/prism-line-numbers.min.js" ></script>
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
