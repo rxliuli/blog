@@ -1,0 +1,836 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言在 react hooks 中，useEffect 是最常用的 hooks 函数，但其手动管理依赖状态的 api 体验被人诟病已久，社区出现了无数关于如何正确使用 useEffect 的文章，但仍然拦不住更多新人很难正确使用这个 api 的事实，也被戏称为 react 新人墙。而且，在流行 web 框架有且仅有 react 是需要手动管理 hooks 依赖的。其他框架，例如 vue、svelt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 react 中使用 mobx 接管所有状态">
+<meta property="og:url" content="https://blog.rxliuli.com/p/1fcd1517c14c4e68b764d7e6df071805/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言在 react hooks 中，useEffect 是最常用的 hooks 函数，但其手动管理依赖状态的 api 体验被人诟病已久，社区出现了无数关于如何正确使用 useEffect 的文章，但仍然拦不住更多新人很难正确使用这个 api 的事实，也被戏称为 react 新人墙。而且，在流行 web 框架有且仅有 react 是需要手动管理 hooks 依赖的。其他框架，例如 vue、svelt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-14T09:08:43.367Z">
+<meta property="article:modified_time" content="2023-03-19T15:55:00.059Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="工程化">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>在 react 中使用 mobx 接管所有状态 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="在 react 中使用 mobx 接管所有状态"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-14 17:08" pubdate>
+          2023年3月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">在 react 中使用 mobx 接管所有状态</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2023年3月19日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 react hooks 中，useEffect 是最常用的 hooks 函数，但其手动管理依赖状态的 api 体验被人诟病已久，社区出现了无数关于如何正确使用 useEffect 的文章，但仍然拦不住更多新人很难正确使用这个 api 的事实，也被戏称为 react 新人墙。而且，在流行 web 框架有且仅有 react 是需要手动管理 hooks 依赖的。其他框架，例如 vue、svelte 与 solidjs 都不需要手动管理依赖。最近 react 社区关于 signals 的突然火热讨论也正反应了更多人认识到了这种 dx 的糟糕之处，preact 甚至 <a target="_blank" rel="noopener" href="https://preactjs.com/guide/v10/signals/">官方支持了 signals</a>。</p>
+<h2 id="为什么-signals-突然火了"><a href="#为什么-signals-突然火了" class="headerlink" title="为什么 signals 突然火了"></a>为什么 signals 突然火了</h2><p>好吧，吾辈猜测是 solidjs 的采用导致的。vue、svelte 虽然也不需要手动管理依赖，但它们与 react 的编写方式差异很大，它们都有自己的模版语法，vue 甚至需要额外的插件才能使用 jsx，而且体验也不算太好，所以更多人将它们视为不同框架的差异 – 而不是哪个 hooks api 更好。而 solidjs 完全采用了 jsx 的语法与社区相关的工具链，但状态管理则对开发者更友好，使用 useEffect/useMemo/useCallabck 不再需要手动管理依赖项，而是以高效的方式自动处理。<br>下面这段视频最能表达吾辈的看法</p>
+<!-- markdownlint-disable MD033 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hRCN_FJWutQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<p>react 的一通操作猛如虎，结果一个 signals 将所有问题更优雅的解决了。<br>其中展示的操作有</p>
+<ul>
+<li>虚拟 dom</li>
+<li>不可变数据</li>
+<li>hooks</li>
+<li>依赖数组</li>
+<li>编译器优化和自动缓存</li>
+</ul>
+<h2 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h2><p>依赖传递有依赖性，<code>useEffect/useMemo/useCallback</code> 这些函数都依赖有 deps array 参数。而且它们之间还可以互相依赖，例如 useMemo 的值可以被 useCallback 作为依赖，简而言之，如果你使用了这些常见的 react hooks，就必须手动管理它们之间的依赖图。如果没有正确管理，就可能会产生非常微妙的错误。react 提供了 eslint 规则来检查，但一方面并不是所有项目都使用 eslint，另一方面，这个 eslint 规则通常显得过于严格，在一些情况下必须手动关闭，例如使用 useEffect 时希望根据 a 值的变化触发副作用，但同时需要读取最新的 b 值，而在这方面 eslint 规则就会爆炸。另一方面，react 的状态在修改后立刻读取并不能读取到最新的，这不是 react hooks 带来的，而是 react 中一直存在的一个问题。</p>
+<h2 id="状态的更新与读取"><a href="#状态的更新与读取" class="headerlink" title="状态的更新与读取"></a>状态的更新与读取</h2><p>传统的心智模型，你修改完变量就立刻读取到最新的值。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br>i += <span class="hljs-number">1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 1</span><br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>react 的心智模型，使用 <code>await new Promise(resolve =&gt; setTimeout(0, resolve))</code> 等待下一次的循环才能读取到最新的值。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> [i, setI] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br><span class="hljs-title function_">setI</span>(i + <span class="hljs-number">1</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br><span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(<span class="hljs-number">0</span>, resolve))<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 1</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>这种方法主要问题是冗长不够直观而且不是特别可靠。</p>
+<hr>
+<p>或者使用临时变量保存新值，并在后续使用新值。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> [i, setI] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br><span class="hljs-keyword">const</span> newI = i + <span class="hljs-number">1</span><br><span class="hljs-title function_">setI</span>(newI)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(newI) <span class="hljs-comment">// 1</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>这种方法在实践中可能是使用比较多的，主要就是需要创建额外的变量</p>
+<hr>
+<p>或者使用 immer，你可以使用 produce 包一层，以在 callback 中修改后可以读取到最新的值。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> produce <span class="hljs-keyword">from</span> <span class="hljs-string">'immer'</span><br><br><span class="hljs-keyword">const</span> [i, setI] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br><span class="hljs-title function_">setI</span>(<br>  <span class="hljs-title function_">produce</span>(i, <span class="hljs-function">(<span class="hljs-params">draft</span>) =&gt;</span> {<br>    draft += <span class="hljs-number">1</span><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(draft) <span class="hljs-comment">// 1</span><br>    <span class="hljs-keyword">return</span> draft<br>  }),<br>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(i) <span class="hljs-comment">// 0</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>但该函数与异步函数配合的不是很好，例如以下代码是不可能的，因为 produce 接受的 callback 返回 Promise 时，produce 函数的结果也会是一个 Promise，这对于 react 的 set 函数而言不可用。当然你可以加 await，但多个状态时你又需要合并与拆分，这些样板代码都很烦人。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">setI</span>(<br>  <span class="hljs-title function_">produce</span>(i, <span class="hljs-keyword">async</span> (draft) =&gt; {<br>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {<br>      draft += <span class="hljs-number">1</span><br>    }, <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> draft<br>  }),<br>)<br></code></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>使用 mobx 的代码</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> store = <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({ <span class="hljs-attr">value</span>: <span class="hljs-number">0</span> }))<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">value</span>) <span class="hljs-comment">// 0</span><br>store.<span class="hljs-property">value</span> += <span class="hljs-number">1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">value</span>) <span class="hljs-comment">// 1</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>这种模型的好处是，你可以直接修改状态，而不需要使用 set 函数，而且你可以直接读取最新的值，而不需要使用 await 等待下一次循环。基本上，它与 vue 的 reactive hooks 类似，生成一个可变的对象，然后可以修改和读取，即便是深层的。某种意义上，vue3 hooks 确实是 react + mobx 的简化，但模板相比于 jsx 让许多人不习惯（不喜欢）。</p>
+<h2 id="依赖地狱"><a href="#依赖地狱" class="headerlink" title="依赖地狱"></a>依赖地狱</h2><p>例如下面这段代码在 react 中很常见</p>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> { useState, useEffect } <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) {<br>  <span class="hljs-keyword">const</span> [text, setText] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">''</span>)<br>  <span class="hljs-keyword">const</span> [result, setResult] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">''</span>)<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/api?text='</span> + text)<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.<span class="hljs-title function_">text</span>())<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {<br>        <span class="hljs-title function_">setText</span>(data)<br>      })<br>  }, [text])<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{text}</span> <span class="hljs-attr">onChange</span>=<span class="hljs-string">{(e)</span> =&gt;</span> setText(e.target.value)} /&gt;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{result}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>使用 mobx 可以改写为</p>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> { observer, useLocalStore } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx-react-lite'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span> = <span class="hljs-title function_">observer</span>(<span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> store = <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-attr">text</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-attr">result</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-title function_">setText</span>(<span class="hljs-params">text: <span class="hljs-built_in">string</span></span>) {<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">text</span> = text<br>      <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/api?text='</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">text</span>)<br>        .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.<span class="hljs-title function_">text</span>())<br>        .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">result</span> = data<br>        })<br>    },<br>  }))<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">input</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">value</span>=<span class="hljs-string">{store.text}</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{(e)</span> =&gt;</span> store.setText(e.target.value)}</span><br><span class="language-xml">      /&gt;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{store.result}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>})<br></code></pre></td></tr></tbody></table></figure>
+
+<p>不过一般而言可能会将 mobx 仅管理状态，而相关的功能函数放在组件顶级。</p>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> { observer, useLocalStore, useObserver } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx-react-lite'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span> = <span class="hljs-title function_">observer</span>(<span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> store = <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-attr">text</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-attr">result</span>: <span class="hljs-string">''</span>,<br>  }))<br><br>  <span class="hljs-title function_">useObserver</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/api?text='</span> + store.<span class="hljs-property">text</span>)<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.<span class="hljs-title function_">text</span>())<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {<br>        store.<span class="hljs-property">result</span> = data<br>      })<br>  })<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">input</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">value</span>=<span class="hljs-string">{store.text}</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{(e)</span> =&gt;</span> (store.text = e.target.value)}</span><br><span class="language-xml">      /&gt;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{store.result}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>})<br></code></pre></td></tr></tbody></table></figure>
+
+<p>useMemo 也是一样的，可以使用 mobx 的 computed 来代替，同样，它是自动优化的。</p>
+<figure class="highlight tsx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> { observer, useLocalStore, useObserver } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx-react-lite'</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">App</span> = <span class="hljs-title function_">observer</span>(<span class="hljs-function">() =&gt;</span> {<br>  <span class="hljs-keyword">const</span> store = <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-attr">text</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-attr">result</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-keyword">get</span> <span class="hljs-title function_">computedResult</span>() {<br>      <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">result</span> + <span class="hljs-variable language_">this</span>.<span class="hljs-property">text</span><br>    },<br>  }))<br><br>  <span class="hljs-title function_">useObserver</span>(<span class="hljs-function">() =&gt;</span> {<br>    <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'/api?text='</span> + store.<span class="hljs-property">text</span>)<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> response.<span class="hljs-title function_">text</span>())<br>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> {<br>        store.<span class="hljs-property">result</span> = data<br>      })<br>  })<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">input</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">value</span>=<span class="hljs-string">{store.text}</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onChange</span>=<span class="hljs-string">{(e)</span> =&gt;</span> (store.text = e.target.value)}</span><br><span class="language-xml">      /&gt;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{store.computedResult}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  )<br>})<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="封装一些工具-hooks"><a href="#封装一些工具-hooks" class="headerlink" title="封装一些工具 hooks"></a>封装一些工具 hooks</h2><p>当然，mobx 可能有一些样板代码，但可以通过一些封装解决，看起来像是 vue hooks xd。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { useLocalStore, useObserver } <span class="hljs-keyword">from</span> <span class="hljs-string">'mobx-react-lite'</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 声明一个状态，一般用于原始值，例如数字或者字符串</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useLocalRef&lt;T&gt;(<span class="hljs-attr">value</span>: T): { <span class="hljs-attr">value</span>: T } {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({ value }))<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 声明一个状态，一般用于非原始值，例如对象或者数组</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useLocalReactive&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">any</span>&gt;&gt;(<span class="hljs-attr">value</span>: T): T {<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> value)<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 声明根据状态变更运行副作用</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">useLocalWatchEffect</span>(<span class="hljs-params">f: () =&gt; <span class="hljs-built_in">void</span>, dep?: () =&gt; <span class="hljs-built_in">any</span></span>) {<br>  <span class="hljs-title function_">useObserver</span>(<span class="hljs-function">() =&gt;</span> {<br>    dep?.()<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">f</span>()<br>  })<br>}<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 声明一个计算属性</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> useLocalComputed&lt;T&gt;(<span class="hljs-attr">f</span>: <span class="hljs-function">() =&gt;</span> T): { <span class="hljs-attr">value</span>: T } {<br>  <span class="hljs-keyword">const</span> r = <span class="hljs-title function_">useLocalStore</span>(<span class="hljs-function">() =&gt;</span> ({<br>    <span class="hljs-keyword">get</span> <span class="hljs-title function_">value</span>() {<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">f</span>()<br>    },<br>  }))<br>  <span class="hljs-keyword">return</span> r<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><p>虽然 mobx 很好，但它也有一些局限性</p>
+<ul>
+<li>需要一些样板代码 observer/useLocalStore</li>
+<li>子组件可以修改传入的状态</li>
+<li>结构化克隆时需要使用 toJS 将 proxy 代理对象转换为普通 js 对象</li>
+<li>没有直接的显式声明依赖运行副作用的方法</li>
+<li>不能完全避免使用 react hooks 自带的一些方法，尤其是依赖于一些第三方库时</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+      
+        <a href="/tags/react/">#react</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>在 react 中使用 mobx 接管所有状态</div>
+      <div>https://blog.rxliuli.com/p/1fcd1517c14c4e68b764d7e6df071805/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/ea7d22223a8841eb8571af67475c7d2b/" title="周报 2023-03-12">
+                        <span class="hidden-mobile">周报 2023-03-12</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
