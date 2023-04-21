@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://blog.rxliuli.com/resources/ac26ab6a729f4cd3b4ea5c2bc9eee18a.png">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/4bc71ba715f048b5b5d7beb7bb93cd56.png">
 <meta property="article:published_time" content="2022-11-06T09:20:16.041Z">
-<meta property="article:modified_time" content="2022-11-06T14:58:10.790Z">
+<meta property="article:modified_time" content="2023-04-21T05:47:23.564Z">
 <meta property="article:author" content="rxliuli">
 <meta property="article:tag" content="工具">
 <meta name="twitter:card" content="summary_large_image">
@@ -250,7 +250,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.4k 字
+          1.9k 字
         
       </span>
     
@@ -262,7 +262,7 @@
         
         
           <!-- compatible with older versions-->
-          12 分钟
+          16 分钟
         
       </span>
     
@@ -306,7 +306,7 @@
                 
                   
                     <!-- compatible with older versions-->
-                    本文最后更新于：2022年11月6日 晚上
+                    本文最后更新于：2023年4月21日 下午
                   
                 
               </p>
@@ -320,8 +320,11 @@
 <p>cloudflare workers 的免费层每天最多允许 10w 次请求，对于吾辈这种流量很小的网站完全可以接受。</p>
 </blockquote>
 <p>于是，吾辈想到了利用 <a target="_blank" rel="noopener" href="https://workers.cloudflare.com/">cloudflare workers</a> 代理的方法，它的基本思路与 weserv 类似，但不再使用它的服务，而是直接使用 cloudflare 代理。lambda 函数实现很简单，就是透传 url 参数罢了。</p>
-<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {<br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-params">request</span>) {<br>    <span class="hljs-keyword">const</span> url = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(request.<span class="hljs-property">url</span>)<br>    <span class="hljs-keyword">const</span> r = url.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">'url'</span>)<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'r'</span>, r)<br>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(r)<br>  },<br>}<br></code></pre></td></tr></tbody></table></figure>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> useReflare <span class="hljs-keyword">from</span> <span class="hljs-string">'reflare'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Route</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'reflare/dist/types'</span><br><br><span class="hljs-keyword">const</span> handleRequest = <span class="hljs-keyword">async</span> (<span class="hljs-attr">request</span>: <span class="hljs-title class_">Request</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Response</span>&gt; =&gt; {<br>  <span class="hljs-keyword">const</span> u = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(request.<span class="hljs-property">url</span>)<br>  <span class="hljs-keyword">const</span> url = u.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">'url'</span>)<br>  <span class="hljs-keyword">if</span> (!url) {<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Response</span>(<span class="hljs-string">'Missing url'</span>, {<br>      <span class="hljs-attr">status</span>: <span class="hljs-number">400</span>,<br>      <span class="hljs-attr">statusText</span>: <span class="hljs-string">'Missing url'</span>,<br>    })<br>  }<br>  <span class="hljs-keyword">const</span> reflare = <span class="hljs-keyword">await</span> <span class="hljs-title function_">useReflare</span>()<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">route</span>: <span class="hljs-title class_">Route</span> = {<br>    <span class="hljs-attr">upstream</span>: {<br>      <span class="hljs-attr">domain</span>: <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(url).<span class="hljs-property">host</span>,<br>    },<br>  }<br>  reflare.<span class="hljs-title function_">push</span>(route)<br>  <span class="hljs-keyword">return</span> reflare.<span class="hljs-title function_">handle</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Request</span>(url, request))<br>}<br><br><span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'fetch'</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {<br>  event.<span class="hljs-title function_">respondWith</span>(<span class="hljs-title function_">handleRequest</span>(event.<span class="hljs-property">request</span>))<br>})<br></code></pre></td></tr></tbody></table></figure>
 
+<blockquote>
+<p>你可以按照项目 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/cloudflare-proxy">https://github.com/rxliuli/cloudflare-proxy</a> 的步骤自行部署</p>
+</blockquote>
 <p>部署上去之后，再配置一下自定义路由。于是，吾辈便有了一个基本的图片访问代理 <a target="_blank" rel="noopener" href="https://image-proxy.rxliuli.com/">https://image-proxy.rxliuli.com</a>。可以检查另一篇 <a href="/p/7a436b6754e4484db517fc002532d94d">终之空通关感想</a>，它已经在使用这个代理服务了。</p>
 <h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>使用之后，图片加载速度变得看起来还不错。</p>
 <p><img src="/resources/ac26ab6a729f4cd3b4ea5c2bc9eee18a.png" srcset="/img/loading.gif" lazyload alt="1667745662310.png"></p>

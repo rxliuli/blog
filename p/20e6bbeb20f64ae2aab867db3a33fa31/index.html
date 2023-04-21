@@ -1,0 +1,947 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言ast 是什么？它是一种将文本转换为方便程序处理的结构化的数据。可能听到 ast，就会天然的觉得很复杂，但这其实取决于要处理的语言、工具库，如果都有像是 dom 那种封装的非常好的 api，也不会有人抱怨 ast 很复杂了。 下面引用 wiki 的描述  在计算机科学中，抽象语法树( AST ) 或语法树是用形式语言编写的文本（通常是源代码）的抽象语法结构的树表示。树的每个节点表示文本中出现的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ast 抽象语法树 介绍与应用">
+<meta property="og:url" content="https://blog.rxliuli.com/p/20e6bbeb20f64ae2aab867db3a33fa31/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="前言ast 是什么？它是一种将文本转换为方便程序处理的结构化的数据。可能听到 ast，就会天然的觉得很复杂，但这其实取决于要处理的语言、工具库，如果都有像是 dom 那种封装的非常好的 api，也不会有人抱怨 ast 很复杂了。 下面引用 wiki 的描述  在计算机科学中，抽象语法树( AST ) 或语法树是用形式语言编写的文本（通常是源代码）的抽象语法结构的树表示。树的每个节点表示文本中出现的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/9963e79229f94db2ad8d609f5fc6f50c.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/1e50e84b24b842959e0488d57226fb52.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/fd110cbf01454771b04832789efb847c.png">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/70771482d3c64ce8a8ab607900b01185.png">
+<meta property="article:published_time" content="2023-01-06T03:06:31.837Z">
+<meta property="article:modified_time" content="2023-01-12T11:33:24.354Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="ast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/9963e79229f94db2ad8d609f5fc6f50c.png">
+  
+  
+  
+  <title>ast 抽象语法树 介绍与应用 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ast 抽象语法树 介绍与应用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-06 11:06" pubdate>
+          2023年1月6日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          67 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">ast 抽象语法树 介绍与应用</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2023年1月12日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ast 是什么？它是一种将文本转换为方便程序处理的结构化的数据。可能听到 ast，就会天然的觉得很复杂，但这其实取决于要处理的语言、工具库，如果都有像是 dom 那种封装的非常好的 api，也不会有人抱怨 ast 很复杂了。</p>
+<p>下面引用 wiki 的描述</p>
+<blockquote>
+<p>在计算机科学中，抽象语法树( AST ) 或语法树是用形式语言编写的文本（通常是源代码）的抽象语法结构的树表示。树的每个节点表示文本中出现的结构。</p>
+<p>语法是 “抽象的”，因为它并不表示出现在真实语法中的每个细节，而只是结构或内容相关的细节。例如，分组括号隐含在树结构中，因此不必将它们表示为单独的节点。同样，像 if-condition-then 语句这样的句法结构可以通过具有三个分支的单个节点来表示。</p>
+</blockquote>
+<p>一些应用的场景</p>
+<ul>
+<li>runtime: 运行时，有了 ast 之后就可以执行它，例如 quickjs 之类的嵌入式 js runtime</li>
+<li>compiler: 编译器，有了 ast 之后可以将之编译为机器指令，例如 golang/c 之类的语言的编译器</li>
+<li>editor: 代码编辑支持，编辑器的提示、报错等等，根据上下文提示可用的变量，例如 lsp 协议</li>
+<li>linter: 检查代码，检查代码中是否存在特定结构的代码，例如 eslint/tslint</li>
+<li>bundler: 需要找不到不同文件之间的引用关系，也需要处理各种模块，例如 rollup/webpack 之类的</li>
+<li>transpiler: 将代码翻译为另一种代码，例如 babel 将 esnext 翻译为 es2015 的代码</li>
+<li>generator: 代码生成器，从一些元数据生成代码，例如从 graphql 生成 ts 代码</li>
+</ul>
+<h2 id="基本展示"><a href="#基本展示" class="headerlink" title="基本展示"></a>基本展示</h2><p>基本上，从应用层面而言，最重要的功能是解析和序列化，即将一段代码解析为 ast 数据结构、以及将 ast 数据结构还原回代码的功能。得到 ast 数据结构之后，我们就可以操纵它了。不管是使用现有的工具函数（例如 <code>document.querySelector</code> 查找节点），还是自行实现一个递归算法，都能够做到查找以及修改的能力。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 是一个好工具，它支持主流语言的 ast 可视化展示，包括与前端无关的 <code>Go/Rust/Kotlin/Java</code> 等语言，对了解 ast 结构有很大的帮助。</p>
+</blockquote>
+<p>例如下面这段 js 代码的 ast 的样子</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> i = <span class="hljs-number">1</span> + <span class="hljs-number">2</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>注意，下面的 ast 结构中删除了代码位置的信息，它们通常不太重要，除非涉及到 sourcemap 之类的。</p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Program"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"body"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VariableDeclaration"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"declarations"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-punctuation">{</span><br>          <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"VariableDeclarator"</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">"id"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Identifier"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"i"</span><br>          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">"init"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"BinaryExpression"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"left"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>              <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Literal"</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">"raw"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1"</span><br>            <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"operator"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"+"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"right"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>              <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Literal"</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">"raw"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"2"</span><br>            <span class="hljs-punctuation">}</span><br>          <span class="hljs-punctuation">}</span><br>        <span class="hljs-punctuation">}</span><br>      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"kind"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"const"</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"sourceType"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"module"</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>也许你想问，ast 是否有某种形式的规范？或者不同的 ast 之间是否可以统一处理？<br>例如解析 js/go/rust 使用统一的方法解析，只是传入不同的解析器，并且有通用的 ast 工具</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">parse</span>(<span class="hljs-string">`console.log('hello world')`</span>, { <span class="hljs-attr">lang</span>: <span class="hljs-string">'js'</span> })<br><span class="hljs-title function_">parse</span>(<br>  <span class="hljs-string">`</span><br><span class="hljs-string">package main</span><br><span class="hljs-string"></span><br><span class="hljs-string">import "fmt"</span><br><span class="hljs-string"></span><br><span class="hljs-string">func main() {</span><br><span class="hljs-string">    fmt.Println("hello world")</span><br><span class="hljs-string">}</span><br><span class="hljs-string">`</span>,<br>  { <span class="hljs-attr">lang</span>: <span class="hljs-string">'go'</span> },<br>)<br><span class="hljs-title function_">parse</span>(<br>  <span class="hljs-string">`</span><br><span class="hljs-string">fn main() {</span><br><span class="hljs-string">    println!("Hello World!");</span><br><span class="hljs-string">}</span><br><span class="hljs-string">`</span>,<br>  { <span class="hljs-attr">lang</span>: <span class="hljs-string">'rust'</span> },<br>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>遗憾的是，ast 通常与语言强绑定，这也是为什么解析 go 通常需要使用 go，解析 rust 通常也需要 rust，除非某种语言足够流行，例如 <code>xml/html/json/markdown/js</code>，才会有不同语言的实现，但不同实现之间可能也有一些不同，例如 ts 和 babel 解析 js 代码得到的 ast 就存在巨大差异。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>下面不会详述解析和序列化是如何完成的，而主要着重于应用场景，因为除非需要创建新的编程语言或 DSL，否则很少需要自己编写解析器，而通常使用现有的，例如 js 代码解析与序列化通常使用 babel。</p>
+<blockquote>
+<p>对实现解析器感兴趣的话可以看 <a target="_blank" rel="noopener" href="https://youtu.be/IcZSFewqr9k">SICP 系列的课程</a></p>
+</blockquote>
+<h3 id="可能是最常用的-ast-dom"><a href="#可能是最常用的-ast-dom" class="headerlink" title="可能是最常用的 ast: dom"></a>可能是最常用的 ast: dom</h3><p><img src="/resources/9963e79229f94db2ad8d609f5fc6f50c.png" srcset="/img/loading.gif" lazyload alt="1673231996708.png"></p>
+<p>对于 web 前端而言，dom 是很熟悉的东西，在现代框架出现之前，不接触它是不可能的。现在通常使用 <code>Document.querySelector</code> 之类的库检索和操作 dom 树，最常见的操作是找到 dom 中的特定节点并做一些修改。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// 创建一个新的节点</span><br><span class="hljs-keyword">const</span> h1 = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">'h1'</span>)<br>h1.<span class="hljs-property">textContent</span> = <span class="hljs-string">'hello world'</span><br><br><span class="hljs-comment">// 找到特定节点，然后将创建的节点追加进去</span><br><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">'#app'</span>)!.<span class="hljs-title function_">appendChild</span>(h1)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>例如下面这段非常简单 html 的 ast 结构如下</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"https://github.com/"</span>&gt;</span>github<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p>解析器: htmlparser2</p>
+</blockquote>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"root"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"tag"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">{</span> <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"text"</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"data"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"github"</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"a"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"attribs"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">"href"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"https://github.com/"</span> <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>大部分时候可能并不会意识到这点，因为 dom 的 api 发展至今，已经非常好用了，如果用过其他的 xml 解析器，或许就更能感受到这点。不过 web api 也有可以解析 xml/html 文本的 <code>DOMParser/XMLSerializer</code> 接口，在动态渲染一些 html 时仍然有时候会使用到。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> parser = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DOMParser</span>()<br><span class="hljs-keyword">const</span> root = parser.<span class="hljs-title function_">parseFromString</span>(<br>  <span class="hljs-string">`&lt;p&gt;</span><br><span class="hljs-string">  &lt;a href="https://github.com/"&gt;github&lt;/a&gt;</span><br><span class="hljs-string">  &lt;a href="https://google.com/"&gt;google&lt;/a&gt;</span><br><span class="hljs-string">&lt;/p&gt;`</span>,<br>  <span class="hljs-string">'text/html'</span>,<br>)<br>root.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">'a'</span>).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> {<br>  item.<span class="hljs-property">target</span> = <span class="hljs-string">'_blank'</span><br>})<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(root.<span class="hljs-property">body</span>.<span class="hljs-property">innerHTML</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<h3 id="处理-markdown-中的链接"><a href="#处理-markdown-中的链接" class="headerlink" title="处理 markdown 中的链接"></a>处理 markdown 中的链接</h3><p><img src="/resources/1e50e84b24b842959e0488d57226fb52.png" srcset="/img/loading.gif" lazyload alt="1673232263982.png"></p>
+<p>如果你使用 markdown，或许你有时候也需要自动化处理其中的一些链接转换，例如为特定的 url 添加代理地址。</p>
+<p>原始 markdown 内容</p>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs md">![<span class="hljs-string">test</span>](<span class="hljs-link">resources/aaefd6438fcd48d68f62fc2478f1f857.png</span>)<br>![<span class="hljs-string">1669384280333.png</span>](<span class="hljs-link">https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>希望转换得到的 markdown 内容，即为 google 图片的地址添加代理服务，避免无法在 blog 显示的错误。同时也不能转换不相关的链接。</p>
+<figure class="highlight md"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs md">![<span class="hljs-string">test</span>](<span class="hljs-link">resources/aaefd6438fcd48d68f62fc2478f1f857.png</span>)<br>![<span class="hljs-string">1669384280333.png</span>](<span class="hljs-link">https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>它的 ast 结构如下，可以清楚的看到完成上面的需要只要找到 image 类型的节点然后选择性替换链接即可。</p>
+<blockquote>
+<p>解析器: mdast</p>
+</blockquote>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span><br>  <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"root"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>      <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"paragraph"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>          <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"image"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"url"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"resources/aaefd6438fcd48d68f62fc2478f1f857.png"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"alt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"test"</span><br>          <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-punctuation">{</span> <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"text"</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"\n"</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"image"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"title"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"url"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"alt"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"1669384280333.png"</span><br>          <span class="hljs-punctuation">}</span><br>        <span class="hljs-punctuation">]</span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">]</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>实际上这件事情很简单，我们只需要过滤出来需要的节点并且修改就好了，下面主要使用 mdast 相关的包（它的上层封装 remark 可能更出名）来解析 markdown。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { fromMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-from-markdown'</span><br><span class="hljs-keyword">import</span> { toMarkdown } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast-util-to-markdown'</span><br><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Image</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'mdast'</span><br><span class="hljs-keyword">import</span> { selectAll } <span class="hljs-keyword">from</span> <span class="hljs-string">'unist-util-select'</span><br><br><span class="hljs-keyword">const</span> s = <span class="hljs-string">`</span><br><span class="hljs-string">![test](resources/aaefd6438fcd48d68f62fc2478f1f857.png)</span><br><span class="hljs-string">![1669384280333.png](https://lh3.googleusercontent.com/pw/AL9nZEUmvKBtRxGeG-J-0oVDVmdZccu0E0_HiDHaMPlvWBLp1v2wjaA152s9FxkIRFZROAChN-tYgimcK-ZYBFD_KGya40RzSKfDTVJqvoXjg5CsBmAaJPurSPdDmaDm6Bcunj4IxL_YPBnwtH0h7XdwaUxN=w1600-h1200-no)</span><br><span class="hljs-string">`</span>.<span class="hljs-title function_">trim</span>()<br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">fromMarkdown</span>(s)<br>;(<span class="hljs-title function_">selectAll</span>(<span class="hljs-string">'image'</span>, root) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Image</span>[])<br>  .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span><br>    item.<span class="hljs-property">url</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'https://lh3.googleusercontent.com/pw/'</span>),<br>  )<br>  .<span class="hljs-title function_">forEach</span>(<br>    <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> (item.<span class="hljs-property">url</span> = <span class="hljs-string">`https://image-proxy.rxliuli.com/?url=<span class="hljs-subst">${item.url}</span>`</span>),<br>  )<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toMarkdown</span>(root))<br></code></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除代码中的-console-log"><a href="#删除代码中的-console-log" class="headerlink" title="删除代码中的 console.log"></a>删除代码中的 console.log</h3><p><img src="/resources/fd110cbf01454771b04832789efb847c.png" srcset="/img/loading.gif" lazyload alt="1673232301117.png"></p>
+<p>在使用构建工具编译代码时，会使用各种各样的配置和插件，像是有时候会在生产环境中删除 <code>console.log</code> 之类的，其实实现它也不算太难。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { add } <span class="hljs-keyword">from</span> <span class="hljs-string">'./add'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'hello world'</span>)<br><span class="hljs-keyword">const</span> i = <span class="hljs-title function_">add</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`count: <span class="hljs-subst">${i}</span>`</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>下面使用 acorn 作为解析器、jscodeshift 作为 ast 工具库来实现。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> jscodeshift <span class="hljs-keyword">from</span> <span class="hljs-string">'jscodeshift'</span><br><br><span class="hljs-keyword">const</span> c = <span class="hljs-string">`import { add } from './add'</span><br><span class="hljs-string"></span><br><span class="hljs-string">console.log('hello world')</span><br><span class="hljs-string">const i = add(1, 2)</span><br><span class="hljs-string">console.log(\`count: \${i}\`)`</span><br><span class="hljs-keyword">const</span> root = <span class="hljs-title function_">jscodeshift</span>(c)<br>root<br>  .<span class="hljs-title function_">find</span>(jscodeshift.<span class="hljs-property">CallExpression</span>, {<br>    <span class="hljs-attr">callee</span>: {<br>      <span class="hljs-attr">type</span>: <span class="hljs-string">'MemberExpression'</span>,<br>      <span class="hljs-attr">object</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'Identifier'</span>,<br>        <span class="hljs-attr">name</span>: <span class="hljs-string">'console'</span>,<br>      },<br>      <span class="hljs-attr">property</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'Identifier'</span>,<br>        <span class="hljs-attr">name</span>: <span class="hljs-string">'log'</span>,<br>      },<br>    },<br>  })<br>  .<span class="hljs-title function_">remove</span>()<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(root.<span class="hljs-title function_">toSource</span>())<br></code></pre></td></tr></tbody></table></figure>
+
+<h3 id="bundler-支持额外类型的文件导入"><a href="#bundler-支持额外类型的文件导入" class="headerlink" title="bundler 支持额外类型的文件导入"></a>bundler 支持额外类型的文件导入</h3><p><img src="/resources/70771482d3c64ce8a8ab607900b01185.png" srcset="/img/loading.gif" lazyload alt="1673234439776.png"></p>
+<p>在实际的代码开发中，我们不仅仅会使用 js，也会使用 ts/image/json/graphql/css/… 等等各类文件，构建工具是如何正确的处理它们的呢？<br>例如以下使用 css module 的场景，在 js 中导入了一个 css 文件，然后像使用 js 变量一样使用它，就像魔法一样，这是如何做到的呢？</p>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.app</span> {<br>  <span class="hljs-attribute">display</span>: none;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> css <span class="hljs-keyword">from</span> <span class="hljs-string">'./style.module.css'</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(css.<span class="hljs-property">app</span>)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>其实这主要归功于构建工具，它解析并找到了 .module.css 后缀名的文件，然后将所有类选择器转换为随机名称，并创建一个 js 对象替换这个导入供 js 使用。例如以上代码会被编译为</p>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">._app_1dhlq_7 {<br>  <span class="hljs-attribute">display</span>: none;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> app = <span class="hljs-string">'_app_1dhlq_7'</span><br><span class="hljs-keyword">const</span> css = {<br>  <span class="hljs-attr">app</span>: app,<br>}<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(css)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>下面简单实现 css 的转换部分，首先看一下它的 ast</p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"StyleSheet"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Rule"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"prelude"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"SelectorList"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>          <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Selector"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">{</span> <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ClassSelector"</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"app"</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">]</span><br>          <span class="hljs-punctuation">}</span><br>        <span class="hljs-punctuation">]</span><br>      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"block"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Block"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>          <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Declaration"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"important"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"property"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"display"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"value"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>              <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Value"</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">"children"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">{</span> <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Identifier"</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"none"</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">]</span><br>            <span class="hljs-punctuation">}</span><br>          <span class="hljs-punctuation">}</span><br>        <span class="hljs-punctuation">]</span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>基本思路很简单，找到所有的 ClassSelector 然后替换名字并添加映射即可。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> csstree <span class="hljs-keyword">from</span> <span class="hljs-string">'css-tree'</span><br><span class="hljs-keyword">import</span> { nanoid } <span class="hljs-keyword">from</span> <span class="hljs-string">'nanoid'</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">extractClassVars</span>(<span class="hljs-params">code: <span class="hljs-built_in">string</span></span>): {<br>  <span class="hljs-attr">code</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-attr">vars</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;<br>} {<br>  <span class="hljs-keyword">const</span> root = csstree.<span class="hljs-title function_">parse</span>(<span class="hljs-string">`.app { display: none; }`</span>)<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">vars</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt; = {}<br>  csstree.<span class="hljs-title function_">walk</span>(root, <span class="hljs-function">(<span class="hljs-params">item</span>) =&gt;</span> {<br>    <span class="hljs-keyword">if</span> (item.<span class="hljs-property">type</span> !== <span class="hljs-string">'ClassSelector'</span>) {<br>      <span class="hljs-keyword">return</span><br>    }<br>    <span class="hljs-keyword">if</span> (!vars[item.<span class="hljs-property">name</span>]) {<br>      vars[item.<span class="hljs-property">name</span>] = <span class="hljs-title function_">nanoid</span>()<br>    }<br>    item.<span class="hljs-property">name</span> = vars[item.<span class="hljs-property">name</span>]<br>  })<br>  <span class="hljs-keyword">return</span> {<br>    <span class="hljs-attr">code</span>: csstree.<span class="hljs-title function_">generate</span>(root),<br>    vars,<br>  }<br>}<br><br><span class="hljs-keyword">const</span> r = <span class="hljs-title function_">extractClassVars</span>(<span class="hljs-string">'.app { display: none; }'</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(r) <span class="hljs-comment">// { code: '.Wkq09lhW8-LX_Tn7-johv{display:none}', vars: { app: 'Wkq09lhW8-LX_Tn7-johv' } }</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>然后使用 vars 替换掉 import 即可，不过这部分是构建工具相关所以暂且跳过。</p>
+<h2 id="实际用例"><a href="#实际用例" class="headerlink" title="实际用例"></a>实际用例</h2><p>下面是一些在现有项目中使用到的实际用例</p>
+<ul>
+<li>vue3 setup script 语法 – 在 vite-vue-plugin 中通过 @vue/compiler-dom 处理</li>
+<li>在编写 graphql 文件时自动生成 ts 文件 – rollup-plugin-graphql-codegen</li>
+<li>在构建 web 应用时自动将版本号添加到 dist/index.html 中 – vite-plugin-standard-info</li>
+<li>从 som 元数据生成类型以在查询 som 数据时能够正确使用 class/components – som-codegen</li>
+<li>从 openapi schema 中生成所有后端服务接口的类型定义 – faas-openapi</li>
+<li>为使用的环境变量生成类型定义 ImportMeta – vite-plugin-env-dts-gen</li>
+<li>加载应用的 webApp.js 时自动将 ipc-main bundle 进去 – esbuild-wasm</li>
+</ul>
+<h2 id="现有的解析器"><a href="#现有的解析器" class="headerlink" title="现有的解析器"></a>现有的解析器</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://astexplorer.net/">astexplorer</a> 中可以看常用语言的解析器，可以选择适合自己的</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>包</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>javascript</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/acornjs/acorn">acorn</a></td>
+<td>js 解析器</td>
+</tr>
+<tr>
+<td>typescript</td>
+<td><a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">typescript</a>/<a target="_blank" rel="noopener" href="https://github.com/swc-project/swc">swc</a></td>
+<td>ts 解析器，typescript 是官方解析器，但更复杂。swc 基于 rust</td>
+</tr>
+<tr>
+<td>markdown</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/syntax-tree/mdast">mdast</a></td>
+<td>最适合编程的 markdown 解析器，社区最大</td>
+</tr>
+<tr>
+<td>css</td>
+<td><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/css-tree">css-tree</a></td>
+<td>比较简单的 css 解析工具</td>
+</tr>
+<tr>
+<td>html</td>
+<td><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/node-html-parser">node-html-parser</a></td>
+<td>适用于 nodejs 快速的 html 解析器</td>
+</tr>
+<tr>
+<td>env</td>
+<td><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/dotenv">dotenv</a></td>
+<td>环境变量解析器</td>
+</tr>
+<tr>
+<td>yaml</td>
+<td><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/yaml">yaml</a></td>
+<td>yaml 解析器</td>
+</tr>
+</tbody></table>
+<p>一些工具包</p>
+<table>
+<thead>
+<tr>
+<th>名字</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>jscodeshift</td>
+<td>类似于 jq 的上层封装，基于 ast-types</td>
+</tr>
+<tr>
+<td>ast-types</td>
+<td>通用的 js/ts ast 抽象，但实现在某些细微之处有问题</td>
+</tr>
+</tbody></table>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>操纵 ast 可以完成很多有趣的事情，包括但不限于代码生成、修改和运行，它们虽然在一般的业务开发中少有涉猎，但更下层的许多基础设施非常依赖它，也是是前端工程化中绕不过去的部分。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%89%8D%E7%AB%AF/%E5%B7%A5%E7%A8%8B%E5%8C%96/" class="category-chain-item">工程化</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ast/">#ast</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ast 抽象语法树 介绍与应用</div>
+      <div>https://blog.rxliuli.com/p/20e6bbeb20f64ae2aab867db3a33fa31/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/8d1d975302f44c54bafcd17f506a2e8a/" title="读书笔记 历代经济变革得失">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">读书笔记 历代经济变革得失</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/0e1fad3617514ced89c07959c8d8f52b/" title="重新发布 fs-extra 用以正确支持 esm/cjs 使用">
+                        <span class="hidden-mobile">重新发布 fs-extra 用以正确支持 esm/cjs 使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
