@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="这两周写了一些简单的小工具，尝试了一些新的技术。  编码Batch Rename，吾辈之前一直想写但没写的一个小工具，能够使用 Manoco 编辑器的强大编辑功能来批量重命名文件，吾辈一半用于处理动画字幕文件。传统上的批量重命名工具通常提供两个框，以及多个额外的选项，例如是否匹配后缀名，使用正则，或者模糊匹配大小写等等。但吾辈会认为强大的编辑器功能才能最方便的，如果将文件名作为文本在编辑器上处理，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周报 2023-05-21">
+<meta property="og:url" content="https://blog.rxliuli.com/p/2f35a4e492a74b5aa327a3a6875b9df5/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="这两周写了一些简单的小工具，尝试了一些新的技术。  编码Batch Rename，吾辈之前一直想写但没写的一个小工具，能够使用 Manoco 编辑器的强大编辑功能来批量重命名文件，吾辈一半用于处理动画字幕文件。传统上的批量重命名工具通常提供两个框，以及多个额外的选项，例如是否匹配后缀名，使用正则，或者模糊匹配大小写等等。但吾辈会认为强大的编辑器功能才能最方便的，如果将文件名作为文本在编辑器上处理，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaX5kx0Zbw8lc_yLv7HzayA5RINQguIWgccyvwP_cmKmGVq6sNZs2B8DEIj78jKPMrpIOv8Ay6L8cg2cFwEClEQ1ExlRqpe_usLLBnI8HO8cb3QKkuHh8Caz6vP4YJCkh-zzr9QjsdMZL-DudcC8ZYPp=w1729-h1297-s-no">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/37c4dd88248d4a8ea3890c1bccca3c4e.jpg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/d963b951a211473dbec026fe1bc3b47b.jpg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/d0fd0bfcdcad48ccb853882ff8434c07.jpg">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/119d60ca352b47098216b94746137f08.png">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaUjnZKn0odEcRsHniyocCsLfyAKcbqYRkpAUF6KizliTcxZZNu6CXqtKxWwrFV023_rw6FhNPV4SNeutfpWaMQu-ZQ2h1sumv9NaQJXJgPkEoHW2YDqKfFZHmEU1ccaRF_MNgiSHyuLUpYi5lAU9SkT=w931-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVPU4ts-CuPnYw9De6rZ1_teqaUzY1RfBsrfI1FuLv8-iEjlusAgnDax7bD0Xu3IykoEg9Irv-mRQ3mN1LCbWHne4H4uQx1mfkTXKqVmUIFuYwp-tljWrsYzxdMRQm0cFtrqqsluMUg_pOmwGf10G4t=w1655-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWjGdsqA5T1IGfUyMv6XMQ_LzWFZygBvBxybPdEOQFTkkfNy4ruKyyQFA1pVjVULJq4V_v2x0idQfZ49rQkQXv4zLb-AacuuD6ae7TZJtpgqvM_hbGNNDkcb2FKhSlTmVlmsDoxMLEnuGbd3U-r_S5g=w1655-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWDG5pXYr6wf2rrmhBssC-c6qJLwdjpHiNAGcpxABRJDiKQvdH9VpQmlhwBzXUIXYghRii5ZnY7mQIjL2HRFCGICyIQ86Cb7Axf2vy6fA6Wquqb_Ojsz_h-vu7pWSHA5cTvyL57ScwaWGsdP_vdYe43=w931-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWZHCD0GXSuLvD6v8_qogVPxQEyeMliIOSJ5d19YaPNwjyGamtFUjkuAbnmweTwb7bA3MsZt6Bpj5IOXMJeGpnKzI3kxD2DZVeOV3N-Sn2wJy2l7644LJJzR8Fofp4IlWPM9Skq6by43hs_iH0kU8xk=w931-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVuw8_v9yUcQQrx76LLwsGdSE3_YUt10wWMyeCSUGQamz02aRaCuQo2P9eZuRNgOGTv41slxBl93tEoETog-RHpQrxSlRAZyEJ0j944F6QmjGE-J6AeX_CBM9rRBNl5WxCQy6ZutKO0AS6yuoNr2rKu=w973-h1297-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVmdazSmbk9rmjE3VIOQAJquSo-v_wrHUxv08Np8YcXdob0cgLEYIec8jwpNPmLYZLRsIkSy5pGKR7MIRbuHBllLvb6heZgLrbjV3Kh_vABucL3lq7CcfYfwaFusILTtckIPCmE93jNqZEDexUCesAd=w1655-h1241-s-no">
+<meta property="og:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWRae66T98gl_if5-DT73jQbbvKYGemgJzEXDGlKCOHxDD04XAn5Qxrj9J3e16jZMP6fmbe6HJlrlmE7J_m1jqb2QaY0cmiWS2xyFAipg7Gf7XxWteNpY7sK9eY48Q48W4w5blUWaCPXR2XDyDf2sSq=w1729-h1297-s-no">
+<meta property="article:published_time" content="2023-05-21T15:53:37.807Z">
+<meta property="article:modified_time" content="2023-05-21T17:06:25.963Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="周报">
+<meta property="article:tag" content="css">
+<meta property="article:tag" content="开源">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaX5kx0Zbw8lc_yLv7HzayA5RINQguIWgccyvwP_cmKmGVq6sNZs2B8DEIj78jKPMrpIOv8Ay6L8cg2cFwEClEQ1ExlRqpe_usLLBnI8HO8cb3QKkuHh8Caz6vP4YJCkh-zzr9QjsdMZL-DudcC8ZYPp=w1729-h1297-s-no">
+  
+  
+  
+  <title>周报 2023-05-21 - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="周报 2023-05-21"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-21 23:53" pubdate>
+          2023年5月21日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">周报 2023-05-21</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2023年5月22日 凌晨
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>这两周写了一些简单的小工具，尝试了一些新的技术。</p>
+<p><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaX5kx0Zbw8lc_yLv7HzayA5RINQguIWgccyvwP_cmKmGVq6sNZs2B8DEIj78jKPMrpIOv8Ay6L8cg2cFwEClEQ1ExlRqpe_usLLBnI8HO8cb3QKkuHh8Caz6vP4YJCkh-zzr9QjsdMZL-DudcC8ZYPp=w1729-h1297-s-no" srcset="/img/loading.gif" lazyload alt="cover"></p>
+<h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p><a target="_blank" rel="noopener" href="https://github.com/rxliuli/batch-rename">Batch Rename</a>，吾辈之前一直想写但没写的一个小工具，能够使用 Manoco 编辑器的强大编辑功能来批量重命名文件，吾辈一半用于处理动画字幕文件。传统上的批量重命名工具通常提供两个框，以及多个额外的选项，例如是否匹配后缀名，使用正则，或者模糊匹配大小写等等。但吾辈会认为强大的编辑器功能才能最方便的，如果将文件名作为文本在编辑器上处理，这会更加高效和方便。这个灵感之前有 CLI 做过，VSCode 实现过，但吾辈没有找到独立的应用。即便是 Microsoft PowerToys 也走了传统的批量重命名路线，所以吾辈自己实现了它。</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PL3mft8DEHg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<p>TailwindCSS，一个吾辈之前一直很难理解和使用的框架。对于吾辈而言，之前一直难以理解的是它似乎只是简化的行内样式，感觉像是重新发明了 CSS。问题在于，既然吾辈已经学习了 CSS，为什么还要学习另一套和 CSS 差不多的自定义规则呢？在尝试了使用 ChatGPT 编写 TailwindCSS 的 class 之后，吾辈的看法改变了，因为它真的太方便了，以至于吾辈使用它完全重写了 batch-rename 的样式，删除了所有手动编写了 CSS，替换成了 ChatGPT 编写的 JSX + TailwindCSS 代码。</p>
+<p><img src="/resources/37c4dd88248d4a8ea3890c1bccca3c4e.jpg" srcset="/img/loading.gif" lazyload alt="使用 ChatGPT 生成 JSX + TailwindCSS"></p>
+<p>甚至比吾辈之前使用另一个 UI 框架加手动修补得到的样式好得多，还非常容易地添加了暗色模式的支持。这是前后对比</p>
+<p><img src="/resources/d963b951a211473dbec026fe1bc3b47b.jpg" srcset="/img/loading.gif" lazyload alt="之前"><br><img src="/resources/d0fd0bfcdcad48ccb853882ff8434c07.jpg" srcset="/img/loading.gif" lazyload alt="之后"></p>
+<p>当然，也尝试重写了一些其他小工具，例如 <a target="_blank" rel="noopener" href="https://github.com/rxliuli/tab-tailor">TabTailor</a>，一个将浏览器新标签页变成视频背景的插件。另外，由于 <a target="_blank" rel="noopener" href="https://extensionworkshop.com/documentation/develop/manifest-v3-migration-guide/">Firefox 最近真正支持了 Manifest V3</a>，所以插件也发布了 Firefox 扩展商店，虽然 Firefox 特殊的 Extension ID 确实让吾辈困惑。<br>现在的 UI（根据系统主题自适应）</p>
+<p><img src="/resources/119d60ca352b47098216b94746137f08.png" srcset="/img/loading.gif" lazyload alt="1684687890156.png"></p>
+<p>也是在这周，吾辈真正开始考虑是否要维护一些自己应用层的脚手架，目前维护着许多相同类型的项目，可能每个项目都有一些细微的差异，想统一这种差异。另外，react 本身的选择太多，想尝试将一些选择固定下来，减少选择的成本。</p>
+<p>目前维护着的项目</p>
+<table>
+<thead>
+<tr>
+<th>项目类型</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>web</td>
+<td>几十个</td>
+</tr>
+<tr>
+<td>chrome plugin</td>
+<td>5</td>
+</tr>
+<tr>
+<td>vscode extension</td>
+<td>4</td>
+</tr>
+<tr>
+<td>electron</td>
+<td>1</td>
+</tr>
+<tr>
+<td>cli</td>
+<td>10+</td>
+</tr>
+<tr>
+<td>lib</td>
+<td>几十个</td>
+</tr>
+<tr>
+<td>nodejs</td>
+<td>1</td>
+</tr>
+<tr>
+<td>userjs</td>
+<td>6</td>
+</tr>
+</tbody></table>
+<p>长期而言，吾辈期望能够解决开发体验不一致的问题，即便它可能会花费很多时间。</p>
+<h2 id="出游"><a href="#出游" class="headerlink" title="出游"></a>出游</h2><p>周五刚下过雨，所以周六没有出门，周日下午去了奥林森林公园，比想象中还要更大，走了 3 个小时还没有完整走完一圈。与依赖于山的森林公园相比，走的更加平缓舒适，还有许多人在公园里一家人出来野餐，感觉相当不错。旁边有一个奥林匹克塔，非常非常高，于是买票到了顶部，风景还算不错，可以俯瞰整个北京市的风景。<br>下面是拍的一些照片</p>
+<p><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaUjnZKn0odEcRsHniyocCsLfyAKcbqYRkpAUF6KizliTcxZZNu6CXqtKxWwrFV023_rw6FhNPV4SNeutfpWaMQu-ZQ2h1sumv9NaQJXJgPkEoHW2YDqKfFZHmEU1ccaRF_MNgiSHyuLUpYi5lAU9SkT=w931-h1241-s-no" srcset="/img/loading.gif" lazyload alt="奥林匹克塔 外景"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVPU4ts-CuPnYw9De6rZ1_teqaUzY1RfBsrfI1FuLv8-iEjlusAgnDax7bD0Xu3IykoEg9Irv-mRQ3mN1LCbWHne4H4uQx1mfkTXKqVmUIFuYwp-tljWrsYzxdMRQm0cFtrqqsluMUg_pOmwGf10G4t=w1655-h1241-s-no" srcset="/img/loading.gif" lazyload alt="儿童乐园，吾辈已经不是了"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWjGdsqA5T1IGfUyMv6XMQ_LzWFZygBvBxybPdEOQFTkkfNy4ruKyyQFA1pVjVULJq4V_v2x0idQfZ49rQkQXv4zLb-AacuuD6ae7TZJtpgqvM_hbGNNDkcb2FKhSlTmVlmsDoxMLEnuGbd3U-r_S5g=w1655-h1241-s-no" srcset="/img/loading.gif" lazyload alt="天空与云，在仰山上的天境拍的"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWDG5pXYr6wf2rrmhBssC-c6qJLwdjpHiNAGcpxABRJDiKQvdH9VpQmlhwBzXUIXYghRii5ZnY7mQIjL2HRFCGICyIQ86Cb7Axf2vy6fA6Wquqb_Ojsz_h-vu7pWSHA5cTvyL57ScwaWGsdP_vdYe43=w931-h1241-s-no" srcset="/img/loading.gif" lazyload alt="似乎是菊花，第一次见到真实的"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWZHCD0GXSuLvD6v8_qogVPxQEyeMliIOSJ5d19YaPNwjyGamtFUjkuAbnmweTwb7bA3MsZt6Bpj5IOXMJeGpnKzI3kxD2DZVeOV3N-Sn2wJy2l7644LJJzR8Fofp4IlWPM9Skq6by43hs_iH0kU8xk=w931-h1241-s-no" srcset="/img/loading.gif" lazyload alt="多层水梯"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVuw8_v9yUcQQrx76LLwsGdSE3_YUt10wWMyeCSUGQamz02aRaCuQo2P9eZuRNgOGTv41slxBl93tEoETog-RHpQrxSlRAZyEJ0j944F6QmjGE-J6AeX_CBM9rRBNl5WxCQy6ZutKO0AS6yuoNr2rKu=w973-h1297-s-no" srcset="/img/loading.gif" lazyload alt="上塔"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaVmdazSmbk9rmjE3VIOQAJquSo-v_wrHUxv08Np8YcXdob0cgLEYIec8jwpNPmLYZLRsIkSy5pGKR7MIRbuHBllLvb6heZgLrbjV3Kh_vABucL3lq7CcfYfwaFusILTtckIPCmE93jNqZEDexUCesAd=w1655-h1241-s-no" srcset="/img/loading.gif" lazyload alt="吾辈太喜欢这种和谐的景象了"><br><img src="https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaWRae66T98gl_if5-DT73jQbbvKYGemgJzEXDGlKCOHxDD04XAn5Qxrj9J3e16jZMP6fmbe6HJlrlmE7J_m1jqb2QaY0cmiWS2xyFAipg7Gf7XxWteNpY7sK9eY48Q48W4w5blUWaCPXR2XDyDf2sSq=w1729-h1297-s-no" srcset="/img/loading.gif" lazyload alt="负一楼还有一些其他展览的东西"></p>
+<p><a target="_blank" rel="noopener" href="https://photos.app.goo.gl/arkhYX34JomnRbsu5">影集</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%AA%E4%BA%BA/" class="category-chain-item">个人</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E4%B8%AA%E4%BA%BA/%E5%91%A8%E6%8A%A5/" class="category-chain-item">周报</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%91%A8%E6%8A%A5/">#周报</a>
+      
+        <a href="/tags/css/">#css</a>
+      
+        <a href="/tags/%E5%BC%80%E6%BA%90/">#开源</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>周报 2023-05-21</div>
+      <div>https://blog.rxliuli.com/p/2f35a4e492a74b5aa327a3a6875b9df5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/32e9550dd977485c9701f935b17f771c/" title="手机升级与刷机">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">手机升级与刷机</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/dd0e9cb99dbb4be1badccb58f3354294/" title="周报 2023-05-08">
+                        <span class="hidden-mobile">周报 2023-05-08</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
