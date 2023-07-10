@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.rxliuli.com/resources/007ec032ff1d4d6e9b2ed2fe5a231dc7.svg">
 <meta property="article:published_time" content="2023-06-05T19:18:13.466Z">
-<meta property="article:modified_time" content="2023-06-06T02:51:34.608Z">
+<meta property="article:modified_time" content="2023-06-19T06:56:21.500Z">
 <meta property="article:author" content="rxliuli">
 <meta property="article:tag" content="vite">
 <meta property="article:tag" content="工程化">
@@ -108,9 +108,9 @@
   gtag('js', new Date());
 
   gtag('config', 'G-B1GS23KRYC');
-</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
 </head>
 
 
@@ -249,7 +249,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          3.1k 字
+          3.3k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
           <!-- compatible with older versions-->
-          27 分钟
+          28 分钟
         
       </span>
     
@@ -305,7 +305,7 @@
                 
                   
                     <!-- compatible with older versions-->
-                    本文最后更新于：2023年6月6日 上午
+                    本文最后更新于：2023年6月19日 下午
                   
                 
               </p>
@@ -348,9 +348,9 @@
 
 <h3 id="vite"><a href="#vite" class="headerlink" title="vite"></a>vite</h3><p>vite 想要构建 nodejs 应用，确实需要修改一些配置和插件，主要解决几个问题</p>
 <ol>
-<li>针对 cjs 特性做 polyfill，包括 <code>__dirname/__filename/require/self</code></li>
-<li>正确捆绑依赖项，需要将 devDependencies 中的依赖也打包进去，但应该排除 node 和 dependencies 中的依赖</li>
-<li>应该包含一个默认的配置，开箱即用</li>
+<li>为 esm 代码实现 cjs polyfill，包括 <code>__dirname/__filename/require/self</code></li>
+<li>正确捆绑 devDependencies 的依赖项，但排除 node/dependencies 的依赖</li>
+<li>提供一个开箱即用的默认配置</li>
 </ol>
 <p>然后我们分别解决这几个问题</p>
 <h4 id="构建时针对-cjs-特性做-polyfill"><a href="#构建时针对-cjs-特性做-polyfill" class="headerlink" title="构建时针对 cjs 特性做 polyfill"></a>构建时针对 cjs 特性做 polyfill</h4><p>安装 magic-string，用于修改代码保持 sourcemap</p>
@@ -382,13 +382,20 @@
 <blockquote>
 <p>吾辈发布了一个 vite 插件 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@liuli-util/vite-plugin-node">@liuli-util/vite-plugin-node</a>，已经解决了上面的几个问题。</p>
 </blockquote>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>好吧，这里其实仍然存在一些问题，包括</p>
+<h2 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h2><p>好吧，这里其实仍然存在一些问题，包括</p>
 <ul>
 <li>vite 没有官方支持构建 node 应用，项目的主要目标也不是它</li>
 <li>vite-plugin-node 还有许多问题，例如没有自动 polyfill <code>__dirname</code> 之类的</li>
 <li>vite 相比 esbuild 的性能仍然差了一个数量级</li>
 </ul>
 <p>没什么选择是尽善尽美的，但吾辈现在选择相信 vite。</p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><ul>
+<li>zx 构建之后无法运行 – chalk 没有正确的配置 – 无法识别 <code>imports</code> 中的 <code>node</code> 字段 – 维护者不在乎，需要考虑更换为 ansi-colors，ref: <a target="_blank" rel="noopener" href="https://github.com/chalk/chalk/issues/535">https://github.com/chalk/chalk/issues/535</a></li>
+<li>koa-bodyparser 构建之后存在问题 – 没有正确支持 esm – 等待 <a target="_blank" rel="noopener" href="https://github.com/koajs/bodyparser/pull/152">https://github.com/koajs/bodyparser/pull/152</a> 合并</li>
+</ul>
+<h2 id="未来的目标"><a href="#未来的目标" class="headerlink" title="未来的目标"></a>未来的目标</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> 多入口点支持</li>
+</ul>
 
                 
               </div>
