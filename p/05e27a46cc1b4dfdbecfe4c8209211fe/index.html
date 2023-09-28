@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/medias/avatar.jpg">
+  <link rel="icon" href="/medias/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="rxliuli">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="json schema 是什么  jsonschema 是一种用于描述 json 数据的语言，它的作用是帮助我们定义 json 数据的结构，以及对数据进行校验。 应用场景  json schema 的应用场景广泛，包括  定义配置文件的格式以供编辑时提示，例如在 vscode 中编辑 package.json、manifest.json 会有提示 服务端的接口定义，例如 openapi&#x2F;openr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 json schema">
+<meta property="og:url" content="https://blog.rxliuli.com/p/05e27a46cc1b4dfdbecfe4c8209211fe/index.html">
+<meta property="og:site_name" content="rxliuli blog">
+<meta property="og:description" content="json schema 是什么  jsonschema 是一种用于描述 json 数据的语言，它的作用是帮助我们定义 json 数据的结构，以及对数据进行校验。 应用场景  json schema 的应用场景广泛，包括  定义配置文件的格式以供编辑时提示，例如在 vscode 中编辑 package.json、manifest.json 会有提示 服务端的接口定义，例如 openapi&#x2F;openr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.rxliuli.com/resources/4725f3f77f6544a4bfeaf0c5e773248f.svg">
+<meta property="article:published_time" content="2023-06-26T06:42:55.120Z">
+<meta property="article:modified_time" content="2023-09-28T05:13:44.866Z">
+<meta property="article:author" content="rxliuli">
+<meta property="article:tag" content="typescript">
+<meta property="article:tag" content="ast">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blog.rxliuli.com/resources/4725f3f77f6544a4bfeaf0c5e773248f.svg">
+  
+  
+  
+  <title>使用 json schema - rxliuli blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.rxliuli.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"tajs":null},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<!-- hexo injector head_end start --><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B1GS23KRYC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-B1GS23KRYC');
+</script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="rxliuli blog" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>rxliuli blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/medias/banner/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用 json schema"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-26 14:42" pubdate>
+          2023年6月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          56 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">使用 json schema</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2023年9月28日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="json-schema-是什么"><a href="#json-schema-是什么" class="headerlink" title="json schema 是什么"></a>json schema 是什么</h2><!-- 说明一下 json schema 的官方定义 -->
+
+<p><a target="_blank" rel="noopener" href="https://json-schema.org/">jsonschema</a> 是一种用于描述 json 数据的语言，它的作用是帮助我们定义 json 数据的结构，以及对数据进行校验。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><!-- 说明现有的一些 json schema 的使用场景 -->
+
+<p>json schema 的应用场景广泛，包括</p>
+<ul>
+<li>定义配置文件的格式以供编辑时提示，例如在 vscode 中编辑 package.json、manifest.json 会有提示</li>
+<li>服务端的接口定义，例如 openapi/openrpc 等</li>
+<li>数据校验，例如校验客户端的参数或者服务端返回的数据</li>
+<li>更多。。。</li>
+</ul>
+<h2 id="为什么要选择它"><a href="#为什么要选择它" class="headerlink" title="为什么要选择它"></a>为什么要选择它</h2><!-- 说明相比于类似的工具或协议，json schema 有什么优势，例如工具支持，运行时存在等等 -->
+
+<p>与 jsonschema 类似的工具有很多，在不同的场景中不同的等价项，例如在数据校验方面，<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/zod">zodjs</a> 是一种使用 js api 作为 json 校验的工具。在定义服务端接口方面，竞争者更是众多，包括 golang 的 <a target="_blank" rel="noopener" href="https://grpc.io/">grpc</a>、fackbook 的 <a target="_blank" rel="noopener" href="https://graphql.org/">graphql</a>、typescript 的 <a target="_blank" rel="noopener" href="https://trpc.io/">trpc</a> 等等。但是 json schema 有以下优势：</p>
+<ul>
+<li>跨语言 – json schema 是一种标准，因此可以跨语言使用，例如可以使用 json schema 来定义前后端交互的接口，然后使用不同语言生成对应的接口定义。与之相对的，zodjs 适用于 js，grpc 比较适用于 golang，graphql/trpc 比较适用于 js/ts 等等。</li>
+<li>工具支持 – json schema 的工具支持非常丰富，数据校验有 ajv、jsonschema 等，生成 typescript 接口有 json-schema-to-typescript，生成 openapi 的接口有 json-schema-to-openapi-schema，许多工具多已经有现成的了</li>
+<li>运行时存在 – json schema 本身就是 json，因此可以直接在运行时使用，例如在客户端校验参数或者在服务端校验返回值，而 grpc/graphql/trpc 等则需要在运行时使用对应的工具来解析 schema</li>
+</ul>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><!-- 说明一下 json schema 的基本语法 -->
+
+<p>json schema 本身也使用 json 编写，可以简单的编写。</p>
+<p>一个基本示例</p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"object"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"用户信息"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"properties"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"姓名"</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"age"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"number"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"年龄"</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"sex"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"integer"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"性别，0 为女，1 为男"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"enum"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-number">1</span><span class="hljs-punctuation">]</span><br>    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"hobbies"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"array"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"items"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"爱好"</span><br>      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"爱好"</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"required"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"name"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"age"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"sex"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"hobbies"</span><span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>这描述了一个对象的结构，它对应的 typescript 接口是</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/** 用户信息 */</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">User</span> {<br>  <span class="hljs-comment">/** 姓名 */</span><br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-comment">/** 年龄 */</span><br>  <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span><br>  <span class="hljs-comment">/** 性别，0 为女，1 为男 */</span><br>  <span class="hljs-attr">sex</span>: <span class="hljs-number">0</span> | <span class="hljs-number">1</span><br>  <span class="hljs-comment">/** 爱好 */</span><br>  <span class="hljs-attr">hobbies</span>: <span class="hljs-built_in">string</span>[]<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<h3 id="校验数据"><a href="#校验数据" class="headerlink" title="校验数据"></a>校验数据</h3><p>有了 jsonschema，就可以校验数据了，这里使用 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/jsonschema">jsonschema 库</a>。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> jsonschema <span class="hljs-keyword">from</span> <span class="hljs-string">'jsonschema'</span><br><br><span class="hljs-keyword">const</span> res = jsonschema.<span class="hljs-title function_">validate</span>(data, schema)<br><span class="hljs-keyword">if</span> (res.<span class="hljs-property">valid</span>) {<br>  <span class="hljs-comment">// 数据校验通过</span><br>} <span class="hljs-keyword">else</span> {<br>  <span class="hljs-comment">// 数据校验失败</span><br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(res.<span class="hljs-property">errors</span>)<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<h3 id="生成类型定义"><a href="#生成类型定义" class="headerlink" title="生成类型定义"></a>生成类型定义</h3><p>如果希望生成类型定义来便于开发，可以使用 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/json-schema-to-typescript">json-schema-to-typescript</a>。</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> { compile } <span class="hljs-keyword">from</span> <span class="hljs-string">'json-schema-to-typescript'</span><br><br><span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> <span class="hljs-title function_">compile</span>(<br>  {<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">'object'</span>,<br>    <span class="hljs-attr">description</span>: <span class="hljs-string">'用户信息'</span>,<br>    <span class="hljs-attr">properties</span>: {<br>      <span class="hljs-attr">name</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>,<br>        <span class="hljs-attr">description</span>: <span class="hljs-string">'姓名'</span>,<br>      },<br>      <span class="hljs-attr">age</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'number'</span>,<br>        <span class="hljs-attr">description</span>: <span class="hljs-string">'年龄'</span>,<br>      },<br>      <span class="hljs-attr">sex</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'integer'</span>,<br>        <span class="hljs-attr">description</span>: <span class="hljs-string">'性别，0 为女，1 为男'</span>,<br>        <span class="hljs-attr">enum</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>],<br>      },<br>      <span class="hljs-attr">hobbies</span>: {<br>        <span class="hljs-attr">type</span>: <span class="hljs-string">'array'</span>,<br>        <span class="hljs-attr">items</span>: {<br>          <span class="hljs-attr">type</span>: <span class="hljs-string">'string'</span>,<br>          <span class="hljs-attr">description</span>: <span class="hljs-string">'爱好'</span>,<br>        },<br>        <span class="hljs-attr">description</span>: <span class="hljs-string">'爱好'</span>,<br>      },<br>    },<br>    <span class="hljs-attr">required</span>: [<span class="hljs-string">'name'</span>, <span class="hljs-string">'age'</span>, <span class="hljs-string">'sex'</span>, <span class="hljs-string">'hobbies'</span>],<br>  },<br>  <span class="hljs-string">'User'</span>,<br>  {<br>    <span class="hljs-attr">bannerComment</span>: <span class="hljs-string">''</span>,<br>    <span class="hljs-attr">additionalProperties</span>: <span class="hljs-literal">false</span>,<br>  },<br>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(r)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>得到</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 用户信息</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">User</span> {<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 姓名</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 年龄</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 性别，0 为女，1 为男</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-attr">sex</span>: <span class="hljs-number">0</span> | <span class="hljs-number">1</span><br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * 爱好</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-attr">hobbies</span>: <span class="hljs-built_in">string</span>[]<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="openapi"><a href="#openapi" class="headerlink" title="openapi"></a>openapi</h2><!-- 说明 openapi 中使用 json schema 的应用场景 -->
+
+<p>下面来看一个实际用例，使用 openapi 定义服务端 restful 接口，并根据 schema 生成客户端。</p>
+<p>在实际探索生成客户端之前，先考虑生成的客户端大概是什么样的，这里可以参考 <a target="_blank" rel="noopener" href="https://github.com/octokit/octokit.js">octokit.js</a>，使用方式形如</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// Create a personal access token at https://github.com/settings/tokens/new?scopes=repo</span><br><span class="hljs-keyword">const</span> octokit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Octokit</span>({ <span class="hljs-attr">auth</span>: <span class="hljs-string">`personal-access-token123`</span> })<br><br><span class="hljs-comment">// Compare: https://docs.github.com/en/rest/reference/users#get-the-authenticated-user</span><br><span class="hljs-keyword">const</span> {<br>  <span class="hljs-attr">data</span>: { login },<br>} = <span class="hljs-keyword">await</span> octokit.<span class="hljs-property">rest</span>.<span class="hljs-property">users</span>.<span class="hljs-title function_">getAuthenticated</span>()<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Hello, %s'</span>, login)<br></code></pre></td></tr></tbody></table></figure>
+
+<p>可以看到整体上是 2 级关系，使用模块-方法名，然后传入参数，返回结果，好像它们只是普通的异步函数一样，所以下面也将尝试生成这样的 client。</p>
+<p>下面定义一个简单的 openapi schema，假设它是 <em>test.openapi.json</em></p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"paths"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"/ping"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"get"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"operationId"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ping"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"测试服务是否正常"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"responses"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>          <span class="hljs-attr">"200"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>            <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"服务正常"</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">"content"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>              <span class="hljs-attr">"text/plain"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>                <span class="hljs-attr">"schema"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>                  <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span><span class="hljs-punctuation">,</span><br>                  <span class="hljs-attr">"example"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"pong"</span><br>                <span class="hljs-punctuation">}</span><br>              <span class="hljs-punctuation">}</span><br>            <span class="hljs-punctuation">}</span><br>          <span class="hljs-punctuation">}</span><br>        <span class="hljs-punctuation">}</span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>希望生成的类型定义</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Test</span> {<br>  <span class="hljs-title function_">ping</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">ApiInstance</span> = {<br>  <span class="hljs-attr">test</span>: <span class="hljs-title class_">Test</span><br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>希望使用 fetch 适配器创建 client 使用方式</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> api = createClient&lt;<span class="hljs-title class_">ApiInstance</span>&gt;(runtime，request)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> apis.<span class="hljs-property">test</span>.<span class="hljs-title function_">ping</span>()) <span class="hljs-comment">// pong</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>期望</p>
+<ul>
+<li>以类似 github api sdk 的方式使用，不需要使用面向对象的使用方式</li>
+<li>所有的接口均为强类型调用，能识别绝大多数接口定义</li>
+<li>允许合并一些接口，例如某些接口无法正确识别，但允许自定义并合并覆盖生成的</li>
+<li>允许自定义底层的请求实现，例如可以自行选择 fetch/axios 等，也能添加特定的 token 之类的</li>
+</ul>
+<p>现有的工具</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenAPITools/openapi-generator">OpenAPI Generator</a>: 这是一个强大的工具，可以从 OpenAPI spec 生成客户端 SDK、服务器存根和 API 文档。它支持许多语言和框架，包括 TypeScript。– 生成的 sdk 非常难用，所有参数都是平铺的，而不是对象的形式，对与可选参数非常不友好。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/swagger-api/swagger-codegen">Swagger Codegen</a>: 这是一个早期的工具，可以从 Swagger 或 OpenAPI 3.0 spec 生成客户端和服务器代码。它也支持 TypeScript，但是请注意，这个项目已经不再活跃，大部分的开发工作已经转移到 OpenAPI Generator。– 已废弃</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/RicoSuter/NSwag">NSwag</a>: 这是一个开源的、用于生成 TypeScript 和 C# 客户端的工具，可以从 Swagger 和 OpenAPI spec 中生成。– 和 OpenAPI Generator 有一样的问题<br>GitHub 链接：&lt;&gt;</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/acacode/swagger-typescript-api">swagger-typescript-api</a>: 这是一个生成 TypeScript API 的工具，可以从 Swagger 和 OpenAPI spec 中生成。它生成的代码是基于 axios 的，因此如果你的项目已经使用了 axios，这可能是一个好的选择。– 生成的 sdk 每个文件一个 api 和 config，无法在一个配置统一全部的 api</li>
+</ol>
+<p>希望自定义生成逻辑的话，基于现有的库实现也很简单，实际在公司的项目中，为服务端的所有 api 生成 ts 客户端也就 3000 行代码左右。</p>
+<p><img src="/resources/4725f3f77f6544a4bfeaf0c5e773248f.svg" srcset="/img/loading.gif" lazyload alt="基本生成流程图.drawio.svg"></p>
+<p>基本上，可以分为开发时和运行时，开发时主要负责代码生成，使用生成的 ts 辅助类型校验，运行时主要负责使用 jsonschema 进行数据校验，以及一些可能需要在运行时使用的信息，例如 openapi 中的 url/method 等参数。</p>
+<ol>
+<li>读取 openapi schema，找到每个端点并且解析获取对应的 params/result 的 json schema</li>
+<li>生成对应的 runtime 信息，包含 operationId、url、method、params/result 的 json schema 等必要信息</li>
+<li>生成对应的类型定义，包含 params/result 及 ref 引用的 ts 类型定义</li>
+<li>使用 adapter 生成客户端，或者编写服务端代码（强类型&amp;校验）</li>
+</ol>
+<p>一个 fetch 的 adapter 示例实现</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">HttpMethods</span> =<br>  | <span class="hljs-string">'get'</span><br>  | <span class="hljs-string">'put'</span><br>  | <span class="hljs-string">'post'</span><br>  | <span class="hljs-string">'delete'</span><br>  | <span class="hljs-string">'options'</span><br>  | <span class="hljs-string">'head'</span><br>  | <span class="hljs-string">'patch'</span><br>  | <span class="hljs-string">'trace'</span><br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">OpenApiOperation</span> {<br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span><br>  params?: <span class="hljs-title class_">Schema</span><br>  result?: <span class="hljs-title class_">Schema</span><br>  <span class="hljs-attr">extra</span>: {<br>    <span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span><br>    <span class="hljs-attr">method</span>: <span class="hljs-title class_">HttpMethods</span><br>    <span class="hljs-attr">fields</span>: <span class="hljs-title class_">OpenAPIV3</span>.<span class="hljs-property">ParameterObject</span>[]<br>    <span class="hljs-attr">body</span>: <span class="hljs-built_in">boolean</span><br>  }<br>}<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> createClient&lt;T&gt;(<br>  <span class="hljs-attr">runtimes</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">OpenApiOperation</span>[]&gt;,<br>  <span class="hljs-attr">request</span>: <span class="hljs-function">(<span class="hljs-params">options: {</span></span><br><span class="hljs-params"><span class="hljs-function">    method: <span class="hljs-built_in">string</span></span></span><br><span class="hljs-params"><span class="hljs-function">    url: <span class="hljs-built_in">string</span></span></span><br><span class="hljs-params"><span class="hljs-function">    data?: <span class="hljs-built_in">any</span></span></span><br><span class="hljs-params"><span class="hljs-function">  }</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">any</span>&gt;,<br>): T {<br>  <span class="hljs-keyword">return</span> (<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(runtimes) <span class="hljs-keyword">as</span> [<span class="hljs-built_in">string</span>, <span class="hljs-title class_">OpenApiOperation</span>[]][]).<span class="hljs-title function_">reduce</span>(<br>    <span class="hljs-function">(<span class="hljs-params">acc, [k, v]</span>) =&gt;</span> {<br>      acc[k] = v.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, it</span>) =&gt;</span> {<br>        acc[it.<span class="hljs-property">name</span>] = <span class="hljs-keyword">async</span> (<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>) =&gt; {<br>          <span class="hljs-keyword">let</span> <span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span> = it.<span class="hljs-property">extra</span>.<span class="hljs-property">path</span><br>          <span class="hljs-keyword">const</span> paramaters = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(<br>            <span class="hljs-title function_">groupBy</span>(it.<span class="hljs-property">extra</span>.<span class="hljs-property">fields</span>, <span class="hljs-function">(<span class="hljs-params">it</span>) =&gt;</span> it.<span class="hljs-property">in</span>),<br>          ).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, [k, v]</span>) =&gt;</span> {<br>            acc[k] = v.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">it</span>) =&gt;</span> it.<span class="hljs-property">name</span>)<br>            <span class="hljs-keyword">return</span> acc<br>          }, {} <span class="hljs-keyword">as</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>[]&gt;)<br>          <span class="hljs-keyword">if</span> (paramaters.<span class="hljs-property">path</span>) {<br>            <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(<span class="hljs-title function_">pick</span>(args, paramaters.<span class="hljs-property">path</span>)).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">[k, v]</span>) =&gt;</span> {<br>              <span class="hljs-keyword">if</span> (path.<span class="hljs-title function_">includes</span>(<span class="hljs-string">`{<span class="hljs-subst">${k}</span>}`</span>) &amp;&amp; !<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(v)) {<br>                path = path.<span class="hljs-title function_">replace</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(<span class="hljs-string">`{<span class="hljs-subst">${k}</span>}`</span>, <span class="hljs-string">'g'</span>), <span class="hljs-title class_">String</span>(v))<br>              }<br>            })<br>            args = <span class="hljs-title function_">omit</span>(args, paramaters.<span class="hljs-property">path</span>)<br>          }<br>          <span class="hljs-keyword">if</span> (paramaters.<span class="hljs-property">query</span>) {<br>            <span class="hljs-keyword">const</span> u = <span class="hljs-keyword">new</span> <span class="hljs-title class_">URLSearchParams</span>(<br>              <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(<span class="hljs-title function_">pick</span>(args, paramaters.<span class="hljs-property">query</span>)),<br>            )<br>            path += <span class="hljs-string">'?'</span> + u.<span class="hljs-title function_">toString</span>()<br>            args = <span class="hljs-title function_">omit</span>(args, paramaters.<span class="hljs-property">query</span>)<br>          }<br>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">request</span>({<br>            <span class="hljs-attr">method</span>: it.<span class="hljs-property">extra</span>.<span class="hljs-property">method</span>,<br>            <span class="hljs-attr">url</span>: path,<br>            <span class="hljs-attr">data</span>:<br>              !args ||<br>              (args.<span class="hljs-title function_">toString</span>() === <span class="hljs-string">'[object Object]'</span> &amp;&amp;<br>                <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(args).<span class="hljs-property">length</span> === <span class="hljs-number">0</span>)<br>                ? <span class="hljs-literal">undefined</span><br>                : args,<br>          })<br>        }<br>        <span class="hljs-keyword">return</span> acc<br>      }, {} <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)<br>      <span class="hljs-keyword">return</span> acc<br>    },<br>    {} <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>,<br>  )<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<h2 id="jsonrpc"><a href="#jsonrpc" class="headerlink" title="jsonrpc"></a>jsonrpc</h2><!-- 说明 jsonrpc 如何使用 json schema 的应用场景 -->
+
+<p>与 openapi 相比，jsonrpc 适用范围可以更加广泛，事实上，jsonrpc 也可以用在 restful 接口上，但一般还是使用 openapi，后者与 restful 有更好的结合。但 jsonrpc 在其他场景，例如 websocket、electron 线程通信等等都可以使用，当然使用 ts 也可以，例如 <a target="_blank" rel="noopener" href="https://github.com/GoogleChromeLabs/comlink">comlink</a> 就是这样做的，但 jsonrpc 可以在运行时使用，以实现数据校验的功能。</p>
+<p>一些可能的使用场景</p>
+<ul>
+<li>与 web worker/iframe 通信</li>
+<li>与 worker_threads 通信</li>
+<li>websocket 通信</li>
+<li>electron 主进程与渲染进程通信</li>
+<li>chrome extension 多线程通信</li>
+</ul>
+<p>除开生成代码的部分之外，adapter 部分甚至可以不需要 runtime，因为 runtime 信息只用于校验，不像 openapi 一样还有额外的信息。</p>
+<p>一个基本的 openrpc 定义</p>
+<figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">{</span><br>  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hello"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"hello world"</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"params"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"name"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"description"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"名字"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"required"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"schema"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>        <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">"examples"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"world"</span><span class="hljs-punctuation">]</span><br>      <span class="hljs-punctuation">}</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">"result"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>    <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"result"</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">"schema"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span><br>      <span class="hljs-attr">"type"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"string"</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">"examples"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"hello world"</span><span class="hljs-punctuation">]</span><br>    <span class="hljs-punctuation">}</span><br>  <span class="hljs-punctuation">}</span><br><span class="hljs-punctuation">}</span><br></code></pre></td></tr></tbody></table></figure>
+
+<p>重点是 methods 部分，可以看到就是在用 json 表达函数的定义，有参数和返回值的定义。<br>它的对应 ts 定义</p>
+<figure class="highlight ts"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Service</span> {<br>  <span class="hljs-title function_">hello</span>(<span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;<br>}<br></code></pre></td></tr></tbody></table></figure>
+
+<p>这种方式虽然看起来没有使用 ts 定义来的直观，但在跨语言解析方便占有绝对优势，例如生成 golang 的接口代码可以通过 golang 的 ast 实现，而不必面临解析复杂的 ts 代码的问题。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>json schema 是一个不错的规范，由于 json 被绝大多数语言接受了，所以也随之在很多语言中有了实现，可以先从简单的数据校验开始尝试，然后使用它来进行更加复杂的代码生成，可能是一个不错的路径。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%89%8D%E7%AB%AF/%E5%B7%A5%E7%A8%8B%E5%8C%96/" class="category-chain-item">工程化</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/typescript/">#typescript</a>
+      
+        <a href="/tags/ast/">#ast</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用 json schema</div>
+      <div>https://blog.rxliuli.com/p/05e27a46cc1b4dfdbecfe4c8209211fe/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>rxliuli</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/p/f3564b039a28421188146aa89b52a3c0/" title="vue 中 boolean props 的默认值问题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vue 中 boolean props 的默认值问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/p/49fb661c297b4544a208ea898c77e5a0/" title="使用 vite 开发和构建 nodejs 应用">
+                        <span class="hidden-mobile">使用 vite 开发和构建 nodejs 应用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"rxliuli/blog","repo-id":"MDEwOlJlcG9zaXRvcnkxODcwNjU2ODE=","category":"Announcements","category-id":"DIC_kwDOCyZlUc4CRcCX","theme-light":"light","theme-dark":"dark","mapping":"pathname","reactions-enabled":"1","emit-metadata":"0","input-position":"bottom","lang":"zh-CN","src":"https://giscus.app/client.js","strict":"0","theme":"preferred_color_scheme","crossorigin":"anonymous","async":true};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
