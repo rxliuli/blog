@@ -10,6 +10,7 @@ tags:
 categories:
   - 其他
   - VSCode
+  - VSCode 与 WebStorm 横向对比.md
 date: 1580652938013
 updated: 1673338679886
 ---
@@ -69,7 +70,7 @@ WebStorm
 
 ### 自动修复
 
-我们在日常开发中经常会遇到一些低级问题，而编辑器其实是有可能帮我们自动修复的。这里便对吾辈了解的一些问题进行对比，问题详细信息请参考文章 [JavaScript 规范整理](:/content/:/69eedef48bf54c3ca692b43a115a118f)
+我们在日常开发中经常会遇到一些低级问题，而编辑器其实是有可能帮我们自动修复的。这里便对吾辈了解的一些问题进行对比，问题详细信息请参考文章 [JavaScript 规范整理](/p/69eedef48bf54c3ca692b43a115a118f)
 
 > 注: VSCode 没有原生的自动修复功能，必须使用插件才行。
 
@@ -177,7 +178,7 @@ WebStorm
 > 附: VSCode 中通过输入 `h1.hello#hello` Tab 之后就得到代码是一种前端 HTML 代码编写方式，被称为 [Zen Coding](https://www.qianduan.net/zen-coding-a-new-way-to-write-html-code/)。但实际上，这种编写方式在代码提示方面存在劣势，所以使用 WebStorm 时并未演示。
 > 附: VSCode 引用文件路径提示需要插件 [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
 
-对于库的开发者而言最难受的地方是 VSCode 实质上依赖于 TypeScript 才能做到代码提示，如果你也像吾辈是一位 JavaScript SDK 的开发者，那么也会遇到这件令人郁闷的事情: 如果想要使用你的 JavaScript SDK 的 VSCode 用户有正常的代码提示的话，你就必须接触 TypeScript。要么使用 TypeScript 重构整个 SDK，要么写 *.d.ts* 专门为 VSCode 维护一份注释文档，详情可以参考文章 [JavaScript => TypeScript 迁移体验](:/content/:/03ee7047ae3c4203b0c4c4ebfd6d7bd9)。
+对于库的开发者而言最难受的地方是 VSCode 实质上依赖于 TypeScript 才能做到代码提示，如果你也像吾辈是一位 JavaScript SDK 的开发者，那么也会遇到这件令人郁闷的事情: 如果想要使用你的 JavaScript SDK 的 VSCode 用户有正常的代码提示的话，你就必须接触 TypeScript。要么使用 TypeScript 重构整个 SDK，要么写 *.d.ts* 专门为 VSCode 维护一份注释文档，详情可以参考文章 [JavaScript => TypeScript 迁移体验](/p/03ee7047ae3c4203b0c4c4ebfd6d7bd9)。
 
 ### 历史记录
 

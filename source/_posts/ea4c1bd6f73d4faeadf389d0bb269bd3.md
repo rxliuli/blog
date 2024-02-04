@@ -7,6 +7,7 @@ tags:
 categories:
   - 其他
   - Git
+  - "# Git Push 提示不支持具有 Socks5 方案的代理.md"
 date: 1580652937987
 updated: 1589552772527
 ---

@@ -7,9 +7,12 @@ tags:
 categories:
   - 其他
   - Java
+  - "# 配置文件 yml.md"
 date: 1587219249398
 updated: 1609304980935
 ---
+
+# 配置文件 yml
 
 > 本文主要引用自：[Spring Boot 配置文件详解](https://www.cnblogs.com/itdragon/p/8686554.html)，这里主要是为了进行记录以便吾辈进行查找。
 
