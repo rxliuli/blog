@@ -12,8 +12,6 @@ date: 1587219249398
 updated: 1609304980935
 ---
 
-# 配置文件 yml
-
 > 本文主要引用自：[Spring Boot 配置文件详解](https://www.cnblogs.com/itdragon/p/8686554.html)，这里主要是为了进行记录以便吾辈进行查找。
 
 yml 是 YAML（YAML Ain't Markup Language）语言的文件，以数据为中心，比 json、xml 等更适合做配置文件。

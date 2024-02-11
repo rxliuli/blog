@@ -13,8 +13,6 @@ date: 1587219249414
 updated: 1609305544293
 ---
 
-# Windows 下 MongoDB 便携版安装与初始化
-
 > [官网](https://www.mongodb.org/)
 
 ## 下载

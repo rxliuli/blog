@@ -12,8 +12,6 @@ date: 1683520765950
 updated: 1684688749560
 ---
 
-# 周报 2023-05-08
-
 刚过完五一，连休了 9 天之后又开始上班了。上周回到了广州父母那边，不过非常不凑巧的是妈妈回老家处理一些事情，所以只有爸爸在那边。回去这几天基本上只有周六是一整天都在家里，其他时候都是出去见朋友和之前的同事。
 
 ![cover](https://image-proxy.rxliuli.com/?url=https://lh3.googleusercontent.com/pw/AJFCJaUAlNN9xNVyKIup4QEDq43lJM6_KPYLbyMUem3fTrDgCGZKos7LN8vwcjkHUkbBvu-gIefWZ3qiJZh0EaURIAxv441e2SCV-3fPt6hx2KFn3nbuzL4ZjAt9QfvuwbIP5mM5D3115-KP-dCMvBM4pBBx=w978-h1304-s-no)
