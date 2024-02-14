@@ -43,10 +43,10 @@ MongoDB shell version v4.0.1
 
 目录列表如下：
 
-*   mongodb\_data
-    *   log
-        *   mongodb.log
-    *   data
+- mongodb\_data
+  - log
+    - mongodb.log
+  - data
 
 指定日志文件的位置
 

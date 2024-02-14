@@ -155,16 +155,16 @@ dependencies {
 
 注意，我们在页面中引入的顺序是
 
-1.  `common-header`: 公共头部
-2.  页面自定义 HTML 内容
-3.  `common-footer`: 公共底部
-4.  `common-lib-js`: 公共 JavaScript 依赖
-5.  页面自定义 JavaScript 脚本
+1. `common-header`: 公共头部
+2. 页面自定义 HTML 内容
+3. `common-footer`: 公共底部
+4. `common-lib-js`: 公共 JavaScript 依赖
+5. 页面自定义 JavaScript 脚本
 
 主要遵循下面几个原则
 
-*   JavaScript 必须在 HTML body 结尾处引入，避免加载的速度问题
-*   自定义的 JavaScript 必须在公共的 JavaScript 之后引入，避免依赖找不到
+- JavaScript 必须在 HTML body 结尾处引入，避免加载的速度问题
+- 自定义的 JavaScript 必须在公共的 JavaScript 之后引入，避免依赖找不到
 
 ## 更进一步
 
