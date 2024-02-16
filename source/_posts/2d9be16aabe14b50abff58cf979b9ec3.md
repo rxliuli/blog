@@ -7,7 +7,6 @@ tags:
 categories:
   - 前端
   - TypeScript
-  - "# TypeScript 函数根据第一个参数推导后面参数的类型.md"
 date: 1585791059335
 updated: 1585810857420
 ---

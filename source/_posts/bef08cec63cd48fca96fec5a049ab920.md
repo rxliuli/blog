@@ -8,7 +8,6 @@ tags:
 categories:
   - 其他
   - NOSQL
-  - "# Windows 下 MongoDB 便携版安装与初始化.md"
 date: 1587219249414
 updated: 1609305544293
 ---
