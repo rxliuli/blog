@@ -4,9 +4,7 @@ title: 配置文件 yml
 abbrlink: d0d1bfcdc10e48aebdda7f1eea2c8df9
 tags:
   - java
-categories:
-  - 其他
-  - Java
+categories: []
 date: 1587219249398
 updated: 1609304980935
 ---

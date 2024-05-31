@@ -7,9 +7,7 @@ tags:
   - vscode
   - 工具
   - wiki
-categories:
-  - 其他
-  - VSCode
+categories: []
 date: 1580652938013
 updated: 1673338679886
 ---

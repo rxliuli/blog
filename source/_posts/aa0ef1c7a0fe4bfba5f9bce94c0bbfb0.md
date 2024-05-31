@@ -5,9 +5,7 @@ abbrlink: aa0ef1c7a0fe4bfba5f9bce94c0bbfb0
 tags:
   - javascript
   - vue
-categories:
-  - 前端
-  - CodeReview
+categories: []
 date: 1648970238168
 updated: 1648977108406
 ---

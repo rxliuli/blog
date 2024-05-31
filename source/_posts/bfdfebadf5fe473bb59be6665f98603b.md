@@ -4,9 +4,7 @@ title: 读书清单
 abbrlink: bfdfebadf5fe473bb59be6665f98603b
 tags:
   - 读书
-categories:
-  - 其他
-  - 读书
+categories: []
 date: 1669896386747
 updated: 1669958076544
 ---
