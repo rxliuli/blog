@@ -4,7 +4,9 @@ title: 周报 2023-05-08
 abbrlink: dd0e9cb99dbb4be1badccb58f3354294
 tags:
   - 周报
-categories: []
+categories:
+  - 个人
+  - 周报
 date: 1683520765950
 updated: 1684688749560
 ---

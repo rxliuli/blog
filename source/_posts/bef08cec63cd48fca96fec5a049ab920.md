@@ -5,7 +5,9 @@ abbrlink: bef08cec63cd48fca96fec5a049ab920
 tags:
   - sql
   - windows
-categories: []
+categories:
+  - 其他
+  - NOSQL
 date: 1587219249414
 updated: 1609305544293
 ---

@@ -4,7 +4,9 @@ title: TypeScript 函数根据第一个参数推导后面参数的类型
 abbrlink: 2d9be16aabe14b50abff58cf979b9ec3
 tags:
   - typescript
-categories: []
+categories:
+  - 前端
+  - TypeScript
 date: 1585791059335
 updated: 1585810857420
 ---

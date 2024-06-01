@@ -4,7 +4,9 @@ title: SpringBoot 集成 Thymeleaf 模板引擎
 abbrlink: c7b9b6e1ec444eeaa63a09dacedfe9dc
 tags:
   - java
-categories: []
+categories:
+  - 其他
+  - Java
 date: 1587219249396
 updated: 1609304971065
 ---

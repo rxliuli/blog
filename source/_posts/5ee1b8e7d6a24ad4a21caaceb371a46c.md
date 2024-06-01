@@ -4,7 +4,9 @@ title: Yarn link 链接本地项目
 abbrlink: 5ee1b8e7d6a24ad4a21caaceb371a46c
 tags:
   - 工程化
-categories: []
+categories:
+  - 前端
+  - 工具库
 date: 1580652937887
 updated: 1609303410280
 ---

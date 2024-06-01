@@ -4,7 +4,9 @@ title: Git Push 提示不支持具有 Socks5 方案的代理
 abbrlink: ea4c1bd6f73d4faeadf389d0bb269bd3
 tags:
   - git
-categories: []
+categories:
+  - 其他
+  - Git
 date: 1580652937987
 updated: 1589552772527
 ---
