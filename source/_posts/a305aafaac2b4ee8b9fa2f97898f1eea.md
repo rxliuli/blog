@@ -254,7 +254,7 @@ VSCode 通过 [live-share](https://github.com/MicrosoftDocs/live-share) 实现�
 
 ### 东家
 
-VSCode 背后站着微软，俗成 **M$**，开发了宇宙最强 IDE Visual Studio。而 WebStorm 则是基于 JetBrains 平台专门为前端进行特殊处理优化的 IDE，背后则是业界最智能的 IDE 的开发公司 JetBrains（捷克公司）。两者在 IDE/编辑的开发上都相当有经验，然而，有一点本质的不同：IDE 对于 JetBrains 而言几乎是全部，而 VSCode 对于 M$ 则只是开发的一部分 -- 编辑器。
+VSCode 背后站着微软，俗成 \*\*M$**，开发了宇宙最强 IDE Visual Studio。而 WebStorm 则是基于 JetBrains 平台专门为前端进行特殊处理优化的 IDE，背后则是业界最智能的 IDE 的开发公司 JetBrains（捷克公司）。两者在 IDE/编辑的开发上都相当有经验，然而，有一点本质的不同：IDE 对于 JetBrains 而言几乎是全部，而 VSCode 对于 M\$ 则只是开发的一部分 -- 编辑器。
 
 `VSCode => VSCode Remote => GitHub => GitHub Actions => Azure`，从 MS 的一系列变化来看，这对开发者是真的相当上心，从本地开发、远程协作、版本控制、自动化流程控制 CI/CD 到部署到云端，完全是一站式的体验。相比于国内的云服务商，MS 显然更加开放、更加为开发者着想。
 而 JetBrains，虽然现在也有了编程语言 `Kotlin`、项目管理工具 `Space`（包含 CI/CD 工具 `TeamCity`），但本质上在其领域内，除了 IDE，其他的东西都没能形成特别大的优势（Kotlin 只能用于开发 Android 平台，而 Web 技术甚至能开发全端；`TeamCity` 虽然很漂亮，但似乎人们更喜欢开源的 `Jenkins`）。
